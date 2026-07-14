@@ -25,19 +25,19 @@ function assertCleanEncoding(html) {
   assert.doesNotMatch(html, /(?:Ã.|Â.|â€|â†|âœ|ï¿½|�)/);
 }
 
-test("server-renders a clear introduction and one stable comparison control", async () => {
+test("server-renders a clear introduction and one operable interaction score", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   const html = await response.text();
 
   for (const phrase of [
-    "I design how intelligent systems explain themselves",
-    "Interaction designer · Bangalore",
+    "I design the moment a system becomes",
+    "Tanishk · Interaction designer · Bangalore",
     "Daynero · AI-native finance",
-    "04 working investigations",
-    "See the interface. Then see the decision",
-    "Interface",
-    "Logic",
+    "Four working investigations",
+    "Five systems. One reading head",
+    "Encounter",
+    "Rule",
     "Consequence",
     "Design or Disaster",
     "Pentimento",
@@ -49,12 +49,12 @@ test("server-renders a clear introduction and one stable comparison control", as
     assert.match(html, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
 
-  assert.equal((html.match(/class="work-card work-card--/g) ?? []).length, 5);
+  assert.equal((html.match(/class="score-voice score-voice--/g) ?? []).length, 5);
   assert.match(html, /type="range"/);
-  assert.match(html, /aria-label="Choose what to inspect"/);
+  assert.match(html, /aria-label="Choose a movement of the score"/);
   assert.match(html, /aria-valuetext=/);
   assert.match(html, /rel="canonical" href="https:\/\/portfolio\.test\/"/);
-  assert.doesNotMatch(html, /housing is exposing|Portfolio instrument|Drag the plane/i);
+  assert.doesNotMatch(html, /housing is exposing|Portfolio instrument|Drag the plane|class="work-grid"/i);
   assertCleanEncoding(html);
 });
 
@@ -205,6 +205,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     index,
     motion,
     projectPage,
+    signature,
     artifacts,
     css,
     nextConfig,
@@ -216,6 +217,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     readFile(new URL("../app/components/living-index.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/motion-director.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/work/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/project-signature.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/case-artifacts.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/home-system.css", import.meta.url), "utf8"),
     readFile(new URL("../next.config.ts", import.meta.url), "utf8"),
@@ -229,12 +231,21 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.doesNotMatch(data, /remainder|command-center/i);
   assert.match(index, /type="range"/);
   assert.match(index, /key=\{`\$\{project\.id\}-\$\{phase\}`\}/);
-  assert.doesNotMatch(index, /clip-path.*--rule-reveal|exposure-plane|housing is exposing/i);
+  assert.match(index, /Five systems\. One reading head/);
+  assert.equal((index.match(/score-voice--/g) ?? []).length, 1);
+  assert.doesNotMatch(index, /work-grid|work-card--|exposure-plane|housing is exposing/i);
   assert.match(motion, /IntersectionObserver/);
   assert.match(motion, /--scroll-progress/);
   assert.doesNotMatch(motion, /pointermove|--pointer-x/);
   assert.match(projectPage, /DayneroPreview/);
+  assert.match(projectPage, /ProjectSignature/);
   assert.match(projectPage, /project\.sourceUrl \?/);
+  for (const artifact of ["daynero", "disaster", "pentimento", "invisible", "atlas"]) {
+    assert.match(signature, new RegExp(`signature-${artifact}`));
+  }
+  for (const accent of ["#ef4a35", "#8b2f63", "#d79a29", "#1d756d", "#b7e34b"]) {
+    assert.match(data, new RegExp(accent));
+  }
   assert.doesNotMatch(artifacts, /remainder|candidate memory/i);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /forced-colors:\s*active/);

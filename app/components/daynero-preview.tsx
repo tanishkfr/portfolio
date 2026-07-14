@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Project } from "../data/portfolio";
+import { ProjectSignature } from "./project-signature";
 
 export function DayneroPreview({
   project,
@@ -37,24 +38,10 @@ export function DayneroPreview({
           </div>
         </div>
 
-        <div className="daynero-model" aria-label="Daynero public product model">
-          <div className="daynero-model-head">
-            <span>Daily money system</span>
-            <i aria-hidden="true" />
-          </div>
-          <div className="daynero-model-core">
-            <small>Adaptive guidance</small>
-            <strong>Today changes with you.</strong>
-            <p>Behavior + goals + real-time context</p>
-          </div>
-          <div className="daynero-model-path" aria-hidden="true">
-            <span>Daily budget</span>
-            <i />
-            <span>Goals</span>
-            <i />
-            <span>Meridian</span>
-          </div>
-        </div>
+        <ProjectSignature
+          artifact={project.artifact}
+          focus="Adaptive finance · daily behavior"
+        />
       </header>
 
       <dl className="daynero-facts" aria-label="Daynero project facts" data-scroll-reveal>

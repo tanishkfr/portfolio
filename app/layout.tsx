@@ -9,6 +9,7 @@ import "./experience.css";
 import "./hiring.css";
 import "./case-studies.css";
 import "./home-system.css";
+import "./interaction-score.css";
 
 async function requestOrigin() {
   const headerList = await headers();
@@ -35,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s — Tanishk",
     },
     description:
-      "Commercial product work and independent interaction-design investigations into money, agency, evidence, and intelligent systems.",
+      "Interaction-design work by Tanishk: a commercial AI-native finance product and four working investigations into agency, evidence, and intelligent systems.",
     authors: [{ name: "Tanishk" }],
     creator: "Tanishk",
     category: "Interaction Design",
@@ -47,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Tanishk — Interaction Designer",
       title: "Tanishk — Interaction Designer",
       description:
-        "Product work and independent interaction-design investigations by Tanishk.",
+        "Five interaction systems by Tanishk, read from encounter to rule to consequence.",
       images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
     },
     twitter: {
@@ -55,7 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
       creator: "@madebytanishk",
       title: "Tanishk — Interaction Designer",
       description:
-        "Products and research instruments about evidence, authority, memory, and accountability.",
+        "Five interaction systems about money, evidence, authority, memory, and accountability.",
       images: ["/og.png"],
     },
   };

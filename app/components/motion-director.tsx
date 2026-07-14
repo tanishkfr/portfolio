@@ -8,35 +8,43 @@ export function MotionDirector() {
 
   useEffect(() => {
     const root = document.documentElement;
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const targets = Array.from(
       document.querySelectorAll<HTMLElement>(
-        "[data-scroll-reveal], [data-reveal], .signature-artifact",
+        "[data-scroll-reveal], [data-score-reveal], [data-reveal], .signature-artifact",
       ),
     );
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let frame = 0;
 
     root.classList.add("motion-ready");
 
-    const updateProgress = () => {
+    const setMotionPreference = () => {
+      root.dataset.motion = media.matches ? "reduced" : "full";
+    };
+
+    const updateDocumentState = () => {
       frame = 0;
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
       root.style.setProperty("--scroll-progress", progress.toFixed(4));
+      root.dataset.scrolled = window.scrollY > 20 ? "true" : "false";
     };
 
     const onScroll = () => {
       if (frame) return;
-      frame = window.requestAnimationFrame(updateProgress);
+      frame = window.requestAnimationFrame(updateDocumentState);
     };
 
-    updateProgress();
+    setMotionPreference();
+    updateDocumentState();
+    media.addEventListener("change", setMotionPreference);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
 
-    if (reduceMotion || !("IntersectionObserver" in window)) {
+    if (media.matches || !("IntersectionObserver" in window)) {
       targets.forEach((target) => target.classList.add("is-revealed"));
       return () => {
+        media.removeEventListener("change", setMotionPreference);
         window.removeEventListener("scroll", onScroll);
         window.removeEventListener("resize", onScroll);
         if (frame) window.cancelAnimationFrame(frame);
@@ -51,12 +59,13 @@ export function MotionDirector() {
           observer.unobserve(entry.target);
         });
       },
-      { rootMargin: "0px 0px -8%", threshold: 0.08 },
+      { rootMargin: "0px 0px -7%", threshold: 0.08 },
     );
 
     targets.forEach((target) => observer.observe(target));
     return () => {
       observer.disconnect();
+      media.removeEventListener("change", setMotionPreference);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       if (frame) window.cancelAnimationFrame(frame);
