@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { CaseArtifact } from "../../components/case-artifacts";
+import { CaseNavigator } from "../../components/case-navigator";
 import {
   getLens,
   getProject,
@@ -9,6 +9,7 @@ import {
   projects,
   type Project,
 } from "../../data/portfolio";
+import { projectSignals } from "../../data/project-signals";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -106,6 +107,7 @@ export default async function ProjectPage({
   const fromLens = isLensId(fromValue) ? fromValue : "all";
   const lens = getLens(fromLens);
   const language = caseLanguage[project.artifact];
+  const signal = projectSignals[project.artifact];
   const returnHref =
     fromLens === "all" ? "/#work" : "/?lens=" + fromLens + "#work";
   const related = project.relatedSlugs
@@ -115,37 +117,33 @@ export default async function ProjectPage({
   return (
     <main
       id="main-content"
-      className={"project-shell project-" + project.artifact}
+      className={"project-shell project-shell--alive project-" + project.artifact}
       style={{ "--project-accent": project.accent } as React.CSSProperties}
     >
-      <div className="project-return">
-        <Link href={returnHref}>← Return to {lens.label}</Link>
+      <div className="project-return" data-reveal>
+        <a href={returnHref}>← Return to {lens.label}</a>
+        <span>{signal.focus}</span>
       </div>
 
-      <header className="project-threshold">
-        <div className="threshold-meta">
+      <header className="project-threshold project-threshold--scan">
+        <div className="threshold-meta" data-reveal>
           <p className="eyebrow">{project.context}</p>
-          <p>
-            {project.year} · {project.status}
-          </p>
+          <p>{project.year} · {signal.status}</p>
         </div>
-        <h1 style={{ viewTransitionName: "project-" + project.id }}>
+        <h1
+          data-reveal
+          style={{ viewTransitionName: "project-" + project.id }}
+        >
           {project.title}
         </h1>
-        <div className="threshold-grid">
-          <p className="project-question">{project.question}</p>
+        <div className="threshold-grid" data-reveal>
           <div>
+            <p className="threshold-label">The question</p>
+            <p className="project-question">{project.question}</p>
+          </div>
+          <div>
+            <p className="threshold-label">The intervention</p>
             <p className="project-summary">{project.oneLine}</p>
-            <dl className="project-facts">
-              <div>
-                <dt>Role</dt>
-                <dd>{project.role}</dd>
-              </div>
-              <div>
-                <dt>Built with</dt>
-                <dd>{project.tools.join(" · ")}</dd>
-              </div>
-            </dl>
             <div className="project-actions">
               <a
                 href={project.liveUrl}
@@ -156,36 +154,44 @@ export default async function ProjectPage({
                 Open live work <span aria-hidden="true">↗</span>
                 <small>New tab</small>
               </a>
-              <a
-                href={project.sourceUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href={project.sourceUrl} target="_blank" rel="noreferrer">
                 View source <span aria-hidden="true">↗</span>
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
             </div>
           </div>
         </div>
+
+        <dl className="project-brief" data-reveal aria-label="Project in thirty seconds">
+          <div>
+            <dt>Ownership</dt>
+            <dd>Independent · end to end</dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd>{project.role}</dd>
+          </div>
+          <div>
+            <dt>Interaction proof</dt>
+            <dd>{signal.proof}</dd>
+          </div>
+          <div>
+            <dt>Built with</dt>
+            <dd>{project.tools.join(" · ")}</dd>
+          </div>
+        </dl>
       </header>
 
       <CaseArtifact project={project} />
 
-      <div className="case-layout">
-        <aside
-          className="case-toc"
-          aria-label={project.title + " case study sections"}
-        >
-          <p className="eyebrow">Case study</p>
-          <nav>
-            <a href="#problem">01 · Problem</a>
-            <a href="#shift">02 · Shift</a>
-            <a href="#interaction">03 · Interaction</a>
-            <a href="#decisions">04 · Decisions</a>
-            <a href="#evidence">05 · Evidence</a>
-            <a href="#limits">06 · Limits</a>
-          </nav>
-        </aside>
+      <section className="project-contribution" data-reveal aria-labelledby="contribution-title">
+        <p className="eyebrow">My contribution</p>
+        <h2 id="contribution-title">What I made accountable.</h2>
+        <p>{project.contribution}</p>
+      </section>
+
+      <div className="case-layout case-layout--tracked">
+        <CaseNavigator title={project.title} />
 
         <article className="case-story">
           <section className="case-section" id="problem">
@@ -197,7 +203,7 @@ export default async function ProjectPage({
           </section>
 
           <section className="case-section" id="shift">
-            <p className="case-number">02 · The shift</p>
+            <p className="case-number">02 · What changed</p>
             <h2>{project.shift.title}</h2>
             {project.shift.paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
@@ -210,7 +216,7 @@ export default async function ProjectPage({
             <p>{project.interactionIntro}</p>
             <ol className="interaction-sequence">
               {project.interactionSteps.map((step, index) => (
-                <li key={step}>
+                <li key={step} data-reveal>
                   <span>{String(index + 1).padStart(2, "0")}</span>
                   <p>{step}</p>
                 </li>
@@ -223,7 +229,7 @@ export default async function ProjectPage({
             <h2>{language.decisions}</h2>
             <div className="decision-grid">
               {project.decisions.map((decision) => (
-                <article key={decision.title}>
+                <article key={decision.title} data-reveal>
                   <h3>{decision.title}</h3>
                   <p>{decision.body}</p>
                 </article>
@@ -258,20 +264,15 @@ export default async function ProjectPage({
             </div>
             <p className="project-disclosure">{project.disclosure}</p>
           </section>
-
-          <blockquote className="contribution-quote">
-            <p>{project.contribution}</p>
-            <cite>{project.title} · Contribution</cite>
-          </blockquote>
         </article>
       </div>
 
-      <section className="relation-section" aria-labelledby="relation-title">
+      <section className="relation-section" aria-labelledby="relation-title" data-reveal>
         <p className="eyebrow">Continue through a relationship</p>
-        <h2 id="relation-title">The next project is connected by a question.</h2>
+        <h2 id="relation-title">Follow the question, not a carousel.</h2>
         <div className="relation-grid">
           {related.map((candidate) => (
-            <Link
+            <a
               key={candidate.slug}
               href={"/work/" + candidate.slug + "?from=" + fromLens}
               style={
@@ -286,7 +287,7 @@ export default async function ProjectPage({
                   : candidate.lensRelations[fromLens]}
               </p>
               <span aria-hidden="true">Read case study →</span>
-            </Link>
+            </a>
           ))}
         </div>
       </section>

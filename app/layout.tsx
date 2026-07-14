@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
+import { MotionDirector } from "./components/motion-director";
 import { SiteHeader } from "./components/site-header";
 import "./globals.css";
 import "./polish.css";
+import "./experience.css";
+import "./hiring.css";
 
 async function requestOrigin() {
   const headerList = await headers();
@@ -42,7 +45,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Tanishk — Interaction Designer",
       title: "Tanishk — Interaction Designer",
       description:
-        "Products and research instruments that make hidden system behavior visible enough to understand, question, and change.",
+        "Five live interaction-design artifacts that make hidden system behavior visible enough to challenge.",
       images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
     },
     twitter: {
@@ -74,6 +77,7 @@ export default function RootLayout({
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>
+        <MotionDirector />
         <SiteHeader />
         {children}
         <footer className="site-footer">
@@ -88,7 +92,7 @@ export default function RootLayout({
               target="_blank"
               rel="noreferrer"
             >
-              Twitter <span aria-hidden="true">↗</span>
+              X / Twitter <span aria-hidden="true">↗</span>
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
             <Link href="/">Work</Link>
