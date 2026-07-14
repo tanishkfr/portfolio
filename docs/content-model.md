@@ -1,177 +1,99 @@
-# Portfolio Housing — Content Model
+# Portfolio content model
 
-Status: architectural schema; copy remains provisional
+Status: current production contract
 
-## Core entities
+The portfolio has two storytelling layers:
 
-### Project
+1. The home instrument exposes the surface, governing rule, and consequence of all five projects at the same depth.
+2. A case-study route explains how one of those systems was framed, changed, built, and bounded by evidence.
 
-Required fields:
+The home is comparative. The case studies are specific. Neither should repeat the other.
 
-- `id` — stable internal identifier.
-- `slug` — canonical public route segment.
-- `title` — current public name.
-- `legacySlugs` — old routes that permanently redirect.
-- `oneLine` — literal description of the work, not a slogan.
-- `question` — the central inquiry in plain language.
-- `form` — product, research-through-design, interactive essay, system, tool, or experiment.
-- `role` — Tanishk’s actual contribution.
-- `year` — display year or range.
-- `status` — live, prototype, study pending, citation audit, archived, or unavailable.
-- `liveUrl` — independently deployed destination when available.
-- `sourceUrl` — repository destination when it adds value.
-- `lensRelations` — authored relevance and explanation for each lens.
-- `connections` — authored project-to-project relationships with reasons.
-- `caseStudy` — flexible ordered sections.
-- `credits` — collaborators, sources, and acknowledgements.
-- `featured` — reversible editorial emphasis; never visibility.
+## Project record
 
-### Lens
+`app/data/portfolio.ts` is the canonical authored content source. Every project record includes:
 
-- `id` and `slug`.
-- `label`.
-- `prompt` — the question the visitor is bringing to the work.
-- `description` — what becomes visible through this lens.
-- `projectOrder` — deliberate order, not an inferred score.
+- identity: title, form, year, context, status, canonical and legacy URLs;
+- fast understanding: thesis, question, one-line description, scale, ownership, role, responsibilities, tools;
+- story: problem, pivotal redesign, rejected approaches, interaction sequence;
+- system: three system layers plus decisions with an explicit choice and consequence;
+- evidence: what is implemented and verified, what remains unproven, and the next test with a decision rule;
+- portfolio relationships: interpretive-lens statements and two related projects;
+- authorship: contribution and AI disclosure.
 
-### Connection
+No metric, participant quote, outcome, or research finding may enter this file unless the source project contains the supporting evidence.
 
-- `fromProject`.
-- `toProject`.
-- `lens` when relevant.
-- `reason` — a short authored sentence displayed to the visitor.
-- `direction` — one-way or reciprocal.
+## Case-study reading order
 
-### Case-study section
+Every case route uses the same reviewer-oriented spine without forcing the projects into the same visual or interaction behavior.
 
-Sections are semantic content objects, not fixed visual components.
+### Threshold
 
-- `id` — stable anchor.
-- `kind` — context, inquiry, evidence, decision, prototype, finding, reflection, outcome, credits, or custom.
-- `title`.
-- `body`.
-- `artifacts` — optional media and research objects.
-- `layoutHint` — optional editorial suggestion, never a hard template.
+The first viewport answers:
 
-### Artifact
+- What is this?
+- What position does it take?
+- What did Tanishk build and own?
+- What is the scale and current evidence status?
+- Where can the live work and source be inspected?
 
-The artifact model must support the actual research practice:
+The thesis must be memorable without requiring the rest of the page.
 
-- Image or annotated image.
-- Video or interaction recording.
-- Quote or transcript excerpt.
-- Observation or field note.
-- Interface state or comparison.
-- Diagram.
-- Prototype embed or link.
-- Dataset or corpus excerpt.
-- Citation.
-- Decision record.
-- Participant or evaluator response.
+### Contribution record
 
-Every artifact carries provenance, alternative text or equivalent, caption, and rights/credit where applicable.
+The ownership statement appears before process. It names the systems contribution and lists four concrete responsibilities. “Independent” never stands in for describing the actual work.
 
-## Initial project registry
+### Interactive proof
 
-### Atlas
+Each case has one small, controllable demonstration of its core behavior:
 
-- Form: system / interaction principle stress test.
-- Core question: Can an interaction principle survive transfer across unlike situations, and how should its revisions remain visible?
-- Strong lenses: Memory & Lineage; Evidence & Judgment.
-- Live: https://atlas-slice.vercel.app/
-- Source: https://github.com/tanishkfr/atlas-slice
-- Known qualification: supporting corpus and citation audit should be represented honestly.
+- Remainder: candidate-memory review changes context and lineage.
+- Design or Disaster: changing juror lenses moves the reading on one coordinate system.
+- Pentimento: a reply changes page authority while preserving the withdrawn claim.
+- Invisible Interfaces: before, away, and return expose the delegation contract.
+- Atlas: hold, refine, and fracture produce different rule lineages.
 
-### Invisible Interactions
+These are explanatory models, not substitutes for the live projects. They must use native controls, expose the active state, and remain understandable without animation.
 
-- Form: interactive essay / exhibition.
-- Core question: What should an interface reveal when attention leaves it but delegated work continues?
-- Strong lenses: Visibility & Accountability; Agency & Authority.
-- Live: https://invisible-interfaces.vercel.app/
-- Source: https://github.com/tanishkfr/invisible-interfaces
+### Five chapters
 
-### Design or Disaster
+1. **Context** — the concrete situation and design question.
+2. **Pivot** — the failed or insufficient first direction, the realization, the redesign, and rejected alternatives.
+3. **Interaction** — the complete consequential sequence in plain language.
+4. **System** — input/rule/output anatomy and the decisions that changed behavior.
+5. **Evidence boundary** — built and verified versus not yet proven, followed by the next honest test.
 
-- Form: research-through-design archive.
-- Core question: How do different evaluators turn interface evidence into judgment?
-- Strong lenses: Evidence & Judgment; Visibility & Accountability.
-- Live: https://design-or-disaster.vercel.app/
-- Source: https://github.com/tanishkfr/design-or-disaster
+The chapter labels remain stable for navigation. Each project supplies its own chapter title so the narrative does not read like a duplicated template.
 
-### Pentimento
+## Language rules
 
-- Form: algorithmic autobiography / right-of-reply experiment.
-- Core question: Who has authority to revise a machine’s account of a person without erasing the original interpretation?
-- Strong lenses: Agency & Authority; Memory & Lineage.
-- Live: https://pentimento-lovat.vercel.app/
-- Source: https://github.com/tanishkfr/pentimento
-- Known qualification: participant-study status should not be overstated.
+- Lead with the action or position, not the discipline label.
+- Prefer “I built,” “I removed,” “I chose,” and “this changed” over abstract design-process language.
+- Name the earlier version and why it failed.
+- Distinguish a design decision from its consequence.
+- Describe the product's behavior before describing its meaning.
+- Use research terms only where the source project defines them.
+- Never convert verification into desirability evidence.
+- Never imply a participant study, expert panel, crowd result, deployed agent, or public multi-user system when none exists.
+- AI disclosure remains visible and specific to every project.
 
-### Remainder
+## Evidence vocabulary
 
-- Legacy name/slug: Command Center / `command-center`.
-- Form: local-first creative memory product.
-- Core question: How can creative work preserve its reasoning and history without making memory itself burdensome?
-- Strong lenses: Memory & Lineage; Visibility & Accountability.
-- Live: https://commandcenter-lilac-alpha.vercel.app/
-- Source: https://github.com/tanishkfr/commandcenter
-- Naming rule: use Remainder publicly; retain the legacy route and source URL until the independent project is renamed.
+**Built and verified** means the repository implements the path and contains an appropriate code, build, content, or walkthrough check.
 
-## Initial lens map
+**Not yet proven** means a human, organizational, longitudinal, empirical, or operational claim still requires external evidence.
 
-### Evidence & Judgment
+**The next honest test** names the study or deployment needed to reduce that uncertainty. Where the source defines a threshold, the portfolio states the decision rule instead of promising a favorable result.
 
-Prompt: How does an interface help people inspect evidence and form a judgment without pretending the judgment is neutral?
+## Adding future work
 
-Suggested order:
+A sixth project is not added by copying a page and changing the accent. It needs:
 
-1. Design or Disaster
-2. Atlas
-3. Pentimento
-4. Invisible Interactions
-5. Remainder
+- a one-sentence position;
+- a real pivotal redesign;
+- one consequential interaction that can be explained through a small native-control proof;
+- concrete system anatomy;
+- a truthful evidence boundary;
+- a distinct reason to exist beside the current five.
 
-### Agency & Authority
-
-Prompt: What can a person contest, revise, delegate, or refuse—and who retains the final say?
-
-Suggested order:
-
-1. Pentimento
-2. Invisible Interactions
-3. Remainder
-4. Design or Disaster
-5. Atlas
-
-### Memory & Lineage
-
-Prompt: How can a system preserve change and context without turning history into clutter or authority?
-
-Suggested order:
-
-1. Remainder
-2. Atlas
-3. Pentimento
-4. Invisible Interactions
-5. Design or Disaster
-
-### Visibility & Accountability
-
-Prompt: What must a system reveal so that its behavior can be understood, trusted, and challenged?
-
-Suggested order:
-
-1. Invisible Interactions
-2. Design or Disaster
-3. Remainder
-4. Pentimento
-5. Atlas
-
-## Content rules
-
-- Project claims must be supported by visible artifacts or clearly labeled as intent, hypothesis, or pending research.
-- Status qualifications belong near the relevant claim, not in distant footnotes.
-- The same project may have different descriptions under different lenses; factual details remain consistent.
-- Connection copy must explain a meaningful relationship. “You may also like” is not valid.
-- Placeholder biography, résumé, contact details, and domain are explicitly marked in source data until replaced.
-- No project is excluded because its live deployment or case study is unfinished.
+If those pieces are unavailable, the work belongs in Labs or remains unpublished.

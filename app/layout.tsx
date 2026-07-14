@@ -7,6 +7,7 @@ import "./globals.css";
 import "./polish.css";
 import "./experience.css";
 import "./hiring.css";
+import "./case-studies.css";
 
 async function requestOrigin() {
   const headerList = await headers();
