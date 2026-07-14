@@ -1,24 +1,31 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties } from "react";
+import type { Project } from "../data/portfolio";
 
 const sections = [
-  ["problem", "Problem"],
-  ["shift", "Shift"],
+  ["context", "Context"],
+  ["pivot", "Pivot"],
   ["interaction", "Interaction"],
-  ["decisions", "Decisions"],
-  ["evidence", "Evidence"],
-  ["limits", "Limits"],
+  ["system", "System"],
+  ["proof", "Evidence"],
 ] as const;
 
-export function CaseNavigator({ title }: { title: string }) {
-  const [active, setActive] = useState("problem");
+export function CaseNavigator({
+  title,
+  chapterTitles,
+}: {
+  title: string;
+  chapterTitles: Project["chapterTitles"];
+}) {
+  const [active, setActive] = useState("context");
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const elements = sections
       .map(([id]) => document.getElementById(id))
       .filter((element): element is HTMLElement => Boolean(element));
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -26,8 +33,9 @@ export function CaseNavigator({ title }: { title: string }) {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (visible?.target.id) setActive(visible.target.id);
       },
-      { rootMargin: "-20% 0px -62%", threshold: [0.08, 0.3, 0.6] },
+      { rootMargin: "-18% 0px -64%", threshold: [0.08, 0.28, 0.55] },
     );
+
     elements.forEach((element) => observer.observe(element));
 
     let frame = 0;
@@ -39,11 +47,15 @@ export function CaseNavigator({ title }: { title: string }) {
         if (first && last) {
           const start = first.offsetTop;
           const end = last.offsetTop + last.offsetHeight - window.innerHeight;
-          setProgress(Math.max(0, Math.min((window.scrollY - start) / (end - start), 1)));
+          const distance = Math.max(end - start, 1);
+          setProgress(
+            Math.max(0, Math.min((window.scrollY - start) / distance, 1)),
+          );
         }
         frame = 0;
       });
     };
+
     updateProgress();
     window.addEventListener("scroll", updateProgress, { passive: true });
 
@@ -56,27 +68,29 @@ export function CaseNavigator({ title }: { title: string }) {
 
   return (
     <aside
-      className="case-toc case-toc--interactive"
-      aria-label={title + " case study sections"}
+      className="case-toc case-toc-v2"
+      aria-label={`${title} case study sections`}
       style={{ "--case-progress": progress } as CSSProperties}
     >
       <div className="case-progress-track" aria-hidden="true">
         <span />
       </div>
       <div>
-        <p className="eyebrow">Case study · 6 parts</p>
+        <p className="eyebrow">Case study · 5 chapters</p>
         <nav>
           {sections.map(([id, label], index) => (
             <a
-              href={"#" + id}
+              href={`#${id}`}
               key={id}
               aria-current={active === id ? "location" : undefined}
+              title={chapterTitles[id]}
             >
               <span>{String(index + 1).padStart(2, "0")}</span>
               {label}
             </a>
           ))}
         </nav>
+        <p className="case-toc-note">{chapterTitles[active as keyof typeof chapterTitles]}</p>
       </div>
     </aside>
   );

@@ -1,10 +1,13 @@
 import type { Project } from "./portfolio";
 
+export type ExposurePhase = "surface" | "rule" | "consequence";
+
 export type ProjectSignal = {
   status: string;
   focus: string;
   proof: string;
   interaction: string;
+  exposure: Record<ExposurePhase, string>;
 };
 
 export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
@@ -14,6 +17,11 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     proof: "Reviewed memory candidates, retained lineage, and local-first storage.",
     interaction:
       "A proposed memory does not become project truth until a person reviews it.",
+    exposure: {
+      surface: "A conversation appears to be the product.",
+      rule: "Confidence is not consent. Memory enters context only after review.",
+      consequence: "A reviewed decision retains its source, successor, and path back.",
+    },
   },
   disaster: {
     status: "Live interactive archive",
@@ -21,6 +29,11 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     proof: "Ten cases, five juror models, and keyboard-accessible evidence placement.",
     interaction:
       "Every judgment must point to the exact interface evidence that produced it.",
+    exposure: {
+      surface: "A verdict appears to be the final object.",
+      rule: "Judgment must identify its evidence before comparison begins.",
+      consequence: "Five incompatible readings can disagree without becoming a score.",
+    },
   },
   pentimento: {
     status: "Live research prototype",
@@ -28,6 +41,11 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     proof: "Visible revision, a private local archive, and refusal as a valid output.",
     interaction:
       "The subject can replace a machine interpretation without erasing its history.",
+    exposure: {
+      surface: "A machine-written life appears settled.",
+      rule: "The person represented owns the final account.",
+      consequence: "Human correction leads while the withdrawn claim remains visible.",
+    },
   },
   invisible: {
     status: "Released interactive exhibition",
@@ -35,6 +53,11 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     proof: "Delegated restoration, a local attention ledger, and a bounded receipt.",
     interaction:
       "The system works only while the visitor is absent, then accounts for the result.",
+    exposure: {
+      surface: "Delegated work appears to require watching.",
+      rule: "Progress advances only while attention is elsewhere.",
+      consequence: "Returning produces a receipt, a boundary, and a way to discard the result.",
+    },
   },
   atlas: {
     status: "Live reasoning instrument",
@@ -42,6 +65,11 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     proof: "Rule stress traces with hold, refine, and fracture outcomes.",
     interaction:
       "A provisional principle travels through distant cases and keeps every revision.",
+    exposure: {
+      surface: "A design principle appears to be finished advice.",
+      rule: "A rule earns authority only by surviving transfer.",
+      consequence: "Every hold, refinement, and fracture remains in the reasoning lineage.",
+    },
   },
 };
 

@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { LivingIndex } from "./components/living-index";
-import { isLensId } from "./data/portfolio";
 
 export const metadata: Metadata = {
   title: { absolute: "Tanishk — Interaction Designer" },
   description:
-    "Five interaction design projects about evidence, authority, memory, and accountable system behavior.",
+    "Operate one exposure instrument across five live systems and reveal the rule beneath each interface.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -13,18 +12,11 @@ export const metadata: Metadata = {
     siteName: "Tanishk — Interaction Designer",
     title: "Tanishk — Interaction Designer",
     description:
-      "Five interaction design projects about evidence, authority, memory, and accountable system behavior.",
-    images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
+      "One gesture exposes memory, authority, evidence, delegation, and reasoning across five live interaction-design systems.",
+    images: [{ url: "/og.png", alt: "Tanishk — System Exposure" }],
   },
 };
 
-type HomeProps = {
-  searchParams: Promise<{ lens?: string | string[] }>;
-};
-
-export default async function Home({ searchParams }: HomeProps) {
-  const params = await searchParams;
-  const value = Array.isArray(params.lens) ? params.lens[0] : params.lens;
-  const initialLens = isLensId(value) ? value : "all";
-  return <LivingIndex initialLens={initialLens} />;
+export default function Home() {
+  return <LivingIndex />;
 }

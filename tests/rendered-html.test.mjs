@@ -2,11 +2,7 @@ import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
-async function render(
-  path = "/",
-  accept = "text/html",
-  extraHeaders = {},
-) {
+async function render(path = "/", accept = "text/html", extraHeaders = {}) {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-${path}`);
   const { default: worker } = await import(workerUrl.href);
@@ -21,22 +17,17 @@ async function render(
       },
     }),
     {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
+      ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) },
     },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
+    { waitUntil() {}, passThroughOnException() {} },
   );
 }
 
 function assertCleanEncoding(html) {
-  assert.doesNotMatch(html, /Â|Ã|â€”|â†|âœ|ï¿½/);
+  assert.doesNotMatch(html, /(?:Ã.|Â.|â€|â†|âœ|ï¿½|�)/);
 }
 
-test("server-renders the interactive five-project proof index", async () => {
+test("server-renders one direct-manipulation exposure instrument", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -51,17 +42,26 @@ test("server-renders the interactive five-project proof index", async () => {
     "Invisible Interfaces",
     "Atlas",
     "Remainder",
-    "Inspect the behavior, not just the outcome",
-    "Interaction proof",
+    "Make the hidden rule visible",
+    "Portfolio instrument 01",
+    "Drag the plane",
+    "Surface",
+    "Rule",
+    "Consequence",
+    "The housing is exposing itself",
+    "Pass 01 · expose rule",
+    "Pass 02 · expose consequence",
     "05 live interactive artifacts",
-    "Available for interaction design work",
+    "Available for work",
     "madebytanishk@gmail.com",
   ]) {
     assert.match(html, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
-  assert.ok(html.indexOf("Remainder") < html.indexOf("Invisible Interfaces"));
-  assert.equal((html.match(/class="proof-visual/g) ?? []).length, 5);
+  assert.equal((html.match(/class="instrument-panel instrument-panel--/g) ?? []).length, 5);
+  assert.match(html, /type="range"/);
+  assert.match(html, /aria-label="Exposure presets"/);
   assert.match(html, /rel="canonical" href="https:\/\/portfolio\.test\/"/);
+  assert.doesNotMatch(html, /Reorder by question|Interaction proof|project-row--proof/);
   assert.doesNotMatch(
     html,
     /placeholder|coming soon|pending verified|codex-preview|Your site is taking shape/i,
@@ -69,74 +69,119 @@ test("server-renders the interactive five-project proof index", async () => {
   assertCleanEncoding(html);
 });
 
-test("server-renders all five canonical, evidence-bounded case studies", async () => {
+test("renders meaningful surface, rule, and consequence states for all projects", async () => {
+  const response = await render();
+  const html = await response.text();
+  for (const phrase of [
+    "A conversation appears to be the product",
+    "Confidence is not consent",
+    "A reviewed decision retains its source",
+    "Delegated work appears to require watching",
+    "Progress advances only while attention is elsewhere",
+    "Returning produces a receipt",
+    "A verdict appears to be the final object",
+    "Judgment must identify its evidence",
+    "Five incompatible readings can disagree",
+    "A machine-written life appears settled",
+    "The person represented owns the final account",
+    "Human correction leads",
+    "A design principle appears to be finished advice",
+    "A rule earns authority only by surviving transfer",
+    "Every hold, refinement, and fracture remains",
+  ]) {
+    assert.match(html, new RegExp(phrase));
+  }
+});
+
+test("server-renders five distinct, interactive, evidence-bounded case studies", async () => {
   const cases = [
-    ["design-or-disaster", "A verdict begins with a mark"],
-    ["pentimento", "The subject edits the account"],
-    ["invisible-interfaces", "Leaving is the consequential action"],
-    ["atlas", "A rule travels until it breaks"],
-    ["remainder", "From conversation to reviewed memory"],
+    {
+      slug: "design-or-disaster",
+      thesis: "Critique becomes accountable when you have to point before you pronounce",
+      proof: ["Five fallible readings", "Choose a juror perspective"],
+    },
+    {
+      slug: "pentimento",
+      thesis: "your correction must outrank its sentence",
+      proof: ["Reply to the machine reading", "Correction · sovereign ink"],
+    },
+    {
+      slug: "invisible-interfaces",
+      thesis: "When work leaves the screen, accountability has to return",
+      proof: ["Inspect a delegation phase", "Attention elsewhere"],
+    },
+    {
+      slug: "atlas",
+      thesis: "A design rule is only as useful as the unlike cases",
+      proof: ["Judge the provisional rule", "Starting rule"],
+    },
+    {
+      slug: "remainder",
+      thesis: "Only human judgment can commit one",
+      proof: ["Review candidate memory", "Resulting project memory"],
+    },
   ];
 
-  for (const [slug, uniqueHeading] of cases) {
-    const response = await render(`/work/${slug}`);
+  for (const project of cases) {
+    const response = await render(`/work/${project.slug}`);
     assert.equal(response.status, 200);
     const html = await response.text();
-    assert.match(html, new RegExp(uniqueHeading));
-    for (const section of [
-      "The problem",
-      "What changed",
-      "The interaction",
-      "Design decisions",
-      "Evidence boundary",
-      "Limits and next move",
-      "Open live work",
-      "View source",
-      "My contribution",
-      "Independent · end to end",
+    assert.match(html, new RegExp(project.thesis));
+    for (const phrase of [
+      "Try the core interaction",
+      "What this proves",
+      "What I made accountable",
+      "The question",
+      "What I built",
+      "Context",
+      "Pivot",
+      "Interaction",
+      "System",
+      "Evidence",
+      "What I rejected",
+      "Built and verified",
+      "Not yet proven",
+      "The next honest test",
+      "Experience the project",
+      "Inspect the source",
+      "Independent · concept to production",
+      ...project.proof,
     ]) {
-      assert.match(html, new RegExp(section));
+      assert.match(html, new RegExp(phrase));
     }
+    assert.match(html, /aria-pressed="true"/);
     assert.match(
       html,
-      new RegExp(
-        `rel="canonical" href="https:\\/\\/portfolio\\.test\\/work\\/${slug}"`,
-      ),
+      new RegExp(`rel="canonical" href="https:\\/\\/portfolio\\.test\\/work\\/${project.slug}"`),
     );
     assertCleanEncoding(html);
   }
 });
 
 test("keeps dynamic project navigation payloads valid", async () => {
-  const slugs = [
+  for (const slug of [
     "design-or-disaster",
     "pentimento",
     "invisible-interfaces",
     "atlas",
     "remainder",
-  ];
-
-  for (const slug of slugs) {
+  ]) {
     const response = await render(
       `/work/${slug}.rsc?from=all&_rsc`,
       "text/x-component",
       { RSC: "1" },
     );
     assert.equal(response.status, 200);
-    assert.match(
-      response.headers.get("content-type") ?? "",
-      /^text\/x-component\b/i,
-    );
+    assert.match(response.headers.get("content-type") ?? "", /^text\/x-component\b/i);
     assert.ok((await response.text()).length > 1000);
   }
 });
 
 test("preserves legacy project URLs with canonical redirects", async () => {
-  const aliases = [
+  for (const [legacySlug, expectedPath] of [
     ["command-center", "/work/remainder"],
     ["invisible-interactions", "/work/invisible-interfaces"],
-  ];
-  for (const [legacySlug, expectedPath] of aliases) {
+  ]) {
     const response = await render(`/work/${legacySlug}`);
     assert.ok([301, 302, 307, 308].includes(response.status));
     assert.equal(new URL(response.headers.get("location")).pathname, expectedPath);
@@ -155,19 +200,13 @@ test("publishes authored identity, hiring signals, contact, and no premature res
   assert.match(aboutHtml, /architect, design, write, and implement/i);
   assert.match(aboutHtml, /Five live interactive artifacts/);
   assert.match(aboutHtml, /What I bring to a team/);
-  assert.match(
-    aboutHtml,
-    /rel="canonical" href="https:\/\/portfolio\.test\/about"/,
-  );
+  assert.match(aboutHtml, /rel="canonical" href="https:\/\/portfolio\.test\/about"/);
 
   assert.equal(contactResponse.status, 200);
   const contactHtml = await contactResponse.text();
   assert.match(contactHtml, /behavior is the hard part/i);
   assert.match(contactHtml, /@madebytanishk/);
-  assert.match(
-    contactHtml,
-    /rel="canonical" href="https:\/\/portfolio\.test\/contact"/,
-  );
+  assert.match(contactHtml, /rel="canonical" href="https:\/\/portfolio\.test\/contact"/);
 
   assert.ok([301, 302, 307, 308].includes(resumeResponse.status));
   assert.equal(new URL(resumeResponse.headers.get("location")).pathname, "/about");
@@ -179,10 +218,7 @@ test("returns a non-indexable authored 404", async () => {
   assert.equal(response.status, 404);
   const html = await response.text();
   assert.match(html, /Outside the index/);
-  assert.match(
-    html,
-    /(?:name="robots" content="noindex|content="noindex" name="robots")/,
-  );
+  assert.match(html, /(?:name="robots" content="noindex|content="noindex" name="robots")/);
   assertCleanEncoding(html);
 });
 
@@ -193,29 +229,26 @@ test("exposes crawl metadata on the request origin", async () => {
   ]);
 
   assert.equal(sitemapResponse.status, 200);
-  const sitemap = await sitemapResponse.text();
-  assert.match(sitemap, /https:\/\/portfolio\.test\/work\/remainder/);
-  assert.match(sitemap, /https:\/\/portfolio\.test\/contact/);
-
+  assert.match(await sitemapResponse.text(), /https:\/\/portfolio\.test\/work\/remainder/);
   assert.equal(robotsResponse.status, 200);
-  assert.match(
-    await robotsResponse.text(),
-    /Sitemap: https:\/\/portfolio\.test\/sitemap\.xml/,
-  );
+  assert.match(await robotsResponse.text(), /Sitemap: https:\/\/portfolio\.test\/sitemap\.xml/);
 });
 
-test("keeps navigation, motion, URL, asset, and accessibility foundations explicit", async () => {
+test("keeps housing and case-study interaction contracts explicit", async () => {
   const [
     data,
     index,
     css,
     polish,
     experience,
+    caseCss,
     hiring,
     layout,
     header,
     motion,
     projectPage,
+    artifacts,
+    navigator,
     manifest,
     packageJson,
   ] = await Promise.all([
@@ -224,50 +257,71 @@ test("keeps navigation, motion, URL, asset, and accessibility foundations explic
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/polish.css", import.meta.url), "utf8"),
     readFile(new URL("../app/experience.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/case-studies.css", import.meta.url), "utf8"),
     readFile(new URL("../app/hiring.css", import.meta.url), "utf8"),
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/site-header.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/motion-director.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/work/[slug]/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/case-artifacts.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/case-navigator.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/manifest.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
 
   assert.match(data, /legacySlugs: \["command-center"\]/);
-  for (const lens of [
-    "evidence-judgment",
-    "agency-authority",
-    "memory-lineage",
-    "visibility-accountability",
-  ]) {
-    assert.match(data, new RegExp(`"${lens}"`));
-  }
-  assert.match(index, /history\.pushState/);
-  assert.match(index, /startViewTransition/);
+  assert.match(data, /responsibilities: \[/);
+  assert.match(data, /rejectedPaths: \[/);
+  assert.match(data, /systemLayers: \[/);
+  assert.match(data, /nextTest: \{/);
+  assert.match(index, /type="range"/);
+  assert.match(index, /aria-valuetext/);
+  assert.match(index, /data-phase=\{phase\}/);
+  assert.match(index, /data-pass=\{depth > 50/);
+  assert.match(index, /--rule-reveal/);
+  assert.match(index, /--consequence-reveal/);
   assert.match(index, /aria-live="polite"/);
-  assert.match(index, /aria-controls="project-list"/);
-  assert.match(index, /<a href=\{projectHref\}>/);
-  assert.doesNotMatch(index, /<Link href=\{projectHref\}>/);
+  assert.match(index, /<a\s+className=\{`instrument-panel/);
+  assert.doesNotMatch(index, /<Link[^>]+projectHref/);
+  assert.doesNotMatch(index, /history\.pushState|startViewTransition|project-row--proof/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /forced-colors:\s*active/);
   assert.match(polish, /prefers-contrast:\s*more/);
   assert.match(experience, /@view-transition/);
   assert.match(experience, /navigation:\s*auto/);
-  assert.match(experience, /project-row--proof/);
-  assert.match(motion, /pointer:\s*fine/);
+  assert.match(experience, /instrument-field/);
+  assert.match(experience, /clip-path: inset\(0 calc\(100% - var\(--rule-reveal\)\)/);
+  assert.match(experience, /exposure-plane--consequence/);
+  assert.match(experience, /--signal:\s*#d8ff4f/);
+  assert.doesNotMatch(experience, /radial-gradient|orbit-turn|pointer-x|project-row--proof/);
+  assert.match(caseCss, /case-title-lockup/);
+  assert.match(caseCss, /case-instrument/);
+  assert.match(caseCss, /evidence-ledger/);
+  assert.match(caseCss, /prefers-reduced-motion:\s*reduce/);
+  assert.match(caseCss, /forced-colors:\s*active/);
   assert.match(hiring, /about-facts/);
   assert.match(motion, /IntersectionObserver/);
+  assert.doesNotMatch(motion, /pointermove|--pointer-x|page-progress/);
   assert.match(projectPage, /CaseNavigator/);
+  assert.match(projectPage, /Built and verified/);
+  assert.match(projectPage, /Not yet proven/);
+  assert.match(artifacts, /"use client"/);
+  assert.match(artifacts, /aria-pressed=\{value === option.value\}/);
+  assert.match(artifacts, /Review candidate memory/);
+  assert.match(artifacts, /Choose a juror perspective/);
+  assert.match(artifacts, /Reply to the machine reading/);
+  assert.match(artifacts, /Inspect a delegation phase/);
+  assert.match(artifacts, /Judge the provisional rule/);
+  assert.match(navigator, /Case study · 5 chapters/);
   assert.match(layout, /className="skip-link"/);
   assert.match(layout, /MotionDirector/);
-  assert.doesNotMatch(layout, /alternates:\s*{\s*canonical:\s*"\/"/);
-  assert.doesNotMatch(header, /header-actions/);
+  assert.match(layout, /case-studies\.css/);
+  assert.match(header, /System exposure/);
+  assert.match(header, /Instrument/);
   assert.match(manifest, /display: "browser"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
 
   await access(new URL("../public/projects/atlas/atlas.png", import.meta.url));
-  await access(
-    new URL("../public/projects/invisible-interfaces/return.png", import.meta.url),
-  );
+  await access(new URL("../public/projects/invisible-interfaces/return.png", import.meta.url));
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
 });
