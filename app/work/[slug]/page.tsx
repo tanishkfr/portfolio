@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { CaseArtifact } from "../../components/case-artifacts";
 import { CaseNavigator } from "../../components/case-navigator";
 import { DayneroPreview } from "../../components/daynero-preview";
+import { ProjectSignature } from "../../components/project-signature";
 import {
   getProject,
   isLensId,
@@ -109,7 +110,7 @@ export default async function ProjectPage({
         <span>{signal.focus}</span>
       </div>
 
-      <header className="case-hero">
+      <header className="case-hero case-hero--world">
         <div className="case-hero-meta">
           <p className="eyebrow">Case {String(projects.indexOf(project) + 1).padStart(2, "0")} · {project.form}</p>
           <p>{project.year} · {project.status}</p>
@@ -121,6 +122,8 @@ export default async function ProjectPage({
           </h1>
           <p className="case-thesis">{project.thesis}</p>
         </div>
+
+        <ProjectSignature artifact={project.artifact} focus={signal.focus} />
 
         <div className="case-hero-brief">
           <div>

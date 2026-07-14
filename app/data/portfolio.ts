@@ -123,7 +123,7 @@ export const projects: Project[] = [
     scale: "10 cases · 5 jurors · 2 experience paths",
     liveUrl: "https://design-or-disaster.vercel.app/",
     sourceUrl: "https://github.com/tanishkfr/design-or-disaster",
-    accent: "#d6523c",
+    accent: "#ef4a35",
     artifact: "disaster",
     lensRelations: {
       "evidence-judgment":
@@ -270,7 +270,7 @@ export const projects: Project[] = [
     scale: "2 archive modes · 3 reply paths · complete revision lineage",
     liveUrl: "https://pentimento-lovat.vercel.app/",
     sourceUrl: "https://github.com/tanishkfr/pentimento",
-    accent: "#a93228",
+    accent: "#8b2f63",
     artifact: "pentimento",
     lensRelations: {
       "evidence-judgment":
@@ -418,7 +418,7 @@ export const projects: Project[] = [
     scale: "5 scenes · 1 repeated task · causal absence loop",
     liveUrl: "https://invisible-interfaces.vercel.app/",
     sourceUrl: "https://github.com/tanishkfr/invisible-interfaces",
-    accent: "#c98222",
+    accent: "#d79a29",
     artifact: "invisible",
     lensRelations: {
       "evidence-judgment":
@@ -565,7 +565,7 @@ export const projects: Project[] = [
     scale: "1 rule test · 3 pressure cases · 33 supporting examples",
     liveUrl: "https://atlas-slice.vercel.app/",
     sourceUrl: "https://github.com/tanishkfr/atlas-slice",
-    accent: "#39766f",
+    accent: "#1d756d",
     artifact: "atlas",
     lensRelations: {
       "evidence-judgment":
@@ -712,7 +712,7 @@ export const projects: Project[] = [
     tools: ["Product design", "Interaction design", "Web design", "Implementation"],
     scale: "Financial app · public website · active startup",
     liveUrl: "https://daynero.com/",
-    accent: "#9ed329",
+    accent: "#b7e34b",
     artifact: "daynero",
     lensRelations: {
       "evidence-judgment":

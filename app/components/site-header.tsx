@@ -4,18 +4,30 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navigation = [
-  { href: "/#work", label: "Work", match: "/" },
+  { href: "/#work", label: "Score", match: "/" },
   { href: "/about", label: "About", match: "/about" },
   { href: "/contact", label: "Contact", match: "/contact" },
 ];
 
+const caseNames: Record<string, string> = {
+  daynero: "Daynero",
+  "design-or-disaster": "Design or Disaster",
+  pentimento: "Pentimento",
+  "invisible-interfaces": "Invisible Interfaces",
+  atlas: "Atlas",
+};
+
 export function SiteHeader() {
   const pathname = usePathname();
+  const caseSlug = pathname.startsWith("/work/") ? pathname.split("/").filter(Boolean).at(-1) : null;
+  const caseName = caseSlug ? caseNames[caseSlug] : null;
 
   return (
-    <header className="site-header site-header--instrument">
+    <header className="site-header site-header--instrument score-site-header">
       <Link className="site-identity" href="/" aria-label="Tanishk, interaction designer">
-        <span className="identity-mark" aria-hidden="true">T</span>
+        <span className="identity-score" aria-hidden="true">
+          <i /><i /><i /><b />
+        </span>
         <span>
           Tanishk
           <small>Interaction Designer</small>
@@ -23,8 +35,8 @@ export function SiteHeader() {
       </Link>
 
       <p className="site-mode" aria-hidden="true">
-        <span>Selected work</span>
-        Bangalore · 2026
+        <span>{caseName ? "Case record" : "Interaction score"}</span>
+        {caseName ?? "Five voices · one control"}
       </p>
 
       <nav aria-label="Primary navigation">
