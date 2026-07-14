@@ -30,17 +30,17 @@ const capabilities = [
   {
     number: "01",
     title: "Interaction systems",
-    body: "I define states, transitions, authority boundaries, recovery paths, and the rules that make complex behavior feel coherent.",
+    body: "I define states, transitions, authority boundaries, recovery paths, and the rules that make complex behavior coherent.",
   },
   {
     number: "02",
-    title: "Research-through-design",
-    body: "I use working artifacts to turn abstract questions into interactions that can be inspected, challenged, and eventually studied.",
+    title: "Product thinking",
+    body: "I move between the product premise, the interface people touch, and the implementation decisions that make it real.",
   },
   {
     number: "03",
-    title: "End-to-end prototyping",
-    body: "I carry concepts through writing, visual direction, implementation, accessibility, testing, and deployment instead of stopping at a static handoff.",
+    title: "Research through making",
+    body: "I use working artifacts to turn abstract questions into interactions that can be inspected, challenged, and tested.",
   },
 ];
 
@@ -49,32 +49,30 @@ export default function AboutPage() {
     <main id="main-content" className="about-shell about-shell--alive">
       <header className="about-intro" data-reveal>
         <p className="eyebrow">About · Bangalore · Available for work</p>
-        <h1>I work on the behavior underneath the interface.</h1>
+        <h1>I design the rules people feel.</h1>
         <div className="about-lede">
           <p>
-            I am Tanishk, an interaction designer based in Bangalore. I design
-            products and research instruments for moments when people need to
-            understand a system, contest its interpretation, recover its
-            history, or decide how much authority to give it.
+            I am Tanishk, an interaction designer based in Bangalore. I work
+            on products where the difficult part is not the screen—it is what
+            the system decides, remembers, explains, or lets a person change.
           </p>
           <p>
-            My recent independent work moves across creative tools,
-            algorithmic autobiography, design criticism, delegated computing,
-            and reasoning systems. The subjects change; the recurring concern
-            is whether an interface makes its own terms visible.
+            My current commercial work is Daynero, an AI-native financial app.
+            Alongside it, I build independent investigations into criticism,
+            algorithmic autobiography, delegated computing, and reasoning.
           </p>
         </div>
         <dl className="about-facts" aria-label="Practice facts">
           <div>
-            <dt>Practice</dt>
-            <dd>Independent interaction design</dd>
+            <dt>Current product</dt>
+            <dd>Daynero · app and public website</dd>
           </div>
           <div>
-            <dt>Proof</dt>
-            <dd>Five live interactive artifacts</dd>
+            <dt>Independent work</dt>
+            <dd>Four working interaction studies</dd>
           </div>
           <div>
-            <dt>Ownership</dt>
+            <dt>Range</dt>
             <dd>Architecture, design, writing, and implementation</dd>
           </div>
           <div>
@@ -86,7 +84,7 @@ export default function AboutPage() {
 
       <section className="capability-section" aria-labelledby="capability-title" data-reveal>
         <p className="eyebrow">What I bring to a team</p>
-        <h2 id="capability-title">From system premise to working behavior.</h2>
+        <h2 id="capability-title">From product premise to working behavior.</h2>
         <div className="capability-grid">
           {capabilities.map((capability) => (
             <article key={capability.number} data-reveal>
@@ -106,51 +104,37 @@ export default function AboutPage() {
         <div className="principle-list">
           <article data-reveal>
             <h3>Make the hidden decision inspectable.</h3>
-            <p>
-              If a system remembers, interprets, recommends, or acts, the
-              interface should reveal enough of that process for a person to
-              understand and challenge it.
-            </p>
+            <p>If a system interprets, recommends, remembers, or acts, the interface should reveal enough for a person to understand and challenge it.</p>
           </article>
           <article data-reveal>
-            <h3>Preserve change without pretending the past vanished.</h3>
-            <p>
-              Revision, correction, and undo are not edge cases. They are how
-              interfaces acknowledge that judgment changes over time.
-            </p>
+            <h3>Design the response, not just the result.</h3>
+            <p>Correction, refusal, recovery, and undo are central interactions whenever a system carries authority.</p>
           </article>
           <article data-reveal>
-            <h3>Build the argument into the interaction.</h3>
-            <p>
-              A project should not need a wall of explanatory copy to make its
-              central idea felt. The behavior itself has to carry the claim.
-            </p>
+            <h3>Build the argument into the behavior.</h3>
+            <p>A project should make its central idea felt through interaction before a case study has to explain it.</p>
           </article>
           <article data-reveal>
-            <h3>Keep claims inside the evidence boundary.</h3>
-            <p>
-              A working prototype proves that an interaction can exist. It does
-              not automatically prove desirability, trust, learning, or impact.
-            </p>
+            <h3>Keep claims inside the evidence.</h3>
+            <p>A working product proves what exists. Human outcomes require human evidence, and the writing should never blur that line.</p>
           </article>
         </div>
       </section>
 
       <section className="authorship-section" aria-labelledby="authorship-title" data-reveal>
-        <p className="eyebrow">Authorship and tools</p>
+        <p className="eyebrow">Authorship and context</p>
         <h2 id="authorship-title">I architect, design, write, and implement.</h2>
         <div>
           <p>
-            The work in this portfolio was independently conceived and built by
-            me over the past several months. Across the projects I was the
-            primary architect, ideator, interaction designer, writer, visual
-            director, and implementer.
+            For Daynero, I designed and built the app experience and public
+            website in a commercial startup context. Its full case study will
+            name the team, constraints, and outcomes that can be shared.
           </p>
           <p>
-            AI assisted ideation, critique, source discovery, and code
-            iteration. Final concept selection, research framing, design
-            decisions, editing, implementation decisions, and authorship are
-            mine. Each case study states its specific evidence and limits.
+            The four research artifacts were self-directed and independently
+            built by me. AI assisted ideation, critique, source discovery, and
+            code iteration; final concept selection, design decisions, editing,
+            implementation decisions, and authorship are mine.
           </p>
         </div>
       </section>
@@ -160,13 +144,8 @@ export default function AboutPage() {
         <h2 id="about-contact-title">Based in Bangalore and available for work.</h2>
         <div>
           <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com ↗</a>
-          <a
-            href="https://twitter.com/madebytanishk"
-            target="_blank"
-            rel="noreferrer"
-          >
-            @madebytanishk ↗
-            <span className="sr-only"> (opens in a new tab)</span>
+          <a href="https://twitter.com/madebytanishk" target="_blank" rel="noreferrer">
+            @madebytanishk ↗<span className="sr-only"> (opens in a new tab)</span>
           </a>
           <Link href="/#work">See selected work →</Link>
         </div>

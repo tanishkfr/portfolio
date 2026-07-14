@@ -54,6 +54,7 @@ export type Project = {
   question: string;
   oneLine: string;
   status: string;
+  availability?: "published" | "preview";
   year: string;
   context: string;
   ownership: string;
@@ -62,9 +63,9 @@ export type Project = {
   tools: string[];
   scale: string;
   liveUrl: string;
-  sourceUrl: string;
+  sourceUrl?: string;
   accent: string;
-  artifact: "remainder" | "disaster" | "pentimento" | "invisible" | "atlas";
+  artifact: "daynero" | "disaster" | "pentimento" | "invisible" | "atlas";
   lensRelations: Record<InterpretiveLens, string>;
   relatedSlugs: string[];
   chapterTitles: {
@@ -281,7 +282,7 @@ export const projects: Project[] = [
       "visibility-accountability":
         "Keeps the withdrawn machine reading inspectable after human revision.",
     },
-    relatedSlugs: ["atlas", "remainder"],
+    relatedSlugs: ["atlas", "daynero"],
     chapterTitles: {
       context: "Generated memories speak with borrowed certainty.",
       pivot: "The movie product was only the costume.",
@@ -429,7 +430,7 @@ export const projects: Project[] = [
       "visibility-accountability":
         "Makes background behavior accountable through a legible record on return.",
     },
-    relatedSlugs: ["design-or-disaster", "remainder"],
+    relatedSlugs: ["design-or-disaster", "daynero"],
     chapterTitles: {
       context: "Convenience moved judgment out of sight.",
       pivot: "Watching the progress bar was the wrong interaction.",
@@ -687,152 +688,86 @@ export const projects: Project[] = [
       "AI assisted ideation, critique, source discovery, and code iteration. Final concept selection, scenario design, design decisions, editing, implementation, and authorship are Tanishk's.",
   },
   {
-    id: "remainder",
-    slug: "remainder",
-    legacySlugs: ["command-center"],
-    title: "Remainder",
-    form: "Creative memory system",
-    thesis: "Model confidence may propose a memory. Only human judgment can commit one.",
+    id: "daynero",
+    slug: "daynero",
+    title: "Daynero",
+    form: "AI-native financial product",
+    thesis: "Money guidance works better when it responds to daily behavior, not just a monthly reset.",
     question:
-      "How can creative work keep the consequences of conversation without letting AI decide what becomes memory?",
+      "How might financial guidance respond to daily behavior, goals, and changing context?",
     oneLine:
-      "A local-first workspace where conversations produce traceable memory candidates that stay inert until the maker dismisses them, keeps them alongside context, or explicitly changes direction.",
-    status: "Working personal product · study pending",
+      "Daynero is a behavioral-finance app with an adaptive daily budget, goal-aware guidance, a real-time Meridian Score, and personalized spending insights.",
+    status: "Commercial product · case study in preparation",
+    availability: "preview",
     year: "2026",
-    context: "Self-directed product and systems investigation",
-    ownership: "Independent · concept to production",
-    role: "Product architect, interaction designer, systems designer, and engineer",
+    context: "Startup product work",
+    ownership: "App and public website · commercial team context",
+    role: "Product designer and builder across the app and public website",
     responsibilities: [
-      "Defined the product thesis and creative-memory domain model",
-      "Designed the conversation-to-memory review handoff",
-      "Built the UI, API, storage, search, export, and MCP surfaces",
-      "Authored the verification and participant-research protocols",
+      "Designed the app's product experience",
+      "Designed and built the public website",
+      "Developed the interaction and visual systems across both surfaces",
+      "Preparing the full case study with an explicit evidence boundary",
     ],
-    tools: ["React", "TypeScript", "Express", "Vite", "Vercel Blob", "MCP"],
-    scale: "1 trust model across UI, API, storage, search, export, and MCP",
-    liveUrl: "https://commandcenter-lilac-alpha.vercel.app/",
-    sourceUrl: "https://github.com/tanishkfr/commandcenter",
-    accent: "#625aa8",
-    artifact: "remainder",
+    tools: ["Product design", "Interaction design", "Web design", "Implementation"],
+    scale: "Financial app · public website · active startup",
+    liveUrl: "https://daynero.com/",
+    accent: "#9ed329",
+    artifact: "daynero",
     lensRelations: {
       "evidence-judgment":
-        "Preserves the material behind creative decisions so later judgment is not forced to rely on recollection.",
+        "Turns spending patterns into timely guidance without presenting a static monthly budget as the whole picture.",
       "agency-authority":
-        "Separates model confidence from human consent before memory can steer future work.",
+        "Uses personal goals and behavior to shape guidance while keeping the person's priorities central.",
       "memory-lineage":
-        "Turns fragmented conversation into durable project memory with retrievable provenance and change history.",
+        "Connects current behavior with longer-term financial direction through an evolving daily view.",
       "visibility-accountability":
-        "Makes what the system remembers, where it came from, and what it replaced inspectable to the maker.",
+        "Makes overlooked patterns and the relationship between present behavior and future wealth more legible.",
     },
-    relatedSlugs: ["atlas", "pentimento"],
+    relatedSlugs: ["pentimento", "atlas"],
     chapterTitles: {
-      context: "A transcript remembers sequence. A project needs consequences.",
-      pivot: "I deleted the dashboard and made conversation the product.",
-      interaction: "Capture is a review—not a save animation.",
-      system: "The same trust model reaches every surface.",
-      proof: "The system works; the product hypothesis is still open.",
+      context: "The commercial context is still being documented.",
+      pivot: "The product evolution will be published with its constraints.",
+      interaction: "Daily guidance responds to behavior and goals.",
+      system: "The public model connects daily action to longer-term direction.",
+      proof: "The product surface is live; the case evidence is not yet published.",
     },
     problem: {
-      title: "Creative work now happens through conversation, but the reasoning that changes direction stays buried inside it.",
+      title: "Traditional monthly budgets can feel detached from the decisions happening today.",
       paragraphs: [
-        "A transcript preserves sequence. Generic notes preserve fragments. Automatic summaries preserve whatever the model considered important. None of them reliably preserve what the maker reviewed and decided should continue shaping the project.",
-        "Remainder tests a sharper proposition: project memory should contain the reviewed consequences of conversation, with enough provenance to challenge, reverse, or reinterpret them later.",
+        "Daynero's public position is that financial guidance should respond to daily behavior and spending patterns rather than only report against a monthly plan.",
+        "The full project context, constraints, and evidence will be added when they can be documented responsibly.",
       ],
     },
     pivot: {
-      title: "Activity visibility gave way to continuity and judgment.",
-      before:
-        "The first implementation was a Command Center of project cards, inboxes, metrics, and dashboard modules. It made activity visible but did not help a project remember why its direction had changed.",
-      realization:
-        "The durable object was not the dashboard or the model. It was the project—and the reviewed reasoning that should survive both sessions and providers.",
-      after:
-        "I removed the old runtime, made conversation the primary surface, and inserted a deliberate boundary between extraction and memory: conversation creates candidates; human judgment decides what becomes context; history preserves what changed.",
+      title: "Case-study documentation in progress.",
+      before: "The earlier product direction is not being published as a placeholder claim.",
+      realization: "The case needs the real team context and constraints before it can explain the product evolution honestly.",
+      after: "The current portfolio shows only the public product model and Tanishk's stated contribution.",
     },
-    rejectedPaths: [
-      {
-        title: "Keep every summary",
-        reason: "Automatic acceptance would let model confidence silently steer later work.",
-      },
-      {
-        title: "Overwrite conflict",
-        reason: "Replacing old direction would destroy the evidence needed to understand or reverse a change.",
-      },
-      {
-        title: "Make AI the product persona",
-        reason: "The project must remain usable when a provider fails, changes, or disappears.",
-      },
-    ],
+    rejectedPaths: [],
     interactionIntro:
-      "Capture stages a handoff from conversation to reviewed project memory. Nothing enters active context because a model sounded certain or because the user clicked a celebratory save button.",
-    interactionSteps: [
-      "Continue a conversation inside a durable project rather than a disposable chat session.",
-      "Capture when something changes the work. Extracted items appear as pending candidates and remain outside active context.",
-      "Dismiss a candidate, keep it alongside current memory, or use it to explicitly change direction.",
-      "When direction changes, inspect the source messages, current memory, earlier direction, and successor relationship.",
-      "Recover the reasoning later through project memory, history, grouped search, export, or authenticated MCP access.",
-      "Undo review, deletion, or supersession decisions and restore the earlier state without losing provenance.",
-    ],
-    systemLayers: [
-      {
-        label: "Propose",
-        title: "Conversation creates candidates",
-        body: "The extractor can identify decisions, constraints, questions, and insights, but every item remains pending and inert.",
-      },
-      {
-        label: "Judge",
-        title: "A person decides what remains",
-        body: "Dismiss, keep alongside, and change direction have different domain consequences. Confidence never substitutes for consent.",
-      },
-      {
-        label: "Remember",
-        title: "Context keeps its lineage",
-        body: "Accepted memory can steer later conversation; superseded memory becomes resolved history and can be restored through undo or successor removal.",
-      },
-    ],
-    decisions: [
-      {
-        title: "Confidence is not consent",
-        choice: "Exclude pending and resolved items from active AI context.",
-        consequence: "No extracted candidate can silently influence a later response before review.",
-      },
-      {
-        title: "Change without erasure",
-        choice: "Model supersession as a reversible relationship instead of replacement.",
-        consequence: "Earlier direction remains inspectable and returns when the successor is removed or the decision is undone.",
-      },
-      {
-        title: "The project outlives the model",
-        choice: "Provide deterministic local collaboration and extraction fallbacks.",
-        consequence: "Core conversation and memory workflows remain usable without an AI key or provider availability.",
-      },
-      {
-        title: "One trust model everywhere",
-        choice: "Share the same domain semantics across UI, REST, storage, search, export, history, and MCP.",
-        consequence: "A memory cannot mean one thing on screen and something looser in another interface.",
-      },
-    ],
+      "The public product centers an adaptive daily budget, goals, a Meridian Score, and personalized insights.",
+    interactionSteps: [],
+    systemLayers: [],
+    decisions: [],
     demonstrated: [
-      "Complete project, conversation, capture, review, memory, lineage, search, import, export, reset, delete, restore, and undo workflows.",
-      "Message-level provenance plus explicit, constrained, and reversible supersession.",
-      "Atomic local writes, conditional private Blob replacement, fallback AI, migrations, and authenticated MCP mutations.",
-      "Type checks, tests, production bundles, and isolated smoke tests covering interaction and domain invariants.",
+      "A live public website describing the current product position.",
+      "Tanishk designed and built the app experience and public website.",
     ],
     limits: [
-      "The implementation demonstrates its trust model but does not prove that reviewed memory improves creative outcomes.",
-      "No participant quote, usability metric, or desirability claim exists because the written study has not been run.",
-      "The deployed model is private and personal; public multi-user use would require authentication and authorization.",
+      "The full team, timeline, constraints, process, and outcomes are not yet published.",
+      "No private product detail or unverified outcome is presented in this preview.",
     ],
     nextTest: {
-      title: "Run the two-session study with 8–12 creative practitioners.",
-      body:
-        "Participants will use a real project across a week, return after at least 48 hours, recover a decision and rationale, explain changed direction from lineage, and compare the experience with their existing notes.",
-      success:
-        "If more than 2 of 10 people mistake supersession for deletion, redesign lineage. If fewer than 70% recover rationale unaided, redesign provenance. If review costs more than it returns, reduce extraction volume.",
+      title: "Publish the commercial case with the correct context.",
+      body: "Document the team, timeline, product evolution, interaction decisions, implementation trade-offs, and publishable evidence.",
+      success: "The final case must make Tanishk's contribution precise without erasing collaborators or inventing outcomes.",
     },
     contribution:
-      "I designed and implemented one trust model where conversation proposes, judgment commits, and project memory preserves the consequences with provenance.",
+      "Tanishk designed and built the app experience and public website; the detailed contribution record is being prepared.",
     disclosure:
-      "AI assisted ideation, critique, source discovery, and code iteration. Final product architecture, concept selection, domain model, interaction decisions, editing, implementation, and authorship are Tanishk's.",
+      "This preview uses Daynero's public product language and Tanishk's stated contribution. The full evidence record is pending.",
   },
 ];
 
@@ -842,7 +777,7 @@ export const lenses: LensDefinition[] = [
     shortLabel: "All work",
     label: "All work",
     prompt:
-      "Five independent products and research instruments about understanding, contesting, and remembering what systems do.",
+      "One commercial product and four independent investigations into what systems decide, explain, and let people change.",
     order: projects.map((project) => project.slug),
   },
   {
@@ -851,7 +786,7 @@ export const lenses: LensDefinition[] = [
     label: "Evidence & Judgment",
     prompt:
       "How can an interface help people inspect evidence and form a judgment without pretending that judgment is neutral?",
-    order: ["design-or-disaster", "atlas", "pentimento", "invisible-interfaces", "remainder"],
+    order: ["design-or-disaster", "atlas", "pentimento", "invisible-interfaces", "daynero"],
   },
   {
     id: "agency-authority",
@@ -859,7 +794,7 @@ export const lenses: LensDefinition[] = [
     label: "Agency & Authority",
     prompt:
       "What can a person contest, revise, delegate, or refuse, and who retains the final say?",
-    order: ["pentimento", "invisible-interfaces", "remainder", "design-or-disaster", "atlas"],
+    order: ["pentimento", "invisible-interfaces", "daynero", "design-or-disaster", "atlas"],
   },
   {
     id: "memory-lineage",
@@ -867,7 +802,7 @@ export const lenses: LensDefinition[] = [
     label: "Memory & Lineage",
     prompt:
       "How can a system preserve change and context without turning history into clutter or authority?",
-    order: ["remainder", "atlas", "pentimento", "invisible-interfaces", "design-or-disaster"],
+    order: ["daynero", "atlas", "pentimento", "invisible-interfaces", "design-or-disaster"],
   },
   {
     id: "visibility-accountability",
@@ -875,7 +810,7 @@ export const lenses: LensDefinition[] = [
     label: "Visibility & Accountability",
     prompt:
       "What must a system reveal so its behavior can be understood, trusted, and challenged?",
-    order: ["invisible-interfaces", "design-or-disaster", "remainder", "pentimento", "atlas"],
+    order: ["invisible-interfaces", "design-or-disaster", "daynero", "pentimento", "atlas"],
   },
 ];
 

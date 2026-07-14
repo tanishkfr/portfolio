@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { CaseArtifact } from "../../components/case-artifacts";
 import { CaseNavigator } from "../../components/case-navigator";
+import { DayneroPreview } from "../../components/daynero-preview";
 import {
   getProject,
   isLensId,
@@ -64,10 +65,12 @@ function ProjectActions({ project }: { project: Project }) {
         Experience the project <span aria-hidden="true">↗</span>
         <small>New tab</small>
       </a>
-      <a href={project.sourceUrl} target="_blank" rel="noreferrer">
-        Inspect the source <span aria-hidden="true">↗</span>
-        <span className="sr-only"> (opens in a new tab)</span>
-      </a>
+      {project.sourceUrl ? (
+        <a href={project.sourceUrl} target="_blank" rel="noreferrer">
+          Inspect the source <span aria-hidden="true">↗</span>
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      ) : null}
     </div>
   );
 }
@@ -86,6 +89,11 @@ export default async function ProjectPage({
   const fromLens = isLensId(fromValue) ? fromValue : "all";
   const signal = projectSignals[project.artifact];
   const returnHref = fromLens === "all" ? "/#work" : `/?lens=${fromLens}#work`;
+
+  if (project.availability === "preview") {
+    return <DayneroPreview project={project} returnHref={returnHref} />;
+  }
+
   const related = project.relatedSlugs
     .map((relatedSlug) => getProject(relatedSlug))
     .filter((candidate): candidate is Project => Boolean(candidate));
@@ -97,7 +105,7 @@ export default async function ProjectPage({
       style={{ "--project-accent": project.accent } as React.CSSProperties}
     >
       <div className="project-return case-return">
-        <a href={returnHref}>← Return to the instrument</a>
+        <a href={returnHref}>← Return to selected work</a>
         <span>{signal.focus}</span>
       </div>
 

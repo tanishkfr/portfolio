@@ -1,25 +1,25 @@
 # Tanishk — Interaction Design Portfolio
 
-The independent portfolio housing for five working interaction-design projects:
+Portfolio housing for one commercial product and four working interaction-design investigations:
 
+- Daynero — commercial product preview
 - Design or Disaster
 - Pentimento
 - Invisible Interfaces
 - Atlas
-- Remainder
 
-The housing is a **Living Index**, not a simulated desktop. Every project is visible immediately; four optional lenses re-order and reframe the same body of work through recurring questions about evidence, authority, memory, and accountability.
+The home uses one shared control to compare what each product shows, what governs it, and what changes for the person. It is a direct work index, not a simulated desktop or a conventional project-card feed.
 
 ## What ships here
 
-- A complete five-project index with shareable lens state and browser-history support.
-- Evidence-backed case studies covering problem, conceptual shift, interaction model, design decisions, demonstrated behavior, limits, and next research step.
-- Signature project artifacts using imagery and interaction evidence from the source repositories.
-- Authored About and Contact pages, with `/resume` intentionally redirected to About until a résumé is added.
-- Dynamic metadata, manifest, sitemap, robots policy, responsive layouts, semantic structure, visible focus, and reduced-motion support.
-- Direct links to each live artifact and its public source repository.
+- A five-project index with a synchronized interface / logic / consequence lens.
+- An honest Daynero preview using only the public product position and Tanishk's stated contribution.
+- Four evidence-bounded case studies with a small interactive proof, project story, design decisions, limits, and next test.
+- Authored About and Contact pages; `/resume` redirects to About until a résumé exists.
+- Metadata, sitemap, robots policy, semantic structure, visible focus, responsive layouts, reduced motion, and forced-colors support.
+- Separate build paths for Cloudflare/Sites (`pnpm build`) and Vercel's standard Next.js runtime (`pnpm build:vercel`).
 
-Projects remain separate repositories and deployments. This repository owns the portfolio housing and the editorial case-study layer only.
+The independent projects remain separate repositories and deployments. This repository owns the portfolio housing and editorial case-study layer.
 
 ## Local development
 
@@ -34,13 +34,12 @@ pnpm dev
 pnpm typecheck
 pnpm lint
 pnpm test
+pnpm build:vercel
 ```
-
-`pnpm test` performs a production build and exercises the rendered index, a complete project case study, About, Contact, sitemap, robots, project aliases, launch copy, and accessibility foundations.
 
 ## Architecture notes
 
 - [Interaction architecture](docs/interaction-architecture.md)
 - [Content model](docs/content-model.md)
 
-All work was independently conceived and built by Tanishk. AI assisted ideation, critique, source discovery, and code iteration; final concept selection, research framing, design decisions, editing, implementation decisions, and authorship remain Tanishk's.
+Daynero is commercial work in a team context; the detailed case is being documented. The other four investigations were independently conceived and built by Tanishk. AI assisted ideation, critique, source discovery, and code iteration; final concept selection, design decisions, editing, implementation decisions, and authorship remain Tanishk's.

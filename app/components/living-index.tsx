@@ -8,52 +8,46 @@ import {
   projectSignals,
   type ExposurePhase,
 } from "../data/project-signals";
-import { ProjectProof } from "./project-proof";
 
-type InstrumentStyle = CSSProperties & {
-  "--depth-position": string;
-  "--rule-reveal": string;
-  "--consequence-reveal": string;
-  "--consequence-opacity": number;
-};
+type HomeStyle = CSSProperties & { "--control-position": string };
 
 const phases: Array<{
   id: ExposurePhase;
-  depth: number;
+  value: number;
   number: string;
   label: string;
+  cardLabel: string;
   description: string;
-  shell: string;
 }> = [
   {
     id: "surface",
-    depth: 0,
+    value: 0,
     number: "01",
-    label: "Surface",
-    description: "What each interface appears to be before its governing decision is exposed.",
-    shell: "Five artifacts occupy one field. The portfolio is legible, but its terms are still hidden.",
+    label: "Interface",
+    cardLabel: "What you meet",
+    description: "The product as a person first encounters it.",
   },
   {
     id: "rule",
-    depth: 50,
+    value: 50,
     number: "02",
-    label: "Rule",
-    description: "The hidden decision that determines memory, authority, evidence, or accountability.",
-    shell: "One axis now synchronizes five unlike systems. The housing is explaining its own organizing rule.",
+    label: "Logic",
+    cardLabel: "What governs it",
+    description: "The decision shaping the behavior underneath.",
   },
   {
     id: "consequence",
-    depth: 100,
+    value: 100,
     number: "03",
     label: "Consequence",
-    description: "What a person can inspect, contest, revise, or recover once that rule becomes visible.",
-    shell: "The instrument has demonstrated the practice before a case study opens: surface, rule, consequence.",
+    cardLabel: "What it changes",
+    description: "The agency, evidence, or understanding that follows.",
   },
 ];
 
-function phaseFor(depth: number): ExposurePhase {
-  if (depth < 25) return "surface";
-  if (depth < 75) return "rule";
+function phaseFor(value: number): ExposurePhase {
+  if (value < 34) return "surface";
+  if (value < 67) return "rule";
   return "consequence";
 }
 
@@ -64,205 +58,174 @@ function orderedProjects() {
 }
 
 export function LivingIndex() {
-  const [depth, setDepth] = useState(0);
-  const phase = phaseFor(depth);
+  const [position, setPosition] = useState(0);
+  const phase = phaseFor(position);
   const activePhase = phases.find((item) => item.id === phase) ?? phases[0];
   const ordered = useMemo(() => orderedProjects(), []);
-  const ruleReveal = Math.min(depth * 2, 100);
-  const consequenceReveal = Math.max((depth - 50) * 2, 0);
-  const consequenceOpacity = consequenceReveal / 100;
-  const style: InstrumentStyle = {
-    "--depth-position": `${depth}%`,
-    "--rule-reveal": `${ruleReveal}%`,
-    "--consequence-reveal": `${consequenceReveal}%`,
-    "--consequence-opacity": consequenceOpacity,
-  };
+  const style: HomeStyle = { "--control-position": `${position}%` };
 
-  function moveTo(nextDepth: number) {
-    setDepth(Math.max(0, Math.min(nextDepth, 100)));
+  function moveTo(value: number) {
+    setPosition(Math.max(0, Math.min(value, 100)));
   }
 
   return (
-    <main id="main-content" className="instrument-shell">
+    <main id="main-content" className="portfolio-home">
+      <section className="home-opening" aria-labelledby="home-title" data-scroll-reveal>
+        <div className="home-opening-copy">
+          <p className="eyebrow">Interaction designer · Bangalore</p>
+          <h1 id="home-title">I design how intelligent systems explain themselves.</h1>
+          <p className="home-deck">
+            Product work and self-directed experiments about money, agency,
+            evidence, and the decisions hidden underneath an interface.
+          </p>
+        </div>
+
+        <div className="home-opening-meta">
+          <dl aria-label="Portfolio summary">
+            <div>
+              <dt>Current work</dt>
+              <dd>Daynero · AI-native finance</dd>
+            </div>
+            <div>
+              <dt>Independent work</dt>
+              <dd>04 working investigations</dd>
+            </div>
+            <div>
+              <dt>Status</dt>
+              <dd><span className="availability-dot" aria-hidden="true" />Available for work</dd>
+            </div>
+          </dl>
+          <a className="home-jump" href="#work">
+            Explore the work <span aria-hidden="true">↓</span>
+          </a>
+        </div>
+      </section>
+
       <section
-        className="exposure-stage"
+        className="work-lens"
         id="work"
-        aria-labelledby="instrument-title"
+        aria-labelledby="work-title"
         data-phase={phase}
-        data-pass={depth > 50 ? "consequence" : "rule"}
         style={style}
       >
-        <header className="instrument-intro">
+        <header className="work-lens-heading" data-scroll-reveal>
           <div>
-            <p className="eyebrow">Portfolio instrument 01 · System exposure</p>
-            <h1 id="instrument-title">Make the hidden rule visible.</h1>
+            <p className="eyebrow">Selected work · One shared lens</p>
+            <h2 id="work-title">See the interface. Then see the decision.</h2>
           </div>
-          <div className="instrument-intro-copy">
-            <p>
-              Drag one control through five live systems. At the same depth, each one exposes
-              what each interface remembers, permits, contests, or must account for.
-            </p>
-            <dl aria-label="Practice summary">
-              <div>
-                <dt>Designer</dt>
-                <dd>Tanishk · Bangalore</dd>
-              </div>
-              <div>
-                <dt>Ownership</dt>
-                <dd>Concept · design · writing · code</dd>
-              </div>
-              <div>
-                <dt>Status</dt>
-                <dd><span className="availability-dot" aria-hidden="true" />Available for work</dd>
-              </div>
-            </dl>
-          </div>
+          <p>
+            Use one control to move every project from its visible surface to
+            the rule underneath and the consequence that rule creates.
+          </p>
         </header>
 
-        <div className="instrument-console">
-          <div className="console-readout">
-            <span>Active layer · {activePhase.number}</span>
-            <strong>{activePhase.label}</strong>
+        <div className="work-lens-control" data-scroll-reveal>
+          <div className="lens-phase-buttons" role="group" aria-label="Choose what to inspect">
+            {phases.map((item) => (
+              <button
+                type="button"
+                key={item.id}
+                aria-pressed={phase === item.id}
+                onClick={() => moveTo(item.value)}
+              >
+                <span>{item.number}</span>
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <label className="lens-range">
+            <span className="sr-only">Move between interface, logic, and consequence</span>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={position}
+              onChange={(event) => moveTo(Number(event.currentTarget.value))}
+              aria-valuetext={`${activePhase.label}: ${activePhase.description}`}
+            />
+            <span className="lens-track" aria-hidden="true"><i /></span>
+          </label>
+
+          <div className="lens-readout" aria-live="polite" aria-atomic="true">
+            <span>{activePhase.number} · {activePhase.label}</span>
             <p>{activePhase.description}</p>
-          </div>
-
-          <div className="console-control">
-            <div className="phase-controls" aria-label="Exposure presets">
-              {phases.map((item) => (
-                <button
-                  type="button"
-                  key={item.id}
-                  aria-pressed={phase === item.id}
-                  onClick={() => moveTo(item.depth)}
-                >
-                  <span>{item.number}</span>
-                  {item.label}
-                </button>
-              ))}
-            </div>
-            <label className="exposure-range">
-              <span className="sr-only">Expose the systems from surface to consequence</span>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                step="1"
-                value={depth}
-                onChange={(event) => moveTo(Number(event.currentTarget.value))}
-                aria-valuetext={`${activePhase.label}: ${activePhase.description}`}
-              />
-              <span className="range-track" aria-hidden="true"><i /></span>
-              <span className="range-instruction" aria-hidden="true">
-                {depth === 0 ? "Drag the plane →" : `${depth}% exposed`}
-              </span>
-            </label>
-          </div>
-
-          <div className="shell-readout">
-            <span>The housing is exposing itself</span>
-            <p>{activePhase.shell}</p>
           </div>
         </div>
 
-        <div className="instrument-field" aria-label="Five projects viewed through one exposure control">
-          <div className="exposure-plane exposure-plane--rule" aria-hidden="true">
-            <span>Pass 01 · expose rule</span>
-          </div>
-          <div className="exposure-plane exposure-plane--consequence" aria-hidden="true">
-            <span>Pass 02 · expose consequence</span>
-          </div>
-
+        <div className="work-grid" aria-label="Five selected projects">
           {ordered.map((project, index) => {
             const signal = projectSignals[project.artifact];
-            const projectHref = `/work/${project.slug}?from=all`;
+            const isPreview = project.availability === "preview";
 
             return (
-              <a
-                className={`instrument-panel instrument-panel--${project.artifact}`}
-                href={projectHref}
+              <Link
+                className={`work-card work-card--${project.artifact}`}
+                href={`/work/${project.slug}?from=all`}
                 key={project.id}
-                aria-label={`Open ${project.title}: ${signal.exposure[phase]}`}
+                data-scroll-reveal
                 style={
                   {
                     "--project-accent": project.accent,
+                    "--reveal-order": index,
                     viewTransitionName: `project-${project.id}`,
                   } as CSSProperties
                 }
               >
-                <div className="instrument-panel-head">
+                <div className="work-card-topline">
                   <span>{String(index + 1).padStart(2, "0")}</span>
-                  <span>{signal.status}</span>
+                  <span>{isPreview ? "Case study soon" : signal.status}</span>
                 </div>
 
-                <div className="instrument-panel-body">
-                  <div className="panel-layer panel-layer--surface">
-                    <span>Visible surface</span>
-                    <strong>{signal.exposure.surface}</strong>
-                    <small>{project.form}</small>
-                  </div>
-                  <div className="panel-layer panel-layer--rule">
-                    <span>Governing rule</span>
-                    <strong>{signal.exposure.rule}</strong>
-                    <small>{signal.focus}</small>
-                  </div>
-                  <div className="panel-layer panel-layer--consequence">
-                    <ProjectProof project={project} />
-                    <p>{signal.exposure.consequence}</p>
-                  </div>
+                <div className="work-card-signal" key={`${project.id}-${phase}`}>
+                  <span>{activePhase.cardLabel}</span>
+                  <p>{signal.exposure[phase]}</p>
                 </div>
 
-                <div className="instrument-panel-foot">
+                <div className="work-card-footer">
                   <div>
                     <span>{project.form}</span>
-                    <strong>{project.title}</strong>
+                    <h3>{project.title}</h3>
                   </div>
-                  <span className="panel-open">Open case ↗</span>
+                  <span className="work-card-open">
+                    {isPreview ? "Open preview" : "Open case"} <i aria-hidden="true">↗</i>
+                  </span>
                 </div>
-              </a>
+              </Link>
             );
           })}
         </div>
-
-        <p className="sr-only" aria-live="polite" aria-atomic="true">
-          {activePhase.label} layer. {activePhase.description}
-        </p>
       </section>
 
-      <section className="practice-record" aria-labelledby="record-title">
-        <div>
-          <p className="eyebrow">Practice record · 2026</p>
-          <h2 id="record-title">
-            Five independently built systems. One recurring decision: who gets
-            to see, contest, and revise what the system does.
-          </h2>
-        </div>
-        <dl>
-          <div>
-            <dt>Proof</dt>
-            <dd>05 live interactive artifacts</dd>
-          </div>
-          <div>
-            <dt>Practice</dt>
-            <dd>Products · research · systems</dd>
-          </div>
-          <div>
-            <dt>Authorship</dt>
-            <dd>Independent · end to end</dd>
-          </div>
-          <div>
-            <dt>Position</dt>
-            <dd>Interaction Designer · Bangalore</dd>
-          </div>
-        </dl>
-        <Link href="/about">Read the practice record →</Link>
-      </section>
+      <section className="home-method" aria-labelledby="method-title" data-scroll-reveal>
+        <header>
+          <p className="eyebrow">How I work</p>
+          <h2 id="method-title">The interaction carries the argument.</h2>
+          <p>
+            I work from behavior outward: define the rule, build the state
+            changes, and make the edge cases part of the experience.
+          </p>
+        </header>
 
-      <section className="commission" aria-labelledby="commission-title">
-        <p className="eyebrow">Next system · Available for work</p>
-        <h2 id="commission-title">If behavior is the hard part, that is the brief.</h2>
-        <div>
-          <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com ↗</a>
-          <Link href="/contact">Contact details →</Link>
+        <ol className="method-list">
+          <li>
+            <span>01</span>
+            <strong>Make the hidden decision visible.</strong>
+          </li>
+          <li>
+            <span>02</span>
+            <strong>Give people a meaningful way to respond.</strong>
+          </li>
+          <li>
+            <span>03</span>
+            <strong>Keep the claim inside the evidence.</strong>
+          </li>
+        </ol>
+
+        <div className="home-invitation">
+          <span>Available for interaction-design roles and collaborations.</span>
+          <a href="mailto:madebytanishk@gmail.com">Start a conversation <i aria-hidden="true">↗</i></a>
         </div>
       </section>
     </main>
