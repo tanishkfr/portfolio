@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Keep project imagery provider-agnostic. Vinext's optimizer requires
+  // Cloudflare bindings that are intentionally absent in local and Vercel builds.
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

@@ -12,7 +12,9 @@
     "start": "vinext start",
     "test": "vinext build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:vercel": "next build",
+    "start:vercel": "next start"
   },
   "dependencies": {
     "next": "16.2.6",

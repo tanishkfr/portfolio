@@ -2,98 +2,52 @@
 
 Status: current production contract
 
-The portfolio has two storytelling layers:
+The portfolio has three storytelling depths:
 
-1. The home instrument exposes the surface, governing rule, and consequence of all five projects at the same depth.
-2. A case-study route explains how one of those systems was framed, changed, built, and bounded by evidence.
-
-The home is comparative. The case studies are specific. Neither should repeat the other.
+1. The opening states Tanishk's practice and current context.
+2. The shared home lens compares interface, logic, and consequence across all five projects.
+3. A project route either presents a complete evidence-bounded case or an explicitly limited preview.
 
 ## Project record
 
-`app/data/portfolio.ts` is the canonical authored content source. Every project record includes:
+`app/data/portfolio.ts` is the canonical content source. A published case includes identity, fast understanding, ownership, responsibilities, story, interaction sequence, system anatomy, design decisions, evidence limits, relationships, and authorship disclosure.
 
-- identity: title, form, year, context, status, canonical and legacy URLs;
-- fast understanding: thesis, question, one-line description, scale, ownership, role, responsibilities, tools;
-- story: problem, pivotal redesign, rejected approaches, interaction sequence;
-- system: three system layers plus decisions with an explicit choice and consequence;
-- evidence: what is implemented and verified, what remains unproven, and the next test with a decision rule;
-- portfolio relationships: interpretive-lens statements and two related projects;
-- authorship: contribution and AI disclosure.
+`availability: "preview"` changes the contract. A preview may contain enough data to appear in the index and describe the public product surface, but the route must not render placeholder process fields as a finished case.
 
-No metric, participant quote, outcome, or research finding may enter this file unless the source project contains the supporting evidence.
+No metric, participant quote, outcome, or research finding may enter the data unless the source project contains supporting evidence.
 
-## Case-study reading order
+## Daynero preview
 
-Every case route uses the same reviewer-oriented spine without forcing the projects into the same visual or interaction behavior.
+The Daynero route may state:
 
-### Threshold
+- the public positioning on daynero.com;
+- the adaptive daily budget, goals, Meridian Score, and personalized insights described there;
+- that Tanishk designed and built the app experience and public website;
+- that the full commercial case is being documented.
 
-The first viewport answers:
+It may not infer team structure, timeline, internal constraints, research results, adoption, business impact, or product outcomes.
 
-- What is this?
-- What position does it take?
-- What did Tanishk build and own?
-- What is the scale and current evidence status?
-- Where can the live work and source be inspected?
+## Published case reading order
 
-The thesis must be memorable without requiring the rest of the page.
-
-### Contribution record
-
-The ownership statement appears before process. It names the systems contribution and lists four concrete responsibilities. “Independent” never stands in for describing the actual work.
-
-### Interactive proof
-
-Each case has one small, controllable demonstration of its core behavior:
-
-- Remainder: candidate-memory review changes context and lineage.
-- Design or Disaster: changing juror lenses moves the reading on one coordinate system.
-- Pentimento: a reply changes page authority while preserving the withdrawn claim.
-- Invisible Interfaces: before, away, and return expose the delegation contract.
-- Atlas: hold, refine, and fracture produce different rule lineages.
-
-These are explanatory models, not substitutes for the live projects. They must use native controls, expose the active state, and remain understandable without animation.
-
-### Five chapters
-
-1. **Context** — the concrete situation and design question.
-2. **Pivot** — the failed or insufficient first direction, the realization, the redesign, and rejected alternatives.
-3. **Interaction** — the complete consequential sequence in plain language.
-4. **System** — input/rule/output anatomy and the decisions that changed behavior.
-5. **Evidence boundary** — built and verified versus not yet proven, followed by the next honest test.
-
-The chapter labels remain stable for navigation. Each project supplies its own chapter title so the narrative does not read like a duplicated template.
+1. **Threshold** — what this is, the position it takes, ownership, role, scale, live work, and source.
+2. **Contribution** — what Tanishk made and four concrete responsibilities.
+3. **Interactive proof** — one small native-control demonstration of the core behavior.
+4. **Context** — the situation and design question.
+5. **Pivot** — the earlier direction, realization, redesign, and rejected alternatives.
+6. **Interaction** — the complete consequential sequence.
+7. **System** — input, rule, output, and design decisions.
+8. **Evidence boundary** — built and verified, not yet proven, and the next honest test.
 
 ## Language rules
 
-- Lead with the action or position, not the discipline label.
-- Prefer “I built,” “I removed,” “I chose,” and “this changed” over abstract design-process language.
-- Name the earlier version and why it failed.
-- Distinguish a design decision from its consequence.
-- Describe the product's behavior before describing its meaning.
-- Use research terms only where the source project defines them.
-- Never convert verification into desirability evidence.
-- Never imply a participant study, expert panel, crowd result, deployed agent, or public multi-user system when none exists.
-- AI disclosure remains visible and specific to every project.
+- Lead with the action or position, not a discipline label.
+- Prefer concrete verbs over language about “systems exposing themselves.”
+- Describe behavior before interpretation.
+- Name ownership without erasing collaborators.
+- Keep commercial previews visibly different from published independent cases.
+- Never convert verification into desirability or impact evidence.
+- Keep AI disclosure specific and visible.
 
-## Evidence vocabulary
+## Adding work
 
-**Built and verified** means the repository implements the path and contains an appropriate code, build, content, or walkthrough check.
-
-**Not yet proven** means a human, organizational, longitudinal, empirical, or operational claim still requires external evidence.
-
-**The next honest test** names the study or deployment needed to reduce that uncertainty. Where the source defines a threshold, the portfolio states the decision rule instead of promising a favorable result.
-
-## Adding future work
-
-A sixth project is not added by copying a page and changing the accent. It needs:
-
-- a one-sentence position;
-- a real pivotal redesign;
-- one consequential interaction that can be explained through a small native-control proof;
-- concrete system anatomy;
-- a truthful evidence boundary;
-- a distinct reason to exist beside the current five.
-
-If those pieces are unavailable, the work belongs in Labs or remains unpublished.
+A future published case needs a clear position, a real product evolution, one consequential interaction, concrete system anatomy, and a truthful evidence boundary. If those are unavailable, publish a deliberately limited preview or leave the work out of the index.

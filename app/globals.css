@@ -738,25 +738,11 @@ img {
   font-size: 0.7rem;
 }
 
-.remainder-flow {
-  display: grid;
-  grid-template-columns: 0.88fr 1.12fr 0.88fr;
-  gap: 1px;
-  min-height: 32rem;
-  background: var(--line);
-}
 
-.remainder-flow > section {
-  padding: clamp(1.5rem, 3vw, 3.5rem);
-  background: var(--paper-raised);
-}
 
-.remainder-conversation,
-.remainder-candidate,
-.remainder-lineage {
-  display: flex;
-  flex-direction: column;
-}
+
+
+
 
 .message {
   max-width: 90%;
@@ -778,23 +764,11 @@ img {
   background: var(--paper);
 }
 
-.remainder-candidate {
-  justify-content: center;
-}
 
-.remainder-candidate strong {
-  max-width: 18ch;
-  margin-top: 1.4rem;
-  font-family: var(--display);
-  font-size: clamp(1.6rem, 2.8vw, 3rem);
-  font-weight: 400;
-  line-height: 1.05;
-}
 
-.remainder-candidate > p:not(.artifact-label) {
-  color: var(--muted);
-  font-size: 0.68rem;
-}
+
+
+
 
 .candidate-actions {
   display: flex;
@@ -816,24 +790,11 @@ img {
   color: var(--paper-raised);
 }
 
-.remainder-lineage > div:not(.lineage-connector) {
-  display: grid;
-  gap: 0.65rem;
-  margin-top: 2.25rem;
-}
 
-.remainder-lineage strong {
-  font-family: var(--display);
-  font-size: 1.35rem;
-  font-weight: 400;
-  line-height: 1.2;
-}
 
-.remainder-lineage p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.75rem;
-}
+
+
+
 
 .lineage-state {
   width: fit-content;
@@ -1569,14 +1530,9 @@ img {
     min-height: calc(100svh - 7.5rem);
   }
 
-  .remainder-flow {
-    grid-template-columns: 1fr 1fr;
-  }
 
-  .remainder-lineage {
-    grid-column: 1 / -1;
-    min-height: 18rem;
-  }
+
+
 
   .stress-trace {
     position: relative;
@@ -1784,13 +1740,9 @@ img {
     gap: 0.25rem;
   }
 
-  .remainder-flow {
-    grid-template-columns: 1fr;
-  }
 
-  .remainder-lineage {
-    grid-column: auto;
-  }
+
+
 
   .evidence-map {
     min-height: 27rem;

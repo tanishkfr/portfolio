@@ -11,24 +11,22 @@ export type ProjectSignal = {
 };
 
 export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
-  remainder: {
-    status: "Live personal product",
-    focus: "Product architecture · trust boundaries",
-    proof: "Reviewed memory candidates, retained lineage, and local-first storage.",
-    interaction:
-      "A proposed memory does not become project truth until a person reviews it.",
+  daynero: {
+    status: "Commercial product · case study soon",
+    focus: "Adaptive finance · daily behavior",
+    proof: "Live public product surface; detailed case study in preparation.",
+    interaction: "Daily guidance adapts to behavior, goals, and spending patterns.",
     exposure: {
-      surface: "A conversation appears to be the product.",
-      rule: "Confidence is not consent. Memory enters context only after review.",
-      consequence: "A reviewed decision retains its source, successor, and path back.",
+      surface: "A daily money companion, not a monthly spreadsheet.",
+      rule: "Guidance adjusts to behavior and goals as the day changes.",
+      consequence: "Money decisions become immediate, personal, and easier to act on.",
     },
   },
   disaster: {
     status: "Live interactive archive",
     focus: "Criticism · spatial evidence",
     proof: "Ten cases, five juror models, and keyboard-accessible evidence placement.",
-    interaction:
-      "Every judgment must point to the exact interface evidence that produced it.",
+    interaction: "Every judgment must point to the exact interface evidence that produced it.",
     exposure: {
       surface: "A verdict appears to be the final object.",
       rule: "Judgment must identify its evidence before comparison begins.",
@@ -39,8 +37,7 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     status: "Live research prototype",
     focus: "AI authority · right of reply",
     proof: "Visible revision, a private local archive, and refusal as a valid output.",
-    interaction:
-      "The subject can replace a machine interpretation without erasing its history.",
+    interaction: "The subject can replace a machine interpretation without erasing its history.",
     exposure: {
       surface: "A machine-written life appears settled.",
       rule: "The person represented owns the final account.",
@@ -51,8 +48,7 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     status: "Released interactive exhibition",
     focus: "Delegation · accountable return",
     proof: "Delegated restoration, a local attention ledger, and a bounded receipt.",
-    interaction:
-      "The system works only while the visitor is absent, then accounts for the result.",
+    interaction: "The system works only while the visitor is absent, then accounts for the result.",
     exposure: {
       surface: "Delegated work appears to require watching.",
       rule: "Progress advances only while attention is elsewhere.",
@@ -63,8 +59,7 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     status: "Live reasoning instrument",
     focus: "Reasoning · visible lineage",
     proof: "Rule stress traces with hold, refine, and fracture outcomes.",
-    interaction:
-      "A provisional principle travels through distant cases and keeps every revision.",
+    interaction: "A provisional principle travels through distant cases and keeps every revision.",
     exposure: {
       surface: "A design principle appears to be finished advice.",
       rule: "A rule earns authority only by surviving transfer.",
@@ -74,7 +69,7 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
 };
 
 export const flagshipOrder = [
-  "remainder",
+  "daynero",
   "invisible-interfaces",
   "design-or-disaster",
   "pentimento",

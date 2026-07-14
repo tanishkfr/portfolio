@@ -57,79 +57,6 @@ function ChoiceGroup({
   );
 }
 
-const remainderChoices = [
-  { value: "dismiss", label: "Dismiss" },
-  { value: "alongside", label: "Keep alongside" },
-  { value: "direction", label: "Change direction" },
-] as const;
-
-function RemainderArtifact() {
-  const [choice, setChoice] = useState("direction");
-  const outcomes = {
-    dismiss: {
-      status: "Candidate dismissed · context unchanged",
-      current: "Automatic summaries should become project context.",
-      prior: "Candidate excluded from memory",
-      note: "The extracted sentence cannot steer a later response.",
-    },
-    alongside: {
-      status: "Candidate accepted · both directions remain active",
-      current: "Reviewed consequences become durable context.",
-      prior: "Earlier direction remains current alongside it",
-      note: "Related ideas coexist without pretending one replaced the other.",
-    },
-    direction: {
-      status: "Direction changed · earlier memory retained",
-      current: "Reviewed consequences become the durable context.",
-      prior: "Automatic summaries should become project context.",
-      note: "The earlier direction is resolved, linked, and reversible—not deleted.",
-    },
-  };
-  const outcome = outcomes[choice as keyof typeof outcomes];
-
-  return (
-    <InstrumentFrame
-      project="remainder"
-      status={outcome.status}
-      caption="The three review choices produce different domain states. Model confidence never commits memory by itself."
-    >
-      <div className="remainder-demo">
-        <section className="demo-source">
-          <p className="case-label">Source conversation</p>
-          <blockquote>“The reasoning cannot disappear when the project changes direction.”</blockquote>
-          <span>2 cited messages · high extraction confidence</span>
-        </section>
-
-        <section className="demo-candidate">
-          <p className="case-label">Pending candidate</p>
-          <h3>Preserve reviewed decisions, not transcript volume.</h3>
-          <p>Confidence proposes this memory. Your choice decides whether it can enter project context.</p>
-          <ChoiceGroup
-            label="Review candidate memory"
-            value={choice}
-            options={remainderChoices}
-            onChange={setChoice}
-          />
-        </section>
-
-        <section className="demo-outcome" data-choice={choice}>
-          <p className="case-label">Resulting project memory</p>
-          <div>
-            <span>Current</span>
-            <strong>{outcome.current}</strong>
-          </div>
-          <div className="demo-lineage" aria-hidden="true" />
-          <div>
-            <span>{choice === "direction" ? "Earlier direction" : "Review consequence"}</span>
-            <p>{outcome.prior}</p>
-          </div>
-          <small>{outcome.note}</small>
-        </section>
-      </div>
-    </InstrumentFrame>
-  );
-}
-
 const jurorLenses = [
   { value: "hierarchy", label: "Hierarchy", note: "The motion competes with the primary decision." },
   { value: "access", label: "Access", note: "The control's meaning disappears without precise vision." },
@@ -164,6 +91,7 @@ function DisasterArtifact() {
         </aside>
         <div className="demo-evidence-map" data-lens={lens}>
           <Image
+            unoptimized
             src="/projects/design-or-disaster/case-010.jpg"
             width={680}
             height={510}
@@ -279,6 +207,7 @@ function InvisibleArtifact() {
         <div className="invisible-demo-visual">
           <div className="invisible-frame invisible-frame--before">
             <Image
+              unoptimized
               src="/projects/invisible-interfaces/terminal.png"
               width={1440}
               height={1000}
@@ -294,6 +223,7 @@ function InvisibleArtifact() {
           </div>
           <div className="invisible-frame invisible-frame--return">
             <Image
+              unoptimized
               src="/projects/invisible-interfaces/return.png"
               width={1440}
               height={1000}
@@ -365,8 +295,8 @@ function AtlasArtifact() {
 
 export function CaseArtifact({ project }: { project: Project }) {
   switch (project.artifact) {
-    case "remainder":
-      return <RemainderArtifact />;
+    case "daynero":
+      return null;
     case "disaster":
       return <DisasterArtifact />;
     case "pentimento":

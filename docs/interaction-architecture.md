@@ -4,119 +4,60 @@ Status: current production contract
 
 ## Core idea
 
-The portfolio is a system-exposure instrument.
+The portfolio is a calm index with one memorable comparison tool. A shared control moves all five projects through three layers:
 
-One control cuts through five designed systems at the same depth. The first pass reveals each governing rule. The second reveals the consequence of that rule. The housing demonstrates Tanishk's practice before a reviewer opens any project.
+- **Interface** — what the person first encounters.
+- **Logic** — the decision shaping the behavior underneath.
+- **Consequence** — what changes for the person.
 
-The memorable behavior is:
-
-> One gesture cuts five interfaces open, first revealing the rule and then the consequence.
+The interaction makes Tanishk's way of thinking visible without turning navigation into a puzzle. Every project remains a normal link and every phase remains understandable without animation.
 
 ## Home contract
 
-The home has three states:
+The first viewport answers who Tanishk is, what kind of work he does, where he is based, and whether he is available. The selected-work section then introduces the shared control and five stable project cards. Each card renders one current statement rather than stacking clipped layers, so dragging the control cannot produce overlapping or unreadable states.
 
-- **Surface** — what the interface appears to be doing.
-- **Rule** — the condition that actually governs behavior.
-- **Consequence** — what the person can inspect, contest, recover, or hold accountable.
+The home avoids a carousel, simulated operating system, drag physics, pointer glow, card tilt, ambient spectacle, and abstract language about the housing itself. Motion communicates entry, state change, progress, and affordance.
 
-All five projects respond to the same range input. The projects remain native anchors so the signature behavior never weakens navigation reliability.
+## Project routes
 
-The home does not use a project-card list, filters, a carousel, drag physics, simulated windows, pointer glow, card tilt, or ambient motion as its identity. Movement must explain the two cutaway passes.
+Four independent projects use the full case-study structure:
 
-## Entering a case
+1. title, position, question, ownership, live work, and source;
+2. contribution and concrete responsibilities;
+3. one controllable proof of the signature interaction;
+4. five chapters covering context, pivot, interaction, system, and evidence.
 
-A project route moves from comparison to depth in four steps:
+Daynero uses a commercial preview until the team, timeline, constraints, product evolution, and publishable outcomes can be documented. The preview may state the public product model and Tanishk's contribution; it may not manufacture a process narrative.
 
-1. **Threshold** — title, thesis, question, built intervention, status, scope, role, stack, live work, and source.
-2. **Authorship** — a contribution statement and concrete responsibilities.
-3. **Interactive proof** — one controllable model of the project's signature behavior.
-4. **Case record** — five navigable chapters covering context, pivot, interaction, system, and evidence.
+## Project-specific proofs
 
-The project does not begin with a long background essay. The reviewer encounters the position, ownership, and interaction proof before the detailed narrative.
+- **Design or Disaster** — switch between fallible perspectives on one evidence surface.
+- **Pentimento** — let a reading stand, reframe it, or strike it while preserving the withdrawn claim.
+- **Invisible Interfaces** — inspect the authority boundary before leaving, while away, and on return.
+- **Atlas** — hold, refine, or fracture a provisional rule while preserving its lineage.
 
-## Project-specific interaction proofs
+## Motion and resilience
 
-### Remainder
+- Entry reveals run once as content enters the viewport.
+- The home cards use a short mask-and-rise transition when the shared phase changes.
+- Hover motion confirms clickability; it never carries required information.
+- A thin header rail reports page progress.
+- Reduced-motion preferences remove travel and delay while preserving every state.
+- Content is visible before JavaScript adds the motion-ready class, so a script failure cannot hide the page.
 
-The reviewer can dismiss a candidate, keep it alongside current context, or change direction. The visible outcome changes from exclusion, to coexistence, to retained lineage. The proof demonstrates that confidence proposes while judgment commits.
+## Images and deployment
 
-### Design or Disaster
+Project images are served as original static assets. Next's optimizer is disabled because the Cloudflare image binding does not exist in local or Vercel environments. The worker also returns a safe direct-asset redirect if an optimization request reaches an environment without those bindings.
 
-The reviewer can switch between five fallible perspectives. The interpretation and annotation position change while the evidence surface and visitor mark remain stable. The proof demonstrates incompatible perception without an answer key.
+The repository keeps two explicit production paths:
 
-### Pentimento
+- `pnpm build` — vinext / Cloudflare output used by Sites.
+- `pnpm build:vercel` — standard Next.js output used by Vercel.
 
-The reviewer can let a reading stand, reframe it, or strike it. A strike recedes the machine sentence and promotes the subject's correction without deleting the earlier claim. The proof demonstrates a transfer of authorship authority.
+## Accessibility and release checks
 
-### Invisible Interfaces
-
-The reviewer can inspect the authority boundary before leaving, the bounded movement while away, and the receipt on return. The case-study model explicitly states that the live exhibition—not the model—uses real page visibility as its causal input.
-
-### Atlas
-
-The reviewer can hold, refine, or fracture a provisional rule. The current wording changes and stays connected to the starting rule and three pressure cases. The proof demonstrates preserved reasoning lineage.
-
-## Case record
-
-The five chapters share navigation behavior but not generic headings.
-
-- Context explains the real design problem in two short paragraphs.
-- Pivot names the first direction, the realization, the rebuilt direction, and three rejected alternatives.
-- Interaction documents the complete user sequence.
-- System makes input, governing rule, output, design choice, and behavioral consequence inspectable.
-- Evidence separates implementation proof from open human or operational claims and states the next test.
-
-The sticky navigator reports progress and the active chapter. On narrow screens it becomes a horizontal, keyboard-accessible chapter rail.
-
-## Motion
-
-Motion is reserved for state change:
-
-- a cutaway plane revealing a rule or consequence;
-- a candidate review producing a different memory state;
-- an evidence point moving with perspective;
-- a strike transferring authority;
-- a delegation phase changing;
-- a rule changing under pressure;
-- a case artifact entering once.
-
-Reading content does not continuously fade, blur, tilt, scale, or chase the pointer. Reduced-motion preferences preserve every semantic state without travel or delay.
-
-## Navigation and resilience
-
-- Home projects and related-work entries are native links.
-- Every canonical project route is server-rendered and independently useful.
-- Legacy routes redirect to their canonical projects.
-- Live work and source open in a new tab with explicit accessible language.
-- A failed animation cannot block reading or navigation.
-- Browser-local interactive proof state is temporary and never impersonates the state of the live project.
-
-## Accessibility
-
-- Every proof uses native buttons and exposes its active choice with `aria-pressed`.
-- State readouts use polite announcements.
-- Controls remain keyboard accessible and retain visible focus.
-- Touch targets do not depend on precise pointing.
-- The evidence-map proof is illustrative; the live project supplies its named-region alternative.
-- Responsive layouts reduce to one column without changing reading order.
-- Forced-colors and reduced-motion modes retain state distinction.
-
-## Evidence discipline
-
-The shell may demonstrate interaction behavior. It may not invent project outcomes.
-
-Every case explicitly labels what is built and verified, what remains unproven, and what test should happen next. Authored jurors remain authored. Fictional archives remain fictional. Staged browser work remains staged. A documented research protocol remains a plan until participants exist.
-
-## Release checks
-
-Before publishing:
-
-1. TypeScript has no diagnostics.
-2. Lint has no warnings or errors.
-3. The production build completes.
-4. Every home, identity, utility, and project route returns a valid main landmark.
-5. Every case renders one active interactive proof and five chapters.
-6. Legacy routes redirect correctly.
-7. Encoding, canonical metadata, reduced motion, forced colors, native links, and source contracts pass regression tests.
-8. Working tree scope is inspected before the single release commit.
+- Native links, buttons, and range input remain keyboard accessible.
+- Active options use `aria-pressed`; the range exposes a plain-language value.
+- Visible focus, named landmarks, one-column responsive order, forced colors, and reduced motion are required.
+- Every canonical route must render independently.
+- Builds, type checks, lint, route tests, encoding checks, and source contracts must pass before release.

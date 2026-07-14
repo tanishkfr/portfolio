@@ -8,6 +8,7 @@ import "./polish.css";
 import "./experience.css";
 import "./hiring.css";
 import "./case-studies.css";
+import "./home-system.css";
 
 async function requestOrigin() {
   const headerList = await headers();
@@ -34,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s — Tanishk",
     },
     description:
-      "Independent interaction design work about evidence, authority, memory, and accountable system behavior.",
+      "Commercial product work and independent interaction-design investigations into money, agency, evidence, and intelligent systems.",
     authors: [{ name: "Tanishk" }],
     creator: "Tanishk",
     category: "Interaction Design",
@@ -46,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Tanishk — Interaction Designer",
       title: "Tanishk — Interaction Designer",
       description:
-        "Five live interaction-design artifacts that make hidden system behavior visible enough to challenge.",
+        "Product work and independent interaction-design investigations by Tanishk.",
       images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
     },
     twitter: {
