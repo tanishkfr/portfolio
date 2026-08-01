@@ -2,7 +2,7 @@
   "name": "tanishk-portfolio",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@11.7.0",
+  "packageManager": "pnpm@11.13.1",
   "engines": {
     "node": ">=22.13.0"
   },

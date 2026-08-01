@@ -1,0 +1,932 @@
+/* ============================================================
+   THE EXAMINED PORTFOLIO — design system
+   ------------------------------------------------------------
+   One idea governs the housing: a portfolio is itself a system
+   making claims about a person. So it obeys the same obligations
+   the projects propose — claims carry records, evidence stays
+   inspectable, and nothing asks to be believed unexamined.
+
+   Three typographic voices:
+     serif — the claim (what is argued)
+     mono  — the record (what is evidenced)
+     sans  — the explanation (what is narrated)
+
+   The housing's own ink is registrar blue — the ink of records.
+   The five project accents stay vivid; the housing never
+   competes with them.
+   ============================================================ */
+
+/* The display voice: Fraunces, self-hosted, variable in optical
+   size and weight. Nothing else on the site sounds like it. */
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/fraunces-var.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fraunces";
+  src: url("/fonts/fraunces-var-italic.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  /* ------------------------------------------------------------
+     ONE WARM GROUND
+     Nothing here is neutral grey. The ground is a bistre mixed dark
+     — the colour of a printed art book's endpaper in a dim room —
+     and the ink is unbleached cream. The five project rooms repaint
+     this ground with their own pigment; the housing always keeps the
+     bistre, so the work is the only thing that changes colour.
+     ------------------------------------------------------------ */
+  --paper: #f8f3e4;
+  --paper-high: #fffdf5;
+  --paper-low: #eee7d3;
+  --plate: #fffdf7;
+  --plate-high: #ffffff;
+  --ink: #16150f;
+  --ink-soft: rgba(22, 21, 15, 0.72);
+  --muted: rgba(22, 21, 15, 0.56);
+  --line: rgba(22, 21, 15, 0.16);
+  --line-strong: rgba(22, 21, 15, 0.44);
+
+  /* The housing's own signal is record-ink blue — a cool ink held
+     against warm ground. Where a page belongs to a project, --accent
+     takes over and the world's own colour does this work instead. */
+  --registrar: var(--accent, #2b3fb8);
+  --registrar-deep: var(--accent, #1d2c8c);
+  --registrar-wash: rgba(43, 63, 184, 0.09);
+  --focus: var(--accent, #2b3fb8);
+  --selection: rgba(43, 63, 184, 0.2);
+
+  /* Project accents — meaning, not taste.
+     vermilion: the stamp of a verdict (Design or Disaster)
+     plum:      sovereign correction ink (Pentimento)
+     amber:     the lamp left on while away (Invisible Interfaces)
+     teal:      the surveyor's field (Atlas)
+     lime:      the daily pulse (Daynero)
+     The -ink variants are the legible text weights for the ground
+     they sit on; light plate surfaces re-declare them. */
+  --accent-disaster: #ef4a35;
+  --accent-disaster-ink: #b8301c;
+  --accent-pentimento: #8b2f63;
+  --accent-pentimento-ink: #7d2657;
+  --accent-invisible: #d79a29;
+  --accent-invisible-ink: #8a5c07;
+  --accent-atlas: #1d756d;
+  --accent-atlas-ink: #12615a;
+  --accent-daynero: #b7e34b;
+  --accent-daynero-ink: #566f18;
+
+  /* Voices */
+  --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  /* Text is set in Fraunces too, at its text optical size. Inter was never
+     shipped with the site, so on most machines the "sans voice" silently
+     became whatever the OS supplied - Segoe UI on Windows - which means the
+     typography was being decided by the visitor rather than designed. One
+     self-hosted family, used across display and text, is authored everywhere. */
+  --sans: "Fraunces", "Iowan Old Style", Georgia, serif;
+  /* The one voice deliberately left to the platform. Mono here is the machine
+     speaking - records, counts, states - so the system's own monospace is the
+     honest choice rather than a missing webfont. Used sparingly and never for
+     reading. */
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, "Liberation Mono",
+    monospace;
+  --r-plate: 6px;
+  --r-panel: 4px;
+
+  /* Scale — body never dips below 16px (avoids iOS input zoom,
+     keeps mobile prose readable) */
+  --step--1: clamp(0.75rem, 0.72rem + 0.14vw, 0.8rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.08rem);
+  --step-1: clamp(1.15rem, 1.08rem + 0.35vw, 1.35rem);
+  --step-2: clamp(1.4rem, 1.26rem + 0.7vw, 1.8rem);
+  --step-3: clamp(1.8rem, 1.55rem + 1.25vw, 2.5rem);
+  --step-4: clamp(2.3rem, 1.85rem + 2.2vw, 3.6rem);
+  --step-5: clamp(2.9rem, 2.1rem + 4vw, 5.2rem);
+
+  /* Motion — one language.
+     beat: acknowledgement (hover, press)
+     move: state change (phase, toggle)
+     settle: content arriving (entrances, records opening)
+     Arrivals materialize: opacity + small rise + blur clearing.
+     Exits are subtler than entrances or instant. */
+  --beat: 150ms;
+  --move: 280ms;
+  --settle: 440ms;
+  --ease-out: cubic-bezier(0.2, 0.75, 0.15, 1);
+  --ease-swing: cubic-bezier(0.65, 0, 0.3, 1);
+  /* tactile pop for small glyphs only (arrows, thumb) — never text blocks */
+  --ease-pop: cubic-bezier(0.3, 1.36, 0.4, 1);
+
+  --page-gutter: clamp(1.25rem, 4vw, 4.5rem);
+  --measure: 38rem;
+  /* monumental display for door and title walls */
+  --step-6: clamp(3.2rem, 2.2rem + 5.2vw, 6.2rem);
+  /* sticky rails sit directly beneath the header */
+  --header-h: 4.6rem;
+}
+
+@media (max-width: 56rem) {
+  :root {
+    --header-h: 6.6rem;
+  }
+}
+
+/* The light tables. Any surface that stays paper re-declares the
+   reading tokens so everything set on it keeps its original ink.
+   (The home stations are NOT plates — their specimens sit directly
+   on the dark ground, in pools of light.) */
+.signature-plate,
+.site-footer {
+  --ink: #191a15;
+  --ink-soft: #43453c;
+  --muted: #6b6d62;
+  --line: rgba(25, 26, 21, 0.15);
+  --line-strong: rgba(25, 26, 21, 0.46);
+  --registrar: #274a80;
+  --registrar-deep: #1c3560;
+  --registrar-wash: rgba(39, 74, 128, 0.08);
+  --accent-disaster-ink: #a92c1b;
+  --accent-pentimento-ink: #6f2450;
+  --accent-invisible-ink: #855d0d;
+  --accent-atlas-ink: #175e57;
+  --accent-daynero-ink: #56701d;
+}
+
+/* Reduced motion removes travel, never information. */
+:root[data-motion="reduced"] {
+  --beat: 1ms;
+  --move: 1ms;
+  --settle: 1ms;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem;
+}
+
+:root[data-motion="reduced"] html,
+html:has([data-motion="reduced"]) {
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  /* text optical size: lower stroke contrast and open apertures, which is what
+     makes a display serif readable at paragraph sizes */
+  font-variation-settings: "opsz" 14, "wght" 400, "SOFT" 30;
+  font-size: var(--step-0);
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- the material ----------
+   Archival paper has tooth. A static grain — one SVG noise tile,
+   never animated — sits over everything at a whisper, so the cream
+   reads as paper instead of hex code. */
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+}
+
+@media (forced-colors: active), print {
+  body::after {
+    display: none;
+  }
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+
+button,
+a,
+summary,
+input[type="range"] {
+  -webkit-tap-highlight-color: transparent;
+  /* removes the 300ms tap delay without disabling pinch-zoom */
+  touch-action: manipulation;
+}
+
+/* Press acknowledgement: transform only, never layout */
+button:active,
+.claim > summary:active .claim-mark {
+  transform: translateY(1px);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--ink);
+}
+
+:focus-visible {
+  border-radius: 2px;
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* ---------- shared voices ---------- */
+
+.record-line {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+/* ---------- marked claims ----------
+   A claim that carries its record. Native <details>: it works
+   before hydration, with the keyboard, and with screen readers.
+   The mark (⌾) is the housing's footnote anchor. */
+
+.claim {
+  position: relative;
+}
+
+.claim > summary {
+  cursor: pointer;
+  list-style: none;
+  width: fit-content;
+}
+
+.claim > summary::-webkit-details-marker {
+  display: none;
+}
+
+.claim-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  margin-top: 0.7rem;
+  padding: 0.28em 0.7em 0.24em;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.05em;
+  transition:
+    color var(--beat) var(--ease-out),
+    border-color var(--beat) var(--ease-out),
+    background-color var(--beat) var(--ease-out);
+}
+
+.claim-mark::before {
+  content: "⌾";
+  font-size: 1.05em;
+  color: var(--registrar);
+}
+
+.claim > summary:hover .claim-mark {
+  border-color: var(--registrar);
+  background: var(--registrar-wash);
+  color: var(--registrar-deep);
+}
+
+.claim[open] .claim-mark {
+  border-color: var(--registrar);
+  background: var(--registrar);
+  color: var(--paper);
+}
+
+.claim[open] .claim-mark::before {
+  color: var(--paper);
+}
+
+.claim-record {
+  margin-top: 1rem;
+  border-left: 2px solid var(--registrar);
+  padding: 0.85rem 0 0.85rem 1.35rem;
+  background:
+    linear-gradient(to right, var(--registrar-wash), transparent 65%);
+}
+
+.claim[open] .claim-record {
+  animation: record-open var(--settle) var(--ease-out) both;
+}
+
+@keyframes record-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+.claim-record .record-note {
+  margin: 0.85rem 0 0;
+  max-width: var(--measure);
+  color: var(--muted);
+  font-size: var(--step--1);
+  line-height: 1.6;
+}
+
+/* ---------- accessibility chrome ---------- */
+
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.7rem 1rem;
+  background: var(--registrar);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  transform: translateY(-220%);
+  transition: transform var(--beat) var(--ease-out);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- header ---------- */
+
+.site-header {
+  position: sticky;
+  z-index: 30;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 4.6rem;
+  width: min(100%, 105rem);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(14px) saturate(115%);
+  transition: box-shadow var(--move) var(--ease-out);
+}
+
+/* content sliding beneath the header casts a breath of shadow —
+   depth appears only once there is something underneath */
+[data-scrolled="true"] .site-header {
+  box-shadow: 0 10px 22px -14px rgba(0, 0, 0, 0.65);
+}
+
+/* Reading progress — a thin registrar line the page draws as it
+   is read. The record of where you are. */
+.site-header::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--registrar);
+  transform: scaleX(var(--scroll-progress, 0));
+  transform-origin: left;
+}
+
+.site-identity {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  color: inherit;
+  font-family: var(--serif);
+  font-size: 1.18rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.site-identity small {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.site-mode {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.site-mode strong {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.site-header nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.2rem, 2.4vw, 2.5rem);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+}
+
+.site-header nav a {
+  position: relative;
+  padding-block: 0.35rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color var(--beat) var(--ease-out);
+}
+
+.site-header nav a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: var(--registrar);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--move) var(--ease-out);
+}
+
+.site-header nav a:hover,
+.site-header nav a[aria-current="page"] {
+  color: var(--ink);
+}
+
+.site-header nav a:hover::after,
+.site-header nav a[aria-current="page"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+@media (max-width: 44rem) {
+  .site-header {
+    gap: 1rem;
+  }
+
+  .site-header nav {
+    gap: 1.1rem;
+  }
+
+  /* the case-record label and discipline line yield to navigation */
+  .site-mode,
+  .site-identity small {
+    display: none;
+  }
+}
+
+/* ---------- modes ----------
+   Two ways in. The server always renders the full thing; data-mode
+   on the root recuts it. Nothing is fabricated per mode — only
+   pacing, density, and selection.
+
+   full   — the field, and the complete case record.
+   review — no ceremony: motion near-instant, density up, every case
+            reduced to what it is, what I did, and what to remember. */
+
+.site-header-tools {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.2rem, 2.4vw, 2.4rem);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* On the field the header is a name and a way in. It carries no
+   ground, no rule, and no progress line — nothing may compete with
+   the five names. */
+.site-header[data-bare="true"] {
+  position: absolute;
+  inset: 0 0 auto;
+  border-bottom: 0;
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.site-header[data-bare="true"]::after {
+  /* the only wayfinding on the field: one hairline of depth */
+  display: block;
+}
+
+.site-header[data-bare="true"] .site-identity {
+  color: #16150f;
+}
+
+.site-header[data-bare="true"] .site-identity small {
+  color: rgba(22, 21, 15, 0.5);
+}
+
+@media (max-width: 56rem) {
+  .site-header {
+    flex-wrap: wrap;
+    row-gap: 0;
+    padding-block: 0.6rem;
+  }
+
+  .site-header-tools {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.8rem;
+  }
+}
+
+/* --- digest and abstract share one tempo: immediate --- */
+
+:root[data-mode="review"] {
+  --beat: 80ms;
+  --move: 140ms;
+  --settle: 180ms;
+}
+
+/* choreography yields: content is simply present */
+:root[data-mode="review"] [data-reveal]:not(.is-revealed) {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+:root[data-mode="review"] .route-stage {
+  animation-duration: 120ms;
+}
+
+:root[data-mode="review"]::view-transition-old(root) {
+  animation-duration: 110ms;
+}
+
+:root[data-mode="review"]::view-transition-new(root) {
+  animation-duration: 150ms;
+}
+
+:root[data-mode="review"]::view-transition-group(*) {
+  animation-duration: 180ms;
+}
+
+/* digest density: the reading sizes hold; the stage shrinks */
+:root[data-mode="review"] {
+  --step-5: clamp(2.4rem, 1.8rem + 2.8vw, 3.9rem);
+  --step-4: clamp(2rem, 1.65rem + 1.7vw, 3rem);
+}
+
+/* ---------- footer ----------
+   In a dark room every page ends on paper: the closing slip, the
+   one full-bleed light surface, where the record signs off. */
+
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.2rem 2.5rem;
+  width: 100%;
+  margin-top: 3rem;
+  padding: 3rem max(var(--page-gutter), calc((100% - 105rem) / 2 + var(--page-gutter))) 3.4rem;
+  background: var(--plate);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+}
+
+.footer-identity strong {
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.footer-identity span {
+  display: block;
+  margin-top: 0.3rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.6rem;
+}
+
+.footer-links a {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition:
+    color var(--beat) var(--ease-out),
+    border-color var(--beat) var(--ease-out);
+}
+
+.footer-links a:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+/* ---------- route entrance ---------- */
+
+.route-stage {
+  animation: route-enter var(--settle) var(--ease-out) both;
+}
+
+@keyframes route-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+/* ---------- scroll reveals ----------
+   Content is never hidden without JS: the hiding class arrives
+   only after the script marks the document motion-ready, and a
+   revealed element returns fully. Reveals acknowledge arrival;
+   they never withhold information. */
+
+.motion-ready[data-motion="full"] [data-reveal]:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(3px);
+}
+
+.motion-ready[data-motion="full"] [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+  transition:
+    opacity var(--settle) var(--ease-out),
+    transform var(--settle) var(--ease-out),
+    filter var(--settle) var(--ease-out);
+}
+
+/* ---------- typed entrances ----------
+   One gesture for every element is a machine's signature. A name does not
+   arrive the way a caption does, and a question arrives differently again.
+   These share the base transition and only differ where the difference
+   carries meaning. Ordered after the base rule, which they tie with on
+   specificity, so source order decides. */
+
+/* A name sets. It travels further and lands without haze, because a name
+   should arrive with weight rather than resolve out of a fog. */
+.motion-ready[data-motion="full"] [data-reveal="name"]:not(.is-revealed) {
+  transform: translateY(26px);
+  filter: none;
+}
+
+.motion-ready[data-motion="full"] [data-reveal="name"].is-revealed {
+  filter: none;
+  transition-duration: 640ms;
+  transition-timing-function: var(--ease-swing);
+}
+
+/* A question holds. It does not travel at all — it simply becomes present,
+   slower than anything else on the page. */
+.motion-ready[data-motion="full"] [data-reveal="quiet"]:not(.is-revealed) {
+  transform: none;
+  filter: none;
+}
+
+.motion-ready[data-motion="full"] [data-reveal="quiet"].is-revealed {
+  transform: none;
+  filter: none;
+  transition-duration: 780ms;
+}
+
+/* An object settles into its own size, the way something set down does. */
+.motion-ready[data-motion="full"] [data-reveal="figure"]:not(.is-revealed) {
+  transform: scale(0.988) translateY(12px);
+  filter: none;
+}
+
+.motion-ready[data-motion="full"] [data-reveal="figure"].is-revealed {
+  filter: none;
+  transition-duration: 560ms;
+}
+
+/* ---------- shared shells ---------- */
+
+.shell {
+  width: min(100%, 105rem);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+/* ---------- sigils ----------
+   Five living marks. Each is the project's argument in
+   miniature and has three states — surface, rule, consequence —
+   so the same control that questions the writing also moves the
+   marks. Elements declare the phases in which they exist. */
+
+.sigil {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--ink-soft);
+  overflow: visible;
+}
+
+.sigil .ph {
+  opacity: 0;
+  transform: translateY(2px);
+  transition:
+    opacity var(--move) var(--ease-out),
+    transform var(--move) var(--ease-out);
+}
+
+[data-phase="surface"] .ph-s,
+[data-phase="rule"] .ph-r,
+[data-phase="consequence"] .ph-c {
+  opacity: 1;
+  transform: none;
+}
+
+/* persistent scaffold lines */
+.sigil .base {
+  opacity: 0.9;
+}
+
+/* accent-bearing elements pick up the project's color */
+.sigil .acc {
+  color: var(--sig-accent, var(--registrar));
+}
+
+/* drawn strokes (Atlas lineage, Pentimento strike) */
+.sigil .draw {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  transition: stroke-dashoffset var(--settle) var(--ease-swing);
+}
+
+[data-phase="rule"] .draw.ph-r,
+[data-phase="consequence"] .draw.ph-c,
+[data-phase="consequence"] .draw.ph-r {
+  stroke-dashoffset: 0;
+}
+
+/* ---------- shared-element navigation ----------
+   Opening a case morphs the exhibit line into the case title: the
+   index entry literally becomes the record it opens. The rest of
+   the page crossfades underneath. Browsers without the View
+   Transitions API simply navigate. */
+
+::view-transition-old(root) {
+  animation-duration: 200ms;
+  animation-timing-function: var(--ease-swing);
+}
+
+::view-transition-new(root) {
+  animation-duration: 300ms;
+  animation-timing-function: var(--ease-out);
+}
+
+::view-transition-group(*) {
+  animation-duration: 340ms;
+  animation-timing-function: var(--ease-swing);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* ---------- touch ergonomics ----------
+   On touch devices every discrete control reaches the 44px
+   minimum. Pointer-precise devices keep the tighter editorial
+   spacing. */
+
+@media (pointer: coarse) {
+  .site-header nav a {
+    padding-block: 0.85rem;
+  }
+
+  .claim-mark {
+    min-height: 2.75rem;
+    align-items: center;
+  }
+
+  .case-choice-group button {
+    min-height: 2.75rem;
+    padding-inline: 1.1rem;
+  }
+
+  .instrument-questions button {
+    min-height: 2.75rem;
+  }
+
+  .docket-descend,
+  .footer-links a {
+    padding-block: 0.6rem;
+  }
+}
+
+/* ---------- forced colors ---------- */
+
+@media (forced-colors: active) {
+  .site-header::after,
+  .claim-record {
+    forced-color-adjust: none;
+    background: Canvas;
+    border-color: CanvasText;
+  }
+
+  .claim-mark {
+    border-color: ButtonText;
+  }
+
+  .sigil {
+    color: CanvasText;
+  }
+
+  .sigil .acc {
+    color: Highlight;
+  }
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}

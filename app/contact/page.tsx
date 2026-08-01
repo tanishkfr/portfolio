@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main id="main-content" className="contact-shell contact-shell--alive">
+    <main id="main-content" className="contact-shell">
       <header className="contact-intro" data-reveal>
         <p className="eyebrow">Contact · Available for work</p>
         <h1>Bring me the interaction nobody has made clear yet.</h1>

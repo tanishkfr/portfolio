@@ -1,0 +1,2967 @@
+/* ============================================================
+   EXPLORE — the world you look *under*
+   ------------------------------------------------------------
+   Built on system.css. The ground is warm pigment, and each of the
+   five rooms repaints it edge to edge, so travelling through the
+   work means walking between rooms. No glows and no decorative
+   gradients: colour is either a room or it is nothing. Micro-labels
+   are lowercase mono, never tracked-out capitals.
+
+   Motion earns itself. Nothing is withheld from keyboard,
+   reduced-motion, or no-JS readers — the lens is delight layered
+   over content that is already legible.
+
+   Stages land here in order:
+     1  Look under        (this file, below)
+     2  The descent
+     3  Five rooms
+     4  Personal layer + rewards
+     5  Close
+   ============================================================ */
+
+.xp {
+  position: relative;
+  color: var(--ink);
+}
+
+/* ============================================================
+   THE ATMOSPHERE
+   One ground behind the whole descent. Its colour is mixed from
+   whichever rooms are nearest, so the world's light changes as you
+   travel instead of cutting at a seam — you feel the next room
+   before you can see it. Falls back to the housing's bistre with
+   no JavaScript.
+   ============================================================ */
+
+.xp-atmos {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgb(var(--atmos, 23 18 15));
+}
+
+/* ============================================================
+   DEPTH AND TRAVEL
+   The director gives every scene a signed position:
+     --p     -1 waiting below · 0 centred · 1 gone above
+     --away  0 centred · 1 at either edge
+   Layers multiply it by their own --depth, so they move at
+   different rates and the page acquires thickness. Content fades
+   against --away, so a scene leaves as well as arrives.
+
+   Every value falls back to 0, so with no JavaScript nothing
+   moves and nothing is hidden.
+   ============================================================ */
+
+[data-scene] {
+  --p: 0;
+  --away: 0;
+}
+
+.xp-room-text,
+.xp-room-stage {
+  /* deliberately modest: a frame loop that stalls leaves this at a fixed
+     offset, and a small one reads as composition rather than breakage */
+  transform: translate3d(0, calc(var(--p, 0) * var(--depth, 0) * -4rem), 0);
+
+  /* Content dims toward the edges of its travel so a room leaves as well as
+     arrives — but it never drops out of legibility. Visibility must not
+     depend on a loop continuing to run: if the frames stop, or a scene is
+     measured once and never again, the worst case here is 0.55 and readable,
+     never a blank room. Fail open, always. */
+  opacity: calc(1 - var(--away, 0) * 0.45);
+}
+
+/* Velocity leans the whole descent. Scrolling fast should feel like it costs
+   something — this is the one place motion answers *how* you move, not where
+   you are. Tiny on purpose: past a degree or two it reads as a broken page. */
+@media (hover: hover) and (pointer: fine) {
+  :root[data-cinema="on"] .xp-room-text,
+  :root[data-cinema="on"] .xp-room-stage {
+    transform: translate3d(0, calc(var(--p, 0) * var(--depth, 0) * -4rem), 0)
+      skewY(calc(var(--vel, 0) * 0.5deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-room-text,
+  .xp-room-stage {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   STAGE 2 — THE DESCENT
+   A pinned scene: one control sheds its complexity era by era as
+   you scroll, until nothing is left to do but look under it.
+   Scroll drives a discrete data-era (crossfaded) and a continuous
+   --shed. The statements are real text; the sequence is decoration.
+   ============================================================ */
+
+.xp-shed {
+  --shed: 0;
+  position: relative;
+  height: 300svh;
+}
+
+.xp-shed-stage {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: clamp(1.6rem, 4.5vh, 3rem);
+  width: min(100%, 105rem);
+  margin-inline: auto;
+  padding: max(var(--header-h), 12vh) var(--page-gutter);
+}
+
+.xp-shed-lead,
+.xp-shed-turn {
+  margin: 0;
+  max-width: 18ch;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 372, "SOFT" 45, "WONK" 1;
+  font-size: clamp(2rem, 5.2vw, 4.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.xp-shed-turn em {
+  font-style: italic;
+}
+
+/* the shedding control — five states crossfading in one fixed box */
+.xp-shed-control {
+  position: relative;
+  width: 100%;
+  max-width: 42rem;
+  height: clamp(6.5rem, 17vh, 10rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* takes no box, so hiding the glyph from assistive tech costs no layout */
+.xp-era-glyph {
+  display: contents;
+}
+
+/* Scroll drives each era's weight directly, so the control erodes
+   continuously as you descend. No transition here on purpose: a transition
+   would lag the scrubbing it is meant to track. --e0 defaults to 1 so the
+   first era still stands before (or without) JavaScript. */
+.xp-era {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 1.1rem;
+  opacity: var(--w, 0);
+  /* signed, so what has passed leaves upward and what is still coming waits
+     below — the outgoing and incoming statements never share a line */
+  transform: translateY(calc(var(--s, 0) * -52px));
+}
+
+.xp-era-0 { --w: var(--e0, 1); --s: var(--s0, 0); }
+.xp-era-1 { --w: var(--e1, 0); --s: var(--s1, -1); }
+.xp-era-2 { --w: var(--e2, 0); --s: var(--s2, -1); }
+.xp-era-3 { --w: var(--e3, 0); --s: var(--s3, -1); }
+.xp-era-4 { --w: var(--e4, 0); --s: var(--s4, -1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-era {
+    transform: none;
+  }
+}
+
+.xp-era-said {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  color: var(--ink-soft);
+}
+
+/* control specimens — spare, no fake chrome */
+.xp-era-cmd,
+.xp-era-ask {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: clamp(1.1rem, 2.6vw, 1.9rem);
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.xp-era-cmd::before {
+  content: "› ";
+  color: var(--muted);
+}
+
+.xp-caret {
+  display: inline-block;
+  width: 0.5ch;
+  height: 1.05em;
+  margin-left: 0.18em;
+  background: var(--ink-soft);
+  transform: translateY(0.12em);
+  animation: xp-blink 1.1s steps(1) infinite;
+}
+
+@keyframes xp-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.xp-era-btn {
+  padding: 0.72em 1.5em;
+  border: 1px solid var(--line-strong);
+  font-family: var(--sans);
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  color: var(--ink);
+}
+
+.xp-era-tap {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+}
+
+/* era 5 — it acts before you ask: a sealed, finished surface with
+   nothing left for you to do, and nothing to see into. */
+.xp-era-none {
+  position: relative;
+  width: 11rem;
+  height: 3.6rem;
+  border-radius: 2px;
+  background: linear-gradient(158deg, var(--paper-low), var(--plate) 60%, var(--paper-high));
+  border: 1px solid var(--line-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 18px 34px -26px rgba(22, 21, 15, 0.4);
+  overflow: hidden;
+}
+
+/* a faint fixed sheen — light catching a physical panel, not a glow */
+.xp-era-none::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    122deg,
+    transparent 42%,
+    rgba(22, 21, 15, 0.05) 50%,
+    transparent 58%
+  );
+}
+
+/* it acts before you ask: a hairline seals the surface on its own when
+   the final era arrives, then holds. Reduced motion shows it already sealed. */
+.xp-era-none::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--ink-soft);
+  transform: scaleX(0);
+  transform-origin: left;
+  z-index: 1;
+}
+
+.xp-shed[data-era="4"] .xp-era-none::before {
+  animation: xp-seal 0.8s var(--ease-out) 0.3s both;
+}
+
+@keyframes xp-seal {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* the turn and its cue arrive only once the control has emptied out */
+.xp-shed-turn,
+.xp-shed-look {
+  opacity: 0;
+  transition: opacity var(--settle) var(--ease-out);
+}
+
+.xp-shed-look {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.xp-shed[data-era="3"] .xp-shed-turn,
+.xp-shed[data-era="4"] .xp-shed-turn {
+  opacity: 1;
+}
+
+.xp-shed[data-era="4"] .xp-shed-look {
+  opacity: 1;
+}
+
+/* ============================================================
+   STAGE 2 — BEAT 3: THINGS I NOTICE
+   The same control built twice — careless, then considered — so
+   the difference can be felt, not asserted. No cards; the
+   specimens sit on the ground.
+   ============================================================ */
+
+.xp-notice {
+  width: min(100%, 105rem);
+  margin: -10vh auto 0;
+  padding: clamp(2rem, 5vh, 4rem) var(--page-gutter) clamp(6rem, 14vh, 10rem);
+  display: grid;
+  gap: clamp(3rem, 8vh, 6rem);
+}
+
+.xp-notice-head {
+  max-width: 44rem;
+}
+
+.xp-notice-kicker {
+  margin: 0 0 1.4rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.xp-notice-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 372, "SOFT" 45, "WONK" 1;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 1.03;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.xp-notice-sub {
+  margin: 1.4rem 0 0;
+  max-width: 42ch;
+  font-family: var(--sans);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.xp-notice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  max-width: 68rem;
+}
+
+.xp-spec {
+  margin: 0;
+  display: grid;
+  gap: 1.6rem;
+  align-content: start;
+}
+
+.xp-spec-pair {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  min-height: 3.5rem;
+}
+
+.xp-spec-cap {
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  max-width: 32ch;
+}
+
+.xp-spec-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+/* the switch */
+.xp-toggle {
+  position: relative;
+  width: 3.7rem;
+  height: 2.05rem;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.xp-toggle:active {
+  transform: none;
+}
+
+.xp-toggle-knob {
+  position: absolute;
+  top: 50%;
+  left: 0.24rem;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 50%;
+  background: var(--ink-soft);
+  transform: translateY(-50%);
+}
+
+.xp-toggle[data-on="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.xp-toggle[data-on="true"] .xp-toggle-knob {
+  left: calc(100% - 1.69rem);
+  background: var(--paper);
+}
+
+/* careless: it just snaps, no transition */
+.xp-toggle-plain,
+.xp-toggle-plain .xp-toggle-knob {
+  transition: none;
+}
+
+/* considered: the track eases, the knob springs with a little overshoot */
+.xp-toggle-fine {
+  transition:
+    background var(--move) var(--ease-out),
+    border-color var(--move) var(--ease-out);
+}
+
+.xp-toggle-fine .xp-toggle-knob {
+  transition:
+    left var(--move) var(--ease-pop),
+    background var(--move) var(--ease-out);
+}
+
+/* the press */
+.xp-press {
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  padding: 0.75em 1.6em;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* careless: the global press-nudge is cancelled — it ignores you */
+.xp-press-plain,
+.xp-press-plain:active {
+  transform: none;
+  transition: none;
+}
+
+/* considered: it gives the press back */
+.xp-press-fine {
+  transition:
+    transform var(--beat) var(--ease-out),
+    background-color var(--beat) var(--ease-out),
+    border-color var(--beat) var(--ease-out);
+}
+
+.xp-press-fine:active {
+  transform: translateY(1px) scale(0.985);
+  background: var(--registrar-wash);
+  border-color: var(--line);
+}
+
+/* ============================================================
+   STAGE 3 — THE ROOMS
+   Each project is a full-height space lit by its own accent. The
+   name is the door to the case. Signature interactions land on
+   top of this scaffold, one room at a time.
+   ============================================================ */
+
+.xp-rooms {
+  position: relative;
+}
+
+/* Each room is a painted space, not a tinted section. The ground itself
+   changes colour edge to edge, so descending through the work means
+   walking out of one room and into another. No glows, no washes, no
+   gradients standing in for atmosphere — pigment does the work. */
+.xp-room {
+  --ink: var(--room-ink);
+  --ink-soft: color-mix(in srgb, var(--room-ink) 74%, transparent);
+  --muted: color-mix(in srgb, var(--room-ink) 62%, transparent);
+  --line: color-mix(in srgb, var(--room-ink) 16%, transparent);
+  --line-strong: color-mix(in srgb, var(--room-ink) 42%, transparent);
+
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  /* the ground runs full-bleed while the content still holds the
+     105rem measure — asymmetric padding does both at once */
+  padding: clamp(6rem, 14vh, 10rem)
+    max(var(--page-gutter), calc((100% - 105rem) / 2));
+  /* the atmosphere behind paints the ground; the room only carries its ink.
+     --room is still the room's pigment, used to light anything hanging in it. */
+  background: transparent;
+  color: var(--room-ink);
+}
+
+.xp-room-text,
+.xp-room-shot {
+  position: relative;
+  z-index: 1;
+}
+
+.xp-room-text {
+  max-width: 44rem;
+}
+
+@media (min-width: 60rem) {
+  .xp-room:has(.xp-room-shot) {
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+  }
+  .xp-room[data-flip="true"]:has(.xp-room-shot) {
+    grid-template-columns: 0.95fr 1.05fr;
+  }
+  .xp-room[data-flip="true"] .xp-room-text {
+    order: 2;
+  }
+}
+
+.xp-room-eyebrow {
+  margin: 0 0 1.4rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--accent-ink);
+}
+
+.xp-room-q {
+  margin: 0 0 1.7rem;
+  max-width: 24ch;
+  font-family: var(--serif);
+  font-style: italic;
+  font-variation-settings: "opsz" 40, "wght" 372, "SOFT" 45, "WONK" 1;
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink-soft);
+}
+
+.xp-room-name {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 400, "SOFT" 45, "WONK" 1;
+  font-size: clamp(2.8rem, 8vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.xp-room-name a {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color var(--move) var(--ease-out);
+}
+
+.xp-room-name a:hover,
+.xp-room-name a:focus-visible {
+  color: var(--accent-ink);
+}
+
+.xp-room-line {
+  margin: 1.7rem 0 0;
+  max-width: 34ch;
+  font-family: var(--sans);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.xp-room-shot {
+  margin: 0;
+}
+
+.xp-room-shot img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 60px -40px rgba(22, 21, 15, 0.35);
+}
+
+
+/* ---- Design or Disaster: point before you pronounce ----
+   The tint moves inside the button (beneath the marks), so the figure's
+   own ::after is disabled here. */
+.xp-dod::after {
+  content: none;
+}
+
+.xp-dod-surface {
+  display: block;
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: crosshair;
+}
+
+/* the case mockup is a tall phone; cap it so the whole screen — mark,
+   the four other readings, and the prompt — is visible at once */
+.xp-dod .xp-dod-surface img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 74vh;
+}
+
+.xp-dod[data-marked="true"] .xp-dod-surface {
+  cursor: default;
+}
+
+.xp-dod-surface:focus-visible {
+  outline: 3px solid var(--accent-ink);
+  outline-offset: 4px;
+}
+
+.xp-dod-tint {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  pointer-events: none;
+  /* the faintest wash of the room, so the screen belongs to the page */
+  background: color-mix(in srgb, var(--room) 30%, transparent);
+}
+
+.xp-dod-prompt {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  padding: 0.45em 0.95em;
+  border: 1px solid color-mix(in srgb, var(--accent) 60%, var(--line-strong));
+  border-radius: 999px;
+  background: rgba(6, 6, 8, 0.55);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-soft);
+  pointer-events: none;
+  animation: xp-appear var(--settle) var(--ease-out) both;
+}
+
+.xp-dod-mark {
+  position: absolute;
+  width: 1.4rem;
+  height: 1.4rem;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.xp-dod-mark--mine {
+  border: 2px solid var(--accent-ink);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 22%, transparent);
+  animation: xp-drop var(--move) var(--ease-pop) both;
+}
+
+.xp-dod-mark--other {
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid var(--line-strong);
+  background: rgba(6, 6, 8, 0.3);
+  opacity: 0;
+  animation: xp-fadein var(--settle) var(--ease-out) forwards;
+}
+
+.xp-dod-tag {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 0.45rem);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.03em;
+  color: var(--accent-ink);
+}
+
+.xp-dod-cap {
+  margin-top: 0.9rem;
+  max-width: 32ch;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+@keyframes xp-drop {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes xp-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes xp-fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.75;
+  }
+}
+
+/* ---- Pentimento: strike the machine's sentence, your reply rises ----
+   No image; the interaction is the room. Authority swaps between the two
+   sentences, and the withdrawn one stays visible as a struck underpainting. */
+.xp-pent::after {
+  content: none;
+}
+
+.xp-pent {
+  display: grid;
+  gap: 2rem;
+  align-content: center;
+  justify-items: start;
+}
+
+.xp-pent-stack {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 30rem;
+}
+
+.xp-pent-machine,
+.xp-pent-mine {
+  margin: 0;
+  font-family: var(--serif);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  transition:
+    font-size var(--move) var(--ease-out),
+    color var(--move) var(--ease-out),
+    opacity var(--move) var(--ease-out);
+}
+
+.xp-pent-tag {
+  display: block;
+  margin-bottom: 0.55rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+/* default: the machine's reading leads the type */
+.xp-pent-machine {
+  font-size: clamp(1.5rem, 2.9vw, 2.2rem);
+  color: var(--ink);
+}
+
+.xp-pent-mine {
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  color: var(--muted);
+  opacity: 0.5;
+}
+
+/* struck: authority moves to the person; the machine recedes, struck */
+.xp-pent[data-struck="true"] .xp-pent-machine {
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  color: var(--muted);
+  opacity: 0.7;
+  text-decoration: line-through;
+  text-decoration-color: var(--accent-ink);
+  text-decoration-thickness: 1px;
+}
+
+.xp-pent[data-struck="true"] .xp-pent-mine {
+  font-size: clamp(1.5rem, 2.9vw, 2.2rem);
+  color: var(--ink);
+  opacity: 1;
+}
+
+.xp-pent-btn {
+  justify-self: start;
+  padding: 0.6em 1.15em;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition:
+    color var(--beat) var(--ease-out),
+    border-color var(--beat) var(--ease-out),
+    background-color var(--beat) var(--ease-out);
+}
+
+.xp-pent-btn:hover,
+.xp-pent-btn:focus-visible {
+  color: var(--accent-ink);
+  border-color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* ---- Invisible Interfaces: it advances only while you look away ---- */
+.xp-away::after {
+  content: none;
+}
+
+.xp-away {
+  display: grid;
+  gap: 1.1rem;
+  align-content: center;
+  justify-items: start;
+  max-width: 32rem;
+}
+
+.xp-away-tag {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.03em;
+  color: var(--accent-ink);
+}
+
+.xp-away-title {
+  margin: 0;
+  max-width: 18ch;
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 2.9vw, 2.2rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.xp-away-meter {
+  width: min(100%, 26rem);
+  height: 3px;
+  margin-top: 0.6rem;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.xp-away-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent-ink);
+  border-radius: 999px;
+  transition: width var(--settle) var(--ease-out);
+}
+
+.xp-away-pct {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.xp-away-receipt {
+  margin: 0.5rem 0 0;
+  max-width: 34ch;
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.xp-away[data-done="true"] .xp-away-receipt {
+  color: var(--accent-ink);
+}
+
+/* ---- Atlas: carry one rule until it changes shape ---- */
+.xp-atlas::after {
+  content: none;
+}
+
+.xp-atlas {
+  display: grid;
+  gap: 1.1rem;
+  align-content: center;
+  justify-items: start;
+  max-width: 34rem;
+}
+
+.xp-atlas-lineage {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.xp-atlas-past {
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  line-height: 1.3;
+  color: var(--muted);
+  opacity: 0.55;
+  text-decoration: line-through;
+  text-decoration-color: var(--line-strong);
+}
+
+.xp-atlas-context {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  color: var(--accent-ink);
+}
+
+.xp-atlas-rule {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.xp-atlas-note {
+  margin: 0;
+  max-width: 32ch;
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.5;
+  color: var(--accent-ink);
+}
+
+.xp-atlas-btn,
+.xp-day-btn {
+  padding: 0.6em 1.15em;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition:
+    color var(--beat) var(--ease-out),
+    border-color var(--beat) var(--ease-out),
+    background-color var(--beat) var(--ease-out);
+}
+
+.xp-atlas-btn {
+  justify-self: start;
+  margin-top: 0.4rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.05em;
+}
+
+.xp-atlas-btn:hover,
+.xp-atlas-btn:focus-visible,
+.xp-day-btn:hover,
+.xp-day-btn:focus-visible {
+  color: var(--ink);
+  border-color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* ---- Daynero: one number, warm, on the clock ---- */
+.xp-day::after {
+  content: none;
+}
+
+.xp-day {
+  display: grid;
+  gap: 0.55rem;
+  align-content: center;
+  justify-items: start;
+  max-width: 30rem;
+}
+
+.xp-day-tag {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.03em;
+  color: var(--accent-ink);
+}
+
+.xp-day-label {
+  margin: 0.4rem 0 0;
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  color: var(--muted);
+}
+
+.xp-day-amount {
+  margin: 0;
+  font-family: var(--serif);
+  font-variation-settings: "opsz" 144, "wght" 430, "SOFT" 45, "WONK" 1;
+  font-size: clamp(3.5rem, 9vw, 6rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.xp-day-note {
+  margin: 0.3rem 0 0;
+  min-height: 1.5em;
+  max-width: 30ch;
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.xp-day-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.xp-day-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+}
+
+.xp-day-btn span {
+  font-family: var(--mono);
+  color: var(--accent-ink);
+}
+
+/* ============================================================
+   STAGE 5 — THE CLOSE
+   Bookends the hero ("the part you don't see"), then contact.
+   ============================================================ */
+
+.xp-close {
+  position: relative;
+  min-height: 92svh;
+  display: grid;
+  align-content: center;
+  gap: 1.5rem;
+  width: min(100%, 105rem);
+  margin-inline: auto;
+  padding: clamp(6rem, 16vh, 12rem) var(--page-gutter);
+  border-top: 1px solid var(--line);
+}
+
+.xp-close-eyebrow {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.xp-close-line {
+  margin: 0;
+  max-width: 16ch;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 372, "SOFT" 45, "WONK" 1;
+  font-size: clamp(2.6rem, 7vw, 5.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.xp-close-sub {
+  margin: 0.6rem 0 0;
+  max-width: 42ch;
+  font-family: var(--sans);
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.xp-close-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem 2rem;
+  margin-top: 1.4rem;
+  font-family: var(--mono);
+  font-size: var(--step-0);
+}
+
+.xp-close-links a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 3px;
+  transition:
+    color var(--move) var(--ease-out),
+    border-color var(--move) var(--ease-out);
+}
+
+.xp-close-links a:hover,
+.xp-close-links a:focus-visible {
+  border-color: var(--ink);
+}
+
+.xp-close-foot {
+  margin: 2rem 0 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.xp-close-strike {
+  margin-right: 0.4rem;
+  text-decoration: line-through;
+  text-decoration-color: var(--muted);
+  opacity: 0.55;
+}
+
+/* ============================================================
+   ROOM COMPOSITIONS
+   The five rooms must not be one layout wearing five colours.
+   Two of them have no screen to hang, so the act itself stands in
+   the middle of the floor; the three that do hang one alternate
+   which wall. Placed last so these win on source order.
+   ============================================================ */
+
+@media (min-width: 60rem) {
+  /* Pentimento and Daynero: centred stages, not split columns.
+     :has() matches the split rule's specificity so source order decides,
+     and the flip order is cancelled — there is no second column here. */
+  .xp-room[data-room="pentimento"]:has(.xp-room-shot),
+  .xp-room[data-room="daynero"]:has(.xp-room-shot) {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: clamp(3rem, 7vh, 5.5rem);
+  }
+
+  .xp-room[data-room="pentimento"] .xp-room-text,
+  .xp-room[data-room="daynero"] .xp-room-text {
+    order: 0;
+    max-width: 36rem;
+    text-align: center;
+  }
+
+  .xp-room[data-room="pentimento"] .xp-room-q,
+  .xp-room[data-room="daynero"] .xp-room-q,
+  .xp-room[data-room="pentimento"] .xp-room-line,
+  .xp-room[data-room="daynero"] .xp-room-line {
+    margin-inline: auto;
+  }
+
+  .xp-pent,
+  .xp-day {
+    justify-items: center;
+    max-width: 42rem;
+  }
+
+  /* the sentences still read left-to-right, centred as a block */
+  .xp-pent-stack {
+    text-align: left;
+  }
+
+  .xp-day {
+    text-align: center;
+  }
+
+  .xp-day-actions {
+    justify-content: center;
+  }
+
+  /* Invisible Interfaces is a room about absence — it gets more
+     empty floor than any other, and the words sit low in it */
+  .xp-room[data-room="invisible-interfaces"] {
+    min-height: 120svh;
+    grid-template-columns: 0.85fr 1.15fr;
+  }
+
+  /* Atlas is a surveyor's room: the rule gets the wider wall.
+     Atlas is a flipped room, so it needs :has() to outrank that rule. */
+  .xp-room[data-room="atlas"]:has(.xp-room-shot) {
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+}
+
+/* ============================================================
+   ARRIVAL — a pinned stage, scrubbed
+   The viewport is a stage held for three viewports of scroll, and
+   the scroll runs a read-head across the opening sentence. Ahead of
+   it the generic line; behind it the line that survived.
+
+   --t is the stage's own progress, 0 → 1 across its budget. It
+   defaults to 1 so that with no JavaScript the finished line is
+   simply revealed: the sequence is the enhancement, never the gate.
+   ============================================================ */
+
+.xp-arrive {
+  --len: 3;
+  position: relative;
+  height: calc(var(--len) * 100svh);
+}
+
+.xp-arrive-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: clamp(1.6rem, 4vh, 2.6rem);
+  width: min(100%, 105rem);
+  margin-inline: auto;
+  padding: max(var(--header-h), 12vh) var(--page-gutter) 10vh;
+}
+
+.xp-arrive-kicker {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+/* the swap finishes early, so the finished sentence gets a held beat
+   before the scene releases you */
+.xp-arrive-line {
+  --w: clamp(0, calc(var(--t, 1) / 0.68), 1);
+  margin: 0;
+  width: min(92vw, 32rem);
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 372, "SOFT" 45, "WONK" 1;
+  font-size: clamp(2.4rem, 6.2vw, 4.9rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+/* the tail is the only thing in doubt: one rolls up and out, the other rolls
+   in beneath it, so the two are never on the same line at once */
+.xp-arrive-swap {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.xp-arrive-tail {
+  display: block;
+}
+
+.xp-arrive-tail.is-was {
+  position: absolute;
+  inset: 0;
+  white-space: nowrap;
+  font-style: italic;
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--line-strong);
+  text-decoration-thickness: 1px;
+  transform: translateY(calc(var(--w) * -0.9em));
+  opacity: calc(1 - var(--w) * 1.6);
+}
+
+.xp-arrive-tail.is-now {
+  position: relative;
+  transform: translateY(calc((1 - var(--w)) * 0.9em));
+  opacity: calc(var(--w) * 1.6 - 0.25);
+}
+
+.xp-arrive-note,
+.xp-arrive-cue {
+  margin: 0;
+  /* both arrive once the sentence has resolved */
+  opacity: calc((var(--t, 1) - 0.7) * 5);
+}
+
+.xp-arrive-note {
+  max-width: 34ch;
+  font-family: var(--sans);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.xp-arrive-cue {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-arrive {
+    height: auto;
+  }
+  .xp-arrive-pin {
+    position: static;
+    height: auto;
+    min-height: 100svh;
+  }
+  /* no scrubbing: the finished sentence simply stands */
+  .xp-arrive-tail.is-was {
+    display: none;
+  }
+  .xp-arrive-tail.is-now {
+    transform: none;
+    opacity: 1;
+  }
+  .xp-arrive-note,
+  .xp-arrive-cue {
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   PINNED STAGES
+   The viewport is a stage. A scene declares how much scroll it is
+   worth, pins itself for that long, and choreographs against --t,
+   its own progress through that budget. Varying the budgets is the
+   pacing: a developed sequence earns three viewports, a single line
+   of punctuation earns one.
+
+   Placed last so these win on source order over the earlier
+   flow-layout rules.
+
+   Every curve reads --t with a fallback of 0.5 — the held state —
+   so if the frame loop never runs, every scene sits fully arrived
+   and fully legible rather than mid-transition.
+   ============================================================ */
+
+.xp-beat-pin,
+.xp-room-pin {
+  /* arrive across the first fifth, hold, release across the last fifth */
+  --in: clamp(0, calc(var(--t, 0.5) / 0.2), 1);
+  --out: clamp(0, calc((var(--t, 0.5) - 0.8) / 0.2), 1);
+  --live: calc(var(--in) - var(--out));
+  /* enters from below, leaves upward: the camera passes it */
+  --lift: calc((1 - var(--in)) * 3rem + var(--out) * -3rem);
+}
+
+/* ---- a beat: one held line ---- */
+
+.xp-beat {
+  position: relative;
+  height: calc(var(--len, 1.4) * 100svh);
+}
+
+.xp-beat-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  align-content: center;
+  width: min(100%, 105rem);
+  margin-inline: auto;
+  padding-inline: max(var(--page-gutter), calc((100% - 105rem) / 2));
+}
+
+.xp-beat-line {
+  margin: 0;
+  max-width: 24ch;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 372, "SOFT" 45, "WONK" 1;
+  font-size: clamp(1.8rem, 4.6vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  transform: translate3d(0, var(--lift), 0);
+  opacity: calc(0.12 + var(--live) * 0.88);
+}
+
+/* ---- rooms as pinned stages ---- */
+
+.xp-room {
+  min-height: 0;
+  height: calc(var(--len, 2.6) * 100svh);
+  display: block;
+  padding: 0;
+}
+
+.xp-room-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  align-content: center;
+  gap: clamp(2rem, 4vw, 4rem);
+  padding: max(var(--header-h), 10vh)
+    max(var(--page-gutter), calc((100% - 105rem) / 2)) 8vh;
+}
+
+/* budgets differ per room: marking evidence and carrying a rule through three
+   cases need dwell; a correction and a number do not */
+.xp-room[data-room="design-or-disaster"] { --len: 3.2; }
+.xp-room[data-room="pentimento"] { --len: 2.4; }
+.xp-room[data-room="invisible-interfaces"] { --len: 3; }
+.xp-room[data-room="atlas"] { --len: 3.2; }
+.xp-room[data-room="daynero"] { --len: 2.4; }
+
+/* the composition now belongs to the pin */
+@media (min-width: 60rem) {
+  .xp-room-pin {
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+  }
+
+  .xp-room[data-flip="true"] .xp-room-pin {
+    grid-template-columns: 0.95fr 1.05fr;
+  }
+
+  /* two rooms have no screen to hang: the act stands centre floor */
+  .xp-room[data-room="pentimento"] .xp-room-pin,
+  .xp-room[data-room="daynero"] .xp-room-pin {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: clamp(2.5rem, 6vh, 4.5rem);
+  }
+
+  .xp-room[data-room="atlas"] .xp-room-pin {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+}
+
+/* words and stage arrive and leave at different rates, which is what gives a
+   flat composition depth. Opacity floors at 0.4 — never invisible. */
+.xp-room-text,
+.xp-room-stage {
+  transform: translate3d(0, calc(var(--lift) * var(--depth, 1)), 0);
+  opacity: calc(0.4 + var(--live) * 0.6);
+}
+
+@media (max-width: 59.99rem) {
+  /* a phone cannot afford three viewports per room */
+  .xp-room {
+    height: auto;
+  }
+  .xp-room-pin {
+    position: static;
+    height: auto;
+    min-height: 100svh;
+  }
+  .xp-room-text,
+  .xp-room-stage {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-room,
+  .xp-beat {
+    height: auto;
+  }
+  .xp-room-pin,
+  .xp-beat-pin {
+    position: static;
+    height: auto;
+    min-height: 100svh;
+  }
+  .xp-room-text,
+  .xp-room-stage,
+  .xp-beat-line {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   LATERAL DRIFT
+   Scenes do not only rise and fall — they pass. Layers drift
+   sideways at rates set by their own depth, which is what reads as
+   travelling through a space rather than down a column. The
+   reference has no horizontal scroll track at all; the sideways
+   feeling is entirely lateral movement like this.
+   ============================================================ */
+
+.xp-room-text {
+  --drift: -1;
+}
+
+.xp-room-stage {
+  --drift: 1.6;
+}
+
+/* flipped rooms pass the other way, so consecutive rooms never drift
+   identically */
+.xp-room[data-flip="true"] .xp-room-text {
+  --drift: 1;
+}
+
+.xp-room[data-flip="true"] .xp-room-stage {
+  --drift: -1.6;
+}
+
+@media (min-width: 60rem) {
+  .xp-room-text,
+  .xp-room-stage {
+    transform: translate3d(
+      calc((0.5 - var(--t, 0.5)) * var(--drift, 0) * 5rem),
+      calc(var(--lift) * var(--depth, 1)),
+      0
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-room-text,
+  .xp-room-stage {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   TITLE CARDS
+   The narrative scenes centre like a film title. The rooms keep
+   their own asymmetric compositions — those already differ from
+   one another, and centring them too would flatten the variety
+   back out. Only the spine is centred: arrival, beats, descent.
+   ============================================================ */
+
+.xp-arrive-pin,
+.xp-beat-pin,
+.xp-shed-stage {
+  justify-items: center;
+  text-align: center;
+}
+
+.xp-arrive-line,
+.xp-beat-line,
+.xp-shed-lead,
+.xp-shed-turn {
+  margin-inline: auto;
+}
+
+.xp-arrive-note,
+.xp-arrive-cue,
+.xp-arrive-kicker {
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* the shedding control centres with its statements */
+.xp-shed-control {
+  margin-inline: auto;
+}
+
+.xp-era {
+  align-items: center;
+}
+
+.xp-era-said {
+  text-align: center;
+}
+
+/* a centred title wants a wider measure than a left-aligned column */
+.xp-arrive-line {
+  width: min(92vw, 34rem);
+}
+
+.xp-beat-line {
+  max-width: 28ch;
+}
+
+
+
+/* ============================================================
+   THE TRACK
+   Five projects, one frame. The set travels sideways through a
+   pinned opening rather than stacking underneath itself, because
+   five full-height sections read as sequence no matter how the
+   type inside them is set — that is structural, and no amount of
+   typographic treatment fixes it.
+
+   Type is still the artwork: there are no photographs here, so
+   each panel is a composition, and each is composed differently
+   rather than being one template recoloured.
+
+   Fail open, as everywhere: the sideways travel engages only once
+   the director confirms it is driving (data-staged). Without
+   JavaScript, with a stalled loop, or under reduced motion, the
+   rail is simply five readable panels in a column.
+   ============================================================ */
+
+.xp-track {
+  position: relative;
+}
+
+.xp-track-rail {
+  display: grid;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .xp-track[data-staged="on"] {
+    height: calc(var(--len, 7.5) * 100svh);
+  }
+
+  .xp-track[data-staged="on"] .xp-track-pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  .xp-track[data-staged="on"] .xp-track-rail {
+    display: flex;
+    height: 100%;
+    width: calc(var(--count) * 100vw);
+    /* 0 → the last panel: the whole set passes the opening once */
+    transform: translate3d(
+      calc(var(--t, 0) * (var(--count) - 1) * -100vw),
+      0,
+      0
+    );
+  }
+
+  .xp-track[data-staged="on"] .xp-poster {
+    flex: 0 0 100vw;
+    height: 100%;
+  }
+}
+
+/* ---- a panel ----
+   Explicit rows, and the stage takes what is left. A composition may crop at
+   the sides on purpose; it may never spill, so the last row is min-height 0
+   and clipped rather than allowed to push the frame open. */
+
+.xp-poster {
+  position: relative;
+  min-height: 100svh;
+  /* the ground shows through here, which is what stops one panel bleeding
+     into the next — the gutter does the separating, not a border */
+  padding: clamp(0.7rem, 1.6vw, 1.6rem);
+  color: var(--room-ink);
+  --ink: var(--room-ink);
+  --ink-soft: color-mix(in srgb, var(--room-ink) 74%, transparent);
+  --muted: color-mix(in srgb, var(--room-ink) 56%, transparent);
+  --line: color-mix(in srgb, var(--room-ink) 18%, transparent);
+  --line-strong: color-mix(in srgb, var(--room-ink) 44%, transparent);
+}
+
+.xp-poster-pin {
+  position: relative;
+  background: var(--room);
+  border-radius: 5px;
+  box-shadow: 0 1px 0 rgba(22, 21, 15, 0.06), 0 24px 50px -46px rgba(22, 21, 15, 0.5);
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: repeat(3, auto) minmax(0, auto);
+  align-content: center;
+  justify-items: center;
+  gap: clamp(0.7rem, 2vh, 1.5rem);
+  height: 100%;
+  min-height: 100svh;
+  width: min(100%, 74rem);
+  margin-inline: auto;
+  padding: max(var(--header-h), 8vh) clamp(1.25rem, 4vw, 3rem) 6vh;
+  text-align: center;
+}
+
+.xp-track[data-staged="on"] .xp-poster-pin {
+  min-height: 0;
+}
+
+.xp-poster-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--accent-ink);
+}
+
+.xp-poster-num { font-size: 1.2em; }
+.xp-poster-of,
+.xp-poster-form { color: var(--muted); }
+
+.xp-poster-name {
+  position: relative;
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 400, "SOFT" 45, "WONK" 1;
+  font-size: clamp(2.2rem, 5.6vw, 4.4rem);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.xp-poster-name a {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color var(--move) var(--ease-out);
+}
+
+.xp-poster-name a:hover,
+.xp-poster-name a:focus-visible { color: var(--accent-ink); }
+
+.xp-poster-q {
+  margin: 0;
+  max-width: 30ch;
+  font-family: var(--serif);
+  font-style: italic;
+  font-variation-settings: "opsz" 40, "wght" 372;
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  line-height: 1.3;
+  color: var(--ink-soft);
+}
+
+/* the thesis is the first thing to go when the frame is tight */
+.xp-poster-line {
+  display: none;
+}
+
+.xp-poster-stage {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  justify-self: center;
+  text-align: center;
+  min-height: 0;
+  max-height: 46svh;
+  width: 100%;
+  margin-top: clamp(0.6rem, 2.5vh, 2rem);
+  overflow: hidden;
+}
+
+/* the mechanics were each authored left-aligned for a column; in a centred
+   panel they have to agree with the type above them */
+.xp-poster-stage > * {
+  justify-items: center;
+  text-align: center;
+}
+
+.xp-poster-stage .xp-pent-stack,
+.xp-poster-stage .xp-atlas-lineage {
+  text-align: left;
+}
+
+/* nothing in a panel may outgrow the frame it stands in */
+.xp-poster-stage img {
+  max-height: 42svh;
+  width: auto;
+}
+
+.xp-poster-stage .xp-room-shot,
+.xp-poster-stage figure {
+  margin: 0;
+  max-width: 100%;
+}
+
+/* ---- the five treatments ---- */
+
+/* 01 · a verdict oversteps its frame */
+.xp-poster[data-room="design-or-disaster"] .xp-poster-name {
+  font-size: clamp(2.4rem, 6.4vw, 5.2rem);
+  letter-spacing: -0.045em;
+}
+
+/* 02 · the earlier version showing through its own name */
+.xp-poster-ghost {
+  position: absolute;
+  inset-inline: 0;
+  top: -0.32em;
+  font-style: italic;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  color: var(--accent-ink);
+  opacity: 0.24;
+  pointer-events: none;
+}
+
+/* 03 · nearly too faint to read, until you attend to it */
+.xp-poster[data-room="invisible-interfaces"] .xp-poster-name a {
+  color: color-mix(in srgb, var(--room-ink) 26%, transparent);
+}
+.xp-poster[data-room="invisible-interfaces"] .xp-poster-name a:hover,
+.xp-poster[data-room="invisible-interfaces"] .xp-poster-name a:focus-visible {
+  color: var(--ink);
+}
+
+/* 04 · set out like a surveyor's baseline */
+.xp-poster[data-room="atlas"] .xp-poster-name {
+  font-size: clamp(1.7rem, 4vw, 3rem);
+  letter-spacing: 0.26em;
+  text-indent: 0.26em;
+  padding-bottom: 0.28em;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+/* 05 · the word yields the frame to a number */
+.xp-poster[data-room="daynero"] .xp-poster-name {
+  font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+  color: var(--muted);
+}
+
+/* The case screen was sized for a tall column and outranks the panel cap by
+   specificity, so inside a panel it has to be told again — scaled to fit the
+   frame rather than clipped through the middle of the interface. */
+/* A definite height, not a max: the button sizes to the image while the image
+   sized to the button, and that circular chain collapsed the screen to
+   nothing. Fixing the height breaks the loop and the width follows the
+   aspect ratio. */
+.xp-poster-stage .xp-dod-surface img,
+.xp-poster-stage .xp-room-shot img {
+  height: 38svh;
+  width: auto;
+  max-width: 100%;
+}
+
+.xp-poster-stage .xp-dod-cap {
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* ============================================================
+   FIVE DESIGNS, NOT FIVE TYPE SIZES
+   Changing only the scale of a name is not art direction — every
+   panel still reads as the same layout recoloured. Each panel now
+   has its own composition and one graphic device, and both are
+   argued from the project rather than chosen for variety's sake.
+   ============================================================ */
+
+/* ---- 01 · the evidence board ----
+   Ranged left like a case file, with its own number set enormous behind it
+   as a filing mark. A verdict is a numbered thing before it is an opinion. */
+.xp-poster[data-room="design-or-disaster"] .xp-poster-pin {
+  justify-items: start;
+  text-align: left;
+  padding-left: clamp(1.5rem, 7vw, 6rem);
+}
+
+.xp-poster[data-room="design-or-disaster"] .xp-poster-pin::before {
+  content: "01";
+  position: absolute;
+  top: -0.16em;
+  right: 0.04em;
+  font-family: var(--serif);
+  font-size: clamp(9rem, 26vw, 22rem);
+  line-height: 1;
+  font-variation-settings: "opsz" 144, "wght" 400;
+  color: var(--accent-ink);
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.xp-poster[data-room="design-or-disaster"] .xp-poster-q {
+  margin-inline: 0;
+}
+
+.xp-poster[data-room="design-or-disaster"] .xp-poster-stage {
+  justify-self: start;
+  justify-items: start;
+  text-align: left;
+}
+
+/* ---- 02 · the manuscript ----
+   Centred and ruled like a page being corrected, with the margin line a
+   correction would be written against. */
+.xp-poster[data-room="pentimento"] .xp-poster-pin::before {
+  content: "";
+  position: absolute;
+  inset-block: 12%;
+  left: clamp(1.5rem, 9vw, 8rem);
+  width: 1px;
+  background: var(--accent-ink);
+  opacity: 0.22;
+}
+
+/* ---- 03 · the empty room ----
+   Almost nothing in it, and what there is sits low and to one side. The
+   project is about absence, so the panel is mostly unoccupied. */
+.xp-poster[data-room="invisible-interfaces"] .xp-poster-pin {
+  align-content: end;
+  justify-items: start;
+  text-align: left;
+  padding-bottom: clamp(3rem, 9vh, 6rem);
+  padding-left: clamp(1.5rem, 8vw, 7rem);
+}
+
+.xp-poster[data-room="invisible-interfaces"] .xp-poster-q {
+  margin-inline: 0;
+  max-width: 26ch;
+}
+
+.xp-poster[data-room="invisible-interfaces"] .xp-poster-stage {
+  justify-self: start;
+  justify-items: start;
+  text-align: left;
+  max-height: 30svh;
+}
+
+/* ---- 04 · the survey sheet ----
+   Ruled with a faint graticule, the way a field sheet is, and the name laid
+   along its baseline. */
+.xp-poster[data-room="atlas"] .xp-poster-pin::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--accent-ink) 13%, transparent) 0 1px,
+      transparent 1px 5.5rem
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--accent-ink) 13%, transparent) 0 1px,
+      transparent 1px 5.5rem
+    );
+}
+
+.xp-poster[data-room="atlas"] .xp-poster-pin > * {
+  position: relative;
+}
+
+/* ---- 05 · the product ----
+   The tightest panel. The word steps back to a label, the figure is the
+   whole composition, and it sits high so the number reads first. */
+.xp-poster[data-room="daynero"] .xp-poster-pin {
+  gap: clamp(0.35rem, 1vh, 0.7rem);
+}
+
+.xp-poster[data-room="daynero"] .xp-poster-q {
+  max-width: 34ch;
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+}
+
+.xp-poster[data-room="daynero"] .xp-poster-stage {
+  margin-top: clamp(1rem, 3vh, 2rem);
+}
+
+/* ============================================================
+   THE TRACK ON A NARROW SCREEN
+   Not a fallback — a better instrument. A pinned rail driven by
+   vertical scroll is a desktop conceit; a phone already has a
+   first-class horizontal gesture with real momentum and snapping,
+   so on narrow screens the track stops being simulated and becomes
+   an actual swipeable set.
+
+   This keeps the idea intact where the previous behaviour lost it:
+   collapsing to a column would have returned the projects to
+   exactly the one-after-another reading the track exists to break.
+   ============================================================ */
+
+@media (max-width: 59.99rem) {
+  .xp-track,
+  .xp-track[data-staged="on"] {
+    height: auto;
+  }
+
+  .xp-track[data-staged="on"] .xp-track-pin {
+    position: static;
+    height: auto;
+    overflow: visible;
+    padding-block: clamp(3rem, 9vh, 5rem);
+  }
+
+  .xp-track[data-staged="on"] .xp-track-rail {
+    display: flex;
+    width: auto;
+    /* the platform drives it now, so the scroll-linked transform must go */
+    transform: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--page-gutter);
+    gap: clamp(0.6rem, 3vw, 1rem);
+    padding-inline: var(--page-gutter);
+    /* the scrollbar is chrome the composition does not need */
+    scrollbar-width: none;
+  }
+
+  .xp-track[data-staged="on"] .xp-track-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .xp-track[data-staged="on"] .xp-poster {
+    flex: 0 0 min(86vw, 30rem);
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    scroll-snap-align: center;
+  }
+
+  .xp-track[data-staged="on"] .xp-poster-pin {
+    position: static;
+    height: auto;
+    min-height: 78svh;
+    padding: clamp(2rem, 7vw, 3rem) clamp(1.25rem, 5vw, 2rem);
+  }
+
+  /* a name sized for a full desktop frame will not sit in a phone card */
+  .xp-poster-name,
+  .xp-poster[data-room="design-or-disaster"] .xp-poster-name,
+  .xp-poster[data-room="atlas"] .xp-poster-name {
+    font-size: clamp(1.9rem, 8vw, 2.8rem);
+  }
+
+  .xp-poster[data-room="atlas"] .xp-poster-name {
+    letter-spacing: 0.16em;
+    text-indent: 0.16em;
+  }
+
+  .xp-poster[data-room="daynero"] .xp-poster-name {
+    font-size: clamp(1.2rem, 5vw, 1.6rem);
+  }
+
+  /* the oversized filing numeral has no room to be a background at this size */
+  .xp-poster[data-room="design-or-disaster"] .xp-poster-pin::before {
+    font-size: 8rem;
+    opacity: 0.05;
+  }
+
+  .xp-poster-stage .xp-dod-surface img,
+  .xp-poster-stage .xp-room-shot img {
+    height: 30svh;
+  }
+
+  /* every panel reads as one column on a phone, whatever it does on desktop */
+  .xp-poster[data-room="design-or-disaster"] .xp-poster-pin,
+  .xp-poster[data-room="invisible-interfaces"] .xp-poster-pin {
+    justify-items: center;
+    text-align: center;
+    align-content: center;
+    padding-left: clamp(1.25rem, 5vw, 2rem);
+  }
+
+  .xp-poster[data-room="design-or-disaster"] .xp-poster-stage,
+  .xp-poster[data-room="invisible-interfaces"] .xp-poster-stage {
+    justify-self: center;
+    justify-items: center;
+    text-align: center;
+  }
+}
+
+/* ============================================================
+   THE CAMERA
+   Scroll is not a timeline of things appearing — it is a camera
+   moving on a subject. Everything below is one continuous move
+   scrubbed by scroll, never a fade triggered at a threshold.
+
+   Each panel knows how far it is from the centre of the frame:
+
+     --d   0 centred · negative still coming · positive gone past
+
+   and behaves like an object at that distance: it turns away,
+   falls back in space, and loses the light. max(x, -x) stands in
+   for abs(), which CSS still will not give us.
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 60rem) {
+  .xp-track[data-staged="on"] .xp-track-pin {
+    /* the depth of the room the panels are standing in */
+    perspective: 1900px;
+    perspective-origin: 50% 46%;
+  }
+
+  .xp-track[data-staged="on"] .xp-track-rail {
+    transform-style: preserve-3d;
+  }
+
+  .xp-track[data-staged="on"] .xp-poster {
+    --d: calc(var(--t, 0) * (var(--count) - 1) - var(--i));
+    --away: max(var(--d), -1 * var(--d));
+
+    transform-style: preserve-3d;
+    /* turns away from you, recedes, and settles back as it takes the frame */
+    transform: perspective(1900px)
+      translate3d(0, 0, calc(var(--away) * -16rem))
+      rotateY(calc(var(--d) * -19deg))
+      scale(calc(1 - var(--away) * 0.05));
+    transform-origin: 50% 50%;
+  }
+
+  /* light falls off with distance, so the centred panel is the lit one */
+  .xp-track[data-staged="on"] .xp-poster-pin {
+    filter: brightness(calc(1 - var(--away) * 0.14));
+    box-shadow:
+      0 1px 0 rgba(22, 21, 15, 0.06),
+      0 calc(var(--away) * 3rem + 1.5rem) calc(var(--away) * 5rem + 3rem)
+        calc(var(--away) * -2rem - 2.5rem) rgba(22, 21, 15, 0.55);
+  }
+
+  /* a panel turned away is scenery; only the one facing you is live */
+  .xp-track[data-staged="on"] .xp-poster {
+    pointer-events: none;
+  }
+
+  .xp-track[data-staged="on"] .xp-poster:has(.xp-poster-pin) {
+    pointer-events: auto;
+  }
+}
+
+/* ---- the opening is a push-in ----
+   The frame starts slightly past you and settles, then pulls back as you
+   leave it. A cut to the next scene would end the shot; this hands it over. */
+@media (prefers-reduced-motion: no-preference) {
+  .xp-arrive[data-staged="on"] .xp-arrive-pin {
+    transform: scale(calc(1.06 - var(--t, 0) * 0.06 - var(--t, 0) * 0.05))
+      translateY(calc(var(--t, 0) * -2rem));
+    transform-origin: 50% 45%;
+    opacity: calc(1 - max(var(--t, 0) - 0.72, 0) * 2.6);
+  }
+
+  /* the descent inherits the move rather than starting a new one */
+  .xp-shed .xp-shed-stage {
+    transform: scale(calc(1 - var(--shed, 0) * 0.035));
+    transform-origin: 50% 42%;
+  }
+}
+
+/* ============================================================
+   THE CAMERA, EVERYWHERE ELSE
+   The opening and the track were moving while the scenes between
+   them still only faded. A camera that stops between shots is not
+   a camera. Each scene below now gets a move of its own, chosen
+   for what the scene is doing rather than applied uniformly:
+
+     the beats    push in as they arrive, pull back as they leave
+     the notice   rises and recedes, its specimens lagging behind
+     the close    settles forward, the last thing to stop moving
+
+   All scrubbed by scroll, all gated on reduced motion, and all
+   falling back to no transform so nothing depends on them.
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---- beats: a held line the camera closes on ---- */
+  .xp-beat[data-staged="on"] .xp-beat-line {
+    transform: translate3d(0, var(--lift), 0)
+      scale(calc(0.94 + var(--live, 1) * 0.06));
+    transform-origin: 50% 50%;
+  }
+
+  /* ---- the notice: rises past you, specimens trailing the words ---- */
+  .xp-notice {
+    --near: calc(1 - max(var(--away, 0), -1 * var(--away, 0)));
+  }
+
+  .xp-notice-head {
+    transform: translate3d(0, calc(var(--p, 0) * -3.5rem), 0)
+      scale(calc(0.97 + var(--near, 1) * 0.03));
+    transform-origin: 50% 50%;
+  }
+
+  /* the specimens sit nearer the camera, so they travel further and later —
+     which is what separates them from the words instead of moving as a slab */
+  .xp-notice-grid {
+    transform: translate3d(0, calc(var(--p, 0) * -6.5rem), 0);
+  }
+
+  .xp-notice-grid .xp-spec:nth-child(2) {
+    transform: translate3d(0, calc(var(--p, 0) * -1.6rem), 0);
+  }
+
+  /* ---- the close: the camera settles, and stops ---- */
+  .xp-close {
+    transform: translate3d(0, calc(var(--p, 0) * -2rem), 0)
+      scale(calc(0.985 + (1 - max(var(--away, 0), -1 * var(--away, 0))) * 0.015));
+    transform-origin: 50% 40%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-beat[data-staged="on"] .xp-beat-line,
+  .xp-notice-head,
+  .xp-notice-grid,
+  .xp-notice-grid .xp-spec:nth-child(2),
+  .xp-close {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   RANGE · BORROWED
+   Two scenes about the person rather than the work. Both scrub
+   their own stage progress: weights plateau so a line holds at
+   full strength for most of its band, and the offset is signed so
+   what has passed leaves upward while what is coming waits below.
+   Two lines never share a row — the collision that spoiled the
+   first wipe and the first crossfade in this build.
+
+   --w0 defaults to 1 and the rest to 0, so with no JavaScript the
+   first line of each scene stands and the rest are simply absent
+   rather than the scene arriving blank.
+   ============================================================ */
+
+.xp-range,
+.xp-borrow {
+  position: relative;
+  height: auto;
+}
+
+.xp-range-pin,
+.xp-borrow-pin {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(1.4rem, 4vh, 2.6rem);
+  min-height: 100svh;
+  width: min(100%, 105rem);
+  margin-inline: auto;
+  padding: max(var(--header-h), 10vh)
+    max(var(--page-gutter), calc((100% - 62rem) / 2)) 10vh;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .xp-range[data-staged="on"],
+  .xp-borrow[data-staged="on"] {
+    height: 320svh;
+  }
+  .xp-borrow[data-staged="on"] {
+    height: 420svh;
+  }
+  .xp-range[data-staged="on"] .xp-range-pin,
+  .xp-borrow[data-staged="on"] .xp-borrow-pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 0;
+  }
+}
+
+/* ---- range: one sentence, the verb swapping inside it ---- */
+
+.xp-range-lead {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 372, "SOFT" 45, "WONK" 1;
+  font-size: clamp(2rem, 5.6vw, 4.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+}
+
+/* the swap sizes to its longest word so the sentence never reflows mid-scrub */
+.xp-range-swap {
+  position: relative;
+  display: inline-block;
+  min-width: 7.5em;
+  height: 1.06em;
+  vertical-align: baseline;
+}
+
+.xp-range-verb {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  font-style: italic;
+  color: var(--accent-disaster-ink);
+  opacity: var(--w, 0);
+  transform: translateY(calc(var(--o, 0) * -0.62em));
+}
+
+.xp-range-verb:nth-child(1) { --w: var(--w0, 1); --o: var(--o0, 0); }
+.xp-range-verb:nth-child(2) { --w: var(--w1, 0); --o: var(--o1, -1); }
+.xp-range-verb:nth-child(3) { --w: var(--w2, 0); --o: var(--o2, -1); }
+.xp-range-verb:nth-child(4) { --w: var(--w3, 0); --o: var(--o3, -1); }
+
+.xp-range-note {
+  margin: 0;
+  max-width: 44ch;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ---- borrowed: five lessons, one at a time ---- */
+
+.xp-borrow-kicker {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.xp-borrow-set {
+  position: relative;
+  width: 100%;
+  height: clamp(11rem, 30vh, 16rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.xp-borrow-beat {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  gap: 1rem;
+  opacity: var(--w, 0);
+  transform: translateY(calc(var(--o, 0) * -2.6rem));
+}
+
+.xp-borrow-beat:nth-child(1) { --w: var(--w0, 1); --o: var(--o0, 0); }
+.xp-borrow-beat:nth-child(2) { --w: var(--w1, 0); --o: var(--o1, -1); }
+.xp-borrow-beat:nth-child(3) { --w: var(--w2, 0); --o: var(--o2, -1); }
+.xp-borrow-beat:nth-child(4) { --w: var(--w3, 0); --o: var(--o3, -1); }
+.xp-borrow-beat:nth-child(5) { --w: var(--w4, 0); --o: var(--o4, -1); }
+
+.xp-borrow-from {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--accent-invisible-ink);
+}
+
+.xp-borrow-lesson {
+  margin: 0;
+  max-width: 30ch;
+  margin-inline: auto;
+  font-family: var(--serif);
+  font-variation-settings: "opsz" 96, "wght" 372, "SOFT" 45, "WONK" 1;
+  font-size: clamp(1.3rem, 3vw, 2.3rem);
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-range-verb,
+  .xp-borrow-beat {
+    transform: none;
+  }
+  /* stacked and legible rather than one absolute pile */
+  .xp-borrow-set {
+    height: auto;
+    display: grid;
+    gap: 2.5rem;
+  }
+  .xp-borrow-beat {
+    position: static;
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   FULL BLEED
+   The panel is gone. Five attempts put the work inside something —
+   a sheet, a plate, a card — and the container was always what
+   read as unaesthetic. Apple never puts the product in a card; the
+   product is the screen. So each project's colour IS the frame,
+   the type sits directly on it, and nothing is drawn around it.
+
+   Separation now comes from the camera, not an edge: adjacent
+   projects are planes at different angles and depths, and where
+   two planes meet, the leading edge carries a shadow the way a
+   real surface would. That is a lit relationship rather than a
+   border, which is why it can never read as a card again.
+
+   Written last so it wins over the plate rules above.
+   ============================================================ */
+
+.xp-poster {
+  padding: 0;
+  overflow: hidden;
+}
+
+.xp-poster-pin {
+  position: relative;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+  width: 100%;
+  max-width: none;
+  padding: max(var(--header-h), 9vh) clamp(1.5rem, 7vw, 7rem) 9vh;
+}
+
+/* the camera lights the plane itself now, not a plate sitting on the page */
+@media (prefers-reduced-motion: no-preference) and (min-width: 60rem) {
+  .xp-track[data-staged="on"] .xp-poster-pin {
+    filter: none;
+  }
+
+  .xp-track[data-staged="on"] .xp-poster {
+    filter: brightness(calc(1 - var(--away) * 0.16));
+  }
+
+  /* where one plane passes behind the next, the meeting edge falls into
+     shadow — surfaces relating to each other, not a rule drawn between them */
+  .xp-track[data-staged="on"] .xp-poster::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: clamp(3rem, 9vw, 9rem);
+    pointer-events: none;
+    background: linear-gradient(
+      to right,
+      rgba(22, 21, 15, calc(var(--away) * 0.5)),
+      transparent
+    );
+  }
+}
+
+/* nothing is holding the type back now, so it can be the size it wants */
+.xp-poster-name {
+  font-size: clamp(2.6rem, 9vw, 8.5rem);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+}
+
+.xp-poster[data-room="design-or-disaster"] .xp-poster-name {
+  font-size: clamp(2.8rem, 10.5vw, 10rem);
+}
+
+.xp-poster[data-room="pentimento"] .xp-poster-name {
+  font-size: clamp(2.8rem, 10vw, 9.5rem);
+}
+
+.xp-poster[data-room="invisible-interfaces"] .xp-poster-name {
+  font-size: clamp(2.3rem, 7.5vw, 6.5rem);
+}
+
+.xp-poster[data-room="atlas"] .xp-poster-name {
+  font-size: clamp(2rem, 5.6vw, 4.6rem);
+  letter-spacing: 0.24em;
+  text-indent: 0.24em;
+}
+
+.xp-poster[data-room="daynero"] .xp-poster-name {
+  font-size: clamp(1.6rem, 4vw, 3rem);
+}
+
+/* the filing numeral scales with the frame it is printed on */
+.xp-poster[data-room="design-or-disaster"] .xp-poster-pin::before {
+  font-size: clamp(12rem, 34vw, 30rem);
+  opacity: 0.055;
+  top: -0.2em;
+  right: -0.04em;
+}
+
+.xp-poster-q {
+  font-size: clamp(1.05rem, 1.9vw, 1.6rem);
+  max-width: 32ch;
+}
+
+/* on a phone the planes become cards again on purpose — a swipeable set needs
+   an edge to read as separate items, and there is no camera there to do it */
+@media (max-width: 59.99rem) {
+  .xp-track[data-staged="on"] .xp-poster-pin {
+    background: var(--room);
+    border-radius: 6px;
+  }
+  .xp-track[data-staged="on"] .xp-poster {
+    overflow: visible;
+  }
+}
+
+/* The tint used to live on the plate. With the plate gone it belongs to the
+   plane itself, and the plate's shadow has to go with it — that rule sits
+   inside a staged selector, so it needs the same weight to be undone. */
+.xp-poster {
+  background: var(--room);
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 60rem) {
+  .xp-track[data-staged="on"] .xp-poster-pin {
+    box-shadow: none;
+  }
+}
+
+/* The meeting-edge shadow was unbounded, so a plane turned steeply away went
+   past shadow into grey and lost its colour entirely. Capped, a turned plane
+   stays recognisably itself — you can see which project is coming. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 60rem) {
+  .xp-track[data-staged="on"] .xp-poster::after {
+    background: linear-gradient(
+      to right,
+      rgba(22, 21, 15, min(calc(var(--away) * 0.42), 0.34)),
+      transparent
+    );
+  }
+
+  .xp-track[data-staged="on"] .xp-poster {
+    filter: brightness(max(calc(1 - var(--away) * 0.13), 0.82));
+  }
+}
+
+/* ============================================================
+   AN ANSWER
+   A project standing where it is the reply. There is no work
+   section and no set, so nothing here needs an edge, a number, or
+   a position in a row — a page of argument sits either side of it,
+   which is what separates it. That is the one thing five container
+   designs could never achieve by styling.
+
+   It takes the whole screen: its colour is the frame, the lead is
+   the sentence it answers, and its mechanic is the only thing in
+   it you can touch.
+   ============================================================ */
+
+.xp-answer {
+  position: relative;
+  overflow: hidden;
+  background: var(--room);
+  color: var(--room-ink);
+  --ink: var(--room-ink);
+  --ink-soft: color-mix(in srgb, var(--room-ink) 74%, transparent);
+  --muted: color-mix(in srgb, var(--room-ink) 56%, transparent);
+  --line: color-mix(in srgb, var(--room-ink) 18%, transparent);
+  --line-strong: color-mix(in srgb, var(--room-ink) 44%, transparent);
+}
+
+.xp-answer-pin {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(0.6rem, 1.8vh, 1.3rem);
+  min-height: 100svh;
+  width: min(100%, 68rem);
+  margin-inline: auto;
+  padding: max(var(--header-h), 9vh) clamp(1.5rem, 6vw, 4rem) 9vh;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .xp-answer[data-staged="on"] {
+    height: calc(var(--len, 2.8) * 100svh);
+  }
+
+  .xp-answer[data-staged="on"] .xp-answer-pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 0;
+  }
+
+  /* the camera arrives on it and pulls back off it, the way it does on the
+     opening — so a project is entered rather than scrolled onto */
+  .xp-answer[data-staged="on"] .xp-answer-pin > * {
+    --in: clamp(0, calc(var(--t, 0.5) / 0.22), 1);
+    --out: clamp(0, calc((var(--t, 0.5) - 0.78) / 0.22), 1);
+    transform: translateY(calc((1 - var(--in)) * 2.4rem + var(--out) * -2.4rem));
+    opacity: calc(0.25 + (var(--in) - var(--out)) * 0.75);
+  }
+}
+
+/* the sentence it is answering, set as speech rather than a label */
+.xp-answer-lead {
+  margin: 0 auto;
+  max-width: 30ch;
+  font-family: var(--serif);
+  font-style: italic;
+  font-variation-settings: "opsz" 40, "wght" 372;
+  font-size: clamp(1.05rem, 1.9vw, 1.5rem);
+  line-height: 1.34;
+  color: var(--muted);
+}
+
+.xp-answer-name {
+  margin: 0.4rem 0 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 400, "SOFT" 45, "WONK" 1;
+  font-size: clamp(2.6rem, 8.5vw, 7.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.xp-answer-name a {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color var(--move) var(--ease-out);
+}
+
+.xp-answer-name a:hover,
+.xp-answer-name a:focus-visible {
+  color: var(--accent-ink);
+}
+
+.xp-answer-q {
+  margin: 0.2rem auto 0;
+  max-width: 34ch;
+  font-family: var(--sans);
+  font-size: clamp(0.98rem, 1.4vw, 1.15rem);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.xp-answer-stage {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-height: 0;
+  max-height: 44svh;
+  width: 100%;
+  margin-top: clamp(1rem, 3vh, 2.2rem);
+  overflow: hidden;
+  text-align: center;
+}
+
+.xp-answer-stage > * {
+  justify-items: center;
+  text-align: center;
+}
+
+/* these two are sentences; centring prose reads badly */
+.xp-answer-stage .xp-pent-stack,
+.xp-answer-stage .xp-atlas-lineage {
+  text-align: left;
+}
+
+.xp-answer-stage .xp-dod-surface img,
+.xp-answer-stage .xp-room-shot img {
+  height: 34svh;
+  width: auto;
+  max-width: 100%;
+}
+
+.xp-answer-more {
+  margin: clamp(0.8rem, 2.5vh, 1.6rem) 0 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+}
+
+.xp-answer-more a {
+  color: var(--accent-ink);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-ink) 40%, transparent);
+  padding-bottom: 2px;
+}
+
+@media (max-width: 59.99rem) {
+  .xp-answer[data-staged="on"] {
+    height: auto;
+  }
+  .xp-answer[data-staged="on"] .xp-answer-pin {
+    position: static;
+    height: auto;
+    min-height: 100svh;
+  }
+  .xp-answer-stage .xp-dod-surface img,
+  .xp-answer-stage .xp-room-shot img {
+    height: 30svh;
+  }
+}
+
+/* ============================================================
+   THE WORK, AS A SET
+   Five names on paper, all present at once. The set is calm on
+   purpose: it is an index, and an index that performs is a nuisance
+   to read. The performance belongs to opening one.
+   ============================================================ */
+
+.xp-works {
+  position: relative;
+  width: min(100%, 105rem);
+  margin-inline: auto;
+  padding: clamp(6rem, 16vh, 12rem)
+    max(var(--page-gutter), calc((100% - 74rem) / 2));
+}
+
+.xp-works-kicker {
+  margin: 0 0 clamp(2rem, 6vh, 3.5rem);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.xp-works-set {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.xp-works-item {
+  border-bottom: 1px solid var(--line);
+}
+
+.xp-works-open {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: baseline;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  width: 100%;
+  padding: clamp(1.4rem, 4vh, 2.6rem) clamp(0.6rem, 2vw, 1.4rem);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--move) var(--ease-out),
+    padding-inline var(--move) var(--ease-out);
+}
+
+/* the project's own colour arrives under the name before you open it, so the
+   set previews the room you are about to be standing in */
+.xp-works-open:hover,
+.xp-works-open:focus-visible {
+  background: var(--room);
+  padding-inline: clamp(1rem, 3vw, 2.2rem);
+}
+
+.xp-works-num {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--muted);
+}
+
+.xp-works-name {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 400, "SOFT" 45, "WONK" 1;
+  font-size: clamp(1.9rem, 5.4vw, 4.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.xp-works-open:hover .xp-works-name,
+.xp-works-open:focus-visible .xp-works-name {
+  color: var(--accent-ink);
+}
+
+.xp-works-form,
+.xp-works-cue {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.xp-works-cue {
+  opacity: 0;
+  transform: translateX(-0.4rem);
+  transition:
+    opacity var(--move) var(--ease-out),
+    transform var(--move) var(--ease-out);
+}
+
+.xp-works-open:hover .xp-works-cue,
+.xp-works-open:focus-visible .xp-works-cue {
+  opacity: 1;
+  transform: none;
+  color: var(--accent-ink);
+}
+
+@media (max-width: 48rem) {
+  .xp-works-open {
+    grid-template-columns: auto 1fr;
+    row-gap: 0.4rem;
+  }
+  .xp-works-form,
+  .xp-works-cue {
+    grid-column: 2;
+  }
+}
+
+/* ============================================================
+   OPENED
+   The project bleeds out to fill the screen. Not a page, not a
+   card on a scrim — the room itself, edge to edge, with the
+   mechanic live inside it and one way back.
+   ============================================================ */
+
+.xp-open {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--room);
+  color: var(--room-ink);
+  --ink: var(--room-ink);
+  --ink-soft: color-mix(in srgb, var(--room-ink) 74%, transparent);
+  --muted: color-mix(in srgb, var(--room-ink) 56%, transparent);
+  --line: color-mix(in srgb, var(--room-ink) 18%, transparent);
+  --line-strong: color-mix(in srgb, var(--room-ink) 44%, transparent);
+  animation: xp-open-in 460ms var(--ease-out) both;
+}
+
+/* it grows out of the row you pressed rather than fading over the page */
+@keyframes xp-open-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(2.5rem);
+    border-radius: 18px;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    border-radius: 0;
+  }
+}
+
+.xp-open:focus-visible {
+  outline: none;
+}
+
+.xp-open-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: clamp(1rem, 3vh, 1.8rem) clamp(1.25rem, 5vw, 3.5rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.xp-open-form {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--accent-ink);
+}
+
+.xp-open-close {
+  padding: 0.55em 1.15em;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  cursor: pointer;
+  transition:
+    background-color var(--beat) var(--ease-out),
+    border-color var(--beat) var(--ease-out);
+}
+
+.xp-open-close:hover,
+.xp-open-close:focus-visible {
+  border-color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent-ink) 12%, transparent);
+}
+
+.xp-open-body {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(0.5rem, 1.6vh, 1.1rem);
+  min-height: 0;
+  padding: clamp(1.5rem, 5vh, 3rem) clamp(1.25rem, 5vw, 3.5rem)
+    clamp(2rem, 6vh, 4rem);
+  text-align: center;
+  overflow-y: auto;
+}
+
+.xp-open-name {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "wght" 400, "SOFT" 45, "WONK" 1;
+  font-size: clamp(2.4rem, 7vw, 5.6rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+}
+
+.xp-open-q {
+  margin: 0.4rem auto 0;
+  max-width: 34ch;
+  font-family: var(--serif);
+  font-style: italic;
+  font-variation-settings: "opsz" 40, "wght" 372;
+  font-size: clamp(1.02rem, 1.7vw, 1.4rem);
+  line-height: 1.32;
+  color: var(--ink-soft);
+}
+
+.xp-open-stage {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  width: 100%;
+  min-height: 0;
+  margin-top: clamp(1rem, 3vh, 2rem);
+  text-align: center;
+}
+
+.xp-open-stage > * {
+  justify-items: center;
+  text-align: center;
+}
+
+.xp-open-stage .xp-pent-stack,
+.xp-open-stage .xp-atlas-lineage {
+  text-align: left;
+}
+
+.xp-open-stage .xp-dod-surface img,
+.xp-open-stage .xp-room-shot img {
+  height: 38svh;
+  width: auto;
+  max-width: 100%;
+}
+
+.xp-open-more {
+  margin: clamp(1rem, 3vh, 2rem) 0 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+}
+
+.xp-open-more a {
+  color: var(--accent-ink);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-ink) 40%, transparent);
+  padding-bottom: 2px;
+}
+
+.xp-works-plain {
+  margin: 2rem 0 0;
+  padding-left: 1.1rem;
+  font-family: var(--serif);
+  font-size: var(--step-1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-open {
+    animation: none;
+  }
+}
+
+.xp-works-thesis {
+  grid-column: 2;
+  max-width: 46ch;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--muted);
+}

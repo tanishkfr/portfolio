@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LivingIndex } from "./components/living-index";
+import { WorkIndex } from "./components/work-index";
 
 export const metadata: Metadata = {
   title: { absolute: "Tanishk — Interaction Designer" },
@@ -18,5 +18,5 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <LivingIndex />;
+  return <WorkIndex />;
 }

@@ -1,15 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
-import Link from "next/link";
 import { MotionDirector } from "./components/motion-director";
+import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
-import "./globals.css";
-import "./polish.css";
-import "./experience.css";
-import "./hiring.css";
-import "./case-studies.css";
-import "./home-system.css";
-import "./interaction-score.css";
+import { RouteSettler } from "./components/transition-link";
+import "./styles/system.css";
+import "./styles/home.css";
+import "./styles/explore.css";
+import "./styles/case.css";
+import "./styles/pages.css";
 
 async function requestOrigin() {
   const headerList = await headers();
@@ -48,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Tanishk — Interaction Designer",
       title: "Tanishk — Interaction Designer",
       description:
-        "Five interaction systems by Tanishk, read from encounter to rule to consequence.",
+        "Five interaction systems examined with one question at a time: what each shows, what it decides, and what that changes.",
       images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
     },
     twitter: {
@@ -65,7 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f2f0e8",
+  themeColor: "#f8f3e4",
   colorScheme: "light",
 };
 
@@ -75,33 +74,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-mode="full" suppressHydrationWarning>
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/fraunces-var.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        {/* The chosen mode applies before first paint. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var q=new URLSearchParams(location.search).get('mode');var m=q||sessionStorage.getItem('mode');if(m==='review'||m==='full'){document.documentElement.dataset.mode=m;if(q)sessionStorage.setItem('mode',m);}}catch(t){}})();",
+          }}
+        />
+      </head>
       <body>
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>
         <MotionDirector />
+        <RouteSettler />
         <SiteHeader />
         {children}
-        <footer className="site-footer">
-          <div className="footer-identity">
-            <strong>Tanishk</strong>
-            <span>Interaction Designer · Bangalore</span>
-          </div>
-          <div className="footer-links">
-            <a href="mailto:madebytanishk@gmail.com">Email</a>
-            <a
-              href="https://twitter.com/madebytanishk"
-              target="_blank"
-              rel="noreferrer"
-            >
-              X / Twitter <span aria-hidden="true">↗</span>
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
-            <Link href="/">Work</Link>
-          </div>
-          <p>© {new Date().getFullYear()} Tanishk</p>
-        </footer>
+        <SiteFooter year={new Date().getFullYear()} />
       </body>
     </html>
   );

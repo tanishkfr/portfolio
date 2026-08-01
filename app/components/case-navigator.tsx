@@ -66,32 +66,36 @@ export function CaseNavigator({
     };
   }, []);
 
+  const activeIndex = Math.max(
+    0,
+    sections.findIndex(([id]) => id === active),
+  );
+
   return (
-    <aside
-      className="case-toc case-toc-v2"
+    <nav
+      className="chapter-rail"
       aria-label={`${title} case study sections`}
       style={{ "--case-progress": progress } as CSSProperties}
     >
-      <div className="case-progress-track" aria-hidden="true">
-        <span />
-      </div>
-      <div>
-        <p className="eyebrow">Case study · 5 chapters</p>
-        <nav>
-          {sections.map(([id, label], index) => (
+      <span className="chapter-rail-progress" aria-hidden="true" />
+      <ol>
+        {sections.map(([id, label], index) => (
+          <li key={id}>
             <a
               href={`#${id}`}
-              key={id}
               aria-current={active === id ? "location" : undefined}
+              data-passed={index <= activeIndex ? "true" : undefined}
               title={chapterTitles[id]}
             >
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {label}
+              <span className="chapter-rail-no">{String(index + 1).padStart(2, "0")}</span>
+              <span className="chapter-rail-label">{label}</span>
             </a>
-          ))}
-        </nav>
-        <p className="case-toc-note">{chapterTitles[active as keyof typeof chapterTitles]}</p>
-      </div>
-    </aside>
+          </li>
+        ))}
+      </ol>
+      <p className="chapter-rail-note" key={active}>
+        {chapterTitles[active as keyof typeof chapterTitles]}
+      </p>
+    </nav>
   );
 }

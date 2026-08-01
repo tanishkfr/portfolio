@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Project } from "../data/portfolio";
-import { ProjectSignature } from "./project-signature";
+import { SignaturePlate } from "./project-sigil";
+import { TransitionLink } from "./transition-link";
 
 export function DayneroPreview({
   project,
@@ -13,14 +13,19 @@ export function DayneroPreview({
     <main
       id="main-content"
       className="daynero-preview"
-      style={{ "--project-accent": project.accent } as React.CSSProperties}
+      style={
+        {
+          "--project-accent": project.accent,
+          "--accent": project.accent,
+        } as React.CSSProperties
+      }
     >
       <div className="daynero-return">
-        <a href={returnHref}>← Return to selected work</a>
+        <TransitionLink href={returnHref}>← All work</TransitionLink>
         <span>Commercial work · Preview</span>
       </div>
 
-      <header className="daynero-hero" data-scroll-reveal>
+      <header className="daynero-hero" data-reveal>
         <div className="daynero-hero-copy">
           <p className="eyebrow">AI-native financial product · Case study in preparation</p>
           <h1 style={{ viewTransitionName: `project-${project.id}` }}>Daynero</h1>
@@ -34,17 +39,17 @@ export function DayneroPreview({
             <a href="https://daynero.com/" target="_blank" rel="noreferrer">
               Visit daynero.com <span aria-hidden="true">↗</span>
             </a>
-            <Link href="/#work">See published case studies</Link>
+            <TransitionLink href="/#work">See published case studies</TransitionLink>
           </div>
         </div>
 
-        <ProjectSignature
+        <SignaturePlate
           artifact={project.artifact}
           focus="Adaptive finance · daily behavior"
         />
       </header>
 
-      <dl className="daynero-facts" aria-label="Daynero project facts" data-scroll-reveal>
+      <dl className="daynero-facts" aria-label="Daynero project facts" data-reveal>
         <div>
           <dt>Context</dt>
           <dd>Active startup product</dd>
@@ -63,7 +68,7 @@ export function DayneroPreview({
         </div>
       </dl>
 
-      <section className="daynero-public" aria-labelledby="daynero-public-title" data-scroll-reveal>
+      <section className="daynero-public" aria-labelledby="daynero-public-title" data-reveal>
         <header>
           <p className="eyebrow">What is public now</p>
           <h2 id="daynero-public-title">Money guidance that responds to the day.</h2>
@@ -91,7 +96,7 @@ export function DayneroPreview({
         </div>
       </section>
 
-      <section className="daynero-boundary" aria-labelledby="daynero-boundary-title" data-scroll-reveal>
+      <section className="daynero-boundary" aria-labelledby="daynero-boundary-title" data-reveal>
         <div>
           <p className="eyebrow">Evidence boundary</p>
           <h2 id="daynero-boundary-title">A preview, not a manufactured case study.</h2>
@@ -116,7 +121,7 @@ export function DayneroPreview({
         </div>
       </section>
 
-      <section className="daynero-close" data-scroll-reveal>
+      <section className="daynero-close" data-reveal>
         <p>The work is live. The story will follow when it can be told properly.</p>
         <a href="https://daynero.com/" target="_blank" rel="noreferrer">
           Experience Daynero <span aria-hidden="true">↗</span>

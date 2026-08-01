@@ -46,7 +46,7 @@ const capabilities = [
 
 export default function AboutPage() {
   return (
-    <main id="main-content" className="about-shell about-shell--alive">
+    <main id="main-content" className="about-shell">
       <header className="about-intro" data-reveal>
         <p className="eyebrow">About · Bangalore · Available for work</p>
         <h1>I design the rules people feel.</h1>

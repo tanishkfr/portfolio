@@ -25,36 +25,90 @@ function assertCleanEncoding(html) {
   assert.doesNotMatch(html, /(?:Ã.|Â.|â€|â†|âœ|ï¿½|�)/);
 }
 
-test("server-renders a clear introduction and one operable interaction score", async () => {
+test("server-renders Explore as a cinematic world ending in the work", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   const html = await response.text();
 
-  for (const phrase of [
-    "I design the moment a system becomes",
-    "Tanishk · Interaction designer · Bangalore",
-    "Daynero · AI-native finance",
-    "Four working investigations",
-    "Five systems. One reading head",
-    "Encounter",
-    "Rule",
-    "Consequence",
-    "Design or Disaster",
-    "Pentimento",
-    "Invisible Interfaces",
-    "Atlas",
-    "Available for work",
-    "madebytanishk@gmail.com",
-  ]) {
-    assert.match(html, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  // The premise, the thing he keeps observing, and the close that
+  // bookends the opening line — all server-rendered.
+  /* The opening line is split so the shared prefix can hold still while only
+     the tail swaps — the finished sentence is still what the h1 reads. */
+  assert.match(html, /<h1 class="xp-arrive-line">\s*I design/);
+  assert.match(html, /the part you.{0,10}t see\./);
+  // the draft it replaced is present but decorative
+  assert.match(html, /aria-hidden="true"[^>]*>\s*apps and interfaces\./);
+  assert.match(html, /Every year, software asks less of us\./);
+  assert.match(html, /And every year, it shows me/);
+  assert.match(html, /That was the part you.{0,10}t see\./);
+
+  // Every project is a room with its own ground colour — still a real link
+  // to its case, carrying its thesis, server-rendered before any JS.
+  const works = [
+    { slug: "design-or-disaster", title: "Design or Disaster", t: "point before you pronounce" },
+    { slug: "pentimento", title: "Pentimento", t: "must outrank its sentence" },
+    { slug: "invisible-interfaces", title: "Invisible Interfaces", t: "accountability has to return" },
+    { slug: "atlas", title: "Atlas", t: "allowed to change it" },
+    { slug: "daynero", title: "Daynero", t: "not just a monthly reset" },
+  ];
+  for (const work of works) {
+    assert.match(html, new RegExp(`href="/work/${work.slug}"`));
+    assert.match(html, new RegExp(`>${work.title}<`));
+    assert.match(html, new RegExp(work.t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    // each room declares which world it is, which is what paints it
+    assert.match(html, new RegExp(`data-room="${work.slug}"`));
+  }
+  /* There is no work section. Each project stands where it is the reply to
+     the sentence just made, with a page of argument either side of it — which
+     is what separates them, rather than an edge or a position in a row. */
+  assert.equal((html.match(/class="xp-works-item"/g) ?? []).length, 5);
+  assert.match(html, /class="xp-works-thesis"/);
+  assert.doesNotMatch(html, /class="xp-track"|class="xp-poster"|class="xp-answer"/);
+  // the work is one addressable region, so a returning case lands here
+  assert.match(html, /id="work"/);
+
+
+  /* Opening a project is a dialog, not a navigation: it is labelled, modal,
+     and every name is still a real link to its case for anyone without JS. */
+  assert.match(html, /class="xp-works-open"/);
+  assert.match(html, /<noscript>/);
+
+  // Entrances are typed: a name does not arrive the way a caption does.
+  for (const kind of ["name", "quiet", "figure"]) {
+    assert.match(html, new RegExp(`data-reveal="${kind}"`));
   }
 
-  assert.equal((html.match(/class="score-voice score-voice--/g) ?? []).length, 5);
-  assert.match(html, /type="range"/);
-  assert.match(html, /aria-label="Choose a movement of the score"/);
-  assert.match(html, /aria-valuetext=/);
+  // The descent's five statements are the argument, so they must reach
+  // assistive tech; only the control glyphs may be hidden.
+  assert.match(html, /class="xp-era-glyph" aria-hidden="true"/);
+  assert.match(html, /You had to speak its language\./);
+  assert.doesNotMatch(html, /class="xp-shed-control" aria-hidden/);
+
+  // Spoken aloud, the struck words would invert the sentence.
+  assert.match(html, /class="xp-close-strike" aria-hidden="true"/);
+
+  /* The mechanics now live inside the room a project opens into, so the home
+     page server-renders the argument and the set rather than five live
+     widgets. The case screen is asserted on its own case page instead. */
+  assert.match(html, /Five questions I couldn.{0,8}t drop/);
+
+  /* Each row carries its project's ground, so the set previews the room you
+     are about to be standing in before you open it. */
+  for (const tint of ["251 236 227", "247 236 245", "232 244 241"]) {
+    assert.ok(html.includes("--room:rgb(" + tint), "row tint " + tint);
+  }
+
+  // Two ways in are still offered.
+  assert.match(html, />Explore</);
+  assert.match(html, />Quick review</);
+  assert.match(html, /theme-color" content="#f8f3e4"/);
+
   assert.match(html, /rel="canonical" href="https:\/\/portfolio\.test\/"/);
-  assert.doesNotMatch(html, /housing is exposing|Portfolio instrument|Drag the plane|class="work-grid"/i);
+  // none of the retired homepages return.
+  assert.doesNotMatch(
+    html,
+    /class="exhibit|claim-line|ex-zone|ex-arrival|deck-name|thinking-line|type="range"|Ask five systems/i,
+  );
   assertCleanEncoding(html);
 });
 
@@ -124,11 +178,13 @@ test("server-renders four interactive, evidence-bounded published cases", async 
     for (const phrase of [
       thesis,
       proof,
-      "Try the core interaction",
-      "What this proves",
-      "What I made accountable",
-      "What I rejected",
-      "Built and verified",
+      // the three-beat read replaced the five chapters
+      "Why I built it",
+      "What it is",
+      "What it changed",
+      // the record stays: the decisions and the honest boundary
+      "The record",
+      "Built and working",
       "Not yet proven",
       "The next honest test",
       "Experience the project",
@@ -136,6 +192,8 @@ test("server-renders four interactive, evidence-bounded published cases", async 
     ]) {
       assert.match(html, new RegExp(phrase));
     }
+    // the retired publication scaffolding must be gone
+    assert.doesNotMatch(html, /What I made accountable|What to remember|01 \/ Context|case-chapter/);
     assert.match(html, /aria-pressed="true"/);
     assert.match(html, new RegExp(`rel="canonical" href="https:\\/\\/portfolio\\.test\\/work\\/${slug}"`));
     assertCleanEncoding(html);
@@ -203,10 +261,15 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   const [
     data,
     index,
+    explore,
+    rooms,
+    exploreCss,
     motion,
     projectPage,
     signature,
     artifacts,
+    transitionLink,
+    mode,
     css,
     nextConfig,
     packageJson,
@@ -214,12 +277,17 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     worker,
   ] = await Promise.all([
     readFile(new URL("../app/data/portfolio.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/living-index.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/work-index.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/explore.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/works.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/styles/explore.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/motion-director.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/work/[slug]/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/project-signature.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/project-sigil.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/case-artifacts.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/home-system.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/transition-link.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/mode.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/styles/system.css", import.meta.url), "utf8"),
     readFile(new URL("../next.config.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../vercel.json", import.meta.url), "utf8"),
@@ -229,20 +297,84 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(data, /availability\?: "published" \| "preview"/);
   assert.match(data, /id: "daynero"/);
   assert.doesNotMatch(data, /remainder|command-center/i);
-  assert.match(index, /type="range"/);
-  assert.match(index, /key=\{`\$\{project\.id\}-\$\{phase\}`\}/);
-  assert.match(index, /Five systems\. One reading head/);
-  assert.equal((index.match(/score-voice--/g) ?? []).length, 1);
-  assert.doesNotMatch(index, /work-grid|work-card--|exposure-plane|housing is exposing/i);
+  assert.match(data, /form: "Spatial critique archive"/);
+
+  // Two ways in: work-index only dispatches, so no design lives in it.
+  assert.match(index, /ReviewIndex/);
+  assert.match(index, /Explore/);
+
+  // Explore is a world, not an index: a descent whose scenes are driven by
+  // scroll, ending in five rooms that each carry their own ground colour and
+  // a name that morphs into its case. Server render is the base.
+  assert.match(explore, /Descent|Notice|Rooms/);
+  assert.match(rooms, /data-room/);
+  assert.match(rooms, /TransitionLink/);
+  /* The set carries the anchor a returning case links back to. */
+  assert.match(rooms, /id="work"/);
+  /* Explore composes; it no longer measures anything itself. The scroll work
+     belongs to the three engines, and every scene reads their published
+     values rather than running a listener of its own. */
+  assert.match(explore, /Cinema/);
+  assert.match(explore, /Atmosphere/);
+  assert.match(explore, /SceneDirector/);
+  assert.doesNotMatch(explore, /addEventListener/);
+
+  // Each room is painted, not tinted: its own ground and its own reading ink.
+  for (const slug of [
+    "design-or-disaster",
+    "pentimento",
+    "invisible-interfaces",
+    "atlas",
+    "daynero",
+  ]) {
+    assert.match(exploreCss, new RegExp(`data-room="${slug}"`));
+  }
+  assert.match(exploreCss, /--room-ink/);
+
+  // The housing carries no decorative glow — pigment does the work.
+  assert.doesNotMatch(exploreCss, /radial-gradient\([^)]*var\(--accent\)/);
+  // and nothing shouts in tracked-out capitals
+  assert.doesNotMatch(exploreCss, /text-transform:\s*uppercase/);
+  assert.doesNotMatch(
+    index,
+    /readings|lensRelations|temperament|field-shown|data-lead|reRank|class="rank"/,
+  );
+  assert.doesNotMatch(
+    index,
+    /deck-name|deck-panel|thinking-line|claim-line|ex-zone|ex-arrival|scroll-snap|exhibit--|work-grid|type="range"|Ask five systems/i,
+  );
   assert.match(motion, /IntersectionObserver/);
   assert.match(motion, /--scroll-progress/);
   assert.doesNotMatch(motion, /pointermove|--pointer-x/);
   assert.match(projectPage, /DayneroPreview/);
-  assert.match(projectPage, /ProjectSignature/);
+  assert.match(projectPage, /SignaturePlate/);
   assert.match(projectPage, /project\.sourceUrl \?/);
-  for (const artifact of ["daynero", "disaster", "pentimento", "invisible", "atlas"]) {
-    assert.match(signature, new RegExp(`signature-${artifact}`));
+  for (const mark of [
+    "DayneroSigil",
+    "InvisibleSigil",
+    "DisasterSigil",
+    "PentimentoSigil",
+    "AtlasSigil",
+  ]) {
+    assert.match(signature, new RegExp(mark));
   }
+  for (const phaseState of ["ph-s", "ph-r", "ph-c"]) {
+    assert.match(signature, new RegExp(phaseState));
+  }
+  assert.match(transitionLink, /startViewTransition/);
+  assert.match(transitionLink, /prefers-reduced-motion/);
+  /* Session-scoped on purpose: a reviewer who once chose the digest should not
+     be silently returned to it on a later visit and never see the work. */
+  assert.match(mode, /sessionStorage/);
+  assert.doesNotMatch(mode, /localStorage/);
+  assert.match(mode, /dataset\.mode/);
+  assert.match(mode, /aria-pressed/);
+  // two modes, not three — and no stale edition contract left anywhere
+  assert.match(css, /data-mode="review"/);
+  assert.doesNotMatch(css, /data-edition=/);
+  assert.match(rooms, /TransitionLink/);
+  assert.match(projectPage, /TransitionLink/);
+  assert.match(css, /view-transition/);
   for (const accent of ["#ef4a35", "#8b2f63", "#d79a29", "#1d756d", "#b7e34b"]) {
     assert.match(data, new RegExp(accent));
   }

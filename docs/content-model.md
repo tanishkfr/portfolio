@@ -4,8 +4,10 @@ Status: current production contract
 
 The portfolio has three storytelling depths:
 
-1. The opening states Tanishk's practice and current context.
-2. The shared home lens compares interface, logic, and consequence across all five projects.
+1. The opening states Tanishk's practice and current context, and demonstrates
+   the marked-claim mechanic on the thesis itself.
+2. The shared examination puts one question at a time — surface, rule,
+   consequence — to all five projects.
 3. A project route either presents a complete evidence-bounded case or an explicitly limited preview.
 
 ## Project record

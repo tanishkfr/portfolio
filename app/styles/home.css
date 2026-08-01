@@ -1,0 +1,206 @@
+/* ============================================================
+   QUICK REVIEW
+   ------------------------------------------------------------
+   No field, no discovery, no ceremony. A reviewer with four
+   minutes gets the whole record at a glance.
+   ============================================================ */
+
+.review {
+  --ground: #f8f3e4;
+  --ink: #16150f;
+  --ink-low: rgba(22, 21, 15, 0.52);
+  --rule: rgba(22, 21, 15, 0.14);
+
+  background: var(--ground);
+  color: var(--ink);
+  min-height: 100svh;
+  padding: clamp(6rem, 12vh, 9rem) var(--page-gutter) 5rem;
+}
+
+.review-head {
+  max-width: 64rem;
+  margin: 0 auto clamp(3rem, 7vh, 5rem);
+}
+
+.review-head h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-variation-settings: "opsz" 144, "wght" 420;
+  letter-spacing: -0.025em;
+  margin: 0 0 0.6rem;
+}
+
+.review-head p {
+  font-family: var(--sans);
+  font-size: var(--step-1);
+  line-height: 1.5;
+  color: var(--ink-low);
+  margin: 0;
+  max-width: 34rem;
+}
+
+.review-list {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 64rem;
+}
+
+.review-list > li {
+  display: grid;
+  grid-template-columns: minmax(11rem, 16rem) 1fr;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  padding: clamp(2rem, 4vh, 2.75rem) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.review-list > li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.review-id h2 {
+  font-family: var(--serif);
+  font-size: var(--step-3);
+  font-variation-settings: "opsz" 96, "wght" 420;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.05;
+}
+
+.review-id h2 a {
+  color: var(--ink);
+  text-decoration: none;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 0% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 260ms var(--ease-out);
+}
+
+.review-id h2 a:hover,
+.review-id h2 a:focus-visible {
+  background-size: 100% 2px;
+}
+
+.review-form {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: var(--accent);
+  margin: 0.5rem 0 0;
+}
+
+.review-line {
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  margin: 0 0 1.25rem;
+  max-width: 40rem;
+}
+
+.review-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1rem 1.75rem;
+  margin: 0 0 1.25rem;
+}
+
+.review-facts dt {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.03em;
+  color: rgba(22, 21, 15, 0.38);
+  margin-bottom: 0.3rem;
+}
+
+.review-facts dd {
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.45;
+  color: var(--ink-low);
+  margin: 0;
+}
+
+.review-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+}
+
+.review-links a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 2px;
+  transition: color 180ms var(--ease-out);
+}
+
+.review-links a:hover,
+.review-links a:focus-visible {
+  color: var(--accent);
+}
+
+.review-foot {
+  max-width: 64rem;
+  margin: clamp(3rem, 7vh, 5rem) auto 0;
+  font-family: var(--sans);
+}
+
+.review-foot p {
+  font-size: var(--step-0);
+  line-height: 1.55;
+  color: var(--ink-low);
+  max-width: 38rem;
+  margin: 0 0 1.25rem;
+}
+
+.review-foot a {
+  font-family: var(--mono);
+  font-size: var(--step-0);
+  color: var(--ink);
+}
+
+@media (max-width: 48rem) {
+  .review-list > li {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* ============================================================
+   THE WAY IN
+   ============================================================ */
+
+.mode-switch {
+  display: flex;
+  gap: 2px;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+}
+
+.mode-switch button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: rgba(22, 21, 15, 0.4);
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: color 180ms var(--ease-out);
+}
+
+.mode-switch button:hover {
+  color: rgba(22, 21, 15, 0.85);
+}
+
+.mode-switch button[aria-pressed="true"] {
+  color: #16150f;
+}
+
+.mode-switch button:focus-visible {
+  outline: 2px solid #16150f;
+  outline-offset: 2px;
+}

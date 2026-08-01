@@ -44,6 +44,25 @@ type NextTest = {
   success: string;
 };
 
+/**
+ * The case, told the way you'd tell another designer who just asked
+ * "so what made you build this?" — three beats, plain and distilled:
+ *   intro        — the idea, and the itch behind it. Never the context.
+ *   contribution — what it actually is, usually by saying what it isn't.
+ *   reflection   — what building it changed in how I think.
+ * turn is the one line worth pulling out and setting large.
+ */
+type Story = {
+  intro: string[];
+  contribution: string[];
+  turn: string;
+  reflection: string[];
+};
+
+/** Said once, for the whole site — not restated on every case. */
+export const disclosure =
+  "AI helped me think, argue, and iterate on code. The concepts, research, design decisions, writing, and every line that shipped are mine.";
+
 export type Project = {
   id: string;
   slug: string;
@@ -75,6 +94,8 @@ export type Project = {
     system: string;
     proof: string;
   };
+  /** The three-beat read. Absent on previews, which have no case yet. */
+  story?: Story;
   problem: NarrativeSection;
   pivot: Pivot;
   rejectedPaths: RejectedPath[];
@@ -240,6 +261,24 @@ export const projects: Project[] = [
       success:
         "The success measure is better-supported critique—not higher agreement between reviewers.",
     },
+    story: {
+      intro: [
+        "Most critique happens after the answer. I wanted to see what happens before it.",
+        "Good designers don't just know whether something works. They build a case — they notice what they're looking at, weigh it, and defend a call. But we mostly teach the verdict, not the reasoning that earned it.",
+        "Design or Disaster tries to make the judgment itself visible.",
+      ],
+      contribution: [
+        "Instead of asking you to guess the right answer, it asks you to commit to one.",
+        "You mark the exact part of the interface that shaped your read, say what it shows, and only then rule. Then five other readings appear on the same screen — not experts, just positions that don't agree with you or with each other. Your mark stays where you put it.",
+        "The disagreement is the lesson. Not the verdict.",
+      ],
+      turn:
+        "Confidence and good judgment aren't the same thing. Sometimes the most useful thing an interface can do is slow you down just long enough to reconsider.",
+      reflection: [
+        "I thought I was building a critique tool. I built an argument that critique should leave a trail.",
+        "Once you've had to point before you pronounce, an opinion with nothing underneath it starts to feel like what it is.",
+      ],
+    },
     contribution:
       "I turned design judgment into an inspectable sequence: mark first, argue second, compare perception, then live with the ruling.",
     disclosure:
@@ -386,6 +425,24 @@ export const projects: Project[] = [
         "Participants will work with their own local archive, think aloud through computed chapters, strike or accept readings, review the second draft, and choose what to share. The study will code not only whether a claim was rejected, but why the archive's interpretation failed.",
       success:
         "A high strike rate is not failure. The important signal is whether refusal feels possible, consequential, and trustworthy a week later.",
+    },
+    story: {
+      intro: [
+        "Most AI products tell you what they know about you. Almost none ask whether they got it right.",
+        "That gap bothered me. The more software summarizes our lives, the more those summaries start to matter — they shape what we're shown, and eventually how we see ourselves. Yet most systems only let you accept the summary or ignore it. You can't argue with it.",
+        "Pentimento started with one question. If software can write a story about me, I should be able to rewrite it.",
+      ],
+      contribution: [
+        "This isn't another chat interface. It's an interaction model for disagreement.",
+        "Every claim the system makes shows its evidence, and every claim can be struck. Strike one and the machine's sentence doesn't vanish — your correction rises to lead, and the original stays underneath it, visibly withdrawn.",
+        "The point was never perfect accuracy. It's giving people authorship over how software describes them.",
+      ],
+      turn:
+        "The interesting part wasn't the model that wrote the story. It was the moment it stops being the author and becomes something you can overrule.",
+      reflection: [
+        "I set out to build something about generated memory. It turned into something about authorship.",
+        "A system that can be corrected is a different kind of thing than one that's simply right. It assumes it might be wrong about you — and builds you a way to say so.",
+      ],
     },
     contribution:
       "I made correction structural: a person can overrule a machine's interpretation without erasing the fact that the interpretation occurred.",
@@ -535,6 +592,24 @@ export const projects: Project[] = [
       success:
         "A trustworthy return should reduce the need for continuous supervision without reducing the person's ability to inspect, reverse, or contest the work.",
     },
+    story: {
+      intro: [
+        "Every year, software asks less of us. We stopped typing commands, started pointing, then touching, then asking. Now it acts before we ask at all.",
+        "That's usually called progress. But every time an interface asks less of you, it also shows you less. The work moves somewhere you can't watch, and you're meant to trust that it happened.",
+        "I wanted to know what a system owes you when it works while you're not looking.",
+      ],
+      contribution: [
+        "Most demonstrations of invisible work make you watch a progress bar. That's a contradiction — you're supervising the thing meant to free you from supervising.",
+        "So I made absence the input. The task here only advances while the tab is hidden. Watch it and it stops. Leave, and it works. Come back, and it hands you a receipt: what it changed, what it left untouched, what it couldn't know, and how to throw the result away.",
+        "Handing the work over isn't the interesting part. Coming back to it is.",
+      ],
+      turn:
+        "What makes delegation feel safe isn't watching it happen. It's knowing you'll get the truth when you return.",
+      reflection: [
+        "I thought this was a project about automation. It turned into one about attention.",
+        "The question was never whether a machine could do the work unwatched. It was whether it would tell you the truth about what it did.",
+      ],
+    },
     contribution:
       "I made absence an interaction event and paired invisible work with accountable return instead of continuous supervision.",
     disclosure:
@@ -682,6 +757,24 @@ export const projects: Project[] = [
       success:
         "Look for more conditional final rules, accurate recall of why wording changed, and transfer to a fourth case—not agreement with Atlas's authored examples.",
     },
+    story: {
+      intro: [
+        "Design advice arrives as finished sentences. Don't use modals. Reduce the load. Make it obvious.",
+        "Every one of those was true somewhere. None of them tell you where. The conditions that made a rule true get stripped off before it reaches you — you inherit the conclusion and lose the reasoning.",
+        "I wanted to see what happens to a principle when you push it somewhere it was never meant to go.",
+      ],
+      contribution: [
+        "Atlas isn't a library of answers. It's one rule and three cases that argue with it.",
+        "You carry a principle into a familiar case, then a high-stakes one, then a case where the input model itself changes. Each time it holds, bends, or breaks — and every version stays on the record. What you end up with isn't a cleaner rule. It's the history of how that rule earned whatever authority it has left.",
+        "A finished principle hides the pressure that shaped it. This one shows it.",
+      ],
+      turn:
+        "A rule that survives the case it was written for proves nothing. A rule that survives a case it was never meant for is worth something.",
+      reflection: [
+        "I started out trying to write good guidance. I stopped believing the guidance was the useful part.",
+        "The reasoning is the artifact. The finished sentence is just where it happened to stop.",
+      ],
+    },
     contribution:
       "I turned a design principle from finished advice into a revisable object with a visible pressure history.",
     disclosure:
@@ -782,11 +875,16 @@ export const lenses: LensDefinition[] = [
   },
   {
     id: "evidence-judgment",
-    shortLabel: "Evidence",
+    shortLabel: "Reason",
     label: "Evidence & Judgment",
     prompt:
       "How can an interface help people inspect evidence and form a judgment without pretending that judgment is neutral?",
-    order: ["design-or-disaster", "atlas", "pentimento", "invisible-interfaces", "daynero"],
+    // Atlas leads here, not Design or Disaster. There is no default
+    // winner in this index: every reading has its own protagonist, and
+    // each project leads exactly once — in the argument it makes best.
+    // Atlas is the reasoning instrument; Design or Disaster answers
+    // second because it judges what Atlas reasons about.
+    order: ["atlas", "design-or-disaster", "pentimento", "invisible-interfaces", "daynero"],
   },
   {
     id: "agency-authority",

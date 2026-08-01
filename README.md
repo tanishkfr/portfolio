@@ -8,11 +8,11 @@ Portfolio housing for one commercial product and four working interaction-design
 - Invisible Interfaces
 - Atlas
 
-The home uses one shared control to compare what each product shows, what governs it, and what changes for the person. It is a direct work index, not a simulated desktop or a conventional project-card feed.
+The housing holds itself to the same obligations the projects propose: marked claims open their records, and one shared control asks all five systems the same question — what does it show, what does it decide, what does it change. It is a direct work index, not a simulated desktop or a conventional project-card feed.
 
 ## What ships here
 
-- A five-project index with a synchronized interface / logic / consequence lens.
+- A five-project examination with a synchronized surface / rule / consequence question and per-project living sigils.
 - An honest Daynero preview using only the public product position and Tanishk's stated contribution.
 - Four evidence-bounded case studies with a small interactive proof, project story, design decisions, limits, and next test.
 - Authored About and Contact pages; `/resume` redirects to About until a résumé exists.
