@@ -45,8 +45,8 @@ export default function ContactPage() {
       <p className="contact-note">
         I am most useful when the{" "}
         <em>behavior is the hard part</em>
-        — complex state, AI authority, a research question that needs a working
-        artifact.
+        — messy state, AI deciding for someone, or a question that needs a
+        working prototype.
       </p>
 
       <p className="contact-sign">

@@ -114,7 +114,7 @@
 
 .review-facts {
   display: grid;
-  grid-template-columns: repeat(5, minmax(7.5rem, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1rem 1.25rem;
   margin: 0 0 1.25rem;
 }
@@ -177,6 +177,12 @@
   color: var(--ink);
 }
 
+.review-foot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.6rem;
+}
+
 @media (max-width: 48rem) {
   .review-head {
     grid-template-columns: 1fr;
@@ -217,6 +223,32 @@
   cursor: pointer;
   letter-spacing: 0.04em;
   transition: color 180ms var(--ease-out);
+}
+
+.mode-label-short {
+  display: none;
+}
+
+@media (max-width: 48rem) {
+  .mode-label-full {
+    display: none;
+  }
+  .mode-label-short {
+    display: inline;
+  }
+  .mode-switch button {
+    padding-inline: 0.45rem;
+  }
+}
+
+@media (max-width: 26.5rem) {
+  .mode-switch {
+    font-size: 0.64rem;
+  }
+
+  .mode-switch button {
+    padding: 0.28rem 0.28rem;
+  }
 }
 
 .mode-switch button:hover {

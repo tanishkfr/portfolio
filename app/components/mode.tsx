@@ -78,9 +78,11 @@ export function ModeSwitch() {
       <button
         type="button"
         aria-pressed={mode === "review"}
+        aria-label="Quick review"
         onClick={() => go("review")}
       >
-        Quick review
+        <span className="mode-label-full">Quick review</span>
+        <span className="mode-label-short">Review</span>
       </button>
     </div>
   );

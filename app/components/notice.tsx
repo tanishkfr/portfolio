@@ -66,44 +66,6 @@ function PressSpecimen() {
   );
 }
 
-function LoadSpecimen() {
-  const [plain, setPlain] = useState(false);
-  const [fine, setFine] = useState(false);
-
-  return (
-    <figure className="xp-spec" data-reveal="figure">
-      <div className="xp-spec-pair">
-        <button
-          type="button"
-          className="xp-load xp-load-plain"
-          data-busy={plain || undefined}
-          onClick={() => {
-            setPlain(true);
-            window.setTimeout(() => setPlain(false), 900);
-          }}
-        >
-          {plain ? "Wait" : "Send"}
-        </button>
-        <button
-          type="button"
-          className="xp-load xp-load-fine"
-          data-busy={fine || undefined}
-          onClick={() => {
-            setFine(true);
-            window.setTimeout(() => setFine(false), 1100);
-          }}
-        >
-          {fine ? "Sending" : "Send"}
-        </button>
-      </div>
-      <figcaption className="xp-spec-cap">
-        <span className="xp-spec-label">The wait</span>
-        One disappears into a dead word. One keeps the shape you pressed.
-      </figcaption>
-    </figure>
-  );
-}
-
 function FocusSpecimen() {
   return (
     <figure className="xp-spec" data-reveal="figure">
@@ -139,18 +101,16 @@ export function Notice() {
       <header className="xp-notice-head">
         <p className="xp-notice-kicker">What I can&apos;t stop noticing</p>
         <h2 className="xp-notice-title" data-reveal="name">
-          I notice the parts most people scroll past.
+          The difference is small. It&apos;s the whole job.
         </h2>
         <p className="xp-notice-sub" data-reveal="quiet">
-          The same control, built twice — once carelessly, once considered.
-          Try both. The difference is small, and it&apos;s the whole job.
+          The same control, twice — careless, then considered. Try both.
         </p>
       </header>
 
       <div className="xp-notice-grid">
         <ToggleSpecimen />
         <PressSpecimen />
-        <LoadSpecimen />
         <FocusSpecimen />
       </div>
     </section>

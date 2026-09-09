@@ -1,12 +1,9 @@
 /**
- * SCENE — the word becomes the next room.
+ * ACT 3 — the hinge.
  *
- * After Arrival names the premise, "see" detaches and grows until it is
- * architecture. Scroll carves it open. Through the cut: the first project
- * colour, already in the page, so the work does not wait behind a heading.
- *
- * Without JavaScript --t is 1: the word is large, the cut is open, the
- * work is visible. The sequence is the enhancement.
+ * Arrival said what I do. Descent showed interfaces asking less.
+ * This is the turn: behaviour still has to be designed. The Fluxion
+ * pigment sits beside the sentence — the work is already in the room.
  */
 
 export function Rift() {
@@ -15,16 +12,16 @@ export function Rift() {
       className="xp-rift"
       data-stage
       data-room="fluxion-studios"
-      aria-label="The work starts here"
+      aria-label="The behaviour still has to be designed"
     >
       <div className="xp-rift-pin">
-        <p className="xp-rift-kicker">then this happens</p>
-        <p className="xp-rift-word" aria-hidden="true">
-          see
-        </p>
-        <p className="xp-rift-note">
-          The interesting part is usually the behaviour, not the skin.
-        </p>
+        <div className="xp-rift-copy">
+          <p className="xp-rift-kicker">So what do I actually design?</p>
+          <p className="xp-rift-note">
+            The interesting part is usually the behaviour, not the skin.
+          </p>
+          <p className="xp-rift-next">So I built these.</p>
+        </div>
         <div className="xp-rift-world" aria-hidden="true">
           <span className="xp-rift-ghost">
             Fluxion

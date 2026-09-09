@@ -240,7 +240,7 @@ test("publishes accurate identity, commercial context, and contact", async () =>
 
   assert.equal(aboutResponse.status, 200);
   const aboutHtml = await aboutResponse.text();
-  assert.match(aboutHtml, /I design the rules people feel/);
+  assert.match(aboutHtml, /Tanishk\./);
   assert.match(aboutHtml, /Fluxion Studios/);
   assert.match(aboutHtml, /Daynero · case study coming soon/);
   assert.match(aboutHtml, /Four working interaction studies/);

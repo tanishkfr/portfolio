@@ -66,8 +66,7 @@ export function Works() {
     if (window.location.hash !== "#work") return;
     const work = document.getElementById("work");
     if (!work) return;
-    const top = work.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo(0, Math.max(0, top - 8));
+    work.scrollIntoView({ block: "start" });
     window.dispatchEvent(new Event("portfolio:pin"));
   }, []);
 
@@ -103,7 +102,9 @@ export function Works() {
           previously had no heading at all — so navigating by heading, the work
           did not exist — and the label above it was doing a heading's job in a
           heading's place without a heading's weight. */}
-      <h2 className="xp-works-title">Selected work</h2>
+      <header className="xp-works-head">
+        <h2 className="xp-works-title">Selected work</h2>
+      </header>
 
       <ol className="xp-works-set" aria-hidden={open ? "true" : undefined}>
         {projects.map((project) => {
@@ -132,6 +133,7 @@ export function Works() {
                   </TransitionLink>
                 </h3>
                 <span className="xp-works-form">{project.form}</span>
+                <span className="xp-works-role">{project.role}</span>
                 {/* the thesis stays in the set, not only inside the opened
                     room — a reviewer scanning the page, and a crawler, should
                     both get what each project argues without opening it */}

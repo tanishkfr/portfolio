@@ -134,9 +134,6 @@ export function Descent() {
         <p className="xp-shed-turn">
           And every year, it shows me <em>less</em>.
         </p>
-        <p className="xp-shed-look" aria-hidden="true">
-          so the behaviour still has to be designed
-        </p>
       </div>
     </section>
   );

@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LookUnder } from "../components/look-under";
 
 const description =
-  "About Tanishk, an interaction designer based in Bangalore and available for work.";
+  "About Tanishk, an interaction designer based in Bangalore. Fluxion Studios, independent studies, and product work.";
 
 export const metadata: Metadata = {
   title: "About",
@@ -27,21 +26,22 @@ export const metadata: Metadata = {
   },
 };
 
-const capabilities = [
+const influences = [
   {
-    number: "01",
-    title: "Interaction systems",
-    body: "I define states, transitions, authority boundaries, recovery paths, and the rules that make complex behavior coherent.",
+    from: "Formula 1",
+    lesson: "A car at 300kph tells the driver everything with almost no interface.",
   },
   {
-    number: "02",
-    title: "Product thinking",
-    body: "I move between the product premise, the interface people touch, and the implementation decisions that make it real.",
+    from: "Architecture",
+    lesson: "You understand a building by moving through it, not from a photograph.",
   },
   {
-    number: "03",
-    title: "Research through making",
-    body: "I use working artifacts to turn abstract questions into interactions that can be inspected, challenged, and tested.",
+    from: "Film",
+    lesson: "A cut decides what you feel. Nothing on screen changed — only when you were allowed to see it.",
+  },
+  {
+    from: "Printed books",
+    lesson: "A page has no hover states. It still knows where your eye goes next.",
   },
 ];
 
@@ -49,121 +49,93 @@ export default function AboutPage() {
   return (
     <main id="main-content" className="about-shell">
       <header className="about-intro" data-reveal>
-        <p className="eyebrow">About · Bangalore · Available for work</p>
-        <h1>I design the rules people feel.</h1>
-        <div className="about-lede">
-          <p>
-            I am Tanishk, an interaction designer based in Bangalore. I work
-            on products where the difficult part is not the screen—it is what
-            the system decides, remembers, explains, or lets a person change.
-          </p>
-          <p>
-            I co-founded Fluxion Studios, a two-person web practice. I also
-            designed and built Daynero, an AI-native finance app whose case
-            study is still being written. Alongside that I run four independent
-            interaction studies you can use now.
-          </p>
-        </div>
-        <LookUnder
-          className="about-under"
-          label="A little more about how I work"
-          rest={0.08}
-          surface={<p>Interaction designer. Bangalore. Available for work.</p>}
-          under={
-            <p>
-              I steal from Formula 1, architecture, film, printed books, and
-              games with weather — never from other interfaces.
-            </p>
-          }
-        />
-        <dl className="about-facts" aria-label="Practice facts">
-          <div>
-            <dt>Studio</dt>
-            <dd>Fluxion Studios · co-founder</dd>
-          </div>
-          <div>
-            <dt>Product</dt>
-            <dd>Daynero · case study coming soon</dd>
-          </div>
-          <div>
-            <dt>Independent work</dt>
-            <dd>Four working interaction studies</dd>
-          </div>
-          <div>
-            <dt>Range</dt>
-            <dd>Architecture, design, writing, and implementation</dd>
-          </div>
-          <div>
-            <dt>Location</dt>
-            <dd>Bangalore · Available for work</dd>
-          </div>
-        </dl>
+        <p className="eyebrow">About · Bangalore · available for work</p>
+        <h1>Tanishk.</h1>
+        <p className="about-role">
+          Interaction designer. I design and build how products behave — the
+          states, the timing, the parts people only notice when they go wrong.
+        </p>
       </header>
 
-      <section className="capability-section" aria-labelledby="capability-title" data-reveal>
-        <p className="eyebrow">What I bring to a team</p>
-        <h2 id="capability-title">From product premise to working behavior.</h2>
-        <div className="capability-grid">
-          {capabilities.map((capability) => (
-            <article key={capability.number} data-reveal>
-              <span>{capability.number}</span>
-              <h3>{capability.title}</h3>
-              <p>{capability.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      <div className="about-layout">
+        <aside className="about-margin" aria-label="Practice facts">
+          <dl className="about-facts">
+            <div>
+              <dt>Studio</dt>
+              <dd>Fluxion Studios · co-founder</dd>
+            </div>
+            <div>
+              <dt>Product</dt>
+              <dd>Daynero · case study coming soon</dd>
+            </div>
+            <div>
+              <dt>Independent</dt>
+              <dd>Four working interaction studies</dd>
+            </div>
+            <div>
+              <dt>Based</dt>
+              <dd>Bangalore</dd>
+            </div>
+          </dl>
+        </aside>
 
-      <section className="principle-section" aria-labelledby="principle-title" data-reveal>
-        <div>
-          <p className="eyebrow">How I work</p>
-          <h2 id="principle-title">Clarity is a form of agency.</h2>
-        </div>
-        <div className="principle-list">
-          <article data-reveal>
-            <h3>Make the hidden decision inspectable.</h3>
-            <p>If a system interprets, recommends, remembers, or acts, the interface should reveal enough for a person to understand and challenge it.</p>
-          </article>
-          <article data-reveal>
-            <h3>Design the response, not just the result.</h3>
-            <p>Correction, refusal, recovery, and undo are central interactions whenever a system carries authority.</p>
-          </article>
-          <article data-reveal>
-            <h3>Build the argument into the behavior.</h3>
-            <p>A project should make its central idea felt through interaction before a case study has to explain it.</p>
-          </article>
-          <article data-reveal>
-            <h3>Keep claims inside the evidence.</h3>
-            <p>A working product proves what exists. Human outcomes require human evidence, and the writing should never blur that line.</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="authorship-section" aria-labelledby="authorship-title" data-reveal>
-        <p className="eyebrow">Authorship and context</p>
-        <h2 id="authorship-title">I architect, design, write, and implement.</h2>
-        <div>
+        <div className="about-letter">
           <p>
-            For Daynero, I designed and built the app experience and public
-            website in a commercial startup context. Its full case study will
-            name the team, constraints, and outcomes that can be shared.
+            I grew up caring about how things feel when you use them: cars,
+            buildings, cuts in a film, the way a page is set. That curiosity
+            turned into a practice that sits between design and engineering.
           </p>
           <p>
-            The four research artifacts were self-directed and independently
-            built by me. AI assisted ideation, critique, source discovery, and
-            code iteration; final concept selection, design decisions, editing,
-            implementation decisions, and authorship are mine.
+            Most of my time is spent on interfaces where the hard part is not
+            the layout. It is what the system decides, remembers, explains, or
+            lets someone change. I like projects where I can follow a question
+            all the way through — writing, interaction, and the code that
+            makes it run.
           </p>
+
+          <h2>Currently</h2>
+          <p>
+            I co-founded Fluxion Studios with Shreyas. We design and build
+            websites for businesses that already have a point of view. I also
+            designed and built Daynero, an AI-native finance app, in a
+            commercial startup context; the full case is still being written.
+            Alongside that I keep four independent studies live — Design or
+            Disaster, Pentimento, Invisible Interfaces, and Atlas — so the
+            research can be used, not only described.
+          </p>
+
+          <h2>How I like to work</h2>
+          <p>
+            I am most useful when the brief is messy state, a product that
+            acts for someone, or a question that needs a working prototype. I
+            sketch, argue, build, and ship. AI helps me think and iterate; the
+            concepts, the design decisions, and what ships are mine.
+          </p>
+
+          <h2>Outside interfaces</h2>
+          <ul className="about-borrow">
+            {influences.map((item) => (
+              <li key={item.from}>
+                <strong>{item.from}</strong>
+                <span>{item.lesson}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </section>
+      </div>
 
       <section className="about-contact" aria-labelledby="about-contact-title" data-reveal>
-        <p className="eyebrow">Currently</p>
-        <h2 id="about-contact-title">Based in Bangalore and available for work.</h2>
+        <p className="eyebrow">Reach me</p>
+        <h2 id="about-contact-title">In Bangalore, and available.</h2>
         <div>
           <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com ↗</a>
-          <a href="https://twitter.com/madebytanishk" target="_blank" rel="noreferrer">
-            @madebytanishk ↗<span className="sr-only"> (opens in a new tab)</span>
+          <a
+            href="https://twitter.com/madebytanishk"
+            target="_blank"
+            rel="noreferrer"
+          >
+            @madebytanishk ↗
+            <span className="sr-only"> (opens in a new tab)</span>
           </a>
           <Link href="/#work">See selected work →</Link>
         </div>

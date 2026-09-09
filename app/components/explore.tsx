@@ -11,14 +11,14 @@ import { SceneDirector } from "./scene-director";
 import { TransitionLink } from "./transition-link";
 
 /**
- * EXPLORE — seven scenes, not fourteen sections.
+ * EXPLORE — one story.
  *
- * 01 Arrival     wipe the generic line off the real one
- * 02 Descent     software asks less — a control erodes
- * 03 Rift        the word "see" becomes architecture, then tears
- * 04 Work        projects invade; each plate is a different object
- * 05 Notice      quiet craft. almost no motion
- * 06 Finale      write, as composition
+ * 1  Arrival   I design interfaces — and the part you don't see.
+ * 2  Descent   Interfaces now act with less asking.
+ * 3  Rift      That behaviour still has to be designed.
+ * 4  Work      Proof. So I built these.
+ * 5  Notice    Quiet craft.
+ * 6  Close     Write.
  */
 
 export function Explore() {
@@ -34,53 +34,38 @@ export function Explore() {
       <Works />
       <Notice />
 
-      <section
-        className="xp-close"
-        data-scene
-        data-stage
-        aria-label="Contact"
-      >
-        <div className="xp-close-pin">
-          <p className="xp-close-eyebrow" data-reveal>
-            That is the work
-          </p>
-          <a
-            className="xp-close-mail"
-            href="mailto:madebytanishk@gmail.com"
-            data-reveal="name"
-          >
-            write
+      <section className="xp-close" data-scene aria-label="Contact">
+        <a
+          className="xp-close-mail"
+          href="mailto:madebytanishk@gmail.com"
+          data-reveal="name"
+        >
+          write
+        </a>
+        <p className="xp-close-line" data-reveal>
+          If any of it was useful.
+        </p>
+        <div className="xp-close-links" data-reveal>
+          <a href="mailto:madebytanishk@gmail.com">
+            madebytanishk@gmail.com ↗
           </a>
-          <h2 className="xp-close-line" data-reveal>
-            If any of it was useful.
-          </h2>
-          <p className="xp-close-sub" data-reveal="quiet">
-            Bengaluru. Studio, four live studies, a product case still being
-            written. Available.
-          </p>
-          <div className="xp-close-links" data-reveal>
-            <a href="mailto:madebytanishk@gmail.com">
-              madebytanishk@gmail.com ↗
-            </a>
-            <a
-              href="https://twitter.com/madebytanishk"
-              target="_blank"
-              rel="noreferrer"
-            >
-              @madebytanishk ↗
-            </a>
-            <TransitionLink href="/contact">Contact →</TransitionLink>
-            <TransitionLink href="/resume">Résumé →</TransitionLink>
-            <TransitionLink href="/about">About →</TransitionLink>
-          </div>
-          <p className="xp-close-foot" data-reveal>
-            Bengaluru ·{" "}
-            <span className="xp-close-strike" aria-hidden="true">
-              not looking
-            </span>{" "}
-            available for work
-          </p>
+          <a
+            href="https://twitter.com/madebytanishk"
+            target="_blank"
+            rel="noreferrer"
+          >
+            @madebytanishk ↗
+          </a>
+          <TransitionLink href="/resume">Résumé →</TransitionLink>
+          <TransitionLink href="/about">About →</TransitionLink>
         </div>
+        <p className="xp-close-foot" data-reveal>
+          Bengaluru ·{" "}
+          <span className="xp-close-strike" aria-hidden="true">
+            not looking
+          </span>{" "}
+          available for work
+        </p>
       </section>
     </main>
   );
