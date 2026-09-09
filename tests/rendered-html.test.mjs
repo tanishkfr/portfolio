@@ -40,16 +40,15 @@ test("server-renders Explore as a cinematic world ending in the work", async () 
   assert.match(html, /aria-hidden="true"[^>]*>\s*apps and interfaces\./);
   assert.match(html, /Every year, software asks less of us\./);
   assert.match(html, /And every year, it shows me/);
-  assert.match(html, /That was the part you.{0,10}t see\./);
-
-  // Every project is a room with its own ground colour — still a real link
+  assert.match(html, /the part you.{0,10}t see\./);
   // to its case, carrying its thesis, server-rendered before any JS.
   const works = [
+    { slug: "fluxion-studios", title: "Fluxion Studios", t: "not like a template" },
     { slug: "design-or-disaster", title: "Design or Disaster", t: "point before you pronounce" },
     { slug: "pentimento", title: "Pentimento", t: "must outrank its sentence" },
     { slug: "invisible-interfaces", title: "Invisible Interfaces", t: "accountability has to return" },
     { slug: "atlas", title: "Atlas", t: "allowed to change it" },
-    { slug: "daynero", title: "Daynero", t: "not just a monthly reset" },
+    { slug: "daynero", title: "Daynero", t: "first-paycheck earners" },
   ];
   for (const work of works) {
     assert.match(html, new RegExp(`href="/work/${work.slug}"`));
@@ -61,17 +60,28 @@ test("server-renders Explore as a cinematic world ending in the work", async () 
   /* There is no work section. Each project stands where it is the reply to
      the sentence just made, with a page of argument either side of it — which
      is what separates them, rather than an edge or a position in a row. */
-  assert.equal((html.match(/class="xp-works-item"/g) ?? []).length, 5);
+  assert.equal((html.match(/class="xp-works-item"/g) ?? []).length, 6);
   assert.match(html, /class="xp-works-thesis"/);
   assert.doesNotMatch(html, /class="xp-track"|class="xp-poster"|class="xp-answer"/);
   // the work is one addressable region, so a returning case lands here
   assert.match(html, /id="work"/);
 
 
-  /* Opening a project is a dialog, not a navigation: it is labelled, modal,
-     and every name is still a real link to its case for anyone without JS. */
+  /* Opening full screen is a dialog, not a navigation — but the name itself is
+     an ordinary link inside an ordinary heading. That is what makes cmd-click,
+     middle-click and copy-link work on the one page where they are used most,
+     lets a screen-reader user reach the work by heading, and means the set
+     needs no <noscript> shadow copy: it never depended on JS to begin with. */
   assert.match(html, /class="xp-works-open"/);
-  assert.match(html, /<noscript>/);
+  for (const work of works) {
+    assert.match(
+      html,
+      new RegExp(`<h3 class="xp-works-name"><a href="/work/${work.slug}">`),
+      `${work.slug} name is a linked heading`,
+    );
+  }
+  // the open affordance is a named control, not an opacity-0 hover cue
+  assert.doesNotMatch(html, /class="xp-works-cue"/);
 
   // Entrances are typed: a name does not arrive the way a caption does.
   for (const kind of ["name", "quiet", "figure"]) {
@@ -87,14 +97,22 @@ test("server-renders Explore as a cinematic world ending in the work", async () 
   // Spoken aloud, the struck words would invert the sentence.
   assert.match(html, /class="xp-close-strike" aria-hidden="true"/);
 
-  /* The mechanics now live inside the room a project opens into, so the home
-     page server-renders the argument and the set rather than five live
-     widgets. The case screen is asserted on its own case page instead. */
-  assert.match(html, /Five questions I couldn.{0,8}t drop/);
+  assert.match(html, /Selected work/);
+
+  /* THE HOMEPAGE MUST SHOW WORK, NOT ONLY DESCRIBE IT.
+     Every mechanic is live in its row, not sealed inside a pop-out a visitor
+     may never open. A portfolio whose index renders five lines of type and
+     zero designed pixels has not shown anything. Each plate holds that
+     project's own artefact, and at least one real image is in the document. */
+  assert.equal((html.match(/class="xp-works-plate"/g) ?? []).length, 6);
+  for (const mechanic of ["xp-flux", "xp-dod", "xp-pent", "xp-away", "xp-atlas", "xp-soon"]) {
+    assert.match(html, new RegExp(`class="xp-room-shot ${mechanic}"`), mechanic);
+  }
+  assert.match(html, /<img src="\/projects\/design-or-disaster\/case-001\.jpg"/);
 
   /* Each row carries its project's ground, so the set previews the room you
      are about to be standing in before you open it. */
-  for (const tint of ["251 236 227", "247 236 245", "232 244 241"]) {
+  for (const tint of ["250 236 234", "251 236 227", "247 236 245", "232 244 241"]) {
     assert.ok(html.includes("--room:rgb(" + tint), "row tint " + tint);
   }
 
@@ -138,27 +156,22 @@ test("defines a meaningful interface, logic, and consequence for every project",
   }
 });
 
-test("renders an honest Daynero commercial preview", async () => {
+test("renders an honest Daynero coming-soon note", async () => {
   const response = await render("/work/daynero");
   assert.equal(response.status, 200);
   const html = await response.text();
 
   for (const phrase of [
-    "Less noise. Better money",
-    "AI-native financial product",
-    "Case study in preparation",
-    "Adaptive daily budget",
-    "Goals in the loop",
-    "Meridian",
-    "A preview, not a manufactured case study",
-    "I designed and built the app experience and public website",
+    "Coming soon",
+    "first-paycheck",
     "Visit daynero.com",
+    "I designed and built",
   ]) {
     assert.match(html, new RegExp(phrase));
   }
 
   assert.match(html, /href="https:\/\/daynero\.com\/"/);
-  assert.doesNotMatch(html, /Inspect the source|Try the core interaction|Built and verified/);
+  assert.doesNotMatch(html, /Try the core interaction|Built and verified|Read the case/);
   assert.match(html, /rel="canonical" href="https:\/\/portfolio\.test\/work\/daynero"/);
   assertCleanEncoding(html);
 });
@@ -201,7 +214,7 @@ test("server-renders four interactive, evidence-bounded published cases", async 
 });
 
 test("keeps all canonical project navigation payloads valid", async () => {
-  for (const slug of ["daynero", "design-or-disaster", "pentimento", "invisible-interfaces", "atlas"]) {
+  for (const slug of ["daynero", "fluxion-studios", "design-or-disaster", "pentimento", "invisible-interfaces", "atlas"]) {
     const response = await render(`/work/${slug}.rsc?from=all&_rsc`, "text/x-component", { RSC: "1" });
     assert.equal(response.status, 200);
     assert.match(response.headers.get("content-type") ?? "", /^text\/x-component\b/i);
@@ -228,7 +241,8 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   assert.equal(aboutResponse.status, 200);
   const aboutHtml = await aboutResponse.text();
   assert.match(aboutHtml, /I design the rules people feel/);
-  assert.match(aboutHtml, /Daynero · app and public website/);
+  assert.match(aboutHtml, /Fluxion Studios/);
+  assert.match(aboutHtml, /Daynero · case study coming soon/);
   assert.match(aboutHtml, /Four working interaction studies/);
   assert.match(aboutHtml, /commercial startup context/);
   assert.match(aboutHtml, /rel="canonical" href="https:\/\/portfolio\.test\/about"/);
@@ -238,9 +252,13 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   assert.match(contactHtml, /behavior is the hard part/i);
   assert.match(contactHtml, /@madebytanishk/);
 
-  assert.ok([301, 302, 307, 308].includes(resumeResponse.status));
-  assert.equal(new URL(resumeResponse.headers.get("location")).pathname, "/about");
-  assertCleanEncoding(aboutHtml + contactHtml);
+  assert.equal(resumeResponse.status, 200);
+  const resumeHtml = await resumeResponse.text();
+  assert.match(resumeHtml, /Résumé/);
+  assert.match(resumeHtml, /Tanishk/);
+  assert.match(resumeHtml, /Print \/ save as PDF/);
+  assert.doesNotMatch(resumeHtml, /Redirecting/);
+  assertCleanEncoding(aboutHtml + contactHtml + resumeHtml);
 });
 
 test("exposes crawl metadata for Daynero and the four published cases", async () => {
@@ -252,6 +270,7 @@ test("exposes crawl metadata for Daynero and the four published cases", async ()
   const sitemap = await sitemapResponse.text();
   assert.match(sitemap, /https:\/\/portfolio\.test\/work\/daynero/);
   assert.match(sitemap, /https:\/\/portfolio\.test\/work\/atlas/);
+  assert.match(sitemap, /https:\/\/portfolio\.test\/work\/fluxion-studios/);
   assert.doesNotMatch(sitemap, /command-center/);
   assert.equal(robotsResponse.status, 200);
   assert.match(await robotsResponse.text(), /Sitemap: https:\/\/portfolio\.test\/sitemap\.xml/);
@@ -294,7 +313,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     readFile(new URL("../worker/index.ts", import.meta.url), "utf8"),
   ]);
 
-  assert.match(data, /availability\?: "published" \| "preview"/);
+  assert.match(data, /availability\?: "published" \| "preview" \| "coming-soon"/);
   assert.match(data, /id: "daynero"/);
   assert.doesNotMatch(data, /remainder|command-center/i);
   assert.match(data, /form: "Spatial critique archive"/);
@@ -319,8 +338,27 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(explore, /SceneDirector/);
   assert.doesNotMatch(explore, /addEventListener/);
 
+  /* THE ROUTE STAGE MUST STAY A PLAIN BOX.
+     It wraps every page, so a transform, filter, perspective, will-change or
+     contain on it becomes a containing block for every position:fixed
+     descendant — which includes the full-screen project room, the payoff of
+     the whole site. When it carried a blur-and-rise entrance, the room laid
+     out at 1189x9834 @ top:431 on a 1280x720 screen and clicking a project
+     showed a blank page. It also meant nothing on the site was visible until
+     an animation advanced. This regressed twice; it is a test now. */
+  const routeStage = css.match(/\.route-stage\s*\{[^}]*\}/g) ?? [];
+  for (const rule of routeStage) {
+    assert.doesNotMatch(
+      rule,
+      /animation|transform|filter|perspective|will-change|contain\s*:/,
+      `.route-stage must stay a plain box, found: ${rule}`,
+    );
+  }
+  assert.doesNotMatch(css, /@keyframes route-enter/);
+
   // Each room is painted, not tinted: its own ground and its own reading ink.
   for (const slug of [
+    "fluxion-studios",
     "design-or-disaster",
     "pentimento",
     "invisible-interfaces",
@@ -350,6 +388,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(projectPage, /SignaturePlate/);
   assert.match(projectPage, /project\.sourceUrl \?/);
   for (const mark of [
+    "FluxionSigil",
     "DayneroSigil",
     "InvisibleSigil",
     "DisasterSigil",
@@ -368,7 +407,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(mode, /sessionStorage/);
   assert.doesNotMatch(mode, /localStorage/);
   assert.match(mode, /dataset\.mode/);
-  assert.match(mode, /aria-pressed/);
+  assert.match(mode, /router\.push/);
   // two modes, not three — and no stale edition contract left anywhere
   assert.match(css, /data-mode="review"/);
   assert.doesNotMatch(css, /data-edition=/);

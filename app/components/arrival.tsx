@@ -45,8 +45,8 @@ export function Arrival() {
         </h1>
 
         <p className="xp-arrive-note">
-          Every finished thing here has an earlier version underneath it. Keep
-          going and you&apos;ll see what each one is hiding.
+          Independent studies, a studio I co-founded, and a product case still
+          being written. The work is below — or skip ahead with Work.
         </p>
 
         <p className="xp-arrive-cue" aria-hidden="true">

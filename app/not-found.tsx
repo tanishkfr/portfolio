@@ -9,14 +9,14 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <main id="main-content" className="not-found-shell">
-      <p className="eyebrow">404 · No record at this address</p>
-      <h1>This address carries no record.</h1>
+      <p className="eyebrow">404 · Nothing here</p>
+      <h1>This page does not exist.</h1>
       <p>
-        Nothing was ever filed here, or the file has moved. The five systems
-        under examination are still exactly where they were.
+        The address is wrong, or the page has moved. The work is still on the
+        home page.
       </p>
       <div className="not-found-actions">
-        <Link href="/#work">Return to the examination →</Link>
+        <Link href="/#work">See selected work →</Link>
         <Link href="/contact">Contact Tanishk →</Link>
       </div>
     </main>

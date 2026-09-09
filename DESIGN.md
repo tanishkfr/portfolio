@@ -38,8 +38,13 @@ coffee cups, or personal photos. Personality comes from:
 ## Art-direction principles
 - Editorial + cinematic + material. Fraunces (authored serif) as display; a precise
   grotesque/mono for labels and instruments.
-- Near-black paper, warm off-white ink. Each project's real accent used as *light*,
-  sparingly, motivated by depth — never an arbitrary accent.
+- Cornsilk paper (`#f8f3e4`), near-black ink (`#16150f`) — the endpaper of a printed
+  art book, read in daylight. Each of the five rooms repaints that ground edge to
+  edge with its own pigment, so travelling through the work means walking between
+  rooms. A project's accent carries that project's meaning and is never borrowed to
+  colour an unrelated scene: colour is either a room or it is the housing.
+  (This line previously described the inverse — a near-black ground with off-white
+  ink — which the build has not used for some time.)
 - Every animation earns itself; motion communicates, never decorates. Camera = descent.
 - Print-worthy frames. Details and craft over trend. Originality over reference.
 - Accessible: pointer / touch / keyboard, reduced-motion, and a readable no-JS field.

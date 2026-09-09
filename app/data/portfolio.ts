@@ -73,7 +73,7 @@ export type Project = {
   question: string;
   oneLine: string;
   status: string;
-  availability?: "published" | "preview";
+  availability?: "published" | "preview" | "coming-soon";
   year: string;
   context: string;
   ownership: string;
@@ -84,7 +84,7 @@ export type Project = {
   liveUrl: string;
   sourceUrl?: string;
   accent: string;
-  artifact: "daynero" | "disaster" | "pentimento" | "invisible" | "atlas";
+  artifact: "daynero" | "disaster" | "pentimento" | "invisible" | "atlas" | "fluxion";
   lensRelations: Record<InterpretiveLens, string>;
   relatedSlugs: string[];
   chapterTitles: {
@@ -119,6 +119,112 @@ export type LensDefinition = {
 };
 
 export const projects: Project[] = [
+  {
+    id: "fluxion-studios",
+    slug: "fluxion-studios",
+    title: "Fluxion Studios",
+    form: "Studio website · freelance practice",
+    thesis: "A studio site should feel like the people who built it — not like a template with their names swapped in.",
+    question:
+      "How do you present a design studio without flattening it into agency clichés?",
+    oneLine:
+      "The live site for a Bengaluru studio I co-founded: we design and build websites for businesses that already have a point of view.",
+    status: "Live studio site",
+    year: "2026",
+    context: "Co-founded studio with Shreyas",
+    ownership: "Co-founder · design and frontend with a partner",
+    role: "Co-founder, designer, and frontend",
+    responsibilities: [
+      "Co-founded the studio and shaped how it talks about the work",
+      "Designed and built the public studio website",
+      "Wrote interface, motion, and form behaviour for the live site",
+    ],
+    tools: ["Visual design", "UI/UX", "Frontend", "Copy"],
+    scale: "Public studio site · enquiry form · two-person practice",
+    liveUrl: "https://fluxion-studios.vercel.app/",
+    accent: "#c8102e",
+    artifact: "fluxion",
+    lensRelations: {
+      "evidence-judgment":
+        "The site has to prove craft in how it is built, not by listing awards it does not have.",
+      "agency-authority":
+        "A studio pitch that leaves room for the client’s voice instead of overwriting it.",
+      "memory-lineage":
+        "A two-person practice that grew out of years of making things together.",
+      "visibility-accountability":
+        "Scope, timing, and whether we are the right studio are stated before a project starts.",
+    },
+    relatedSlugs: ["design-or-disaster", "daynero"],
+    chapterTitles: {
+      context: "A studio needed a site that could take real enquiries.",
+      pivot: "We built it the way we would build a client’s.",
+      interaction: "Type, timing, and a form that actually goes somewhere.",
+      system: "Interface, data, and the boring parts that keep a site upright.",
+      proof: "The site is live and taking work.",
+    },
+    story: {
+      intro: [
+        "Fluxion is the studio I co-founded with Shreyas. We design and build websites for businesses that already know how they talk, think, and treat people — and do not want that flattened the moment it becomes a homepage.",
+        "The public site had to do two jobs at once: explain the practice, and prove we can ship. So we built it ourselves.",
+      ],
+      contribution: [
+        "I designed and implemented the studio website: structure, type, motion, and the enquiry form. It is client-facing commercial work, not a research prototype.",
+        "The live site is the artifact. There is no invented client list and no fake metrics sitting behind it.",
+      ],
+      turn:
+        "If the studio site feels generic, nobody should trust us with theirs.",
+      reflection: [
+        "This is the other half of how I work: constraints, a partner, a deadline, and a site that has to convert an enquiry — not just make a point.",
+      ],
+    },
+    problem: {
+      title: "Most studio sites describe craft and then look assembled.",
+      paragraphs: [
+        "We needed a site that could take a real project enquiry without sounding like every other two-person studio in a dark theme.",
+      ],
+    },
+    pivot: {
+      title: "Build the studio site the way we would build a client’s.",
+      before: "A holding page would have been faster.",
+      realization: "The first thing a client sees is how we treat our own work.",
+      after: "The live site is designed, written, and implemented in-house.",
+    },
+    rejectedPaths: [],
+    interactionIntro:
+      "The public site covers how we think, what we build, how we work, and a form that starts a project.",
+    interactionSteps: [],
+    systemLayers: [],
+    decisions: [
+      {
+        title: "Build it in-house",
+        choice: "Design and implement the studio site ourselves instead of parking a template.",
+        consequence: "The site has to carry the same standard we would sell.",
+      },
+      {
+        title: "Say the constraints out loud",
+        choice: "Publish reply time, typical duration, and that pricing is on enquiry.",
+        consequence: "People can decide if we are the right studio before writing.",
+      },
+    ],
+    demonstrated: [
+      "A live studio website with navigation, process, founders, and an enquiry form.",
+      "Co-founded practice with Shreyas, based in Bengaluru.",
+      "Design and frontend implementation of the public site.",
+    ],
+    limits: [
+      "This record is the studio site, not a library of named client case studies.",
+      "Project outcomes for clients are not published here.",
+    ],
+    nextTest: {
+      title: "Keep the site honest as real client work accumulates.",
+      body: "Add case studies only when they can name the work without inflating it.",
+      success: "A visitor can tell what the studio actually ships, not just how it sounds.",
+    },
+    contribution:
+      "Co-founded the studio; designed and built the public website with Shreyas.",
+    disclosure:
+      "Fluxion Studios is a two-person practice. This portfolio page describes the live studio site and my role. It does not invent client results.",
+  },
   {
     id: "design-or-disaster",
     slug: "design-or-disaster",
@@ -785,13 +891,13 @@ export const projects: Project[] = [
     slug: "daynero",
     title: "Daynero",
     form: "AI-native financial product",
-    thesis: "Money guidance works better when it responds to daily behavior, not just a monthly reset.",
+    thesis: "A money product for first-paycheck earners who need to know what they can spend today.",
     question:
-      "How might financial guidance respond to daily behavior, goals, and changing context?",
+      "How might financial guidance help a first paycheck feel readable, day to day?",
     oneLine:
-      "Daynero is a behavioral-finance app with an adaptive daily budget, goal-aware guidance, a real-time Meridian Score, and personalized spending insights.",
-    status: "Commercial product · case study in preparation",
-    availability: "preview",
+      "An AI-native personal finance app for first-paycheck earners — what you can safely spend today, and why. The full case study is coming soon.",
+    status: "Coming soon",
+    availability: "coming-soon",
     year: "2026",
     context: "Startup product work",
     ownership: "App and public website · commercial team context",
@@ -800,7 +906,7 @@ export const projects: Project[] = [
       "Designed the app's product experience",
       "Designed and built the public website",
       "Developed the interaction and visual systems across both surfaces",
-      "Preparing the full case study with an explicit evidence boundary",
+      "Writing the case study when it can be told properly",
     ],
     tools: ["Product design", "Interaction design", "Web design", "Implementation"],
     scale: "Financial app · public website · active startup",
@@ -817,7 +923,7 @@ export const projects: Project[] = [
       "visibility-accountability":
         "Makes overlooked patterns and the relationship between present behavior and future wealth more legible.",
     },
-    relatedSlugs: ["pentimento", "atlas"],
+    relatedSlugs: ["fluxion-studios", "atlas"],
     chapterTitles: {
       context: "The commercial context is still being documented.",
       pivot: "The product evolution will be published with its constraints.",
@@ -870,7 +976,7 @@ export const lenses: LensDefinition[] = [
     shortLabel: "All work",
     label: "All work",
     prompt:
-      "One commercial product and four independent investigations into what systems decide, explain, and let people change.",
+      "Shipped studio work and independent investigations into what interfaces decide, explain, and let people change.",
     order: projects.map((project) => project.slug),
   },
   {
@@ -884,7 +990,7 @@ export const lenses: LensDefinition[] = [
     // each project leads exactly once — in the argument it makes best.
     // Atlas is the reasoning instrument; Design or Disaster answers
     // second because it judges what Atlas reasons about.
-    order: ["atlas", "design-or-disaster", "pentimento", "invisible-interfaces", "daynero"],
+    order: ["atlas", "design-or-disaster", "pentimento", "invisible-interfaces", "fluxion-studios", "daynero"],
   },
   {
     id: "agency-authority",
@@ -892,7 +998,7 @@ export const lenses: LensDefinition[] = [
     label: "Agency & Authority",
     prompt:
       "What can a person contest, revise, delegate, or refuse, and who retains the final say?",
-    order: ["pentimento", "invisible-interfaces", "daynero", "design-or-disaster", "atlas"],
+    order: ["pentimento", "invisible-interfaces", "fluxion-studios", "daynero", "design-or-disaster", "atlas"],
   },
   {
     id: "memory-lineage",
@@ -900,7 +1006,7 @@ export const lenses: LensDefinition[] = [
     label: "Memory & Lineage",
     prompt:
       "How can a system preserve change and context without turning history into clutter or authority?",
-    order: ["daynero", "atlas", "pentimento", "invisible-interfaces", "design-or-disaster"],
+    order: ["fluxion-studios", "daynero", "atlas", "pentimento", "invisible-interfaces", "design-or-disaster"],
   },
   {
     id: "visibility-accountability",
@@ -908,7 +1014,7 @@ export const lenses: LensDefinition[] = [
     label: "Visibility & Accountability",
     prompt:
       "What must a system reveal so its behavior can be understood, trusted, and challenged?",
-    order: ["invisible-interfaces", "design-or-disaster", "daynero", "pentimento", "atlas"],
+    order: ["invisible-interfaces", "design-or-disaster", "fluxion-studios", "daynero", "pentimento", "atlas"],
   },
 ];
 

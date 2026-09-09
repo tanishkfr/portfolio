@@ -5,15 +5,13 @@ import { useState } from "react";
 /**
  * STAGE 2 — BEAT 3: "things I notice".
  *
- * Personality, from truth: he notices the interaction details most people
- * scroll past. So here are the same controls built twice — once carelessly,
- * once considered — and the visitor gets to feel the difference. Every
- * specimen is real and interactive; nothing is asserted that isn't shown.
+ * The same control, built twice. Labels wait until after you have
+ * used both — the job is the difference you feel, not the caption.
  */
 
 function ToggleSpecimen() {
   const [careless, setCareless] = useState(false);
-  const [considered, setConsidered] = useState(true);
+  const [considered, setConsidered] = useState(false);
 
   return (
     <figure className="xp-spec" data-reveal="figure">
@@ -68,6 +66,68 @@ function PressSpecimen() {
   );
 }
 
+function LoadSpecimen() {
+  const [plain, setPlain] = useState(false);
+  const [fine, setFine] = useState(false);
+
+  return (
+    <figure className="xp-spec" data-reveal="figure">
+      <div className="xp-spec-pair">
+        <button
+          type="button"
+          className="xp-load xp-load-plain"
+          data-busy={plain || undefined}
+          onClick={() => {
+            setPlain(true);
+            window.setTimeout(() => setPlain(false), 900);
+          }}
+        >
+          {plain ? "Wait" : "Send"}
+        </button>
+        <button
+          type="button"
+          className="xp-load xp-load-fine"
+          data-busy={fine || undefined}
+          onClick={() => {
+            setFine(true);
+            window.setTimeout(() => setFine(false), 1100);
+          }}
+        >
+          {fine ? "Sending" : "Send"}
+        </button>
+      </div>
+      <figcaption className="xp-spec-cap">
+        <span className="xp-spec-label">The wait</span>
+        One disappears into a dead word. One keeps the shape you pressed.
+      </figcaption>
+    </figure>
+  );
+}
+
+function FocusSpecimen() {
+  return (
+    <figure className="xp-spec" data-reveal="figure">
+      <form
+        className="xp-spec-pair xp-field-pair"
+        onSubmit={(event) => event.preventDefault()}
+      >
+        <label className="xp-field xp-field-plain">
+          <span>Name</span>
+          <input type="text" name="plain-name" autoComplete="off" />
+        </label>
+        <label className="xp-field xp-field-fine">
+          <span>Name</span>
+          <input type="text" name="fine-name" autoComplete="off" />
+        </label>
+      </form>
+      <figcaption className="xp-spec-cap">
+        <span className="xp-spec-label">The focus</span>
+        Tab into both. One is a box. One tells you where you are.
+      </figcaption>
+    </figure>
+  );
+}
+
 export function Notice() {
   return (
     <section
@@ -90,6 +150,8 @@ export function Notice() {
       <div className="xp-notice-grid">
         <ToggleSpecimen />
         <PressSpecimen />
+        <LoadSpecimen />
+        <FocusSpecimen />
       </div>
     </section>
   );

@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s — Tanishk",
     },
     description:
-      "Interaction-design work by Tanishk: a commercial AI-native finance product and four working investigations into agency, evidence, and intelligent systems.",
+      "Interaction-design work by Tanishk: a Bengaluru studio, four live independent studies, and an AI-native finance product whose case is still being written.",
     authors: [{ name: "Tanishk" }],
     creator: "Tanishk",
     category: "Interaction Design",
@@ -47,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Tanishk — Interaction Designer",
       title: "Tanishk — Interaction Designer",
       description:
-        "Five interaction systems examined with one question at a time: what each shows, what it decides, and what that changes.",
+        "Studio work, live interaction studies, and a product case in progress — by Tanishk, an interaction designer in Bengaluru.",
       images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
     },
     twitter: {
@@ -55,7 +55,7 @@ export async function generateMetadata(): Promise<Metadata> {
       creator: "@madebytanishk",
       title: "Tanishk — Interaction Designer",
       description:
-        "Five interaction systems about money, evidence, authority, memory, and accountability.",
+        "Studio websites, interaction studies, and a finance product in progress — by Tanishk.",
       images: ["/og.png"],
     },
   };
@@ -87,7 +87,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{var q=new URLSearchParams(location.search).get('mode');var m=q||sessionStorage.getItem('mode');if(m==='review'||m==='full'){document.documentElement.dataset.mode=m;if(q)sessionStorage.setItem('mode',m);}}catch(t){}})();",
+              "(function(){try{var q=new URLSearchParams(location.search).get('mode');var m=q||(location.hash==='#work'?'full':sessionStorage.getItem('mode'));if(m==='review'||m==='full'){document.documentElement.dataset.mode=m;if(q||location.hash==='#work')sessionStorage.setItem('mode',m);}}catch(t){}})();",
           }}
         />
       </head>
