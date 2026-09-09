@@ -14,33 +14,42 @@
 .case {
   padding-bottom: 4rem;
   --accent-ink: var(--project-accent);
-  /* Flat black, exactly like the index. No tinted wash bleeding down
-     the page — the case stands on the same ground the names do. */
-  background: var(--paper);
-  /* the mural bleeds off-canvas; clip (not hidden) keeps it contained */
+  background:
+    radial-gradient(120% 80% at 6% -8%, var(--world-wash, transparent), transparent 58%),
+    transparent;
   overflow-x: clip;
 }
 
 .case--disaster {
-  --world-wash: rgba(239, 74, 53, 0.045);
+  --world-wash: rgba(239, 74, 53, 0.16);
   --accent-ink: var(--accent-disaster-ink);
   --world-beat: 130ms;
 }
 
 .case--pentimento {
-  --world-wash: rgba(139, 47, 99, 0.05);
+  --world-wash: rgba(139, 47, 99, 0.14);
   --accent-ink: var(--accent-pentimento-ink);
   --world-beat: 420ms;
 }
 
 .case--invisible {
-  --world-wash: rgba(215, 154, 41, 0.055);
+  --world-wash: rgba(215, 154, 41, 0.16);
   --accent-ink: var(--accent-invisible-ink);
 }
 
 .case--atlas {
-  --world-wash: rgba(29, 117, 109, 0.05);
+  --world-wash: rgba(29, 117, 109, 0.14);
   --accent-ink: var(--accent-atlas-ink);
+}
+
+.case--fluxion {
+  --world-wash: rgba(200, 16, 46, 0.12);
+  --accent-ink: var(--accent-fluxion-ink, #b01020);
+}
+
+.case--daynero {
+  --world-wash: rgba(183, 227, 75, 0.16);
+  --accent-ink: var(--accent-daynero-ink, #566f18);
 }
 
 /* ---------- return strip ---------- */
@@ -72,6 +81,19 @@
   font-size: 0.7rem;
 }
 
+.case-skip {
+  display: inline-block;
+  margin: 1rem 0 0;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+
+.case-hero .case-instrument {
+  margin-block: clamp(1.6rem, 4vh, 2.6rem);
+  width: 100%;
+}
+
 /* ---------- hero: the title wall ----------
    The case opens on the same left edge the index stands on. The name
    you clicked flies here and lands where it was already reading, so
@@ -99,7 +121,7 @@
   width: clamp(34rem, 66vw, 62rem);
   translate: -18% -58%;
   color: var(--ink);
-  opacity: 0.05;
+  opacity: 0.09;
   pointer-events: none;
 }
 
@@ -162,6 +184,25 @@
   font-weight: 480;
   letter-spacing: -0.018em;
   line-height: 0.98;
+}
+
+.case[data-room="fluxion-studios"] .case-title-lockup h1 {
+  view-transition-name: project-fluxion-studios;
+}
+.case[data-room="design-or-disaster"] .case-title-lockup h1 {
+  view-transition-name: project-design-or-disaster;
+}
+.case[data-room="pentimento"] .case-title-lockup h1 {
+  view-transition-name: project-pentimento;
+}
+.case[data-room="invisible-interfaces"] .case-title-lockup h1 {
+  view-transition-name: project-invisible-interfaces;
+}
+.case[data-room="atlas"] .case-title-lockup h1 {
+  view-transition-name: project-atlas;
+}
+.daynero-preview[data-room="daynero"] h1 {
+  view-transition-name: project-daynero;
 }
 
 .case-thesis {
@@ -535,6 +576,29 @@
 }
 
 /* --- disaster demo: mark first, argue second --- */
+
+.fluxion-demo {
+  display: grid;
+  gap: 1.2rem;
+  padding: 1.4rem 1.6rem 1.6rem;
+}
+
+.fluxion-demo p {
+  margin: 0;
+  max-width: 36em;
+  font-family: var(--serif);
+  font-size: var(--step-1);
+  line-height: 1.4;
+}
+
+.fluxion-demo a {
+  width: fit-content;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  color: var(--accent-ink);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
 
 .disaster-demo {
   display: grid;
@@ -1638,7 +1702,13 @@
   padding-bottom: 4rem;
   --project-accent: var(--accent-daynero);
   --accent-ink: var(--accent-daynero-ink);
-  background: var(--paper);
+  background: transparent;
+}
+
+.daynero-soon .daynero-hero {
+  min-height: 72svh;
+  grid-template-columns: minmax(0, 38rem);
+  align-content: center;
 }
 
 .daynero-return {

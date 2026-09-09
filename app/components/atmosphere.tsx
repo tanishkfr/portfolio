@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { HOUSING, ROOM_WORLDS } from "../data/room-worlds";
+import { HOUSING, ROOM_WORLDS, rgb } from "../data/room-worlds";
 
 /**
  * THE ATMOSPHERE.
@@ -95,8 +95,28 @@ export function Atmosphere() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       if (frame) window.cancelAnimationFrame(frame);
+      root.style.setProperty(
+        "--atmos",
+        `${HOUSING[0]} ${HOUSING[1]} ${HOUSING[2]}`,
+      );
     };
   }, []);
 
   return <div className="xp-atmos" aria-hidden="true" />;
+}
+
+export function RoomPaint({ slug }: { slug: string | null }) {
+  useEffect(() => {
+    const world = slug ? ROOM_WORLDS[slug] : null;
+    const root = document.documentElement;
+    if (!world) {
+      root.style.setProperty("--atmos", `${HOUSING[0]} ${HOUSING[1]} ${HOUSING[2]}`);
+      return;
+    }
+    root.style.setProperty("--atmos", rgb(world.ground));
+    return () => {
+      root.style.setProperty("--atmos", `${HOUSING[0]} ${HOUSING[1]} ${HOUSING[2]}`);
+    };
+  }, [slug]);
+  return null;
 }

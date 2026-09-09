@@ -110,6 +110,7 @@ export function Descent() {
     <section
       className="xp-shed"
       ref={ref}
+      data-stage
       data-era="0"
       aria-label="Every year, software asks less of us — and shows me less."
     >
@@ -134,7 +135,7 @@ export function Descent() {
           And every year, it shows me <em>less</em>.
         </p>
         <p className="xp-shed-look" aria-hidden="true">
-          so I keep looking under it
+          so the behaviour still has to be designed
         </p>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LookUnder } from "../components/look-under";
 
 const description =
   "About Tanishk, an interaction designer based in Bangalore and available for work.";
@@ -57,15 +58,32 @@ export default function AboutPage() {
             the system decides, remembers, explains, or lets a person change.
           </p>
           <p>
-            My current commercial work is Daynero, an AI-native financial app.
-            Alongside it, I build independent investigations into criticism,
-            algorithmic autobiography, delegated computing, and reasoning.
+            I co-founded Fluxion Studios, a two-person web practice. I also
+            designed and built Daynero, an AI-native finance app whose case
+            study is still being written. Alongside that I run four independent
+            interaction studies you can use now.
           </p>
         </div>
+        <LookUnder
+          className="about-under"
+          label="A little more about how I work"
+          rest={0.08}
+          surface={<p>Interaction designer. Bangalore. Available for work.</p>}
+          under={
+            <p>
+              I steal from Formula 1, architecture, film, printed books, and
+              games with weather — never from other interfaces.
+            </p>
+          }
+        />
         <dl className="about-facts" aria-label="Practice facts">
           <div>
-            <dt>Current product</dt>
-            <dd>Daynero · app and public website</dd>
+            <dt>Studio</dt>
+            <dd>Fluxion Studios · co-founder</dd>
+          </div>
+          <div>
+            <dt>Product</dt>
+            <dd>Daynero · case study coming soon</dd>
           </div>
           <div>
             <dt>Independent work</dt>

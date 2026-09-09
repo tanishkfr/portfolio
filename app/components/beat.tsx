@@ -1,3 +1,5 @@
+import type { CSSProperties, ReactNode } from "react";
+
 /**
  * A BEAT.
  *
@@ -14,14 +16,14 @@ export function Beat({
   children,
   len = 1.4,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   len?: number;
 }) {
   return (
     <section
       className="xp-beat"
       data-stage
-      style={{ "--len": len } as React.CSSProperties}
+      style={{ "--len": len } as CSSProperties}
     >
       <div className="xp-beat-pin">
         <p className="xp-beat-line">{children}</p>

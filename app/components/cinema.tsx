@@ -23,7 +23,7 @@ import { useEffect } from "react";
  * no-pointer devices fall through to native scroll entirely.
  */
 
-const EASE = 0.09; // how much of the remaining distance is closed per frame
+const EASE = 0.14; // how much of the remaining distance is closed per frame
 const MAX_VELOCITY = 55; // px/frame treated as full deflection
 
 export function Cinema() {
@@ -87,6 +87,13 @@ export function Cinema() {
       raf = window.requestAnimationFrame(frame);
     };
 
+    const cameraOwns = () => {
+      const x = window.innerWidth / 2;
+      const y = Math.min(window.innerHeight * 0.42, window.innerHeight - 8);
+      const hit = document.elementFromPoint(x, y);
+      return Boolean(hit?.closest("[data-stage]"));
+    };
+
     const onWheel = (event: WheelEvent) => {
       /* Never swallow a wheel event we cannot answer. This handler cancels the
          native scroll and moves the page itself, so if the frame loop is not
@@ -97,6 +104,13 @@ export function Cinema() {
       if (!armed) return;
       // leave zoom gestures to the browser
       if (event.ctrlKey || event.metaKey) return;
+      /* Heavy camera only while a pinned stage owns the viewport. The work
+         index, notice, and close must answer the wheel immediately. */
+      if (!cameraOwns()) {
+        current = window.scrollY;
+        target = window.scrollY;
+        return;
+      }
 
       /* A single granted frame is not proof the loop keeps ticking. If we are
          mid-animation and frames have stopped arriving, hand the page back
@@ -112,10 +126,22 @@ export function Cinema() {
       run();
     };
 
+    const adoptWindow = () => {
+      current = window.scrollY;
+      target = window.scrollY;
+      running = false;
+      if (raf) window.cancelAnimationFrame(raf);
+      raf = 0;
+      root.style.setProperty("--vel", "0");
+    };
+
     /* Anything that scrolls us from outside this loop — keyboard, an anchor,
-       focusing an offscreen control — must not be fought. When the real
-       position diverges from ours, we concede and adopt it. */
+       focusing an offscreen control, the Work link — must not be fought. */
     const onScroll = () => {
+      if (Math.abs(window.scrollY - current) > 40) {
+        adoptWindow();
+        return;
+      }
       if (running) return;
       if (Math.abs(window.scrollY - current) > 2) {
         current = window.scrollY;
@@ -140,12 +166,16 @@ export function Cinema() {
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+    window.addEventListener("hashchange", adoptWindow);
+    window.addEventListener("portfolio:pin", adoptWindow);
 
     return () => {
       window.cancelAnimationFrame(arming);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("hashchange", adoptWindow);
+      window.removeEventListener("portfolio:pin", adoptWindow);
       if (raf) window.cancelAnimationFrame(raf);
       root.style.scrollBehavior = previousBehavior;
       delete root.dataset.cinema;

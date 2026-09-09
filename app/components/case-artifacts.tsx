@@ -9,21 +9,25 @@ function InstrumentFrame({
   status,
   children,
   caption,
+  bar = "Try the core interaction",
+  proof = "What this proves",
 }: {
   project: string;
   status: string;
   children: ReactNode;
   caption: string;
+  bar?: string;
+  proof?: string;
 }) {
   return (
     <figure className={`signature-artifact case-instrument case-instrument--${project}`}>
       <div className="artifact-bar case-instrument-bar">
-        <span>Try the core interaction</span>
+        <span>{bar}</span>
         <span aria-live="polite">{status}</span>
       </div>
       {children}
       <figcaption>
-        <strong>What this proves</strong>
+        <strong>{proof}</strong>
         {caption}
       </figcaption>
     </figure>
@@ -293,8 +297,36 @@ function AtlasArtifact() {
   );
 }
 
+function FluxionArtifact() {
+  return (
+    <InstrumentFrame
+      project="fluxion"
+      bar="The studio site"
+      proof="What it is"
+      status="Live"
+      caption="A public studio website designed and built in-house, taking project enquiries."
+    >
+      <div className="fluxion-demo">
+        <p>
+          Fluxion is a two-person studio in Bengaluru. The live site has to
+          carry the same standard we would sell a client.
+        </p>
+        <a
+          href="https://fluxion-studios.vercel.app/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Open the studio site <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </InstrumentFrame>
+  );
+}
+
 export function CaseArtifact({ project }: { project: Project }) {
   switch (project.artifact) {
+    case "fluxion":
+      return <FluxionArtifact />;
     case "daynero":
       return null;
     case "disaster":

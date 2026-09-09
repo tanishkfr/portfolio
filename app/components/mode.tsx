@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import { useSyncExternalStore } from "react";
 
 /**
@@ -51,20 +52,33 @@ export function useMode(): Mode {
 
 export function ModeSwitch() {
   const mode = useMode();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  function go(next: Mode) {
+    setMode(next);
+    const query = next === "review" ? "/?mode=review" : "/?mode=full";
+    if (pathname !== "/") {
+      router.push(query);
+      return;
+    }
+    const url = next === "review" ? "/?mode=review" : "/";
+    window.history.replaceState(window.history.state, "", url);
+  }
 
   return (
     <div className="mode-switch" role="group" aria-label="How do you want to read this?">
       <button
         type="button"
         aria-pressed={mode === "full"}
-        onClick={() => setMode("full")}
+        onClick={() => go("full")}
       >
         Explore
       </button>
       <button
         type="button"
         aria-pressed={mode === "review"}
-        onClick={() => setMode("review")}
+        onClick={() => go("review")}
       >
         Quick review
       </button>

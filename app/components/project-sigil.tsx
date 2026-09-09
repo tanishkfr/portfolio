@@ -233,7 +233,19 @@ function AtlasSigil() {
   );
 }
 
+function FluxionSigil() {
+  return (
+    <>
+      <rect className="ph ph-s ph-r ph-c" x="18" y="14" width="8" height="40" fill="currentColor" />
+      <rect className="ph ph-s ph-r ph-c" x="18" y="14" width="28" height="8" fill="currentColor" />
+      <rect className="ph ph-r ph-c" x="18" y="30" width="22" height="6" fill="currentColor" />
+      <circle className="ph ph-s ph-r ph-c acc" cx="58" cy="48" r="5" fill="currentColor" />
+    </>
+  );
+}
+
 const marks: Record<Project["artifact"], () => React.ReactNode> = {
+  fluxion: FluxionSigil,
   daynero: DayneroSigil,
   invisible: InvisibleSigil,
   disaster: DisasterSigil,
@@ -242,6 +254,7 @@ const marks: Record<Project["artifact"], () => React.ReactNode> = {
 };
 
 const accents: Record<Project["artifact"], string> = {
+  fluxion: "#b01020",
   daynero: "var(--accent-daynero-ink)",
   invisible: "var(--accent-invisible-ink)",
   disaster: "var(--accent-disaster)",

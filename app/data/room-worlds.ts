@@ -27,7 +27,11 @@ export type RoomWorld = {
 export const HOUSING: [number, number, number] = [248, 243, 228];
 
 export const ROOM_WORLDS: Record<string, RoomWorld> = {
-  // vermilion — the stamp of a verdict
+  "fluxion-studios": {
+    ground: [250, 236, 234],
+    ink: "#1a1010",
+    accentInk: "#b01020",
+  },
   "design-or-disaster": {
     ground: [251, 236, 227],
     ink: "#1a1310",

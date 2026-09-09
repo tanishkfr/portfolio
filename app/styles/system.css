@@ -43,16 +43,23 @@
      this ground with their own pigment; the housing always keeps the
      bistre, so the work is the only thing that changes colour.
      ------------------------------------------------------------ */
+  --atmos: 248 243 228;
   --paper: #f8f3e4;
   --paper-high: #fffdf5;
   --paper-low: #eee7d3;
   --plate: #fffdf7;
   --plate-high: #ffffff;
   --ink: #16150f;
-  --ink-soft: rgba(22, 21, 15, 0.72);
-  --muted: rgba(22, 21, 15, 0.56);
-  --line: rgba(22, 21, 15, 0.16);
-  --line-strong: rgba(22, 21, 15, 0.44);
+  --ink-soft: rgba(22, 21, 15, 0.72); /* 6.9:1 */
+  /* 0.56 measured 4.06:1 on this ground and failed AA, while carrying every
+     project thesis, form label and kicker on the site — the quiet voice was
+     quiet enough to be unreadable. 0.62 is the first step past 4.5:1 (4.7:1)
+     and is still visibly secondary to --ink-soft. */
+  --muted: rgba(22, 21, 15, 0.62); /* 4.7:1 — AA body */
+  --line: rgba(22, 21, 15, 0.16); /* decorative rule only, never a control edge */
+  /* draws control edges — toggles, buttons — so it owes the 3:1 non-text
+     minimum. 0.44 measured 2.83:1. */
+  --line-strong: rgba(22, 21, 15, 0.5); /* 3.2:1 — AA non-text */
 
   /* The housing's own signal is record-ink blue — a cool ink held
      against warm ground. Where a page belongs to a project, --accent
@@ -79,7 +86,8 @@
   --accent-invisible-ink: #8a5c07;
   --accent-atlas: #1d756d;
   --accent-atlas-ink: #12615a;
-  --accent-daynero: #b7e34b;
+  --accent-fluxion: #c8102e;
+  --accent-fluxion-ink: #b01020;
   --accent-daynero-ink: #566f18;
 
   /* Voices */
@@ -158,11 +166,10 @@
   --accent-daynero-ink: #56701d;
 }
 
-/* Reduced motion removes travel, never information. */
-:root[data-motion="reduced"] {
-  --beat: 1ms;
-  --move: 1ms;
-  --settle: 1ms;
+:root[data-motion="reduced"] [data-reveal],
+:root[data-motion="reduced"] [data-reveal]:not(.is-revealed) {
+  clip-path: none !important;
+  opacity: 1 !important;
 }
 
 * {
@@ -170,10 +177,11 @@
 }
 
 html {
-  background: var(--paper);
+  background: rgb(var(--atmos, 248 243 228));
   color: var(--ink);
   scroll-behavior: smooth;
   scroll-padding-top: 6.5rem;
+  transition: background-color 700ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root[data-motion="reduced"] html,
@@ -185,7 +193,7 @@ body {
   margin: 0;
   min-width: 320px;
   overflow-x: hidden;
-  background: var(--paper);
+  background: rgb(var(--atmos, 248 243 228));
   color: var(--ink);
   font-family: var(--sans);
   /* text optical size: lower stroke contrast and open apertures, which is what
@@ -352,7 +360,18 @@ img {
 }
 
 .claim[open] .claim-record {
-  animation: record-open var(--settle) var(--ease-out) both;
+  /* forwards, NOT both. `both` also fills BACKWARDS, applying the from-state
+     -- blur(2px), translateY(6px), opacity 0 -- before the animation runs. Any
+     non-none filter or transform makes this element a containing block for its
+     position:fixed descendants, so while that from-state is held, the
+     full-screen project room is laid out inside this box instead of the
+     viewport: measured at 1189x9834 @ top:431 rather than filling the screen.
+     If frames are throttled, deferred, or never granted, `both` holds that
+     state forever and the payoff of the whole site becomes unreachable.
+     With `forwards` the element is simply visible until the animation starts,
+     plays, and then retains its finished state -- it can only ever be an
+     enhancement, never a precondition for seeing the page. */
+  animation: record-open var(--settle) var(--ease-out) forwards;
 }
 
 @keyframes record-open {
@@ -364,7 +383,10 @@ img {
   to {
     opacity: 1;
     transform: none;
-    filter: blur(0);
+    /* `none`, not `blur(0)`. A retained filter of any kind makes this element
+       a containing block for its position:fixed descendants; the two values
+       look identical and behave completely differently. */
+    filter: none;
   }
 }
 
@@ -419,12 +441,11 @@ img {
   justify-content: space-between;
   gap: 1.5rem;
   min-height: 4.6rem;
-  width: min(100%, 105rem);
-  margin-inline: auto;
-  padding-inline: var(--page-gutter);
+  width: 100%;
+  margin-inline: 0;
+  padding-inline: max(var(--page-gutter), calc((100% - 105rem) / 2 + var(--page-gutter)));
   border-bottom: 1px solid var(--line);
-  background: color-mix(in srgb, var(--paper) 88%, transparent);
-  backdrop-filter: blur(14px) saturate(115%);
+  background: rgb(var(--atmos, 248 243 228) / 0.92);
   transition: box-shadow var(--move) var(--ease-out);
 }
 
@@ -557,16 +578,28 @@ img {
   justify-content: flex-end;
 }
 
-/* On the field the header is a name and a way in. It carries no
-   ground, no rule, and no progress line — nothing may compete with
-   the five names. */
+/* On the field the header recedes — but it does not leave.
+   It used to be position:absolute, which meant it scrolled away at the first
+   viewport and took three things with it: the reading progress, the way back,
+   and the Quick Review switch. Quick Review exists so that Explore can afford
+   to take its time; making it unreachable after twenty seconds of scrolling
+   removes the escape hatch from the exact person it was built for.
+   So: no ground, no rule and no shadow at rest — nothing competes with the
+   opening — and it earns them back the moment there is content beneath it. */
 .site-header[data-bare="true"] {
-  position: absolute;
-  inset: 0 0 auto;
-  border-bottom: 0;
+  border-bottom-color: transparent;
   background: transparent;
   backdrop-filter: none;
   box-shadow: none;
+  transition:
+    background-color var(--move) var(--ease-out),
+    border-color var(--move) var(--ease-out);
+}
+
+[data-scrolled="true"] .site-header[data-bare="true"] {
+  border-bottom-color: var(--line);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(14px) saturate(115%);
 }
 
 .site-header[data-bare="true"]::after {
@@ -585,14 +618,14 @@ img {
 @media (max-width: 56rem) {
   .site-header {
     flex-wrap: wrap;
-    row-gap: 0;
-    padding-block: 0.6rem;
+    row-gap: 0.45rem;
+    padding-block: 0.75rem 0.65rem;
   }
 
   .site-header-tools {
     width: 100%;
     justify-content: space-between;
-    gap: 0.8rem;
+    gap: 0.65rem 0.9rem;
   }
 }
 
@@ -609,10 +642,7 @@ img {
   opacity: 1 !important;
   transform: none !important;
   filter: none !important;
-}
-
-:root[data-mode="review"] .route-stage {
-  animation-duration: 120ms;
+  clip-path: none !important;
 }
 
 :root[data-mode="review"]::view-transition-old(root) {
@@ -688,24 +718,27 @@ img {
   margin: 0;
 }
 
-/* ---------- route entrance ---------- */
+/* ---------- route stage ---------- */
 
-.route-stage {
-  animation: route-enter var(--settle) var(--ease-out) both;
-}
+/* THIS ELEMENT MUST NEVER CARRY A TRANSFORM, FILTER, PERSPECTIVE, WILL-CHANGE
+   OR CONTAIN. It wraps every page (app/template.tsx), so any one of those makes
+   it a containing block for every position:fixed descendant underneath it --
+   and the full-screen project room is one of those. It used to run a
+   blur-and-rise entrance here, which had two consequences:
 
-@keyframes route-enter {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-    filter: blur(2px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-    filter: blur(0);
-  }
-}
+     1. While the animation held its from-state, the room was laid out inside
+        this box rather than the viewport -- measured at 1189x9834 @ top:431 on
+        a 1280x720 screen. Opening a project showed a blank screen.
+     2. The whole page was invisible until the animation advanced. If frames are
+        throttled, deferred at load, or never granted, it never advances, and
+        nothing on the site can be read. Visibility must not depend on a frame
+        loop; that rule has already been paid for three times here.
+
+   The entrance choreography it duplicated already exists, per element and
+   fail-open, in the [data-reveal] system, and a blur-in over an entire page was
+   a page-level effect nothing asked for. Removing it fixes the trap
+   structurally rather than tuning a fill-mode around it. */
+
 
 /* ---------- scroll reveals ----------
    Content is never hidden without JS: the hiding class arrives
@@ -714,19 +747,12 @@ img {
    they never withhold information. */
 
 .motion-ready[data-motion="full"] [data-reveal]:not(.is-revealed) {
-  opacity: 0;
-  transform: translateY(10px);
-  filter: blur(3px);
+  clip-path: inset(0 0 0 100%);
 }
 
 .motion-ready[data-motion="full"] [data-reveal].is-revealed {
-  opacity: 1;
-  transform: none;
-  filter: blur(0);
-  transition:
-    opacity var(--settle) var(--ease-out),
-    transform var(--settle) var(--ease-out),
-    filter var(--settle) var(--ease-out);
+  clip-path: inset(0);
+  transition: clip-path var(--settle) var(--ease-out);
 }
 
 /* ---------- typed entrances ----------
@@ -739,12 +765,10 @@ img {
 /* A name sets. It travels further and lands without haze, because a name
    should arrive with weight rather than resolve out of a fog. */
 .motion-ready[data-motion="full"] [data-reveal="name"]:not(.is-revealed) {
-  transform: translateY(26px);
-  filter: none;
+  clip-path: inset(0 0 0 72%);
 }
 
 .motion-ready[data-motion="full"] [data-reveal="name"].is-revealed {
-  filter: none;
   transition-duration: 640ms;
   transition-timing-function: var(--ease-swing);
 }
@@ -752,24 +776,23 @@ img {
 /* A question holds. It does not travel at all — it simply becomes present,
    slower than anything else on the page. */
 .motion-ready[data-motion="full"] [data-reveal="quiet"]:not(.is-revealed) {
-  transform: none;
-  filter: none;
+  clip-path: none;
+  opacity: 0.18;
 }
 
 .motion-ready[data-motion="full"] [data-reveal="quiet"].is-revealed {
-  transform: none;
-  filter: none;
-  transition-duration: 780ms;
+  opacity: 1;
+  transition:
+    opacity 780ms var(--ease-out),
+    clip-path 780ms var(--ease-out);
 }
 
 /* An object settles into its own size, the way something set down does. */
 .motion-ready[data-motion="full"] [data-reveal="figure"]:not(.is-revealed) {
-  transform: scale(0.988) translateY(12px);
-  filter: none;
+  clip-path: inset(8% 0 0 0);
 }
 
 .motion-ready[data-motion="full"] [data-reveal="figure"].is-revealed {
-  filter: none;
   transition-duration: 560ms;
 }
 
@@ -839,14 +862,27 @@ img {
    the page crossfades underneath. Browsers without the View
    Transitions API simply navigate. */
 
+@keyframes look-under-leave {
+  to {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+@keyframes look-under-enter {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
 ::view-transition-old(root) {
-  animation-duration: 200ms;
-  animation-timing-function: var(--ease-swing);
+  animation: look-under-leave 280ms var(--ease-swing) both;
 }
 
 ::view-transition-new(root) {
-  animation-duration: 300ms;
-  animation-timing-function: var(--ease-out);
+  animation: look-under-enter 360ms var(--ease-out) both;
 }
 
 ::view-transition-group(*) {

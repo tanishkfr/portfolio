@@ -1,6 +1,8 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { AwayLedger } from "../../components/away-ledger";
+import { RoomPaint } from "../../components/atmosphere";
 import { CaseArtifact } from "../../components/case-artifacts";
 import { DayneroPreview } from "../../components/daynero-preview";
 import { ProjectSigil, SignaturePlate } from "../../components/project-sigil";
@@ -13,6 +15,7 @@ import {
   type Project,
 } from "../../data/portfolio";
 import { projectSignals } from "../../data/project-signals";
+import { ROOM_WORLDS, rgb } from "../../data/room-worlds";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -65,7 +68,10 @@ function ProjectActions({ project }: { project: Project }) {
         rel="noreferrer"
         aria-label={`Open ${project.title} live work in a new tab`}
       >
-        Experience the project <span aria-hidden="true">↗</span>
+        {project.artifact === "fluxion"
+          ? "Visit the studio site"
+          : "Experience the project"}{" "}
+        <span aria-hidden="true">↗</span>
         <small>New tab</small>
       </a>
       {project.sourceUrl ? (
@@ -93,7 +99,7 @@ export default async function ProjectPage({
   const signal = projectSignals[project.artifact];
   const returnHref = fromLens === "all" ? "/#work" : `/?lens=${fromLens}#work`;
 
-  if (project.availability === "preview") {
+  if (project.availability === "preview" || project.availability === "coming-soon") {
     return <DayneroPreview project={project} returnHref={returnHref} />;
   }
 
@@ -102,24 +108,31 @@ export default async function ProjectPage({
     .map((relatedSlug) => getProject(relatedSlug))
     .filter((candidate): candidate is Project => Boolean(candidate));
 
+  const world = ROOM_WORLDS[project.slug];
+
   return (
     <main
       id="main-content"
       className={`case shell case--${project.artifact}`}
       data-world={project.artifact}
+      data-room={project.slug}
       style={
         {
           "--project-accent": project.accent,
-          // on a case, the world's own ink is the only colour — it takes
-          // over every housing mark that has no colour of its own
           "--accent": project.accent,
-        } as React.CSSProperties
+          "--room": world ? `rgb(${rgb(world.ground)})` : undefined,
+        } as CSSProperties
       }
     >
+      <RoomPaint slug={project.slug} />
       <div className="case-return">
         <TransitionLink href={returnHref}>← All work</TransitionLink>
         <span>{signal.focus}</span>
       </div>
+
+      <a className="case-skip" href="#case-writing">
+        Skip to the written case
+      </a>
 
       <header className="case-hero">
         {/* the room's mural: the world's mark at architectural scale */}
@@ -137,11 +150,11 @@ export default async function ProjectPage({
         </div>
 
         <div className="case-title-lockup">
-          <h1 style={{ viewTransitionName: `project-${project.id}` }}>
-            {project.title}
-          </h1>
+          <h1>{project.title}</h1>
           <p className="case-thesis">{project.thesis}</p>
         </div>
+
+        <CaseArtifact project={project} />
 
         <SignaturePlate artifact={project.artifact} focus={signal.focus} />
 
@@ -172,12 +185,8 @@ export default async function ProjectPage({
         </dl>
       </header>
 
-      {/* Play first, read second: the working proof meets the
-          reviewer before any prose does. */}
-      <CaseArtifact project={project} />
-
       {story ? (
-        <article className="case-story">
+        <article className="case-story" id="case-writing">
           <section className="story-beat" data-reveal>
             <p className="case-label">Why I built it</p>
             <div className="story-prose">
@@ -258,23 +267,29 @@ export default async function ProjectPage({
           </p>
         </div>
 
-        <p className="record-disclosure">{disclosure}</p>
+        <p className="record-disclosure">
+          {project.disclosure || disclosure}
+        </p>
       </section>
 
       <section className="case-relations" aria-labelledby="relation-title" data-reveal>
-        <p className="eyebrow">Continue through the question</p>
-        <h2 id="relation-title">Two related investigations.</h2>
+        <p className="eyebrow">Also in the set</p>
+        <h2 id="relation-title">Related work</h2>
         <div className="relation-grid">
           {related.map((candidate) => (
             <TransitionLink
               key={candidate.slug}
               href={`/work/${candidate.slug}?from=${fromLens}`}
-              style={{ "--relation-accent": candidate.accent } as React.CSSProperties}
+              style={{ "--relation-accent": candidate.accent } as CSSProperties}
             >
               <span>{candidate.form}</span>
               <strong>{candidate.title}</strong>
               <p>{candidate.thesis}</p>
-              <span aria-hidden="true">Read the case →</span>
+              <span aria-hidden="true">
+                {candidate.availability === "coming-soon"
+                  ? "Coming soon →"
+                  : "Read the case →"}
+              </span>
             </TransitionLink>
           ))}
         </div>

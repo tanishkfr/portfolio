@@ -1,5 +1,6 @@
+import type { CSSProperties } from "react";
 import type { Project } from "../data/portfolio";
-import { SignaturePlate } from "./project-sigil";
+import { RoomPaint } from "./atmosphere";
 import { TransitionLink } from "./transition-link";
 
 export function DayneroPreview({
@@ -12,121 +13,41 @@ export function DayneroPreview({
   return (
     <main
       id="main-content"
-      className="daynero-preview"
+      className="daynero-preview daynero-soon"
+      data-room="daynero"
       style={
         {
           "--project-accent": project.accent,
           "--accent": project.accent,
-        } as React.CSSProperties
+        } as CSSProperties
       }
     >
+      <RoomPaint slug="daynero" />
       <div className="daynero-return">
         <TransitionLink href={returnHref}>← All work</TransitionLink>
-        <span>Commercial work · Preview</span>
+        <span>Coming soon</span>
       </div>
 
       <header className="daynero-hero" data-reveal>
         <div className="daynero-hero-copy">
-          <p className="eyebrow">AI-native financial product · Case study in preparation</p>
-          <h1 style={{ viewTransitionName: `project-${project.id}` }}>Daynero</h1>
-          <p className="daynero-tagline">Less noise. Better money.</p>
+          <p className="eyebrow">Commercial product · case study coming soon</p>
+          <h1>Daynero</h1>
+          <p className="daynero-tagline">What you can spend today, and why.</p>
           <p className="daynero-summary">
-            A behavioral-finance app designed around daily decisions instead of
-            a monthly reset. I designed and built the app experience and the
-            public website; the full commercial case study is being documented.
+            Daynero is an AI-native personal finance app for first-paycheck
+            earners. It is meant to make daily spending readable: what is safe
+            to spend, and what that number is based on. I designed and built
+            the app experience and the public website. The full case is not
+            ready, so this is a note rather than a finished study.
           </p>
           <div className="daynero-actions">
             <a href="https://daynero.com/" target="_blank" rel="noreferrer">
               Visit daynero.com <span aria-hidden="true">↗</span>
             </a>
-            <TransitionLink href="/#work">See published case studies</TransitionLink>
+            <TransitionLink href="/#work">Back to selected work</TransitionLink>
           </div>
         </div>
-
-        <SignaturePlate
-          artifact={project.artifact}
-          focus="Adaptive finance · daily behavior"
-        />
       </header>
-
-      <dl className="daynero-facts" aria-label="Daynero project facts" data-reveal>
-        <div>
-          <dt>Context</dt>
-          <dd>Active startup product</dd>
-        </div>
-        <div>
-          <dt>My contribution</dt>
-          <dd>App and website · design and build</dd>
-        </div>
-        <div>
-          <dt>Product</dt>
-          <dd>AI-native behavioral finance</dd>
-        </div>
-        <div>
-          <dt>Evidence status</dt>
-          <dd>Public surface live · full case pending</dd>
-        </div>
-      </dl>
-
-      <section className="daynero-public" aria-labelledby="daynero-public-title" data-reveal>
-        <header>
-          <p className="eyebrow">What is public now</p>
-          <h2 id="daynero-public-title">Money guidance that responds to the day.</h2>
-          <p>
-            Daynero publicly frames budgeting as a behavioral problem. Its core
-            product ideas make guidance more immediate and personal.
-          </p>
-        </header>
-        <div className="daynero-capabilities">
-          <article>
-            <span>01</span>
-            <h3>Adaptive daily budget</h3>
-            <p>Guidance changes with the person and their spending patterns in real time.</p>
-          </article>
-          <article>
-            <span>02</span>
-            <h3>Goals in the loop</h3>
-            <p>Priorities shape what the daily budget recommends instead of living in a separate plan.</p>
-          </article>
-          <article>
-            <span>03</span>
-            <h3>Behavior made legible</h3>
-            <p>The Meridian Score and personalized insights connect present habits to longer-term direction.</p>
-          </article>
-        </div>
-      </section>
-
-      <section className="daynero-boundary" aria-labelledby="daynero-boundary-title" data-reveal>
-        <div>
-          <p className="eyebrow">Evidence boundary</p>
-          <h2 id="daynero-boundary-title">A preview, not a manufactured case study.</h2>
-        </div>
-        <div className="daynero-boundary-grid">
-          <article>
-            <span>What I can state</span>
-            <ul>
-              <li>I designed and built the app experience and public website.</li>
-              <li>The live website establishes the product’s current public position.</li>
-              <li>The work adds commercial product context to this portfolio.</li>
-            </ul>
-          </article>
-          <article>
-            <span>What comes with the full case</span>
-            <ul>
-              <li>The team, timeline, constraints, and product evolution.</li>
-              <li>The specific interaction decisions and implementation trade-offs.</li>
-              <li>Only outcomes and evidence that can be published responsibly.</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-
-      <section className="daynero-close" data-reveal>
-        <p>The work is live. The story will follow when it can be told properly.</p>
-        <a href="https://daynero.com/" target="_blank" rel="noreferrer">
-          Experience Daynero <span aria-hidden="true">↗</span>
-        </a>
-      </section>
     </main>
   );
 }

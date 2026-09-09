@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * PENTIMENTO — the person takes the page back.
@@ -14,6 +14,26 @@ import { useState } from "react";
 
 export function PentimentoStrike() {
   const [struck, setStruck] = useState(false);
+
+  useEffect(() => {
+    try {
+      setStruck(sessionStorage.getItem("xp-pent-struck") === "1");
+    } catch {
+      /* private mode */
+    }
+  }, []);
+
+  function strike() {
+    setStruck((value) => {
+      const next = !value;
+      try {
+        sessionStorage.setItem("xp-pent-struck", next ? "1" : "0");
+      } catch {
+        /* private mode */
+      }
+      return next;
+    });
+  }
 
   return (
     <figure
@@ -37,7 +57,7 @@ export function PentimentoStrike() {
       <button
         type="button"
         className="xp-pent-btn"
-        onClick={() => setStruck((value) => !value)}
+        onClick={strike}
         aria-pressed={struck}
       >
         {struck ? "Put it back" : "Strike it"}

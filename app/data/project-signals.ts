@@ -11,6 +11,17 @@ export type ProjectSignal = {
 };
 
 export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
+  fluxion: {
+    status: "Live studio site",
+    focus: "Studio · client-facing web",
+    proof: "Public studio website designed and built in-house.",
+    interaction: "A commercial site with process, founders, and a working enquiry form.",
+    exposure: {
+      surface: "A studio homepage appears to be only a pitch.",
+      rule: "The site has to demonstrate the craft it is selling.",
+      consequence: "An enquiry can start without a sales deck sitting behind it.",
+    },
+  },
   daynero: {
     status: "Commercial product · case study soon",
     focus: "Adaptive finance · daily behavior",
@@ -69,9 +80,10 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
 };
 
 export const flagshipOrder = [
-  "daynero",
-  "invisible-interfaces",
+  "fluxion-studios",
   "design-or-disaster",
   "pentimento",
+  "invisible-interfaces",
   "atlas",
+  "daynero",
 ] as const;
