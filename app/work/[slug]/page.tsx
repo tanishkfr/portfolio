@@ -70,7 +70,7 @@ function ProjectActions({ project }: { project: Project }) {
       >
         {project.artifact === "fluxion"
           ? "Visit the studio site"
-          : "Experience the project"}{" "}
+          : "Open the live project"}{" "}
         <span aria-hidden="true">↗</span>
         <small>New tab</small>
       </a>
@@ -210,7 +210,7 @@ export default async function ProjectPage({
           </blockquote>
 
           <section className="story-beat" data-reveal>
-            <p className="case-label">What it changed</p>
+            <p className="case-label">What changed during the build</p>
             <div className="story-prose">
               {story.reflection.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
@@ -225,7 +225,7 @@ export default async function ProjectPage({
       <section className="case-record" aria-labelledby="record-title" data-reveal>
         <header className="record-head">
           <p className="case-label">The record</p>
-          <h2 id="record-title">What I decided, and what I haven&apos;t proven.</h2>
+          <h2 id="record-title">Decisions and open questions.</h2>
         </header>
 
         <div className="record-decisions">
@@ -258,7 +258,7 @@ export default async function ProjectPage({
         </div>
 
         <div className="record-next">
-          <p className="case-label">The next honest test</p>
+          <p className="case-label">Next test</p>
           <h3>{project.nextTest.title}</h3>
           <p>{project.nextTest.body}</p>
           <p className="record-rule">
@@ -273,7 +273,7 @@ export default async function ProjectPage({
       </section>
 
       <section className="case-relations" aria-labelledby="relation-title" data-reveal>
-        <p className="eyebrow">Also in the set</p>
+        <p className="eyebrow">Next</p>
         <h2 id="relation-title">Related work</h2>
         <div className="relation-grid">
           {related.map((candidate) => (

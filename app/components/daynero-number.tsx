@@ -11,9 +11,9 @@ import { useEffect, useRef, useState } from "react";
  */
 
 const ACTIONS = [
-  { label: "Bought a coffee", delta: -4, note: "Small. Today can carry it." },
-  { label: "Skipped the lunch out", delta: 9, note: "That's Thursday, bought back." },
-  { label: "A bill you forgot", delta: -22, note: "Noted. Tomorrow adjusts — not you." },
+  { label: "Bought a coffee", delta: -4, note: "Today's amount is £4 lower." },
+  { label: "Skipped lunch out", delta: 9, note: "Today's amount is £9 higher." },
+  { label: "Added a forgotten bill", delta: -22, note: "Today's amount is £22 lower." },
 ];
 
 const START = 62;
@@ -48,7 +48,7 @@ export function DayneroNumber() {
       <p className="xp-day-label">You can spend today</p>
       <p className="xp-day-amount">£{display}</p>
       <p className="xp-day-note" aria-live="polite">
-        {note ?? "It moves with your day, not a monthly reset. Try one."}
+        {note ?? "Choose an event to update today's amount."}
       </p>
 
       <div className="xp-day-actions">

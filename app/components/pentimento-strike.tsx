@@ -16,11 +16,17 @@ export function PentimentoStrike() {
   const [struck, setStruck] = useState(false);
 
   useEffect(() => {
-    try {
-      setStruck(sessionStorage.getItem("xp-pent-struck") === "1");
-    } catch {
-      /* private mode */
-    }
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        setStruck(sessionStorage.getItem("xp-pent-struck") === "1");
+      } catch {
+        /* private mode */
+      }
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   function strike() {
@@ -44,7 +50,7 @@ export function PentimentoStrike() {
       <div className="xp-pent-stack">
         <p className="xp-pent-machine">
           <span className="xp-pent-tag">
-            {struck ? "the machine's reading — withdrawn" : "the machine's reading"}
+            {struck ? "machine reading · withdrawn" : "machine reading"}
           </span>
           You fell out of love with film in 2023. The pattern is unmistakable.
         </p>

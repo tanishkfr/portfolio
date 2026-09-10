@@ -89,7 +89,7 @@ export function DisasterMark({ src, alt }: { src: string; alt: string }) {
 
       <figcaption className="xp-dod-cap" aria-live="polite">
         {mark
-          ? "Yours, and four others. One screen — five verdicts, no answer key."
+          ? "Your mark and four others. Five readings, no answer key."
           : "Point before you pronounce. Mark what shaped your read."}
       </figcaption>
     </figure>

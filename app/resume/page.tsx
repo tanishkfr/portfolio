@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PrintResume } from "../components/print-resume";
 
 const description =
-  "Résumé — Tanishk, interaction designer in Bangalore. Available for work.";
+  "Résumé — Tanishk, interaction designer in Bengaluru. Available for work.";
 
 export const metadata: Metadata = {
   title: "Résumé",
@@ -15,12 +15,11 @@ export default function ResumePage() {
   return (
     <main id="main-content" className="resume-shell">
       <header className="resume-intro">
-        <p className="resume-kicker">Résumé · Bangalore · Available for work</p>
+        <p className="resume-kicker">Résumé · Bengaluru · Available for work</p>
         <h1>Tanishk</h1>
         <p>
-          Interaction designer. I architect, design, write, and implement
-          systems where the difficult part is not the screen — it is what the
-          system decides, remembers, explains, or lets a person change.
+          Interaction designer studying Human-Centred Design at Srishti. I work
+          from product framing and interaction design through frontend implementation.
         </p>
         <p className="resume-actions">
           <PrintResume />
@@ -63,8 +62,8 @@ export default function ResumePage() {
             Absence is the input; return produces a receipt.
           </li>
           <li>
-            <strong>Atlas</strong> — reasoning instrument. A rule earns
-            authority by surviving unlike cases.
+            <strong>Atlas</strong> — reasoning instrument. One rule changes
+            across three unlike cases.
           </li>
         </ul>
       </section>
@@ -72,8 +71,8 @@ export default function ResumePage() {
       <section>
         <h2>Practice</h2>
         <p>
-          Interaction systems, product thinking, research through making.
-          Based in Bangalore.
+          Interaction design, product thinking, research through making, and
+          frontend implementation. Based in Bengaluru.
         </p>
       </section>
 

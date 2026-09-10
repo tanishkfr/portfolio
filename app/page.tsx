@@ -4,7 +4,7 @@ import { WorkIndex } from "./components/work-index";
 export const metadata: Metadata = {
   title: { absolute: "Tanishk — Interaction Designer" },
   description:
-    "Commercial product work and independent interaction-design investigations into money, agency, evidence, and intelligent systems.",
+    "Selected work by Tanishk: Fluxion Studios, four independent interaction projects, and Daynero.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     siteName: "Tanishk — Interaction Designer",
     title: "Tanishk — Interaction Designer",
     description:
-      "Product work and self-directed experiments about the decisions hidden underneath an interface.",
+      "Studio work, four independent interaction projects, and a product case in progress.",
     images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
   },
 };

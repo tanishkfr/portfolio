@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Tanishk — Interaction Designer",
     short_name: "Tanishk",
     description:
-      "Independent interaction design work about evidence, authority, memory, and accountable system behavior.",
+      "Interaction-design work by Tanishk, including studio, product, and independent projects.",
     start_url: "/",
     display: "browser",
     background_color: "#f2f0e8",

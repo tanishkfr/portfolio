@@ -24,8 +24,8 @@ export function ReviewIndex() {
         <p className="review-kicker">Quick review · 90 seconds</p>
         <h1>Tanishk</h1>
         <p>
-          Interaction designer in Bangalore. A studio I co-founded, four live
-          independent studies, and a product case that is still being written.
+          Interaction designer in Bengaluru. I co-run a web studio, have four
+          live independent projects, and am documenting one product case.
         </p>
       </header>
 
@@ -65,7 +65,7 @@ export function ReviewIndex() {
                     <dd>{project.scale}</dd>
                   </div>
                   <div>
-                    <dt>Mine or ours</dt>
+                    <dt>Ownership</dt>
                     <dd>{project.ownership}</dd>
                   </div>
                   <div>
@@ -102,9 +102,9 @@ export function ReviewIndex() {
 
       <footer className="review-foot">
         <p>
-          The four independent studies are mine end to end. Fluxion is a
-          two-person studio. Daynero is commercial team work; the case will
-          wait until it can be told properly.
+          I made the four independent projects end to end. Fluxion is a
+          two-person studio. Daynero is commercial team work; its full case is
+          still being documented.
         </p>
         <p className="review-foot-links">
           <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com</a>

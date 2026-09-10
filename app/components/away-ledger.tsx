@@ -43,15 +43,14 @@ export function AwayLedger() {
       <span className="away-ledger-title">Attention ledger</span>
       {returns === 0 ? (
         <p>
-          This page practices the project&apos;s argument: it keeps a record of
-          your absence. Leave the tab and return—the time away is counted,
-          held only here, and never transmitted.
+          Leave this tab and return. Time away is counted on this page and is
+          never stored or transmitted.
         </p>
       ) : (
         <p aria-live="polite">
           While you were away: <strong>{minutes}:{seconds}</strong>
           {returns > 1 ? ` across ${returns} departures` : ""}. Recorded on
-          this page only, discarded when you close it.
+          this page only and discarded when you close it.
         </p>
       )}
     </aside>

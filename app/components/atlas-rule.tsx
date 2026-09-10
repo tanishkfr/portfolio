@@ -49,8 +49,7 @@ export function AtlasRule() {
 
       {atEnd ? (
         <p className="xp-atlas-note">
-          It changed shape three times. A rule that can&apos;t is only a
-          preference.
+          Three cases changed the starting rule. Every earlier version is still visible.
         </p>
       ) : null}
 

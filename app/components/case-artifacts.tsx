@@ -9,8 +9,8 @@ function InstrumentFrame({
   status,
   children,
   caption,
-  bar = "Try the core interaction",
-  proof = "What this proves",
+  bar = "Try the interaction",
+  proof = "What this shows",
 }: {
   project: string;
   status: string;
@@ -77,7 +77,7 @@ function DisasterArtifact() {
     <InstrumentFrame
       project="disaster"
       status={`${active.label} perspective active`}
-      caption="Each juror changes the interpretation while the underlying interface and coordinate system stay fixed."
+      caption="The screenshot stays fixed while each juror marks and explains a different reading."
     >
       <div className="disaster-demo">
         <aside>
@@ -134,7 +134,7 @@ function PentimentoArtifact() {
     <InstrumentFrame
       project="pentimento"
       status={status}
-      caption="Every reply changes the document. A strike transfers page authority without deleting the system's earlier claim."
+      caption="A reply changes the second draft. A strike keeps the original claim visible but gives the correction the lead."
     >
       <div className="pentimento-demo" data-reply={reply}>
         <aside className="pentimento-demo-evidence">
@@ -161,7 +161,7 @@ function PentimentoArtifact() {
           {reply === "strike" ? <span className="demo-strike" aria-hidden="true" /> : null}
           {reply === "strike" ? (
             <>
-              <span className="draft-owner draft-owner--human">Correction · sovereign ink</span>
+              <span className="draft-owner draft-owner--human">Your correction</span>
               <p className="draft-human">It was not a change in taste. It was the first time I had time to follow my curiosity.</p>
             </>
           ) : null}
@@ -182,16 +182,16 @@ const invisiblePhases = [
 function InvisibleArtifact() {
   const [phase, setPhase] = useState("return");
   const status = {
-    before: "Authority boundary visible · no work started",
-    away: "Hidden interval · bounded movement 2 of 3",
-    return: "Work paused or complete · receipt available",
+    before: "Scope visible · no work started",
+    away: "Tab hidden · step 2 of 3",
+    return: "Result and receipt available",
   }[phase] ?? "Delegation phase ready";
 
   return (
     <InstrumentFrame
       project="invisible"
       status={status}
-      caption="The live exhibition uses actual page visibility. This explanatory model shows the contract that exists before, during, and after absence."
+      caption="The live exhibition reads actual page visibility. This model shows the scope before leaving and the receipt on return."
     >
       <div className="invisible-demo" data-phase={phase}>
         <aside>
@@ -204,8 +204,8 @@ function InvisibleArtifact() {
           />
           <p className="invisible-phase-copy" aria-live="polite">
             {phase === "before" && "Repair dust and scratches. Preserve composition and the original. Do not infer people, place, or date."}
-            {phase === "away" && "The visible page does not perform progress. Hidden time is the causal input in the live work."}
-            {phase === "return" && "Located source · repaired surface · compared result · staged private copy. Original untouched. Nothing transmitted."}
+            {phase === "away" && "The restoration advances only while the page is hidden."}
+            {phase === "return" && "Source located · surface repaired · result compared · private copy staged. Original untouched. Nothing transmitted."}
           </p>
         </aside>
         <div className="invisible-demo-visual">
@@ -261,7 +261,7 @@ function AtlasArtifact() {
     <InstrumentFrame
       project="atlas"
       status={`${judgment[0].toUpperCase()}${judgment.slice(1)} selected · lineage preserved`}
-      caption="Hold, refine, and fracture create visibly different reasoning states. A changed verdict requires changed language."
+      caption="Each judgment keeps the starting rule beside the current wording. Refine and fracture require an edit."
     >
       <div className="atlas-demo" data-judgment={judgment}>
         <aside>
@@ -301,22 +301,32 @@ function FluxionArtifact() {
   return (
     <InstrumentFrame
       project="fluxion"
-      bar="The studio site"
-      proof="What it is"
+      bar="Live studio site"
+      proof="Built in-house"
       status="Live"
-      caption="A public studio website designed and built in-house, taking project enquiries."
+      caption="The public site explains the practice, introduces both founders, and takes project enquiries."
     >
       <div className="fluxion-demo">
+        <div className="fluxion-brand-lockup">
+          <Image
+            unoptimized
+            src="/projects/fluxion/wordmark-transparent.png"
+            width={669}
+            height={42}
+            sizes="(max-width: 900px) 82vw, 48vw"
+            alt="Fluxion Studios"
+          />
+        </div>
         <p>
-          Fluxion is a two-person studio in Bengaluru. The live site has to
-          carry the same standard we would sell a client.
+          We designed and built the site we use to explain our work and take
+          enquiries.
         </p>
         <a
           href="https://fluxion-studios.vercel.app/"
           target="_blank"
           rel="noreferrer"
         >
-          Open the studio site <span aria-hidden="true">↗</span>
+          Visit Fluxion Studios <span aria-hidden="true">↗</span>
         </a>
       </div>
     </InstrumentFrame>
