@@ -97,7 +97,7 @@ export default async function ProjectPage({
   const fromValue = Array.isArray(search.from) ? search.from[0] : search.from;
   const fromLens = isLensId(fromValue) ? fromValue : "all";
   const signal = projectSignals[project.artifact];
-  const returnHref = fromLens === "all" ? "/#work" : `/?lens=${fromLens}#work`;
+  const returnHref = "/";
 
   if (project.availability === "preview" || project.availability === "coming-soon") {
     return <DayneroPreview project={project} returnHref={returnHref} />;

@@ -16,7 +16,7 @@ export default function NotFound() {
         home page.
       </p>
       <div className="not-found-actions">
-        <Link href="/#work">See selected work →</Link>
+        <Link href="/">See selected work →</Link>
         <Link href="/contact">Contact Tanishk →</Link>
       </div>
     </main>

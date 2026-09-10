@@ -83,13 +83,6 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
-        {/* The chosen mode applies before first paint. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "(function(){try{var q=new URLSearchParams(location.search).get('mode');var m=q||(location.hash==='#work'?'full':'review');if(m==='review'||m==='full'){document.documentElement.dataset.mode=m;if(q||location.hash==='#work')sessionStorage.setItem('mode',m);}}catch(t){}})();",
-          }}
-        />
       </head>
       <body>
         <a className="skip-link" href="#main-content">

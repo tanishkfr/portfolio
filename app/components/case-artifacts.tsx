@@ -154,11 +154,12 @@ function PentimentoArtifact() {
         <section className="pentimento-demo-draft" aria-live="polite">
           <span className="draft-owner">System reading</span>
           <p className="draft-machine">
-            {reply === "reframe"
-              ? "The archive shows a temporary period of intense curiosity."
-              : "The archive shows a decisive change in taste."}
+            <span className="draft-machine-copy">
+              {reply === "reframe"
+                ? "The archive shows a temporary period of intense curiosity."
+                : "The archive shows a decisive change in taste."}
+            </span>
           </p>
-          {reply === "strike" ? <span className="demo-strike" aria-hidden="true" /> : null}
           {reply === "strike" ? (
             <>
               <span className="draft-owner draft-owner--human">Your correction</span>

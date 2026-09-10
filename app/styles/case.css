@@ -786,26 +786,11 @@
   color: var(--muted);
 }
 
-.demo-strike {
-  position: absolute;
-  /* drawn through the machine sentence, not deleted */
-  top: 1.6em;
-  left: -0.3em;
-  right: -0.3em;
-  height: 2px;
-  background: var(--accent-pentimento);
-  transform: rotate(-1.6deg);
-  transform-origin: left center;
-  animation: strike-draw var(--settle) var(--ease-swing) both;
-}
-
-@keyframes strike-draw {
-  from {
-    scale: 0 1;
-  }
-  to {
-    scale: 1 1;
-  }
+.pentimento-demo[data-reply="strike"] .draft-machine-copy {
+  text-decoration-line: line-through;
+  text-decoration-color: var(--accent-pentimento);
+  text-decoration-thickness: 2px;
+  text-decoration-skip-ink: none;
 }
 
 .draft-human {

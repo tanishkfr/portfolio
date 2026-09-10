@@ -77,7 +77,7 @@ export default function ResumePage() {
       </section>
 
       <p className="resume-back">
-        <Link href="/#work">← Selected work</Link>
+        <Link href="/">← Selected work</Link>
         <Link href="/about">About</Link>
       </p>
     </main>

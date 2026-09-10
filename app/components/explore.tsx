@@ -56,7 +56,6 @@ export function Explore() {
           >
             @madebytanishk ↗
           </a>
-          <TransitionLink href="/resume">Résumé →</TransitionLink>
           <TransitionLink href="/about">About →</TransitionLink>
         </div>
         <p className="xp-close-foot">

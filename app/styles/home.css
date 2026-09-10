@@ -247,12 +247,22 @@
   display: none;
 }
 
+.mode-status {
+  margin-left: 0.25rem;
+  color: var(--registrar-deep);
+  font-size: 0.56rem;
+  letter-spacing: 0.03em;
+}
+
 @media (max-width: 48rem) {
   .mode-label-full {
     display: none;
   }
   .mode-label-short {
     display: inline;
+  }
+  .mode-status {
+    display: none;
   }
   .mode-switch button {
     padding-inline: 0.45rem;

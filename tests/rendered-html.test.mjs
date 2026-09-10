@@ -25,115 +25,45 @@ function assertCleanEncoding(html) {
   assert.doesNotMatch(html, /(?:Ã.|Â.|â€|â†|âœ|ï¿½|�)/);
 }
 
-test("server-renders Explore as a cinematic world ending in the work", async () => {
+test("server-renders Quick Review as the only published work index", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   const html = await response.text();
 
-  // The premise, the thing he keeps observing, and the close that
-  // bookends the opening line — all server-rendered.
-  /* The opening line is split so the shared prefix can hold still while only
-     the tail swaps — the finished sentence is still what the h1 reads. */
-  assert.match(html, /<h1 class="xp-arrive-line">\s*I design/);
-  assert.match(html, /the part you.{0,10}t see\./);
-  // the draft it replaced is present but decorative
-  assert.match(html, /aria-hidden="true"[^>]*>\s*apps and interfaces\./);
-  assert.match(html, /Every year, software asks less of us\./);
-  assert.match(html, /Four independent projects/);
-  assert.match(html, /And every year, it shows me/);
-  assert.match(html, /the part you.{0,10}t see\./);
-  // to its case, carrying its thesis, server-rendered before any JS.
+  assert.match(html, /class="review"/);
+  assert.match(html, /Quick review · 90 seconds/);
+  assert.match(html, /Interaction designer in Bengaluru/);
+
   const works = [
-    { slug: "fluxion-studios", title: "Fluxion Studios", t: "standard we would bring" },
-    { slug: "design-or-disaster", title: "Design or Disaster", t: "point before you pronounce" },
-    { slug: "pentimento", title: "Pentimento", t: "must outrank its sentence" },
-    { slug: "invisible-interfaces", title: "Invisible Interfaces", t: "accountability has to return" },
-    { slug: "atlas", title: "Atlas", t: "allowed to change it" },
+    { slug: "fluxion-studios", title: "Fluxion Studios", t: "two-person web studio" },
+    { slug: "design-or-disaster", title: "Design or Disaster", t: "Mark the part of an interface" },
+    { slug: "pentimento", title: "Pentimento", t: "machine-written claim shows its evidence" },
+    { slug: "invisible-interfaces", title: "Invisible Interfaces", t: "staged restoration runs only" },
+    { slug: "atlas", title: "Atlas", t: "provisional rule" },
     { slug: "daynero", title: "Daynero", t: "first-paycheck earners" },
   ];
   for (const work of works) {
     assert.match(html, new RegExp(`href="/work/${work.slug}"`));
     assert.match(html, new RegExp(`>${work.title}<`));
     assert.match(html, new RegExp(work.t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-    // each room declares which world it is, which is what paints it
-    assert.match(html, new RegExp(`data-room="${work.slug}"`));
-  }
-  /* There is no work section. Each project stands where it is the reply to
-     the sentence just made, with a page of argument either side of it — which
-     is what separates them, rather than an edge or a position in a row. */
-  assert.equal((html.match(/class="xp-works-item"/g) ?? []).length, 6);
-  assert.match(html, /class="xp-works-thesis"/);
-  assert.doesNotMatch(html, /class="xp-track"|class="xp-poster"|class="xp-answer"/);
-  // the work is one addressable region, so a returning case lands here
-  assert.match(html, /id="work"/);
-
-
-  /* Opening full screen is a dialog, not a navigation — but the name itself is
-     an ordinary link inside an ordinary heading. That is what makes cmd-click,
-     middle-click and copy-link work on the one page where they are used most,
-     lets a screen-reader user reach the work by heading, and means the set
-     needs no <noscript> shadow copy: it never depended on JS to begin with. */
-  assert.match(html, /class="xp-works-open"/);
-  for (const work of works) {
-    assert.match(
-      html,
-      new RegExp(`<h3 class="xp-works-name"><a href="/work/${work.slug}">`),
-      `${work.slug} name is a linked heading`,
-    );
-  }
-  // the open affordance is a named control, not an opacity-0 hover cue
-  assert.doesNotMatch(html, /class="xp-works-cue"/);
-
-  /* Scroll-led scenes are already directed by their stage variables. They do
-     not also wait for a one-shot observer, so fast scroll, reverse scroll and
-     direct #notice arrival can never leave their essential copy clipped. */
-  assert.doesNotMatch(html, /data-reveal/);
-  assert.match(html, /class="xp-notice-title"/);
-  assert.match(html, /class="xp-close-line"/);
-
-  // The descent's five statements are the argument, so they must reach
-  // assistive tech; only the control glyphs may be hidden.
-  assert.match(html, /class="xp-era-glyph" aria-hidden="true"/);
-  assert.match(html, /You had to speak its language\./);
-  assert.doesNotMatch(html, /class="xp-shed-control" aria-hidden/);
-
-  // Spoken aloud, the struck words would invert the sentence.
-  assert.match(html, /class="xp-close-strike" aria-hidden="true"/);
-
-  assert.match(html, /Selected work/);
-  assert.doesNotMatch(html, /href="\/resume"/);
-  assert.doesNotMatch(html, /href="\/contact">Contact →/);
-
-  /* THE HOMEPAGE MUST SHOW WORK, NOT ONLY DESCRIBE IT.
-     Every mechanic is live in its row, not sealed inside a pop-out a visitor
-     may never open. A portfolio whose index renders five lines of type and
-     zero designed pixels has not shown anything. Each plate holds that
-     project's own artefact, and at least one real image is in the document. */
-  assert.equal((html.match(/class="xp-works-plate"/g) ?? []).length, 6);
-  for (const mechanic of ["xp-flux", "xp-dod", "xp-pent", "xp-away", "xp-atlas", "xp-soon"]) {
-    assert.match(html, new RegExp(`class="xp-room-shot ${mechanic}"`), mechanic);
-  }
-  assert.match(html, /projects\/fluxion\/wordmark-transparent\.png/);
-  assert.match(html, /<img src="\/projects\/design-or-disaster\/case-001\.jpg"/);
-
-  /* Each row carries its project's ground, so the set previews the room you
-     are about to be standing in before you open it. */
-  for (const tint of ["250 236 234", "251 236 227", "247 236 245", "232 244 241"]) {
-    assert.ok(html.includes("--room:rgb(" + tint), "row tint " + tint);
   }
 
-  // Two ways in are still offered.
-  assert.match(html, />Explore</);
+  assert.equal((html.match(/class="review-id"/g) ?? []).length, 6);
+  assert.match(html, /What I did/);
+  assert.match(html, /Where it stands/);
+  assert.match(html, />Explore\s*<span/);
+  assert.match(html, /Under construction/);
   assert.match(html, />Quick review</);
+  assert.doesNotMatch(html, /class="xp-arrive|class="xp-shed|class="xp-rift|class="xp-works-item/);
+  assert.doesNotMatch(html, /mode=full|href="\/resume"|href="\/#work"/);
   assert.match(html, /theme-color" content="#f8f3e4"/);
-
   assert.match(html, /rel="canonical" href="https:\/\/portfolio\.test\/"/);
-  // none of the retired homepages return.
-  assert.doesNotMatch(
-    html,
-    /class="exhibit|claim-line|ex-zone|ex-arrival|deck-name|thinking-line|type="range"|Ask five systems/i,
-  );
   assertCleanEncoding(html);
+
+  const forcedExplore = await render("/?mode=full");
+  const forcedHtml = await forcedExplore.text();
+  assert.match(forcedHtml, /class="review"/);
+  assert.doesNotMatch(forcedHtml, /class="xp-arrive|class="xp-shed|class="xp-rift/);
 });
 
 test("defines a meaningful interface, logic, and consequence for every project", async () => {
@@ -292,6 +222,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     explore,
     rooms,
     exploreCss,
+    caseCss,
     motion,
     projectPage,
     signature,
@@ -311,6 +242,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     readFile(new URL("../app/components/explore.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/works.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/styles/explore.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/styles/case.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/motion-director.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/work/[slug]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/project-sigil.tsx", import.meta.url), "utf8"),
@@ -331,9 +263,10 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.doesNotMatch(data, /remainder|command-center/i);
   assert.match(data, /form: "Spatial critique archive"/);
 
-  // Two ways in: work-index only dispatches, so no design lives in it.
+  // Quick Review is the only published homepage. Explore remains source-only
+  // while it is under construction and cannot be selected by URL or state.
   assert.match(index, /ReviewIndex/);
-  assert.match(index, /Explore/);
+  assert.doesNotMatch(index, /import.*Explore|useMode|setMode|mode=full/);
 
   // Explore is a world, not an index: a descent whose scenes are driven by
   // scroll, ending in five rooms that each carry their own ground colour and
@@ -397,10 +330,10 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(motion, /IntersectionObserver/);
   assert.match(motion, /--scroll-progress/);
   assert.doesNotMatch(motion, /pointermove|--pointer-x/);
-  assert.match(exploreCss, /animation-timeline:\s*view/);
   assert.match(projectPage, /DayneroPreview/);
   assert.match(projectPage, /SignaturePlate/);
   assert.match(projectPage, /project\.sourceUrl \?/);
+  assert.doesNotMatch(projectPage, /returnHref\s*=.*#work/);
   for (const mark of [
     "FluxionSigil",
     "DayneroSigil",
@@ -417,14 +350,12 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(transitionLink, /startViewTransition/);
   assert.match(transitionLink, /prefers-reduced-motion/);
   assert.match(transitionLink, /requestAnimationFrame/);
-  /* Session-scoped on purpose: a reviewer who once chose the digest should not
-     be silently returned to it on a later visit and never see the work. */
-  assert.match(mode, /sessionStorage/);
-  assert.doesNotMatch(mode, /localStorage/);
-  assert.match(mode, /dataset\.mode/);
-  assert.match(mode, /router\.push/);
-  assert.match(mode, /window\.scrollTo\(0, 0\)/);
-  // two modes, not three — and no stale edition contract left anywhere
+  assert.match(mode, /Explore stays visible as[\s\S]*construction notice/);
+  assert.match(mode, /only\s+published way to see the work/);
+  assert.doesNotMatch(mode, /sessionStorage|localStorage|dataset\.mode|router\.push|setMode|mode=full/);
+  assert.match(artifacts, /draft-machine-copy/);
+  assert.doesNotMatch(artifacts, /demo-strike/);
+  assert.match(caseCss, /text-decoration-skip-ink:\s*none/);
   assert.match(css, /data-mode="review"/);
   assert.match(css, /route-mobile-in/);
   assert.doesNotMatch(css, /data-edition=/);
@@ -442,7 +373,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(vercel, /"framework": "nextjs"/);
   assert.match(worker, /!env\.ASSETS \|\| !env\.IMAGES/);
   assert.match(fluxionMark, /\/projects\/fluxion\/wordmark-transparent\.png/);
-  assert.match(rift, /\/projects\/fluxion\/wordmark-transparent\.png/);
+  assert.match(rift, /xp-rift-ghost/);
   assert.match(signature, /\/projects\/fluxion\/mark-transparent\.png/);
   assert.match(artifacts, /\/projects\/fluxion\/wordmark-transparent\.png/);
 

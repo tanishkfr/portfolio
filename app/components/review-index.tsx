@@ -108,7 +108,6 @@ export function ReviewIndex() {
         </p>
         <p className="review-foot-links">
           <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com</a>
-          <Link href="/resume">Résumé →</Link>
           <Link href="/about">About →</Link>
         </p>
       </footer>

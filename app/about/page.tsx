@@ -188,7 +188,7 @@ export default function AboutPage() {
           <a href="https://twitter.com/madebytanishk" target="_blank" rel="noreferrer">
             @madebytanishk ↗<span className="sr-only"> (opens in a new tab)</span>
           </a>
-          <Link href="/#work">See selected work →</Link>
+          <Link href="/">See selected work →</Link>
         </div>
       </section>
     </main>

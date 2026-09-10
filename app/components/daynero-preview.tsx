@@ -44,7 +44,7 @@ export function DayneroPreview({
             <a href="https://daynero.com/" target="_blank" rel="noreferrer">
               Visit daynero.com <span aria-hidden="true">↗</span>
             </a>
-            <TransitionLink href="/#work">Back to selected work</TransitionLink>
+            <TransitionLink href="/">Back to selected work</TransitionLink>
           </div>
         </div>
         <aside className="daynero-soon-mark" aria-label="Daynero case study status">
