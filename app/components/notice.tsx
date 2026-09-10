@@ -14,13 +14,13 @@ function ToggleSpecimen() {
   const [considered, setConsidered] = useState(false);
 
   return (
-    <figure className="xp-spec">
+    <figure className="xp-spec" data-reveal="figure">
       <div className="xp-spec-pair">
         <button
           type="button"
           role="switch"
           aria-checked={careless}
-          aria-label="Instant toggle"
+          aria-label="Careless toggle"
           className="xp-toggle xp-toggle-plain"
           data-on={careless}
           onClick={() => setCareless((v) => !v)}
@@ -31,7 +31,7 @@ function ToggleSpecimen() {
           type="button"
           role="switch"
           aria-checked={considered}
-          aria-label="Eased toggle"
+          aria-label="Considered toggle"
           className="xp-toggle xp-toggle-fine"
           data-on={considered}
           onClick={() => setConsidered((v) => !v)}
@@ -41,7 +41,7 @@ function ToggleSpecimen() {
       </div>
       <figcaption className="xp-spec-cap">
         <span className="xp-spec-label">The switch</span>
-        The second knob carries the state change. The first teleports.
+        One snaps. One settles. You feel the second one before you can name it.
       </figcaption>
     </figure>
   );
@@ -49,7 +49,7 @@ function ToggleSpecimen() {
 
 function PressSpecimen() {
   return (
-    <figure className="xp-spec">
+    <figure className="xp-spec" data-reveal="figure">
       <div className="xp-spec-pair">
         <button type="button" className="xp-press xp-press-plain">
           Save
@@ -60,45 +60,7 @@ function PressSpecimen() {
       </div>
       <figcaption className="xp-spec-cap">
         <span className="xp-spec-label">The press</span>
-        The second button moves under your finger. The first does not.
-      </figcaption>
-    </figure>
-  );
-}
-
-function LoadSpecimen() {
-  const [plain, setPlain] = useState(false);
-  const [fine, setFine] = useState(false);
-
-  return (
-    <figure className="xp-spec">
-      <div className="xp-spec-pair">
-        <button
-          type="button"
-          className="xp-load xp-load-plain"
-          data-busy={plain || undefined}
-          onClick={() => {
-            setPlain(true);
-            window.setTimeout(() => setPlain(false), 900);
-          }}
-        >
-          {plain ? "Wait" : "Send"}
-        </button>
-        <button
-          type="button"
-          className="xp-load xp-load-fine"
-          data-busy={fine || undefined}
-          onClick={() => {
-            setFine(true);
-            window.setTimeout(() => setFine(false), 1100);
-          }}
-        >
-          {fine ? "Sending" : "Send"}
-        </button>
-      </div>
-      <figcaption className="xp-spec-cap">
-        <span className="xp-spec-label">The wait</span>
-        The second button keeps its width and reports progress.
+        Push both. One ignores you. One gives the press back.
       </figcaption>
     </figure>
   );
@@ -106,7 +68,7 @@ function LoadSpecimen() {
 
 function FocusSpecimen() {
   return (
-    <figure className="xp-spec">
+    <figure className="xp-spec" data-reveal="figure">
       <form
         className="xp-spec-pair xp-field-pair"
         onSubmit={(event) => event.preventDefault()}
@@ -122,7 +84,7 @@ function FocusSpecimen() {
       </form>
       <figcaption className="xp-spec-cap">
         <span className="xp-spec-label">The focus</span>
-        Tab through them. The second field makes focus visible.
+        Tab into both. One is a box. One tells you where you are.
       </figcaption>
     </figure>
   );
@@ -137,20 +99,18 @@ export function Notice() {
       aria-label="Things I notice"
     >
       <header className="xp-notice-head">
-        <p className="xp-notice-kicker">A small comparison</p>
-        <h2 className="xp-notice-title">
-          The parts people scroll past.
+        <p className="xp-notice-kicker">What I can&apos;t stop noticing</p>
+        <h2 className="xp-notice-title" data-reveal="name">
+          The difference is small. It&apos;s the whole job.
         </h2>
-        <p className="xp-notice-sub">
-          Four ordinary controls, each built twice. Use both versions; the
-          difference is in the response.
+        <p className="xp-notice-sub" data-reveal="quiet">
+          The same control, twice — careless, then considered. Try both.
         </p>
       </header>
 
       <div className="xp-notice-grid">
         <ToggleSpecimen />
         <PressSpecimen />
-        <LoadSpecimen />
         <FocusSpecimen />
       </div>
     </section>

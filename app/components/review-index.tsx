@@ -106,7 +106,11 @@ export function ReviewIndex() {
           two-person studio. Daynero is commercial team work; its full case is
           still being documented.
         </p>
-        <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com</a>
+        <p className="review-foot-links">
+          <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com</a>
+          <Link href="/resume">Résumé →</Link>
+          <Link href="/about">About →</Link>
+        </p>
       </footer>
     </main>
   );

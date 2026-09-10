@@ -57,8 +57,7 @@ export function SiteHeader() {
           {navigation.map((item) => {
             const isWork = item.label === "Work";
             const active = isWork
-              ? pathname.startsWith("/work/") ||
-                (pathname === "/" && mode === "full")
+              ? pathname.startsWith("/work/")
               : pathname.startsWith(item.match);
             return (
               <Link
@@ -80,9 +79,7 @@ export function SiteHeader() {
                           requestAnimationFrame(() => {
                             const work = document.getElementById("work");
                             if (!work) return;
-                            const top =
-                              work.getBoundingClientRect().top + window.scrollY;
-                            window.scrollTo(0, Math.max(0, top - 8));
+                            work.scrollIntoView({ block: "start" });
                             window.dispatchEvent(new Event("portfolio:pin"));
                           });
                         });

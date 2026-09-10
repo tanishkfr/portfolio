@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 /**
  * Two ways in, because two kinds of people arrive:
@@ -24,9 +24,9 @@ function isMode(value: unknown): value is Mode {
 }
 
 function current(): Mode {
-  if (typeof document === "undefined") return "full";
+  if (typeof document === "undefined") return "review";
   const value = document.documentElement.dataset.mode;
-  return isMode(value) ? value : "full";
+  return isMode(value) ? value : "review";
 }
 
 const listeners = new Set<() => void>();
@@ -47,13 +47,25 @@ export function setMode(mode: Mode) {
 }
 
 export function useMode(): Mode {
-  return useSyncExternalStore(subscribe, current, () => "full");
+  return useSyncExternalStore(subscribe, current, () => "review");
 }
 
 export function ModeSwitch() {
   const mode = useMode();
   const pathname = usePathname();
   const router = useRouter();
+  const [showExploreNotice, setShowExploreNotice] = useState(false);
+
+  useEffect(() => {
+    if (!showExploreNotice) return;
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setShowExploreNotice(false);
+    }
+
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [showExploreNotice]);
 
   function go(next: Mode) {
     if (next === mode) return;
@@ -85,17 +97,49 @@ export function ModeSwitch() {
       <button
         type="button"
         aria-pressed={mode === "full"}
-        onClick={() => go("full")}
+        onClick={() => setShowExploreNotice(true)}
       >
         Explore
       </button>
       <button
         type="button"
         aria-pressed={mode === "review"}
+        aria-label="Quick review"
         onClick={() => go("review")}
       >
-        Quick review
+        <span className="mode-label-full">Quick review</span>
+        <span className="mode-label-short">Review</span>
       </button>
+
+      {showExploreNotice ? (
+        <div
+          className="mode-notice-backdrop"
+          role="presentation"
+          onClick={() => setShowExploreNotice(false)}
+        >
+          <section
+            className="mode-notice"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mode-notice-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <p className="mode-notice-kicker">Explore · in progress</p>
+            <h2 id="mode-notice-title">Still being made.</h2>
+            <p>
+              Explore is under construction for now. Keep using Quick Review
+              to see the work.
+            </p>
+            <button
+              className="mode-notice-close"
+              type="button"
+              onClick={() => setShowExploreNotice(false)}
+            >
+              Keep browsing
+            </button>
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }

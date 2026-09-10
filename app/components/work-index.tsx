@@ -14,8 +14,8 @@ export function WorkIndex() {
       setMode(query);
       return;
     }
-    /* Work is the field, not the digest. A stale session choice must not
-       win when the visitor asked for #work. */
+    /* A direct homepage visit is the digest. The Work anchor remains an
+       explicit request for the field. */
     if (window.location.hash === "#work") {
       setMode("full");
     }
