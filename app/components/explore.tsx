@@ -42,10 +42,10 @@ export function Explore() {
         >
           write
         </a>
-        <p className="xp-close-line" data-reveal>
+        <p className="xp-close-line">
           If any of it was useful.
         </p>
-        <div className="xp-close-links" data-reveal>
+        <div className="xp-close-links">
           <a href="mailto:madebytanishk@gmail.com">
             madebytanishk@gmail.com ↗
           </a>
@@ -59,7 +59,7 @@ export function Explore() {
           <TransitionLink href="/resume">Résumé →</TransitionLink>
           <TransitionLink href="/about">About →</TransitionLink>
         </div>
-        <p className="xp-close-foot" data-reveal>
+        <p className="xp-close-foot">
           Bengaluru ·{" "}
           <span className="xp-close-strike" aria-hidden="true">
             not looking
