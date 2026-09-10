@@ -56,6 +56,20 @@ export function ModeSwitch() {
   const router = useRouter();
 
   function go(next: Mode) {
+    if (next === mode) return;
+
+    /* The two readings have radically different lengths. Preserving a deep
+       Explore scroll offset can land Quick review at its final project, while
+       the reverse can drop someone into the middle of Descent. Reset inside
+       the same event so the newly mounted reading paints at its beginning. */
+    if (pathname === "/") {
+      const root = document.documentElement;
+      const previous = root.style.scrollBehavior;
+      root.style.scrollBehavior = "auto";
+      window.scrollTo(0, 0);
+      root.style.scrollBehavior = previous;
+      window.dispatchEvent(new Event("portfolio:pin"));
+    }
     setMode(next);
     const query = next === "review" ? "/?mode=review" : "/?mode=full";
     if (pathname !== "/") {

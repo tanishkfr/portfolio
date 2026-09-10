@@ -235,12 +235,14 @@ function AtlasSigil() {
 
 function FluxionSigil() {
   return (
-    <>
-      <rect className="ph ph-s ph-r ph-c" x="18" y="14" width="8" height="40" fill="currentColor" />
-      <rect className="ph ph-s ph-r ph-c" x="18" y="14" width="28" height="8" fill="currentColor" />
-      <rect className="ph ph-r ph-c" x="18" y="30" width="22" height="6" fill="currentColor" />
-      <circle className="ph ph-s ph-r ph-c acc" cx="58" cy="48" r="5" fill="currentColor" />
-    </>
+    <image
+      href="/projects/fluxion/mark-light.png"
+      x="12"
+      y="8"
+      width="96"
+      height="52"
+      preserveAspectRatio="xMidYMid meet"
+    />
   );
 }
 

@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import type { Project } from "../data/portfolio";
 import { RoomPaint } from "./atmosphere";
+import { ComingSoonMark } from "./coming-soon";
 import { TransitionLink } from "./transition-link";
 
 export function DayneroPreview({
@@ -35,10 +36,9 @@ export function DayneroPreview({
           <p className="daynero-tagline">What you can spend today, and why.</p>
           <p className="daynero-summary">
             Daynero is an AI-native personal finance app for first-paycheck
-            earners. It is meant to make daily spending readable: what is safe
-            to spend, and what that number is based on. I designed and built
-            the app experience and the public website. The full case is not
-            ready, so this is a note rather than a finished study.
+            earners. Its main number shows what is safe to spend today and what
+            that amount is based on. I designed and built the app experience
+            and public website. The full case is still being documented.
           </p>
           <div className="daynero-actions">
             <a href="https://daynero.com/" target="_blank" rel="noreferrer">
@@ -47,6 +47,16 @@ export function DayneroPreview({
             <TransitionLink href="/#work">Back to selected work</TransitionLink>
           </div>
         </div>
+        <aside className="daynero-soon-mark" aria-label="Daynero case study status">
+          <ComingSoonMark
+            title="Daynero"
+            note="Personal finance for a first paycheck. Case study in progress."
+          />
+          <p>
+            Product live · case record in progress. Team context, constraints,
+            and outcomes will be added when the evidence is ready.
+          </p>
+        </aside>
       </header>
     </main>
   );

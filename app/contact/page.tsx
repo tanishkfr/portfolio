@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-const description = "Contact Tanishk for interaction design opportunities.";
+const description = "Contact Tanishk about interaction and product design work.";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -29,24 +29,16 @@ export default function ContactPage() {
   return (
     <main id="main-content" className="contact-shell contact-letter">
       <header className="contact-intro" data-reveal>
-        <h1>
-          Bring me the interaction nobody has made{" "}
-          <span className="xp-close-strike" aria-hidden="true">
-            pretty
-          </span>{" "}
-          clear yet.
-        </h1>
+        <h1>If the interaction is hard to explain, show me.</h1>
         <p>
-          I am based in Bangalore and open to interaction design, product
-          design, research-through-design, and prototyping opportunities.
+          I&apos;m in Bengaluru and open to interaction and product design
+          roles, plus prototyping and research-through-making projects.
         </p>
       </header>
 
       <p className="contact-note">
-        I am most useful when the{" "}
-        <em>behavior is the hard part</em>
-        — complex state, AI authority, a research question that needs a working
-        artifact.
+        Complex states, software making decisions, or a research question that
+        needs code: those are the problems I like working on.
       </p>
 
       <p className="contact-sign">

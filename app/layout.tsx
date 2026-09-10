@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: "%s — Tanishk",
     },
     description:
-      "Interaction-design work by Tanishk: a Bengaluru studio, four live independent studies, and an AI-native finance product whose case is still being written.",
+      "Work by Tanishk, an interaction designer in Bengaluru who also builds.",
     authors: [{ name: "Tanishk" }],
     creator: "Tanishk",
     category: "Interaction Design",
@@ -47,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Tanishk — Interaction Designer",
       title: "Tanishk — Interaction Designer",
       description:
-        "Studio work, live interaction studies, and a product case in progress — by Tanishk, an interaction designer in Bengaluru.",
+        "Fluxion Studios, four independent interaction projects, and Daynero, by Tanishk.",
       images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
     },
     twitter: {
@@ -55,7 +55,7 @@ export async function generateMetadata(): Promise<Metadata> {
       creator: "@madebytanishk",
       title: "Tanishk — Interaction Designer",
       description:
-        "Studio websites, interaction studies, and a finance product in progress — by Tanishk.",
+        "Studio work, four independent interaction projects, and a finance product in progress.",
       images: ["/og.png"],
     },
   };

@@ -34,8 +34,8 @@ export function InvisibleAway() {
       const seconds = Math.max(1, Math.round(elapsed / 1000));
       setReceipt(
         next >= 100
-          ? `It finished while you were gone — ${seconds}s away, and it never needed you.`
-          : `Away ${seconds}s · +${gained}% done · nothing needed you.`,
+          ? `Finished after ${seconds}s away. The result is ready to inspect.`
+          : `Away ${seconds}s · ${gained}% completed.`,
       );
     };
     const onVisibility = () => (document.hidden ? leave() : back());
@@ -61,8 +61,8 @@ export function InvisibleAway() {
       <span className="xp-away-tag">delegated · runs while you look away</span>
       <p className="xp-away-title">
         {done
-          ? "Done. You never had to watch it."
-          : "It only works when you're not watching."}
+          ? "Done. The result is ready to inspect."
+          : "This task runs while the tab is hidden."}
       </p>
 
       <div
@@ -79,7 +79,7 @@ export function InvisibleAway() {
 
       <p className="xp-away-receipt" aria-live="polite">
         {receipt ??
-          "Switch tabs, or click another window — then come back for the receipt."}
+          "Switch tabs or open another window, then return for the receipt."}
       </p>
     </figure>
   );

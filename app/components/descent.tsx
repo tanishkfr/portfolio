@@ -135,7 +135,7 @@ export function Descent() {
           And every year, it shows me <em>less</em>.
         </p>
         <p className="xp-shed-look" aria-hidden="true">
-          so the behaviour still has to be designed
+          the decisions moved out of sight
         </p>
       </div>
     </section>

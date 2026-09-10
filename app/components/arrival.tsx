@@ -45,8 +45,7 @@ export function Arrival() {
         </h1>
 
         <p className="xp-arrive-note">
-          Independent studies, a studio I co-founded, and a product case still
-          being written. The work is below — or skip ahead with Work.
+          Four independent projects, a studio I co-founded, and a product case still in progress.
         </p>
 
         <p className="xp-arrive-cue" aria-hidden="true">

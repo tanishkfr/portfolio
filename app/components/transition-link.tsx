@@ -70,7 +70,14 @@ export function TransitionLink({
 export function RouteSettler() {
   const pathname = usePathname();
   useEffect(() => {
-    while (settlers.length > 0) settlers.shift()?.();
+    /* Child route effects restore #work after a case returns. Let those
+       effects and one layout frame finish before View Transitions captures
+       the incoming page, otherwise the old case can wipe across Arrival
+       before the homepage jumps to the project row. */
+    const frame = window.requestAnimationFrame(() => {
+      while (settlers.length > 0) settlers.shift()?.();
+    });
+    return () => window.cancelAnimationFrame(frame);
   }, [pathname]);
   return null;
 }

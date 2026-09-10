@@ -124,16 +124,16 @@ export const projects: Project[] = [
     slug: "fluxion-studios",
     title: "Fluxion Studios",
     form: "Studio website · freelance practice",
-    thesis: "A studio site should feel like the people who built it — not like a template with their names swapped in.",
+    thesis: "Fluxion's own site had to show the standard we would bring to a client site.",
     question:
-      "How do you present a design studio without flattening it into agency clichés?",
+      "Could our studio site explain what we build, show how we work, and take a real enquiry?",
     oneLine:
-      "The live site for a Bengaluru studio I co-founded: we design and build websites for businesses that already have a point of view.",
+      "Fluxion is the two-person web studio I co-founded with Shreyas. I designed and built the public site, including its motion and enquiry flow.",
     status: "Live studio site",
     year: "2026",
     context: "Co-founded studio with Shreyas",
     ownership: "Co-founder · design and frontend with a partner",
-    role: "Co-founder, designer, and frontend",
+    role: "Co-founder · design, copy, and frontend",
     responsibilities: [
       "Co-founded the studio and shaped how it talks about the work",
       "Designed and built the public studio website",
@@ -164,17 +164,17 @@ export const projects: Project[] = [
     },
     story: {
       intro: [
-        "Fluxion is the studio I co-founded with Shreyas. We design and build websites for businesses that already know how they talk, think, and treat people — and do not want that flattened the moment it becomes a homepage.",
-        "The public site had to do two jobs at once: explain the practice, and prove we can ship. So we built it ourselves.",
+        "Fluxion is a two-person web studio I co-founded with Shreyas. We make sites for businesses that already have a voice and do not want to sound like everyone else online.",
+        "Our site had to explain what we build and take real enquiries. It also had to show the level of detail we would bring to client work.",
       ],
       contribution: [
-        "I designed and implemented the studio website: structure, type, motion, and the enquiry form. It is client-facing commercial work, not a research prototype.",
-        "The live site is the artifact. There is no invented client list and no fake metrics sitting behind it.",
+        "I worked on the structure, visual design, copy, motion, frontend, and enquiry form with Shreyas.",
+        "The finished site is live and client-facing. It introduces both founders, explains our process, and gives prospective clients a direct way to start a project.",
       ],
       turn:
-        "If the studio site feels generic, nobody should trust us with theirs.",
+        "Our first piece of client-facing work was our own site.",
       reflection: [
-        "This is the other half of how I work: constraints, a partner, a deadline, and a site that has to convert an enquiry — not just make a point.",
+        "Shipping it meant making practical calls about order, type, motion, form behaviour, and what we could maintain as a two-person studio.",
       ],
     },
     problem: {
@@ -198,12 +198,12 @@ export const projects: Project[] = [
       {
         title: "Build it in-house",
         choice: "Design and implement the studio site ourselves instead of parking a template.",
-        consequence: "The site has to carry the same standard we would sell.",
+        consequence: "Prospective clients can judge the work through the site itself.",
       },
       {
         title: "Say the constraints out loud",
         choice: "Publish reply time, typical duration, and that pricing is on enquiry.",
-        consequence: "People can decide if we are the right studio before writing.",
+        consequence: "People can check the fit before writing.",
       },
     ],
     demonstrated: [
@@ -216,9 +216,9 @@ export const projects: Project[] = [
       "Project outcomes for clients are not published here.",
     ],
     nextTest: {
-      title: "Keep the site honest as real client work accumulates.",
-      body: "Add case studies only when they can name the work without inflating it.",
-      success: "A visitor can tell what the studio actually ships, not just how it sounds.",
+      title: "Add client work when it is ready to show.",
+      body: "Publish case studies with the client's context, the work we did, and outcomes we can support.",
+      success: "A visitor can tell what the studio has shipped and what we contributed.",
     },
     contribution:
       "Co-founded the studio; designed and built the public website with Shreyas.",
@@ -232,14 +232,14 @@ export const projects: Project[] = [
     form: "Spatial critique archive",
     thesis: "Critique becomes accountable when you have to point before you pronounce.",
     question:
-      "What does a design judgment select as evidence before it becomes a verdict?",
+      "What changes when a critique has to point to evidence before it gives a verdict?",
     oneLine:
-      "Visitors mark the exact part of an interface that shaped their judgment, file a ruling, then compare it with five deliberately incompatible readings of the same screen.",
+      "Mark the part of an interface that shaped your judgment, explain it, then compare your reading with five others.",
     status: "Working archive",
     year: "2026",
     context: "Self-directed research-through-design",
     ownership: "Independent · concept to production",
-    role: "Interaction designer, critic, writer, and engineer",
+    role: "Interaction design · criticism · writing · implementation",
     responsibilities: [
       "Framed the research question and critique method",
       "Authored ten cases and five fallible juror positions",
@@ -369,24 +369,22 @@ export const projects: Project[] = [
     },
     story: {
       intro: [
-        "Most critique happens after the answer. I wanted to see what happens before it.",
-        "Good designers don't just know whether something works. They build a case — they notice what they're looking at, weigh it, and defend a call. But we mostly teach the verdict, not the reasoning that earned it.",
-        "Design or Disaster tries to make the judgment itself visible.",
+        "Design critique is full of verdicts. The evidence that produced them is often gone by the time anyone disagrees.",
+        "I built Design or Disaster to keep that evidence on the screen.",
       ],
       contribution: [
-        "Instead of asking you to guess the right answer, it asks you to commit to one.",
-        "You mark the exact part of the interface that shaped your read, say what it shows, and only then rule. Then five other readings appear on the same screen — not experts, just positions that don't agree with you or with each other. Your mark stays where you put it.",
-        "The disagreement is the lesson. Not the verdict.",
+        "You mark a coordinate, explain what it shows, and file a verdict. Only then do five other readings appear on the same screen.",
+        "I wrote those jurors as fallible positions, not experts, and kept every mark on one coordinate system so disagreement stays visible instead of becoming a score.",
       ],
       turn:
-        "Confidence and good judgment aren't the same thing. Sometimes the most useful thing an interface can do is slow you down just long enough to reconsider.",
+        "Two people can disagree more usefully when both marks are still on the screen.",
       reflection: [
-        "I thought I was building a critique tool. I built an argument that critique should leave a trail.",
-        "Once you've had to point before you pronounce, an opinion with nothing underneath it starts to feel like what it is.",
+        "Using one coordinate system changed the critique from a sequence of opinions into something people could inspect together.",
+        "The archive works, but whether it improves a real critique session still needs to be tested with people.",
       ],
     },
     contribution:
-      "I turned design judgment into an inspectable sequence: mark first, argue second, compare perception, then live with the ruling.",
+      "I framed the critique method, wrote ten cases and five jurors, designed the evidence-map interaction, and built the archive.",
     disclosure:
       "AI assisted ideation, critique, writing iteration, and code iteration. Final concept selection, case construction, design decisions, editing, implementation, and authorship are Tanishk's.",
   },
@@ -397,14 +395,14 @@ export const projects: Project[] = [
     form: "Algorithmic autobiography",
     thesis: "If software writes about you, your correction must outrank its sentence.",
     question:
-      "When software narrates a person's life from their archive, what does that person need to contest, correct, and co-own the story?",
+      "What should happen when software writes a story about someone and they disagree with it?",
     oneLine:
-      "A right-of-reply experiment where every machine-authored claim exposes its evidence, accepts refusal, and yields the page hierarchy to the person being described.",
+      "Each machine-written claim shows its evidence. The person can accept it, rewrite it, or strike it, and their version leads the final page.",
     status: "Working artifact · participant study pending",
     year: "2026",
     context: "Self-directed research-through-design",
     ownership: "Independent · concept to production",
-    role: "Researcher, interaction designer, writer, and engineer",
+    role: "Research framing · interaction design · writing · implementation",
     responsibilities: [
       "Framed the right-of-reply research position",
       "Designed the strike and visible-withdrawal grammar",
@@ -534,24 +532,22 @@ export const projects: Project[] = [
     },
     story: {
       intro: [
-        "Most AI products tell you what they know about you. Almost none ask whether they got it right.",
-        "That gap bothered me. The more software summarizes our lives, the more those summaries start to matter — they shape what we're shown, and eventually how we see ourselves. Yet most systems only let you accept the summary or ignore it. You can't argue with it.",
-        "Pentimento started with one question. If software can write a story about me, I should be able to rewrite it.",
+        "A year-in-review can count the films someone watched correctly and still explain that year badly.",
+        "Pentimento asks what the interface should do when the person in the story disagrees with the software writing it.",
       ],
       contribution: [
-        "This isn't another chat interface. It's an interaction model for disagreement.",
-        "Every claim the system makes shows its evidence, and every claim can be struck. Strike one and the machine's sentence doesn't vanish — your correction rises to lead, and the original stays underneath it, visibly withdrawn.",
-        "The point was never perfect accuracy. It's giving people authorship over how software describes them.",
+        "Every claim opens to the dates, titles, ratios, or absences behind it. A person can accept the reading, replace it, or strike it without supplying an alternative.",
+        "The machine's first draft stays visible as a withdrawn layer. The person's correction gets the final word.",
       ],
       turn:
-        "The interesting part wasn't the model that wrote the story. It was the moment it stops being the author and becomes something you can overrule.",
+        "The software gets a draft. The person gets the final word.",
       reflection: [
-        "I set out to build something about generated memory. It turned into something about authorship.",
-        "A system that can be corrected is a different kind of thing than one that's simply right. It assumes it might be wrong about you — and builds you a way to say so.",
+        "The first version was a film-taste explorer. Rebuilding it around correction made the conflict between the system's account and the person's account the centre of the interaction.",
+        "The mechanism is working. The participant study has not been run, so the project does not yet show how correction feels with someone's own archive.",
       ],
     },
     contribution:
-      "I made correction structural: a person can overrule a machine's interpretation without erasing the fact that the interpretation occurred.",
+      "I framed the right of reply, designed the strike-and-rewrite interaction, built local archive processing, and wrote the participant-study protocol.",
     disclosure:
       "AI assisted ideation, critique, source discovery, and code iteration. Final concept selection, research framing, design decisions, editing, implementation, and authorship are Tanishk's.",
   },
@@ -563,14 +559,14 @@ export const projects: Project[] = [
     form: "Interactive essay",
     thesis: "When work leaves the screen, accountability has to return.",
     question:
-      "What does an invisible system owe us when attention leaves the interface?",
+      "What should an interface show before someone delegates work and after they return?",
     oneLine:
-      "A browser exhibition where a bounded restoration advances only while the visitor is away, then returns with an inspectable result, authority boundary, and work receipt.",
+      "A staged restoration runs only while the tab is hidden, then shows what changed, what did not, and how to discard the result.",
     status: "Complete v1.0 exhibition",
     year: "2026",
     context: "Self-directed research-through-design exhibition",
     ownership: "Independent · concept to production",
-    role: "Interaction designer, writer, visual director, and engineer",
+    role: "Interaction design · writing · visual direction · implementation",
     responsibilities: [
       "Framed the attention-to-delegation argument",
       "Directed the five-scene experiential sequence",
@@ -700,24 +696,22 @@ export const projects: Project[] = [
     },
     story: {
       intro: [
-        "Every year, software asks less of us. We stopped typing commands, started pointing, then touching, then asking. Now it acts before we ask at all.",
-        "That's usually called progress. But every time an interface asks less of you, it also shows you less. The work moves somewhere you can't watch, and you're meant to trust that it happened.",
-        "I wanted to know what a system owes you when it works while you're not looking.",
+        "More software now does work offscreen. That can be convenient, but it also removes the moments where someone can see what is happening.",
+        "Invisible Interfaces turns one restoration task into a before, an absence, and a return.",
       ],
       contribution: [
-        "Most demonstrations of invisible work make you watch a progress bar. That's a contradiction — you're supervising the thing meant to free you from supervising.",
-        "So I made absence the input. The task here only advances while the tab is hidden. Watch it and it stops. Leave, and it works. Come back, and it hands you a receipt: what it changed, what it left untouched, what it couldn't know, and how to throw the result away.",
-        "Handing the work over isn't the interesting part. Coming back to it is.",
+        "The first version used a progress bar. I removed it and made absence the input: the task stops while the page is visible and advances while the tab is hidden.",
+        "On return, the interface shows the result, unchanged areas, a boundary, and a discard action.",
       ],
       turn:
-        "What makes delegation feel safe isn't watching it happen. It's knowing you'll get the truth when you return.",
+        "Leaving starts the work. Returning starts the audit.",
       reflection: [
-        "I thought this was a project about automation. It turned into one about attention.",
-        "The question was never whether a machine could do the work unwatched. It was whether it would tell you the truth about what it did.",
+        "Removing the progress bar shifted the design problem from waiting to returning. The receipt became the part that needed the most detail.",
+        "This is a staged browser exhibition, not an autonomous restoration system or a usability result.",
       ],
     },
     contribution:
-      "I made absence an interaction event and paired invisible work with accountable return instead of continuous supervision.",
+      "I framed the exhibition, designed its five-scene sequence and return receipt, and built the Page Visibility interaction.",
     disclosure:
       "AI assisted ideation, critique, and code iteration. Final concept selection, design decisions, writing, visual direction, implementation, and authorship are Tanishk's.",
   },
@@ -728,14 +722,14 @@ export const projects: Project[] = [
     form: "Reasoning instrument",
     thesis: "A design rule is only as useful as the unlike cases that are allowed to change it.",
     question:
-      "Can an interaction principle survive transfer across situations with different consequences and input models?",
+      "How does one rule change across a lightbox, a financial transfer, and switch access?",
     oneLine:
-      "A rule-testing instrument that pushes one provisional principle through a familiar case, a high-risk case, and an accessibility case while preserving every revision.",
+      "Write a provisional rule, test it against three unlike cases, and keep every hold, refinement, and fracture.",
     status: "Working instrument · evidence audit open",
     year: "2026",
     context: "Self-directed research-through-design",
     ownership: "Independent · concept to production",
-    role: "Researcher, interaction designer, editor, and engineer",
+    role: "Research framing · interaction design · editing · implementation",
     responsibilities: [
       "Reframed the project from answer library to reasoning activity",
       "Designed the adversarial three-case sequence",
@@ -865,24 +859,22 @@ export const projects: Project[] = [
     },
     story: {
       intro: [
-        "Design advice arrives as finished sentences. Don't use modals. Reduce the load. Make it obvious.",
-        "Every one of those was true somewhere. None of them tell you where. The conditions that made a rule true get stripped off before it reaches you — you inherit the conclusion and lose the reasoning.",
-        "I wanted to see what happens to a principle when you push it somewhere it was never meant to go.",
+        "Design advice often arrives as a finished sentence. The case that produced it and the cases where it fails have disappeared.",
+        "Atlas makes one rule editable and carries it through a lightbox, a financial transfer, and switch access.",
       ],
       contribution: [
-        "Atlas isn't a library of answers. It's one rule and three cases that argue with it.",
-        "You carry a principle into a familiar case, then a high-stakes one, then a case where the input model itself changes. Each time it holds, bends, or breaks — and every version stays on the record. What you end up with isn't a cleaner rule. It's the history of how that rule earned whatever authority it has left.",
-        "A finished principle hides the pressure that shaped it. This one shows it.",
+        "At each case, the visitor chooses hold, refine, or fracture. A change in judgment requires new wording, and the earlier version stays in the trace.",
+        "The useful record is the case that forced each edit, not a final rule presented as universally correct.",
       ],
       turn:
-        "A rule that survives the case it was written for proves nothing. A rule that survives a case it was never meant for is worth something.",
+        "A rule is easier to trust when you can see which case changed it.",
       reflection: [
-        "I started out trying to write good guidance. I stopped believing the guidance was the useful part.",
-        "The reasoning is the artifact. The finished sentence is just where it happened to stop.",
+        "Atlas began as 33 written answers. Moving one editable rule to the centre turned the visitor from a reader into the person doing the revision.",
+        "The interaction is built, but it has not been tested with learners and does not prove transfer.",
       ],
     },
     contribution:
-      "I turned a design principle from finished advice into a revisable object with a visible pressure history.",
+      "I reframed a 33-answer library as a three-case rule test, then built its revision trace, persistence, export, and evidence audit.",
     disclosure:
       "AI assisted ideation, critique, source discovery, and code iteration. Final concept selection, scenario design, design decisions, editing, implementation, and authorship are Tanishk's.",
   },
@@ -893,15 +885,15 @@ export const projects: Project[] = [
     form: "AI-native financial product",
     thesis: "A money product for first-paycheck earners who need to know what they can spend today.",
     question:
-      "How might financial guidance help a first paycheck feel readable, day to day?",
+      "How can a first-paycheck earner see what is safe to spend today?",
     oneLine:
-      "An AI-native personal finance app for first-paycheck earners — what you can safely spend today, and why. The full case study is coming soon.",
+      "A personal-finance app for first-paycheck earners, centred on what is safe to spend today and why. The full case study is coming soon.",
     status: "Coming soon",
     availability: "coming-soon",
     year: "2026",
     context: "Startup product work",
     ownership: "App and public website · commercial team context",
-    role: "Product designer and builder across the app and public website",
+    role: "Product design and implementation across the app and public website",
     responsibilities: [
       "Designed the app's product experience",
       "Designed and built the public website",
@@ -964,7 +956,7 @@ export const projects: Project[] = [
       success: "The final case must make Tanishk's contribution precise without erasing collaborators or inventing outcomes.",
     },
     contribution:
-      "Tanishk designed and built the app experience and public website; the detailed contribution record is being prepared.",
+      "I designed and built the app experience and public website. The detailed team and contribution record is still being prepared.",
     disclosure:
       "This preview uses Daynero's public product language and Tanishk's stated contribution. The full evidence record is pending.",
   },

@@ -41,39 +41,34 @@ export function Explore() {
         aria-label="Contact"
       >
         <div className="xp-close-pin">
-          <p className="xp-close-eyebrow" data-reveal>
-            That is the work
-          </p>
+          <p className="xp-close-eyebrow">That is the work</p>
           <a
             className="xp-close-mail"
             href="mailto:madebytanishk@gmail.com"
-            data-reveal="name"
           >
             write
           </a>
-          <h2 className="xp-close-line" data-reveal>
-            If any of it was useful.
-          </h2>
-          <p className="xp-close-sub" data-reveal="quiet">
-            Bengaluru. Studio, four live studies, a product case still being
-            written. Available.
+          <h2 className="xp-close-line">If any of it was useful.</h2>
+          <p className="xp-close-sub">
+            In Bengaluru. Available for interaction and product design work.
           </p>
-          <div className="xp-close-links" data-reveal>
-            <a href="mailto:madebytanishk@gmail.com">
-              madebytanishk@gmail.com ↗
+          <div className="xp-close-links">
+            <a className="xp-close-external" href="mailto:madebytanishk@gmail.com">
+              madebytanishk@gmail.com <span aria-hidden="true">↗</span>
             </a>
             <a
+              className="xp-close-external"
               href="https://twitter.com/madebytanishk"
               target="_blank"
               rel="noreferrer"
             >
-              @madebytanishk ↗
+              @madebytanishk <span aria-hidden="true">↗</span>
             </a>
-            <TransitionLink href="/contact">Contact →</TransitionLink>
-            <TransitionLink href="/resume">Résumé →</TransitionLink>
-            <TransitionLink href="/about">About →</TransitionLink>
+            <TransitionLink className="xp-close-next" href="/about">
+              About <span aria-hidden="true">→</span>
+            </TransitionLink>
           </div>
-          <p className="xp-close-foot" data-reveal>
+          <p className="xp-close-foot">
             Bengaluru ·{" "}
             <span className="xp-close-strike" aria-hidden="true">
               not looking

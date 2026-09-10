@@ -1157,7 +1157,7 @@
 .xp-close {
   --carve: clamp(0, calc((var(--t, 1) - 0.08) / 0.7), 1);
   position: relative;
-  height: 170svh;
+  height: 145svh;
   min-height: 0;
   display: block;
   width: 100%;
@@ -2089,21 +2089,17 @@
   clip-path: inset(0 0 0 calc((1 - var(--carve)) * 100%));
 }
 
-.xp-rift-ghost {
-  font-family: var(--serif);
-  font-size: clamp(2.8rem, 9vw, 7.4rem);
-  line-height: 0.85;
-  letter-spacing: -0.05em;
+.xp-rift-brand {
+  display: block;
+  width: min(64vw, 54rem);
+  padding: clamp(0.8rem, 1.5vw, 1.3rem);
+  background: #050505;
 }
 
-.xp-rift-ghost i {
-  display: inline-block;
-  width: 0.36em;
-  height: 0.36em;
-  margin-inline-start: 0.08em;
-  border-radius: 50%;
-  background: #c8102e;
-  vertical-align: 0.1em;
+.xp-rift-brand img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .xp-rift-ghost-cap {
@@ -2656,6 +2652,14 @@ a.xp-works-open {
   color: var(--muted);
 }
 
+@media (max-width: 60rem) {
+  .xp-works-form,
+  .xp-works-thesis {
+    grid-column: 1;
+    max-width: 36ch;
+  }
+}
+
 /* ============================================================
    TOUCH TARGETS
    The existing (pointer: coarse) block in system.css covered the
@@ -2801,29 +2805,30 @@ a.xp-works-open {
   padding: 1rem 0;
 }
 
-.xp-flux-mark {
-  margin: 0;
-  font-family: var(--serif);
-  font-size: clamp(2.4rem, 5vw, 3.6rem);
-  letter-spacing: -0.04em;
-  line-height: 0.95;
+.xp-flux-brand {
+  display: grid;
+  place-items: center;
+  width: min(100%, 46rem);
+  min-height: clamp(5rem, 13vh, 8rem);
+  padding: clamp(1rem, 2.5vw, 1.8rem);
+  background: #050505;
 }
 
-.xp-flux-mark i {
-  display: inline-block;
-  width: 0.42em;
-  height: 0.42em;
-  margin-inline-start: 0.12em;
-  border-radius: 50%;
-  background: var(--accent-ink, #b01020);
-  vertical-align: 0.12em;
-  transform-origin: center;
-  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+.xp-flux-brand img,
+.xp-room-shot .xp-flux-brand img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  transform-origin: left center;
+  transition: transform 320ms var(--ease-out);
 }
 
-.xp-flux:hover .xp-flux-mark i,
-.xp-flux:focus-within .xp-flux-mark i {
-  transform: scale(1.85);
+.xp-flux:hover .xp-flux-brand img,
+.xp-flux:focus-within .xp-flux-brand img {
+  transform: translateX(0.35rem);
 }
 
 .xp-flux figcaption,
@@ -2854,5 +2859,363 @@ a.xp-works-open {
 @media (prefers-reduced-motion: reduce) {
   .xp-under-front {
     transition: none;
+  }
+}
+
+/* ============================================================
+   MOTION CRAFT PASS
+   Supporting movement stays quiet enough to protect Arrival and Rift.
+   ============================================================ */
+
+/* Notice is already a scroll-linked scene; it must never wait on a second,
+   one-shot clipping system. The controls now stay present when scrolling fast
+   or arriving through #notice, and the considered examples carry the tactility. */
+.xp-toggle-fine:hover .xp-toggle-knob,
+.xp-toggle-fine:focus-visible .xp-toggle-knob {
+  transform: translateY(-50%) scale(1.08);
+}
+
+.xp-toggle-fine:active .xp-toggle-knob {
+  transform: translateY(-50%) scale(0.88);
+}
+
+.xp-press-fine:hover,
+.xp-press-fine:focus-visible {
+  border-color: var(--ink);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--ink) 14%, transparent);
+  transform: translateY(-1px);
+}
+
+.xp-press-fine:active {
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 12%, transparent);
+}
+
+.xp-load {
+  position: relative;
+  overflow: hidden;
+}
+
+.xp-load-fine::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--registrar);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.xp-load-fine:hover,
+.xp-load-fine:focus-visible {
+  border-color: var(--ink);
+}
+
+.xp-load-fine[data-busy]::after {
+  animation: xp-working-line 1s linear both;
+}
+
+@keyframes xp-working-line {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.xp-field-fine input {
+  transition:
+    border-color var(--beat) var(--ease-out),
+    box-shadow var(--beat) var(--ease-out);
+}
+
+.xp-field-fine span {
+  transition:
+    color var(--beat) var(--ease-out),
+    transform var(--beat) var(--ease-out);
+}
+
+.xp-field-fine:hover input {
+  border-color: var(--ink-soft);
+}
+
+.xp-field-fine:focus-within span {
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 72rem) {
+  .xp-notice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 48rem) {
+  .xp-notice-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .xp-spec {
+    min-width: 0;
+  }
+
+  .xp-spec-pair {
+    gap: clamp(0.85rem, 4vw, 1rem);
+  }
+
+  .xp-field-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .xp-field input {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* The final word already moves through scale. Its supporting copy now settles
+   with it, while staying partly present throughout and fully readable if JS
+   never publishes --t. */
+.xp-close {
+  --close-settle: clamp(0, calc((var(--carve) - 0.24) / 0.76), 1);
+}
+
+.xp-close-eyebrow,
+.xp-close-line,
+.xp-close-sub,
+.xp-close-links,
+.xp-close-foot {
+  opacity: calc(0.42 + var(--close-settle) * 0.58);
+  translate: 0 calc((1 - var(--close-settle)) * 0.7rem);
+}
+
+.xp-close-mail:hover,
+.xp-close-mail:focus-visible {
+  font-variation-settings: "opsz" 144, "wght" 500, "SOFT" 8, "WONK" 1;
+  letter-spacing: -0.055em;
+  text-decoration: none;
+}
+
+.xp-close-links a span,
+.xp-works-open span {
+  display: inline-block;
+  transition: translate var(--beat) var(--ease-out);
+}
+
+.xp-close-links a:hover span,
+.xp-close-links a:focus-visible span,
+.xp-works-open:hover span,
+.xp-works-open:focus-visible span {
+  translate: 0.18rem -0.12rem;
+}
+
+.xp-close-links .xp-close-next:hover span,
+.xp-close-links .xp-close-next:focus-visible span {
+  translate: 0.24rem 0;
+}
+
+.xp-close-links a:active,
+.xp-works-open:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+.xp-close-strike {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.xp-close-strike::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 52%;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(calc(0.14 + var(--carve) * 0.86));
+  transform-origin: left;
+}
+
+/* Project rows answer attention by moving their two layers toward each other.
+   Type changes are project-specific; none rely on a generic card zoom. */
+.xp-works-name,
+.xp-works-plate,
+.xp-works-meta {
+  transition:
+    translate 320ms var(--ease-out),
+    font-variation-settings 320ms var(--ease-out),
+    letter-spacing 320ms var(--ease-out);
+}
+
+.xp-works-plate::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  height: 1px;
+  background: var(--accent-ink);
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--move) var(--ease-swing);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .xp-works-item:hover .xp-works-meta,
+  .xp-works-item:focus-within .xp-works-meta {
+    translate: var(--wake-meta, 0.35rem) 0;
+  }
+
+  .xp-works-item:hover .xp-works-plate,
+  .xp-works-item:focus-within .xp-works-plate {
+    translate: var(--wake-plate, -0.45rem) 0;
+  }
+
+  .xp-works-item:hover .xp-works-plate::after,
+  .xp-works-item:focus-within .xp-works-plate::after {
+    transform: scaleX(1);
+  }
+
+  .xp-works-item[data-room="design-or-disaster"] {
+    --wake-meta: -0.35rem;
+    --wake-plate: 0.55rem;
+  }
+
+  .xp-works-item[data-room="pentimento"]:hover .xp-works-name,
+  .xp-works-item[data-room="pentimento"]:focus-within .xp-works-name {
+    font-style: italic;
+    letter-spacing: -0.055em;
+  }
+
+  .xp-works-item[data-room="invisible-interfaces"]:hover .xp-works-name,
+  .xp-works-item[data-room="invisible-interfaces"]:focus-within .xp-works-name {
+    font-variation-settings: "opsz" 144, "wght" 340, "SOFT" 60, "WONK" 1;
+    letter-spacing: -0.055em;
+  }
+
+  .xp-works-item[data-room="atlas"]:hover .xp-works-name,
+  .xp-works-item[data-room="atlas"]:focus-within .xp-works-name {
+    font-variation-settings: "opsz" 144, "wght" 520, "SOFT" 16, "WONK" 1;
+    letter-spacing: -0.02em;
+  }
+
+  .xp-works-item[data-room="daynero"]:hover .xp-works-name,
+  .xp-works-item[data-room="daynero"]:focus-within .xp-works-name {
+    font-variation-settings: "opsz" 96, "wght" 460, "SOFT" 36, "WONK" 1;
+  }
+}
+
+/* The collection enters as five different ideas, not five copies of one card
+   reveal. Fluxion is intentionally excluded: the Rift already owns its arrival. */
+@supports (animation-timeline: view()) {
+  @media (min-width: 60.01rem) and (prefers-reduced-motion: no-preference) {
+    .xp-works-item:not([data-room="fluxion-studios"]) .xp-works-meta,
+    .xp-works-item:not([data-room="fluxion-studios"]) .xp-works-plate {
+      animation-duration: 1ms;
+      animation-fill-mode: both;
+      animation-timeline: view(block);
+      animation-range: entry 5% cover 34%;
+      animation-timing-function: var(--ease-out);
+    }
+
+    .xp-works-item:not([data-room="fluxion-studios"]) .xp-works-meta {
+      animation-name: xp-project-copy-in;
+    }
+
+    .xp-works-item[data-room="design-or-disaster"] .xp-works-plate {
+      animation-name: xp-project-verdict-in;
+    }
+
+    .xp-works-item[data-room="pentimento"] .xp-works-plate {
+      animation-name: xp-project-revision-in;
+    }
+
+    .xp-works-item[data-room="invisible-interfaces"] .xp-works-plate {
+      animation-name: xp-project-attention-in;
+    }
+
+    .xp-works-item[data-room="atlas"] .xp-works-plate {
+      animation-name: xp-project-system-in;
+    }
+
+    .xp-works-item[data-room="daynero"] .xp-works-plate {
+      animation-name: xp-project-quiet-in;
+    }
+  }
+}
+
+@keyframes xp-project-copy-in {
+  from {
+    opacity: 0.68;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes xp-project-verdict-in {
+  from {
+    opacity: 0.74;
+    clip-path: inset(0 12% 0 0);
+    transform: translateX(-1rem);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+@keyframes xp-project-revision-in {
+  from {
+    opacity: 0.74;
+    clip-path: inset(0 0 0 12%);
+    transform: translateX(1rem);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+@keyframes xp-project-attention-in {
+  from {
+    opacity: 0.56;
+    transform: translateY(1.2rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes xp-project-system-in {
+  from {
+    opacity: 0.68;
+    clip-path: inset(0 0 16% 0);
+    transform: translateY(0.8rem);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+@keyframes xp-project-quiet-in {
+  from {
+    opacity: 0.82;
+    transform: translateY(0.45rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }

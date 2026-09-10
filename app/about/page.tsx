@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LookUnder } from "../components/look-under";
 
 const description =
-  "About Tanishk, an interaction designer based in Bangalore and available for work.";
+  "About Tanishk, an interaction designer in Bengaluru who also builds.";
 
 export const metadata: Metadata = {
   title: "About",
@@ -30,18 +30,18 @@ export const metadata: Metadata = {
 const capabilities = [
   {
     number: "01",
-    title: "Interaction systems",
-    body: "I define states, transitions, authority boundaries, recovery paths, and the rules that make complex behavior coherent.",
+    title: "States and edge cases",
+    body: "I map what can happen, what the interface needs to explain, and how someone can undo or recover.",
   },
   {
     number: "02",
-    title: "Product thinking",
-    body: "I move between the product premise, the interface people touch, and the implementation decisions that make it real.",
+    title: "Product and interface",
+    body: "I work from the product premise and content through interaction, visual design, and a working frontend.",
   },
   {
     number: "03",
-    title: "Research through making",
-    body: "I use working artifacts to turn abstract questions into interactions that can be inspected, challenged, and tested.",
+    title: "Working research",
+    body: "When a question is too abstract, I build the interaction and find out where the idea stops making sense.",
   },
 ];
 
@@ -49,31 +49,40 @@ export default function AboutPage() {
   return (
     <main id="main-content" className="about-shell">
       <header className="about-intro" data-reveal>
-        <p className="eyebrow">About · Bangalore · Available for work</p>
-        <h1>I design the rules people feel.</h1>
+        <p className="eyebrow">About · Bengaluru · Available for work</p>
+        <h1>I design interactions, then build the working version.</h1>
         <div className="about-lede">
           <p>
-            I am Tanishk, an interaction designer based in Bangalore. I work
-            on products where the difficult part is not the screen—it is what
-            the system decides, remembers, explains, or lets a person change.
+            I&apos;m Tanishk, an interaction designer in Bengaluru. I study
+            Human-Centred Design at Srishti, design and build products, and
+            co-run Fluxion Studios with Shreyas.
           </p>
           <p>
-            I co-founded Fluxion Studios, a two-person web practice. I also
-            designed and built Daynero, an AI-native finance app whose case
-            study is still being written. Alongside that I run four independent
-            interaction studies you can use now.
+            My independent projects usually start with an interface behaviour
+            I cannot stop thinking about: a critique with no evidence,
+            software writing about a person, work that continues after someone
+            leaves, or a rule that fails outside its original case. I build the
+            interaction to see whether the idea survives.
           </p>
         </div>
         <LookUnder
           className="about-under"
           label="A little more about how I work"
-          rest={0.08}
-          surface={<p>Interaction designer. Bangalore. Available for work.</p>}
+          rest={0}
+          surface={
+            <div className="about-under-copy">
+              <span>On paper</span>
+              <p>Interaction designer. Bengaluru. Available for work.</p>
+            </div>
+          }
           under={
-            <p>
-              I steal from Formula 1, architecture, film, printed books, and
-              games with weather — never from other interfaces.
-            </p>
+            <div className="about-under-copy">
+              <span>Things I watch</span>
+              <p>
+                Formula 1 for information under pressure, buildings for how
+                they guide movement, and games for how a place teaches its rules.
+              </p>
+            </div>
           }
         />
         <dl className="about-facts" aria-label="Practice facts">
@@ -87,22 +96,22 @@ export default function AboutPage() {
           </div>
           <div>
             <dt>Independent work</dt>
-            <dd>Four working interaction studies</dd>
+            <dd>Four working interaction projects</dd>
           </div>
           <div>
             <dt>Range</dt>
-            <dd>Architecture, design, writing, and implementation</dd>
+            <dd>Product framing · interaction design · frontend</dd>
           </div>
           <div>
             <dt>Location</dt>
-            <dd>Bangalore · Available for work</dd>
+            <dd>Bengaluru · Available for work</dd>
           </div>
         </dl>
       </header>
 
       <section className="capability-section" aria-labelledby="capability-title" data-reveal>
         <p className="eyebrow">What I bring to a team</p>
-        <h2 id="capability-title">From product premise to working behavior.</h2>
+        <h2 id="capability-title">What I can take on.</h2>
         <div className="capability-grid">
           {capabilities.map((capability) => (
             <article key={capability.number} data-reveal>
@@ -117,49 +126,49 @@ export default function AboutPage() {
       <section className="principle-section" aria-labelledby="principle-title" data-reveal>
         <div>
           <p className="eyebrow">How I work</p>
-          <h2 id="principle-title">Clarity is a form of agency.</h2>
+          <h2 id="principle-title">Four rules I keep using.</h2>
         </div>
         <div className="principle-list">
           <article data-reveal>
-            <h3>Make the hidden decision inspectable.</h3>
-            <p>If a system interprets, recommends, remembers, or acts, the interface should reveal enough for a person to understand and challenge it.</p>
+            <h3>Show the decision.</h3>
+            <p>If software interprets or recommends something, a person should be able to see enough to question it.</p>
           </article>
           <article data-reveal>
-            <h3>Design the response, not just the result.</h3>
-            <p>Correction, refusal, recovery, and undo are central interactions whenever a system carries authority.</p>
+            <h3>Make correction a real path.</h3>
+            <p>Undo, refusal, and recovery should change the result, not sit in a note beside it.</p>
           </article>
           <article data-reveal>
-            <h3>Build the argument into the behavior.</h3>
-            <p>A project should make its central idea felt through interaction before a case study has to explain it.</p>
+            <h3>Let the interaction do the explaining.</h3>
+            <p>I build the central idea into the behaviour before I write the case study around it.</p>
           </article>
           <article data-reveal>
-            <h3>Keep claims inside the evidence.</h3>
-            <p>A working product proves what exists. Human outcomes require human evidence, and the writing should never blur that line.</p>
+            <h3>Say what the evidence cannot prove.</h3>
+            <p>A working prototype shows that the interaction can run. Claims about people have to wait for research.</p>
           </article>
         </div>
       </section>
 
       <section className="authorship-section" aria-labelledby="authorship-title" data-reveal>
         <p className="eyebrow">Authorship and context</p>
-        <h2 id="authorship-title">I architect, design, write, and implement.</h2>
+        <h2 id="authorship-title">What I actually did.</h2>
         <div>
           <p>
-            For Daynero, I designed and built the app experience and public
-            website in a commercial startup context. Its full case study will
-            name the team, constraints, and outcomes that can be shared.
+            I co-founded Fluxion and designed and built its public site with
+            Shreyas. For Daynero, I designed and built the app experience and
+            public website. Its full case study is still being documented.
           </p>
           <p>
-            The four research artifacts were self-directed and independently
-            built by me. AI assisted ideation, critique, source discovery, and
-            code iteration; final concept selection, design decisions, editing,
-            implementation decisions, and authorship are mine.
+            The four independent projects are mine from concept through code.
+            AI assisted ideation, critique, source discovery, and code iteration.
+            I chose the concepts, made the design decisions, edited the writing,
+            and built what shipped.
           </p>
         </div>
       </section>
 
       <section className="about-contact" aria-labelledby="about-contact-title" data-reveal>
         <p className="eyebrow">Currently</p>
-        <h2 id="about-contact-title">Based in Bangalore and available for work.</h2>
+        <h2 id="about-contact-title">In Bengaluru and available for work.</h2>
         <div>
           <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com ↗</a>
           <a href="https://twitter.com/madebytanishk" target="_blank" rel="noreferrer">

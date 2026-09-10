@@ -209,6 +209,8 @@
 }
 
 .mode-switch button {
+  position: relative;
+  isolation: isolate;
   appearance: none;
   border: 0;
   background: transparent;
@@ -216,15 +218,41 @@
   padding: 0.4rem 0.7rem;
   cursor: pointer;
   letter-spacing: 0.04em;
-  transition: color 180ms var(--ease-out);
+  transition:
+    color var(--beat) var(--ease-out),
+    letter-spacing var(--move) var(--ease-out),
+    transform var(--beat) var(--ease-out);
+}
+
+.mode-switch button::after {
+  content: "";
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.12rem;
+  left: 0.7rem;
+  height: 1px;
+  background: var(--registrar);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--move) var(--ease-swing);
 }
 
 .mode-switch button:hover {
   color: rgba(22, 21, 15, 0.85);
+  letter-spacing: 0.055em;
 }
 
 .mode-switch button[aria-pressed="true"] {
   color: #16150f;
+}
+
+.mode-switch button[aria-pressed="true"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.mode-switch button:active {
+  transform: translateY(1px) scale(0.985);
 }
 
 .mode-switch button:focus-visible {

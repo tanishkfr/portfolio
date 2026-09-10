@@ -39,11 +39,12 @@ test("server-renders Explore as a cinematic world ending in the work", async () 
   // the draft it replaced is present but decorative
   assert.match(html, /aria-hidden="true"[^>]*>\s*apps and interfaces\./);
   assert.match(html, /Every year, software asks less of us\./);
+  assert.match(html, /Four independent projects/);
   assert.match(html, /And every year, it shows me/);
   assert.match(html, /the part you.{0,10}t see\./);
   // to its case, carrying its thesis, server-rendered before any JS.
   const works = [
-    { slug: "fluxion-studios", title: "Fluxion Studios", t: "not like a template" },
+    { slug: "fluxion-studios", title: "Fluxion Studios", t: "standard we would bring" },
     { slug: "design-or-disaster", title: "Design or Disaster", t: "point before you pronounce" },
     { slug: "pentimento", title: "Pentimento", t: "must outrank its sentence" },
     { slug: "invisible-interfaces", title: "Invisible Interfaces", t: "accountability has to return" },
@@ -83,10 +84,12 @@ test("server-renders Explore as a cinematic world ending in the work", async () 
   // the open affordance is a named control, not an opacity-0 hover cue
   assert.doesNotMatch(html, /class="xp-works-cue"/);
 
-  // Entrances are typed: a name does not arrive the way a caption does.
-  for (const kind of ["name", "quiet", "figure"]) {
-    assert.match(html, new RegExp(`data-reveal="${kind}"`));
-  }
+  /* Scroll-led scenes are already directed by their stage variables. They do
+     not also wait for a one-shot observer, so fast scroll, reverse scroll and
+     direct #notice arrival can never leave their essential copy clipped. */
+  assert.doesNotMatch(html, /data-reveal/);
+  assert.match(html, /class="xp-notice-title"/);
+  assert.match(html, /class="xp-close-line"/);
 
   // The descent's five statements are the argument, so they must reach
   // assistive tech; only the control glyphs may be hidden.
@@ -98,6 +101,8 @@ test("server-renders Explore as a cinematic world ending in the work", async () 
   assert.match(html, /class="xp-close-strike" aria-hidden="true"/);
 
   assert.match(html, /Selected work/);
+  assert.doesNotMatch(html, /href="\/resume"/);
+  assert.doesNotMatch(html, /href="\/contact">Contact →/);
 
   /* THE HOMEPAGE MUST SHOW WORK, NOT ONLY DESCRIBE IT.
      Every mechanic is live in its row, not sealed inside a pop-out a visitor
@@ -108,6 +113,7 @@ test("server-renders Explore as a cinematic world ending in the work", async () 
   for (const mechanic of ["xp-flux", "xp-dod", "xp-pent", "xp-away", "xp-atlas", "xp-soon"]) {
     assert.match(html, new RegExp(`class="xp-room-shot ${mechanic}"`), mechanic);
   }
+  assert.match(html, /projects\/fluxion\/wordmark-dark\.png/);
   assert.match(html, /<img src="\/projects\/design-or-disaster\/case-001\.jpg"/);
 
   /* Each row carries its project's ground, so the set previews the room you
@@ -136,21 +142,21 @@ test("defines a meaningful interface, logic, and consequence for every project",
     "utf8",
   );
   for (const phrase of [
-    "A daily money companion, not a monthly spreadsheet",
-    "Guidance adjusts to behavior and goals",
-    "Money decisions become immediate",
-    "Delegated work appears to require watching",
-    "Progress advances only while attention is elsewhere",
-    "Returning produces a receipt",
-    "A verdict appears to be the final object",
-    "Judgment must identify its evidence",
-    "Five incompatible readings can disagree",
-    "A machine-written life appears settled",
-    "The person represented owns the final account",
-    "Human correction leads",
-    "A design principle appears to be finished advice",
-    "A rule earns authority only by surviving transfer",
-    "Every hold, refinement, and fracture remains",
+    "The main number answers what is safe to spend today",
+    "The amount responds to spending and goals",
+    "The person gets guidance for today's decision",
+    "The visitor sees a photograph that needs restoration",
+    "Progress advances only while the page is hidden",
+    "Returning shows the result, its limits, and a discard action",
+    "The visitor starts with an interface screenshot",
+    "A judgment needs a marked coordinate and an explanation",
+    "Five different readings stay visible",
+    "Software presents a draft story about a person",
+    "The person can change every claim before the second draft",
+    "Their correction leads",
+    "The visitor starts with an editable design rule",
+    "Each case asks whether the rule holds",
+    "The final rule keeps the case and wording",
   ]) {
     assert.match(signals, new RegExp(phrase));
   }
@@ -172,6 +178,7 @@ test("renders an honest Daynero coming-soon note", async () => {
 
   assert.match(html, /href="https:\/\/daynero\.com\/"/);
   assert.doesNotMatch(html, /Try the core interaction|Built and verified|Read the case/);
+  assert.match(html, /class="daynero-soon-mark"/);
   assert.match(html, /rel="canonical" href="https:\/\/portfolio\.test\/work\/daynero"/);
   assertCleanEncoding(html);
 });
@@ -194,13 +201,13 @@ test("server-renders four interactive, evidence-bounded published cases", async 
       // the three-beat read replaced the five chapters
       "Why I built it",
       "What it is",
-      "What it changed",
+      "What changed during the build",
       // the record stays: the decisions and the honest boundary
       "The record",
       "Built and working",
       "Not yet proven",
-      "The next honest test",
-      "Experience the project",
+      "Next test",
+      "Open the live project",
       "Inspect the source",
     ]) {
       assert.match(html, new RegExp(phrase));
@@ -240,16 +247,16 @@ test("publishes accurate identity, commercial context, and contact", async () =>
 
   assert.equal(aboutResponse.status, 200);
   const aboutHtml = await aboutResponse.text();
-  assert.match(aboutHtml, /I design the rules people feel/);
+  assert.match(aboutHtml, /I design interactions, then build the working version/);
   assert.match(aboutHtml, /Fluxion Studios/);
   assert.match(aboutHtml, /Daynero · case study coming soon/);
-  assert.match(aboutHtml, /Four working interaction studies/);
-  assert.match(aboutHtml, /commercial startup context/);
+  assert.match(aboutHtml, /Four working interaction projects/);
+  assert.match(aboutHtml, /Human-Centred Design at Srishti/);
   assert.match(aboutHtml, /rel="canonical" href="https:\/\/portfolio\.test\/about"/);
 
   assert.equal(contactResponse.status, 200);
   const contactHtml = await contactResponse.text();
-  assert.match(contactHtml, /behavior is the hard part/i);
+  assert.match(contactHtml, /interaction is hard to explain/i);
   assert.match(contactHtml, /@madebytanishk/);
 
   assert.equal(resumeResponse.status, 200);
@@ -294,6 +301,8 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     packageJson,
     vercel,
     worker,
+    fluxionMark,
+    rift,
   ] = await Promise.all([
     readFile(new URL("../app/data/portfolio.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/work-index.tsx", import.meta.url), "utf8"),
@@ -311,6 +320,8 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../vercel.json", import.meta.url), "utf8"),
     readFile(new URL("../worker/index.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/fluxion-mark.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/rift.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(data, /availability\?: "published" \| "preview" \| "coming-soon"/);
@@ -384,6 +395,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(motion, /IntersectionObserver/);
   assert.match(motion, /--scroll-progress/);
   assert.doesNotMatch(motion, /pointermove|--pointer-x/);
+  assert.match(exploreCss, /animation-timeline:\s*view/);
   assert.match(projectPage, /DayneroPreview/);
   assert.match(projectPage, /SignaturePlate/);
   assert.match(projectPage, /project\.sourceUrl \?/);
@@ -402,14 +414,17 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   }
   assert.match(transitionLink, /startViewTransition/);
   assert.match(transitionLink, /prefers-reduced-motion/);
+  assert.match(transitionLink, /requestAnimationFrame/);
   /* Session-scoped on purpose: a reviewer who once chose the digest should not
      be silently returned to it on a later visit and never see the work. */
   assert.match(mode, /sessionStorage/);
   assert.doesNotMatch(mode, /localStorage/);
   assert.match(mode, /dataset\.mode/);
   assert.match(mode, /router\.push/);
+  assert.match(mode, /window\.scrollTo\(0, 0\)/);
   // two modes, not three — and no stale edition contract left anywhere
   assert.match(css, /data-mode="review"/);
+  assert.match(css, /route-mobile-in/);
   assert.doesNotMatch(css, /data-edition=/);
   assert.match(rooms, /TransitionLink/);
   assert.match(projectPage, /TransitionLink/);
@@ -424,9 +439,21 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(packageJson, /"build:vercel": "next build"/);
   assert.match(vercel, /"framework": "nextjs"/);
   assert.match(worker, /!env\.ASSETS \|\| !env\.IMAGES/);
+  assert.match(fluxionMark, /\/projects\/fluxion\/wordmark-dark\.png/);
+  assert.match(rift, /\/projects\/fluxion\/wordmark-dark\.png/);
+  assert.match(signature, /\/projects\/fluxion\/mark-light\.png/);
+  assert.match(artifacts, /\/projects\/fluxion\/wordmark-dark\.png/);
 
   await access(new URL("../public/projects/atlas/atlas.png", import.meta.url));
   await access(new URL("../public/projects/invisible-interfaces/return.png", import.meta.url));
+  for (const asset of [
+    "mark-dark.png",
+    "mark-light.png",
+    "wordmark-dark.png",
+    "wordmark-light.png",
+  ]) {
+    await access(new URL(`../public/projects/fluxion/${asset}`, import.meta.url));
+  }
   await assert.rejects(access(new URL("../public/projects/remainder", import.meta.url)));
   await assert.rejects(access(new URL("../app/components/project-proof.tsx", import.meta.url)));
 });

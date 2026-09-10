@@ -369,7 +369,12 @@
   transition:
     background-color var(--beat) var(--ease-out),
     color var(--beat) var(--ease-out),
-    border-color var(--beat) var(--ease-out);
+    border-color var(--beat) var(--ease-out),
+    transform var(--beat) var(--ease-out);
+}
+
+.case-actions a:active {
+  transform: translateY(1px) scale(0.985);
 }
 
 .case-actions a:first-child {
@@ -561,7 +566,16 @@
   transition:
     background-color var(--world-beat, var(--beat)) var(--ease-out),
     border-color var(--world-beat, var(--beat)) var(--ease-out),
-    color var(--world-beat, var(--beat)) var(--ease-out);
+    color var(--world-beat, var(--beat)) var(--ease-out),
+    transform var(--beat) var(--ease-out);
+}
+
+.case-choice-group button:active {
+  transform: scale(0.96);
+}
+
+.case-choice-group button:focus-visible {
+  outline-offset: 3px;
 }
 
 .case-choice-group button:hover {
@@ -580,7 +594,23 @@
 .fluxion-demo {
   display: grid;
   gap: 1.2rem;
-  padding: 1.4rem 1.6rem 1.6rem;
+  padding: 1.3rem;
+}
+
+.fluxion-brand-lockup {
+  display: grid;
+  place-items: center;
+  min-height: clamp(8rem, 22vw, 14rem);
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background: #050505;
+}
+
+.fluxion-brand-lockup img {
+  width: min(100%, 42rem);
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .fluxion-demo p {
@@ -589,6 +619,7 @@
   font-family: var(--serif);
   font-size: var(--step-1);
   line-height: 1.4;
+  padding-inline: 0.3rem;
 }
 
 .fluxion-demo a {
@@ -598,6 +629,7 @@
   color: var(--accent-ink);
   text-decoration: none;
   border-bottom: 1px solid currentColor;
+  margin-inline: 0.3rem;
 }
 
 .disaster-demo {
@@ -1707,8 +1739,39 @@
 
 .daynero-soon .daynero-hero {
   min-height: 72svh;
-  grid-template-columns: minmax(0, 38rem);
+  grid-template-columns: minmax(0, 38rem) minmax(18rem, 1fr);
   align-content: center;
+  align-items: center;
+}
+
+.daynero-soon-mark {
+  position: relative;
+  display: grid;
+  align-content: center;
+  min-height: clamp(18rem, 44vh, 28rem);
+  border-left: 1px solid var(--line-strong);
+  padding: clamp(2rem, 5vw, 4.5rem);
+}
+
+.daynero-soon-mark::before {
+  content: "06";
+  position: absolute;
+  top: 0.35rem;
+  right: 0;
+  color: color-mix(in srgb, var(--accent-daynero-ink) 18%, transparent);
+  font-family: var(--serif);
+  font-size: clamp(5rem, 12vw, 11rem);
+  line-height: 0.8;
+  letter-spacing: -0.08em;
+}
+
+.daynero-soon-mark > p {
+  margin: 1.4rem 0 0;
+  max-width: 34ch;
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  line-height: 1.6;
 }
 
 .daynero-return {
@@ -2073,8 +2136,15 @@
     grid-template-columns: 1fr;
   }
 
-  .daynero-hero {
+  .daynero-soon .daynero-hero {
     grid-template-columns: 1fr;
+  }
+
+  .daynero-soon-mark {
+    min-height: 15rem;
+    border-top: 1px solid var(--line-strong);
+    border-left: 0;
+    padding-inline: 0;
   }
 
   .daynero-hero .signature-plate {
@@ -2175,6 +2245,10 @@
 /* Quick review reaches a case through the proof and the record —
    the prose beats are the part a committee skims, so they fold away
    and the honest boundary stays. */
+:root[data-mode="review"] .case-skip {
+  display: none;
+}
+
 :root[data-mode="review"] .case-story {
   display: none;
 }
@@ -2193,14 +2267,33 @@
 
 .case-story {
   display: grid;
-  gap: clamp(2.6rem, 6vh, 4.5rem);
-  max-width: 44rem;
+  grid-template-columns: minmax(0, 1.12fr) minmax(22rem, 0.88fr);
+  grid-template-areas:
+    "why turn"
+    "what changed";
+  gap: clamp(3rem, 7vh, 6rem) clamp(3rem, 8vw, 8rem);
+  max-width: none;
   margin: clamp(2.75rem, 7vh, 5rem) 0 clamp(2.75rem, 6vh, 4.5rem);
+  border-block: 1px solid var(--line);
+  padding-block: clamp(2.75rem, 7vh, 5rem);
 }
 
 .story-beat {
   display: grid;
   gap: clamp(0.9rem, 2vh, 1.35rem);
+}
+
+.story-beat:nth-of-type(1) {
+  grid-area: why;
+}
+
+.story-beat:nth-of-type(2) {
+  grid-area: what;
+}
+
+.story-beat:nth-of-type(3) {
+  grid-area: changed;
+  align-self: end;
 }
 
 .story-prose {
@@ -2231,10 +2324,15 @@
 
 /* the turn: the one line worth stopping on, in the world's own ink */
 .story-turn {
+  grid-area: turn;
+  display: grid;
+  align-content: center;
+  align-self: stretch;
   margin: 0;
-  max-width: 40rem;
-  padding-left: clamp(1.1rem, 3vw, 2rem);
-  border-left: 2px solid var(--accent);
+  max-width: none;
+  border-left: 1px solid var(--accent);
+  padding: clamp(2rem, 4vw, 4rem);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
 }
 
 .story-turn p {
@@ -2247,6 +2345,38 @@
   letter-spacing: -0.02em;
   color: var(--ink);
   text-wrap: balance;
+}
+
+@media (max-width: 64rem) {
+  .case-story {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "why"
+      "what"
+      "turn"
+      "changed";
+    gap: clamp(2.6rem, 6vh, 4.5rem);
+    max-width: 44rem;
+    border-block: 0;
+    padding-block: 0;
+  }
+
+  .story-turn {
+    display: block;
+    padding: 0 0 0 clamp(1.1rem, 3vw, 2rem);
+    border-left-width: 2px;
+    background: transparent;
+  }
+}
+
+/* A skip link is a navigation promise, not an animation cue. Once the
+   written case is the URL target, its opening must be readable immediately
+   even when IntersectionObserver or a throttled frame has not caught up. */
+.motion-ready[data-motion="full"] .case-story:target [data-reveal] {
+  clip-path: inset(0) !important;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
 }
 
 /* --------------------------------------------------------------
@@ -2420,5 +2550,113 @@
 @media (max-width: 40rem) {
   .record-decisions article {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Case studies inherit their project's motion grammar, but at editorial
+   volume: one short artefact cue, then the writing is allowed to lead. */
+.case-actions a > span:not(.sr-only) {
+  display: inline-block;
+  transition: translate var(--beat) var(--ease-out);
+}
+
+.case-actions a:hover > span:not(.sr-only),
+.case-actions a:focus-visible > span:not(.sr-only) {
+  translate: 0.18rem -0.12rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .case-hero > .case-instrument {
+    animation-duration: 420ms;
+    animation-fill-mode: both;
+    animation-timing-function: var(--ease-out);
+    animation-delay: 90ms;
+  }
+
+  .case--fluxion .case-hero > .case-instrument {
+    animation-name: case-commercial-arrive;
+  }
+
+  .case--disaster .case-hero > .case-instrument {
+    animation-name: case-verdict-arrive;
+    animation-duration: 320ms;
+  }
+
+  .case--pentimento .case-hero > .case-instrument {
+    animation-name: case-revision-arrive;
+    animation-duration: 460ms;
+  }
+
+  .case--invisible .case-hero > .case-instrument {
+    animation-name: case-attention-arrive;
+    animation-duration: 380ms;
+  }
+
+  .case--atlas .case-hero > .case-instrument {
+    animation-name: case-system-arrive;
+    animation-duration: 400ms;
+  }
+}
+
+@keyframes case-commercial-arrive {
+  from {
+    opacity: 0.76;
+    clip-path: inset(0 10% 0 0);
+    transform: translateX(-0.7rem);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+@keyframes case-verdict-arrive {
+  from {
+    opacity: 0.78;
+    clip-path: inset(0 0 0 12%);
+    transform: translateX(0.7rem);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+@keyframes case-revision-arrive {
+  from {
+    opacity: 0.74;
+    clip-path: inset(10% 0 0);
+    transform: translateY(0.55rem);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
+  }
+}
+
+@keyframes case-attention-arrive {
+  from {
+    opacity: 0.62;
+    transform: translateY(0.7rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes case-system-arrive {
+  from {
+    opacity: 0.72;
+    clip-path: inset(0 0 12%);
+    transform: translateY(0.55rem);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    transform: none;
   }
 }
