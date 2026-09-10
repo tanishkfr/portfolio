@@ -113,7 +113,7 @@ test("server-renders Explore as a cinematic world ending in the work", async () 
   for (const mechanic of ["xp-flux", "xp-dod", "xp-pent", "xp-away", "xp-atlas", "xp-soon"]) {
     assert.match(html, new RegExp(`class="xp-room-shot ${mechanic}"`), mechanic);
   }
-  assert.match(html, /projects\/fluxion\/wordmark-dark\.png/);
+  assert.match(html, /projects\/fluxion\/wordmark-transparent\.png/);
   assert.match(html, /<img src="\/projects\/design-or-disaster\/case-001\.jpg"/);
 
   /* Each row carries its project's ground, so the set previews the room you
@@ -252,6 +252,8 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   assert.match(aboutHtml, /Daynero · case study coming soon/);
   assert.match(aboutHtml, /Four working interaction projects/);
   assert.match(aboutHtml, /Human-Centred Design at Srishti/);
+  assert.match(aboutHtml, /AI-assisted making/);
+  assert.match(aboutHtml, /AI helps me explore wider and build faster/);
   assert.match(aboutHtml, /rel="canonical" href="https:\/\/portfolio\.test\/about"/);
 
   assert.equal(contactResponse.status, 200);
@@ -439,10 +441,10 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(packageJson, /"build:vercel": "next build"/);
   assert.match(vercel, /"framework": "nextjs"/);
   assert.match(worker, /!env\.ASSETS \|\| !env\.IMAGES/);
-  assert.match(fluxionMark, /\/projects\/fluxion\/wordmark-dark\.png/);
-  assert.match(rift, /\/projects\/fluxion\/wordmark-dark\.png/);
-  assert.match(signature, /\/projects\/fluxion\/mark-light\.png/);
-  assert.match(artifacts, /\/projects\/fluxion\/wordmark-dark\.png/);
+  assert.match(fluxionMark, /\/projects\/fluxion\/wordmark-transparent\.png/);
+  assert.match(rift, /\/projects\/fluxion\/wordmark-transparent\.png/);
+  assert.match(signature, /\/projects\/fluxion\/mark-transparent\.png/);
+  assert.match(artifacts, /\/projects\/fluxion\/wordmark-transparent\.png/);
 
   await access(new URL("../public/projects/atlas/atlas.png", import.meta.url));
   await access(new URL("../public/projects/invisible-interfaces/return.png", import.meta.url));
@@ -451,6 +453,8 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     "mark-light.png",
     "wordmark-dark.png",
     "wordmark-light.png",
+    "mark-transparent.png",
+    "wordmark-transparent.png",
   ]) {
     await access(new URL(`../public/projects/fluxion/${asset}`, import.meta.url));
   }

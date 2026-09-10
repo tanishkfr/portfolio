@@ -310,7 +310,7 @@ function FluxionArtifact() {
         <div className="fluxion-brand-lockup">
           <Image
             unoptimized
-            src="/projects/fluxion/wordmark-dark.png"
+            src="/projects/fluxion/wordmark-transparent.png"
             width={669}
             height={42}
             sizes="(max-width: 900px) 82vw, 48vw"

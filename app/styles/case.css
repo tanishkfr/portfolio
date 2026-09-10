@@ -601,8 +601,7 @@
   display: grid;
   place-items: center;
   min-height: clamp(8rem, 22vw, 14rem);
-  padding: clamp(1.5rem, 4vw, 3rem);
-  background: #050505;
+  padding-block: clamp(1.5rem, 4vw, 3rem);
 }
 
 .fluxion-brand-lockup img {

@@ -236,7 +236,7 @@ function AtlasSigil() {
 function FluxionSigil() {
   return (
     <image
-      href="/projects/fluxion/mark-light.png"
+      href="/projects/fluxion/mark-transparent.png"
       x="12"
       y="8"
       width="96"

@@ -92,7 +92,7 @@
 
 .capability-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1px;
   background: var(--line);
   border: 1px solid var(--line);
@@ -450,7 +450,7 @@
 
 .about-under {
   max-width: 72rem;
-  min-height: 7.25rem;
+  min-height: 9.25rem;
   margin-top: 1.1rem;
   overflow: hidden;
   border-block: 1px solid var(--line);
@@ -476,9 +476,27 @@
 }
 
 .about-under .xp-under-read::before {
-  inset: 12% 45%;
+  inset: 10% 45%;
   background: var(--registrar);
-  opacity: 0.72;
+  opacity: 0.82;
+}
+
+.about-under .xp-under-read::after {
+  content: "drag";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 0.25rem 0.18rem;
+  background: var(--paper-high);
+  color: var(--registrar-deep);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 1px var(--line);
 }
 
 .about-under-copy {
@@ -500,6 +518,22 @@
 .about-under-copy p {
   margin: 0;
   max-width: 44rem;
+}
+
+.about-under-copy > div {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.about-under-copy small {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.about-under-copy--practice p {
+  max-width: 52rem;
 }
 
 @media (max-width: 36rem) {

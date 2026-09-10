@@ -6,7 +6,7 @@ export function FluxionMark() {
       <div className="xp-flux-brand">
         <Image
           unoptimized
-          src="/projects/fluxion/wordmark-dark.png"
+          src="/projects/fluxion/wordmark-transparent.png"
           width={669}
           height={42}
           sizes="(max-width: 960px) 88vw, 52vw"

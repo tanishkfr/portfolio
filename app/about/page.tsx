@@ -43,6 +43,11 @@ const capabilities = [
     title: "Working research",
     body: "When a question is too abstract, I build the interaction and find out where the idea stops making sense.",
   },
+  {
+    number: "04",
+    title: "AI-assisted making",
+    body: "I like using AI to open up design directions, test interface ideas, and move from a rough interaction to working frontend code faster.",
+  },
 ];
 
 export default function AboutPage() {
@@ -70,18 +75,25 @@ export default function AboutPage() {
           label="A little more about how I work"
           rest={0}
           surface={
-            <div className="about-under-copy">
+            <div className="about-under-copy about-under-copy--profile">
               <span>On paper</span>
-              <p>Interaction designer. Bengaluru. Available for work.</p>
+              <div>
+                <p>Interaction designer · frontend builder · HCD student</p>
+                <small>Bengaluru · Fluxion co-founder · available for work</small>
+              </div>
             </div>
           }
           under={
-            <div className="about-under-copy">
-              <span>Things I watch</span>
-              <p>
-                Formula 1 for information under pressure, buildings for how
-                they guide movement, and games for how a place teaches its rules.
-              </p>
+            <div className="about-under-copy about-under-copy--practice">
+              <span>In practice</span>
+              <div>
+                <p>
+                  I move between product questions, interface detail, and code.
+                  AI helps me explore wider and build faster; Formula 1,
+                  buildings, films, and games keep the references from getting narrow.
+                </p>
+                <small>The tools can widen the search. I still make—and own—the decisions.</small>
+              </div>
             </div>
           }
         />
@@ -159,9 +171,11 @@ export default function AboutPage() {
           </p>
           <p>
             The four independent projects are mine from concept through code.
-            AI assisted ideation, critique, source discovery, and code iteration.
-            I chose the concepts, made the design decisions, edited the writing,
-            and built what shipped.
+            I like working with AI, especially where interaction design meets
+            frontend. I use it to explore directions, pressure-test behaviour,
+            find useful references, and get from a rough prototype to working
+            code faster. I choose what is worth making, direct the visual and
+            interaction decisions, edit the writing, and own what ships.
           </p>
         </div>
       </section>

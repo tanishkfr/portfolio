@@ -1189,15 +1189,16 @@
 
 .xp-close-mail {
   display: block;
-  margin: 0 -0.06em;
+  margin: 0;
+  padding: 0.08em 0.07em 0.12em 0;
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
   color: inherit;
   font-family: var(--serif);
   font-weight: 400;
   font-variation-settings: "opsz" 144, "wght" 420, "SOFT" 18, "WONK" 1;
   font-size: clamp(4.4rem, 18vw, 14rem);
-  line-height: 0.72;
+  line-height: 0.82;
   letter-spacing: -0.07em;
   text-decoration: none;
   transform-origin: left 80%;
@@ -2058,12 +2059,14 @@
   font-weight: 400;
   font-variation-settings: "opsz" 144, "wght" 420, "SOFT" 12, "WONK" 1;
   font-size: min(38vw, 16rem);
-  line-height: 0.7;
+  line-height: 0.82;
   letter-spacing: -0.07em;
   color: var(--ink);
   transform-origin: 8vw 60%;
   transform: scale(calc(0.34 + var(--grow) * 0.78));
-  clip-path: inset(0 calc(var(--carve) * 68%) 0 0);
+  /* Only the advancing edge should cut the word. Negative block insets keep
+     the letterforms clear of the rectangular text box. */
+  clip-path: inset(-0.14em calc(var(--carve) * 68%) -0.14em -0.08em);
 }
 
 .xp-rift-note {
@@ -2092,8 +2095,6 @@
 .xp-rift-brand {
   display: block;
   width: min(64vw, 54rem);
-  padding: clamp(0.8rem, 1.5vw, 1.3rem);
-  background: #050505;
 }
 
 .xp-rift-brand img {
@@ -2810,8 +2811,7 @@ a.xp-works-open {
   place-items: center;
   width: min(100%, 46rem);
   min-height: clamp(5rem, 13vh, 8rem);
-  padding: clamp(1rem, 2.5vw, 1.8rem);
-  background: #050505;
+  padding-block: clamp(0.7rem, 2vw, 1.4rem);
 }
 
 .xp-flux-brand img,

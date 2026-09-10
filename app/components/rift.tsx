@@ -31,7 +31,7 @@ export function Rift() {
           <span className="xp-rift-brand">
             <Image
               unoptimized
-              src="/projects/fluxion/wordmark-dark.png"
+              src="/projects/fluxion/wordmark-transparent.png"
               width={669}
               height={42}
               sizes="(max-width: 768px) 82vw, 58vw"
