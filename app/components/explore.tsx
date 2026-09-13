@@ -12,7 +12,7 @@ import { ROOM_WORLDS, rgb } from "../data/room-worlds";
 import { AtlasRule } from "./atlas-rule";
 import { DayneroNumber } from "./daynero-number";
 import { DisasterMark } from "./disaster-mark";
-import { FluxionMark } from "./fluxion-mark";
+import { FluxionSpecimen } from "./fluxion-specimen";
 import { InvisibleAway } from "./invisible-away";
 import { PentimentoStrike } from "./pentimento-strike";
 import { TransitionLink } from "./transition-link";
@@ -39,7 +39,7 @@ const ordered = order
   .filter((project): project is Project => Boolean(project));
 
 function ProjectMechanic({ slug }: { slug: string }) {
-  if (slug === "fluxion-studios") return <FluxionMark />;
+  if (slug === "fluxion-studios") return <FluxionSpecimen />;
   if (slug === "design-or-disaster") {
     return (
       <DisasterMark

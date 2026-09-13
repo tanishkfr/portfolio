@@ -338,6 +338,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     vercel,
     worker,
     fluxionMark,
+    fluxionSpecimen,
   ] = await Promise.all([
     readFile(new URL("../app/data/portfolio.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/work-index.tsx", import.meta.url), "utf8"),
@@ -355,6 +356,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     readFile(new URL("../vercel.json", import.meta.url), "utf8"),
     readFile(new URL("../worker/index.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/fluxion-mark.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/fluxion-specimen.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(data, /availability\?: "published" \| "preview" \| "coming-soon"/);
@@ -374,7 +376,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(explore, /TransitionLink/);
   /* Every sheet carries its own usable mechanic, not a sealed modal. */
   for (const mechanic of [
-    "FluxionMark",
+    "FluxionSpecimen",
     "DisasterMark",
     "PentimentoStrike",
     "InvisibleAway",
@@ -489,6 +491,13 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(fluxionMark, /\/projects\/fluxion\/wordmark-transparent\.png/);
   assert.match(artifacts, /\/projects\/fluxion\/wordmark-transparent\.png/);
 
+  /* The Explore specimen is built from real captures of the shipped studio
+     site — the desktop home plate and the same page at mobile width — not a
+     mockup. */
+  assert.match(fluxionSpecimen, /\/projects\/fluxion\/site-home-desktop\.png/);
+  assert.match(fluxionSpecimen, /\/projects\/fluxion\/site-home-mobile\.png/);
+  assert.match(fluxionSpecimen, /https:\/\/fluxion-studios\.vercel\.app\//);
+
   await access(new URL("../public/projects/atlas/atlas.png", import.meta.url));
   await access(new URL("../public/projects/invisible-interfaces/return.png", import.meta.url));
   for (const asset of [
@@ -498,6 +507,8 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     "wordmark-light.png",
     "mark-transparent.png",
     "wordmark-transparent.png",
+    "site-home-desktop.png",
+    "site-home-mobile.png",
   ]) {
     await access(new URL(`../public/projects/fluxion/${asset}`, import.meta.url));
   }

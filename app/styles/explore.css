@@ -867,7 +867,7 @@
   filter: saturate(0.86);
 }
 
-.xp-flux figcaption,
+.xp-flux > figcaption,
 .xp-soon figcaption {
   padding: 1.1rem 1.25rem;
   border-top: 1px solid currentColor;
@@ -1516,19 +1516,150 @@
   margin-top: clamp(1.5rem, 3.2vh, 2.4rem);
 }
 
-/* the wordmark plate: specimen at the top, caption under it, room below */
+/* Fluxion: the pink field is the studio's specimen board, and the live site
+   is registered onto it — one dominant home plate, the same site at mobile
+   width layered over its lower corner, and the notation in Fluxion's red.
+   Every frame is a real capture of the shipped studio site, not a mockup. */
 .xp-piece[data-project="fluxion-studios"] .xp-flux {
-  grid-template-rows: auto auto;
-  align-content: start;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  align-content: stretch;
+}
+
+.xp-piece[data-project="fluxion-studios"] .xp-flux-head {
+  grid-row: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2rem clamp(1.6rem, 3vw, 3rem) 0;
 }
 
 .xp-piece[data-project="fluxion-studios"] .xp-flux-brand {
   place-items: start;
-  padding: 2rem clamp(1.6rem, 3vw, 3rem) 0;
+  padding: 0;
 }
 
-.xp-piece[data-project="fluxion-studios"] .xp-flux figcaption {
+.xp-piece[data-project="fluxion-studios"] .xp-flux-brand img {
+  width: min(15rem, 58vw);
+}
+
+.xp-flux-stamp {
+  flex: none;
+  margin: 0.3em 0 0;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, currentColor 72%, transparent);
+}
+
+.xp-piece[data-project="fluxion-studios"] .xp-flux > figcaption {
+  grid-row: 2;
   padding: 0.7rem clamp(1.6rem, 3vw, 3rem) 1.2rem;
+}
+
+.xp-flux-sheet {
+  grid-row: 3;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: clamp(1rem, 2.4vw, 1.5rem) clamp(1.6rem, 3vw, 3rem)
+    clamp(1.1rem, 2.6vw, 1.7rem);
+}
+
+/* the specimen's registration line: the frame number and the live action */
+.xp-flux-legend {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, currentColor 84%, transparent);
+}
+
+.xp-flux-live {
+  padding-bottom: 0.15em;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 200ms var(--ease-out);
+}
+
+.xp-flux-live:hover,
+.xp-flux-live:focus-visible {
+  border-bottom-color: currentColor;
+}
+
+.xp-flux-frame {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* the dominant specimen: the whole desktop hero, at its own proportion */
+.xp-flux-plate {
+  position: relative;
+  flex: 0 1 auto;
+  height: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 10;
+  min-height: 0;
+  margin: 0;
+  transform: translate3d(
+    calc(var(--spec-x, 0px) * -0.32),
+    calc(var(--spec-y, 0px) * -0.32),
+    0
+  );
+  transition: transform 220ms var(--ease-out);
+}
+
+.xp-flux-plate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  border: 1px solid color-mix(in srgb, currentColor 36%, transparent);
+  background: #0a0a0a;
+}
+
+/* the supporting register: the same site at mobile width, matted in the
+   room's own paper so the two layers read as separate registered fragments */
+.xp-flux-detail {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  width: min(19%, 9rem);
+  margin: 0;
+  padding: 0.4rem;
+  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+  background: #f1c9cd;
+  transform: translate3d(var(--spec-x, 0px), var(--spec-y, 0px), 0);
+  transition: transform 220ms var(--ease-out);
+}
+
+.xp-flux-detail figcaption {
+  margin: 0 0 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  text-align: right;
+  color: color-mix(in srgb, currentColor 88%, transparent);
+}
+
+.xp-flux-detail img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: top center;
+  border: 1px solid color-mix(in srgb, currentColor 36%, transparent);
+  background: #0a0a0a;
 }
 
 /* atlas: the dense reasoning field anchors to the top too */
@@ -1572,6 +1703,11 @@
 
   .xp-piece[data-layout="revision"] .xp-piece-title {
     font-size: clamp(2.4rem, 4vw, 3.4rem);
+  }
+
+  /* the specimen keeps both registers, with the mobile column a step down */
+  .xp-flux-detail {
+    width: min(17%, 8rem);
   }
 }
 
@@ -1784,6 +1920,11 @@
   .xp-close h2 {
     font-size: clamp(3rem, 13vw, 5.6rem);
   }
+
+  /* tablet: the stage runs full width; the mobile register stays, smaller */
+  .xp-flux-detail {
+    width: min(15%, 7rem);
+  }
 }
 
 /* The cover rests fully concealed on a phone, so the seam handle is
@@ -1837,6 +1978,16 @@
   .xp-day {
     padding: 1.4rem;
   }
+
+  /* phone: one strong specimen and the notation, nothing layered. The
+     narrow plate holds the head of the page so the headline survives. */
+  .xp-flux-detail {
+    display: none;
+  }
+
+  .xp-flux-plate img {
+    object-position: left top;
+  }
 }
 
 @media (max-width: 23rem) {
@@ -1867,6 +2018,8 @@
   .xp-cover-window,
   .xp-piece-copy,
   .xp-piece-stage,
+  .xp-flux-plate,
+  .xp-flux-detail,
   .xp-piece::before {
     transform: none !important;
     opacity: 1 !important;
@@ -1888,6 +2041,7 @@
   .xp-pent-mine,
   .xp-field-index strong,
   .xp-piece-title a::after,
+  .xp-flux-live,
   .xp-piece-actions a::after {
     animation: none !important;
     transition: none !important;
@@ -1916,5 +2070,11 @@
   .xp-under-back {
     background: Canvas;
     color: CanvasText;
+  }
+
+  /* the paper mat is a colour device; forced colours keep the crop's edge */
+  .xp-flux-detail {
+    background: Canvas;
+    border-color: CanvasText;
   }
 }
