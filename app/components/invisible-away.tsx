@@ -1,86 +1,90 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 /**
- * INVISIBLE INTERFACES — absence is the input.
+ * INVISIBLE INTERFACES — absence, and an honest return.
  *
- * The job only advances while your attention is elsewhere. Leave (switch tabs,
- * or click another window) and it works; come back and it hands you a receipt
- * of what happened while you weren't watching. Progress is computed from real
- * time-away, so nothing runs behind a fake spinner — the accountability is the
- * point.
+ * This miniature records exactly one thing: time away from this page, read
+ * through the Page Visibility API. Nothing progresses while you watch, and
+ * nothing claims to restore anything. When you return it hands back the
+ * observed duration — and a separate, explicit path to inspect the project's
+ * real example return, so nothing is promised that cannot be opened.
  */
 
 export function InvisibleAway() {
-  const [progress, setProgress] = useState(0);
-  const [receipt, setReceipt] = useState<string | null>(null);
-  const progressRef = useRef(0);
-  const awayStart = useRef<number | null>(null);
+  const [awayMs, setAwayMs] = useState<number | null>(null);
+  const [returns, setReturns] = useState(0);
+  const [showReturn, setShowReturn] = useState(false);
+  const hiddenAt = useRef<number | null>(null);
 
   useEffect(() => {
-    const leave = () => {
-      if (awayStart.current == null) awayStart.current = Date.now();
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        hiddenAt.current = Date.now();
+        return;
+      }
+      if (hiddenAt.current == null) return;
+      const elapsed = Date.now() - hiddenAt.current;
+      hiddenAt.current = null;
+      if (elapsed < 500) return;
+      setAwayMs(elapsed);
+      setReturns((count) => count + 1);
     };
-    const back = () => {
-      if (awayStart.current == null) return;
-      const elapsed = Date.now() - awayStart.current;
-      awayStart.current = null;
-      if (elapsed < 400 || progressRef.current >= 100) return;
-      const next = Math.min(100, progressRef.current + elapsed / 110);
-      const gained = Math.round(next - progressRef.current);
-      progressRef.current = next;
-      setProgress(next);
-      const seconds = Math.max(1, Math.round(elapsed / 1000));
-      setReceipt(
-        next >= 100
-          ? `Finished after ${seconds}s away. The result is ready to inspect.`
-          : `Away ${seconds}s · ${gained}% completed.`,
-      );
-    };
-    const onVisibility = () => (document.hidden ? leave() : back());
 
     document.addEventListener("visibilitychange", onVisibility);
-    window.addEventListener("blur", leave);
-    window.addEventListener("focus", back);
-    return () => {
-      document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("blur", leave);
-      window.removeEventListener("focus", back);
-    };
+    return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
 
-  const done = progress >= 100;
+  const seconds = awayMs == null ? 0 : Math.max(1, Math.round(awayMs / 1000));
 
   return (
-    <figure
-      className="xp-room-shot xp-away"
-      data-done={done ? "true" : undefined}
-      /* arrival is driven by the room it stands in, not a one-shot reveal */
-    >
-      <span className="xp-away-tag">delegated · runs while you look away</span>
-      <p className="xp-away-title">
-        {done
-          ? "Done. The result is ready to inspect."
-          : "This task runs while the tab is hidden."}
+    <figure className="xp-room-shot xp-away" data-returned={awayMs != null ? "true" : undefined}>
+      <span className="xp-away-tag">delegated · observed locally</span>
+      <p className="xp-away-title">Absence demonstration.</p>
+      <p className="xp-away-scope">
+        This records one thing and nothing else: time away from this page.
+        It does not restore files, run a job, or predict anything.
       </p>
-
-      <div
-        className="xp-away-meter"
-        role="progressbar"
-        aria-valuenow={Math.round(progress)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label="Work completed while you were away"
-      >
-        <span className="xp-away-fill" style={{ width: `${progress}%` }} />
-      </div>
-      <p className="xp-away-pct">{Math.round(progress)}% — done while away</p>
 
       <p className="xp-away-receipt" aria-live="polite">
-        {receipt ??
-          "Switch tabs or open another window, then return for the receipt."}
+        {awayMs == null
+          ? "Leave this tab, then come back. The observed time will appear here."
+          : `Away ${seconds}s (return ${returns}). Recorded on this page only.`}
       </p>
+
+      <p className="xp-away-statement" aria-live="polite">
+        {awayMs == null
+          ? "No restoration is performed."
+          : "This demonstration recorded time away. No restoration was performed."}
+      </p>
+
+      <button
+        type="button"
+        className="xp-away-inspect"
+        aria-expanded={showReturn}
+        onClick={() => setShowReturn((value) => !value)}
+      >
+        {showReturn ? "Hide the example return" : "Inspect the project's example return"}
+      </button>
+
+      {showReturn ? (
+        <div className="xp-away-example">
+          <Image
+            unoptimized
+            src="/projects/invisible-interfaces/return.png"
+            width={1440}
+            height={1000}
+            sizes="(max-width: 900px) 90vw, 42vw"
+            alt="The Invisible Interfaces return scene: the restored image beside a work receipt listing what changed, what was preserved, and how to discard the result."
+          />
+          <small>
+            The project&apos;s actual return screen — staged work, a receipt, and
+            a discard path. Nothing here ran to produce it.
+          </small>
+        </div>
+      ) : null}
     </figure>
   );
 }

@@ -29,6 +29,9 @@ type LookUnderProps = {
   className?: string;
   /** 0–1 starting reveal. A sliver teaches the wipe without hiding the work. */
   rest?: number;
+  /** Visible control copy. A revealed panel keeps a visible way back. */
+  revealLabel?: string;
+  collapseLabel?: string;
 };
 
 export function LookUnder({
@@ -37,10 +40,13 @@ export function LookUnder({
   label,
   className = "",
   rest = 0.12,
+  revealLabel = "Reveal",
+  collapseLabel = "Close",
 }: LookUnderProps) {
   const id = useId();
   const frame = useRef<HTMLDivElement>(null);
   const [reveal, setReveal] = useState(rest);
+  const [restReveal, setRestReveal] = useState(rest);
   const [dragging, setDragging] = useState(false);
   const [reduced, setReduced] = useState(false);
 
@@ -51,6 +57,22 @@ export function LookUnder({
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
   }, []);
+
+  /* A phone has no room for a partly peeled surface. The layered mecha-
+     nism stays, but the resting state is fully concealed: nothing shows
+     the index in clipped fragments, and the seam handle and Reveal
+     control still say a second layer is there. Desktop keeps its rest. */
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 48rem)");
+    const sync = () => {
+      const next = media.matches ? 0 : rest;
+      setRestReveal(next);
+      setReveal((value) => (value > 0.5 ? value : next));
+    };
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, [rest]);
 
   const setFromClientX = useCallback(
     (clientX: number) => {
@@ -105,7 +127,7 @@ export function LookUnder({
     }
     if (event.key === " " || event.key === "Enter") {
       event.preventDefault();
-      setReveal((value) => (value > 0.5 ? rest : 1));
+      setReveal((value) => (value > 0.5 ? restReveal : 1));
     }
   };
 
@@ -114,6 +136,7 @@ export function LookUnder({
       ref={frame}
       className={`xp-under ${className}`.trim()}
       data-dragging={dragging || undefined}
+      data-revealed={reveal > 0.5 ? "true" : undefined}
       style={{ "--reveal": reveal } as CSSProperties}
     >
       <div className="xp-under-back">{under}</div>
@@ -146,16 +169,17 @@ export function LookUnder({
       <p id={`${id}-hint`} className="sr-only">
         Drag, or use arrow keys, to reveal more.
       </p>
-      {reduced ? (
-        <button
-          type="button"
-          className="xp-under-toggle"
-          aria-pressed={reveal > 0.5}
-          onClick={() => setReveal((value) => (value > 0.5 ? rest : 1))}
-        >
-          {reveal > 0.5 ? "Show the short version" : "Show more"}
-        </button>
-      ) : null}
+      {/* A visible control so the reveal never depends on discovering the
+          gesture. It is the only way in for reduced-motion and touch, and a
+          convenience everywhere else. */}
+      <button
+        type="button"
+        className="xp-under-toggle"
+        aria-pressed={reveal > 0.5}
+        onClick={() => setReveal((value) => (value > 0.5 ? restReveal : 1))}
+      >
+        {reveal > 0.5 ? collapseLabel : revealLabel}
+      </button>
     </div>
   );
 }

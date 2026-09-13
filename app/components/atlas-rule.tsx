@@ -3,53 +3,70 @@
 import { useState } from "react";
 
 /**
- * ATLAS — carry one rule until it changes shape.
+ * ATLAS — an authored rule revision.
  *
- * A design rule starts clean. Carry it into a harder, unlike case and it has
- * to rewrite itself; the forms it used to take stay behind as struck lineage.
- * A rule that never has to change under pressure was only ever a preference.
+ * This is a scripted example, not the visitor's reasoning: one rule carried
+ * through the same three cases the case study uses. Each press advances the
+ * provocation; the wording that survives stays, and every earlier version
+ * remains visible below. The project's real instrument is where the visitor
+ * does the revising.
  */
 
 const EVOLUTION = [
-  { context: "the rule, as written", rule: "Confirm before you delete." },
   {
-    context: "carried into — a single tap you can undo",
-    rule: "Confirm before you delete, unless a tap can be taken back.",
+    case: "Starting rule",
+    rule: "Outside tap may dismiss a reversible overlay.",
   },
   {
-    context: "carried into — an export you can't reverse",
-    rule: "Confirm before anything you can't undo.",
+    case: "Lightbox · low consequence",
+    rule: "Outside tap may dismiss a reversible overlay.",
   },
   {
-    context: "carried into — fifty times a day",
-    rule: "Confirm what's irreversible. Make the rest instant, and reversible.",
+    case: "Financial transfer · high consequence",
+    rule: "Outside tap may dismiss a reversible overlay only when dismissal cannot lose work or create consequence.",
+  },
+  {
+    case: "Switch access · a different event model",
+    rule: "Dismissal must be defined by intent and consequence — not by an outside-tap event some input models do not have.",
   },
 ];
+
+const STRETCH = ["88%", "88%", "97%", "105%"];
 
 export function AtlasRule() {
   const [step, setStep] = useState(0);
   const atEnd = step >= EVOLUTION.length - 1;
+  const current = EVOLUTION[step];
 
   return (
     <figure className="xp-room-shot xp-atlas">
+      <span className="xp-atlas-tag">An authored rule revision</span>
+
+      <p className="xp-atlas-context">{current.case}</p>
+      <p
+        className="xp-atlas-rule"
+        aria-live="polite"
+        style={{ fontStretch: STRETCH[step] }}
+      >
+        {current.rule}
+      </p>
+
       {step > 0 ? (
-        <div className="xp-atlas-lineage" aria-hidden="true">
+        <div className="xp-atlas-lineage">
+          <p className="xp-atlas-lineage-label">Earlier wording</p>
           {EVOLUTION.slice(0, step).map((entry, index) => (
             <p key={index} className="xp-atlas-past">
+              <span>{entry.case}</span>
               {entry.rule}
             </p>
           ))}
         </div>
       ) : null}
 
-      <p className="xp-atlas-context">{EVOLUTION[step].context}</p>
-      <p className="xp-atlas-rule" aria-live="polite">
-        {EVOLUTION[step].rule}
-      </p>
-
       {atEnd ? (
         <p className="xp-atlas-note">
-          Three cases changed the starting rule. Every earlier version is still visible.
+          Three authored cases changed the starting rule. Every earlier version
+          is still visible. Whether the rule transfers is not proven.
         </p>
       ) : null}
 
@@ -57,12 +74,12 @@ export function AtlasRule() {
         type="button"
         className="xp-atlas-btn"
         onClick={() =>
-          setStep((current) =>
-            atEnd ? 0 : Math.min(current + 1, EVOLUTION.length - 1),
+          setStep((value) =>
+            atEnd ? 0 : Math.min(value + 1, EVOLUTION.length - 1),
           )
         }
       >
-        {atEnd ? "Start over" : "Carry it into a harder case →"}
+        {atEnd ? "Start over" : "Show the next case →"}
       </button>
     </figure>
   );

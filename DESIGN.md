@@ -11,11 +11,12 @@ Quick Review exists so Explore can take creative risks. Audience bar: the best
 interaction portfolios in the world (CMU, RCA, TU Delft, Apple, IDEO, Awwwards).
 
 ## The one idea (spine)
-**Finished surfaces you learn to look *under*.** Every project is the same move —
-see underneath the finished result to the reasoning, evidence, or earlier draft.
-*Pentimento* (an earlier painting bleeding through a later one) is the visual and
-motion language. A draggable **lens** is the connective toy: under it, any finished
-surface becomes its reasoning (struck drafts, evidence marks, the "why").
+**A working folio, not a gallery.** Explore opens with one manual "look under"
+gesture, then becomes a compact index and six full-viewport sheets. Scrolling lifts
+each sheet over the last; every sheet uses the verb and interaction logic of its
+project rather than repeating a thumbnail treatment. The finished surface and the
+reasoning beneath it remain the conceptual thread, but not a template imposed on
+every project.
 
 ## Tone (locked)
 Tactile and inviting, clean and purposeful — **not abstract, not funny**. Every
@@ -39,13 +40,14 @@ coffee cups, or personal photos. Personality comes from:
 - Editorial + cinematic + material. Fraunces (authored serif) as display; a precise
   grotesque/mono for labels and instruments.
 - Cornsilk paper (`#f8f3e4`), near-black ink (`#16150f`) — the endpaper of a printed
-  art book, read in daylight. Each of the five rooms repaints that ground edge to
+  art book, read in daylight. Each of the six sheets repaints that ground edge to
   edge with its own pigment, so travelling through the work means walking between
   rooms. A project's accent carries that project's meaning and is never borrowed to
   colour an unrelated scene: colour is either a room or it is the housing.
   (This line previously described the inverse — a near-black ground with off-white
   ink — which the build has not used for some time.)
-- Every animation earns itself; motion communicates, never decorates. Camera = descent.
+- Every animation earns itself; motion communicates, never decorates. Camera =
+  lifting, covering, revealing, and carrying a selected object into its case.
 - Print-worthy frames. Details and craft over trend. Originality over reference.
 - Accessible: pointer / touch / keyboard, reduced-motion, and a readable no-JS field.
 
@@ -60,25 +62,18 @@ Test every decision: *if another portfolio could reuse it unchanged, remove it.*
   name→case view transition, Quick Review (`review-index.tsx`).
 - **Rebuild from scratch:** all of Explore — scenes, art direction, motion, moments.
 
-## Build stages
-Each stage: build → verify in the browser → then the next.
+## Explore interaction contract
 
-- **Stage 0 — Foundation.** Design tokens (type, color, motion, spacing), the
-  surface/underneath layer primitive, Explore container scaffold, a11y baseline.
-  Quick Review left intact.
-- **Stage 1 — Signature "Look under."** Cold-open authored surface → draggable lens
-  reveal → scroll-cue into the descent. The lens becomes reusable.
-- **Stage 2 — The descent spine.** One continuous connected journey; real accents as
-  light, motivated by depth; the "software asks less / shows me less" beat made
-  physical; "things I notice" micro-demos.
-- **Stage 3 — Five rooms, each enacting its thesis.** Design or Disaster (point before
-  you rule), Pentimento (strike + visible underpainting), Invisible Interfaces
-  (advances only when you look away → receipt), Atlas (one rule rewrites under
-  pressure, lineage trails), Daynero (one live number, warmer register). Each opens by
-  looking under it; each links to its case page via the name→case transition.
-- **Stage 4 — Personal layer + rewards.** Design values made interactive, cross-domain
-  patterns, the rejected-paths graveyard (real `rejectedPaths` data), a hidden
-  "reasoning mode" for the persistently curious.
-- **Stage 5 — Close + polish + Quick Review pass.** The pull-back close, contact as a
-  struck-and-corrected line, motion / performance / a11y polish, both modes verified on
-  mobile and reduced-motion.
+- **Cover.** One authored title, one draggable seam, and a direct route to the index.
+  It teaches the surface/underneath grammar without a preamble or modal.
+- **Index.** Six scannable rows expose title, sequence, and project verb. Native
+  anchors land before the sticky sheets so direct links remain stable.
+- **Stack.** Six edge-to-edge sheets accumulate through sticky scroll on wide screens
+  and become ordinary reading flow on narrow screens and reduced motion.
+- **Distinct behaviour.** Fluxion launches; Design or Disaster points; Pentimento
+  strikes; Invisible Interfaces asks the visitor to leave and return; Atlas revises;
+  Daynero recalculates one live number.
+- **Case handoff.** The chosen title and project stage carry through the View
+  Transitions API. Ordinary links remain the fallback.
+- **Close.** One concise invitation and real contact routes. No hidden rewards,
+  decorative manifesto, or interaction added only to lengthen the page.

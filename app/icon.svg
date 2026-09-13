@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- the record mark, lit in the dark room -->
-  <rect width="64" height="64" rx="14" fill="#171814"/>
-  <circle cx="32" cy="32" r="17" fill="none" stroke="#93b2f0" stroke-width="4.5"/>
-  <circle cx="32" cy="32" r="6.5" fill="#93b2f0"/>
+  <!-- the state rule carries the name: an expanded bar, a compressed stem -->
+  <rect width="64" height="64" rx="14" fill="#3a1ff0"/>
+  <rect x="13" y="15" width="38" height="11" fill="#e8eae4"/>
+  <rect x="27" y="15" width="10" height="34" fill="#e8eae4"/>
 </svg>

@@ -120,112 +120,6 @@ export type LensDefinition = {
 
 export const projects: Project[] = [
   {
-    id: "fluxion-studios",
-    slug: "fluxion-studios",
-    title: "Fluxion Studios",
-    form: "Studio website · freelance practice",
-    thesis: "Fluxion's own site had to show the standard we would bring to a client site.",
-    question:
-      "Could our studio site explain what we build, show how we work, and take a real enquiry?",
-    oneLine:
-      "Fluxion is the two-person web studio I co-founded with Shreyas. I designed and built the public site, including its motion and enquiry flow.",
-    status: "Live studio site",
-    year: "2026",
-    context: "Co-founded studio with Shreyas",
-    ownership: "Co-founder · design and frontend with a partner",
-    role: "Co-founder · design, copy, and frontend",
-    responsibilities: [
-      "Co-founded the studio and shaped how it talks about the work",
-      "Designed and built the public studio website",
-      "Wrote interface, motion, and form behaviour for the live site",
-    ],
-    tools: ["Visual design", "UI/UX", "Frontend", "Copy"],
-    scale: "Public studio site · enquiry form · two-person practice",
-    liveUrl: "https://fluxion-studios.vercel.app/",
-    accent: "#c8102e",
-    artifact: "fluxion",
-    lensRelations: {
-      "evidence-judgment":
-        "The site has to prove craft in how it is built, not by listing awards it does not have.",
-      "agency-authority":
-        "A studio pitch that leaves room for the client’s voice instead of overwriting it.",
-      "memory-lineage":
-        "A two-person practice that grew out of years of making things together.",
-      "visibility-accountability":
-        "Scope, timing, and whether we are the right studio are stated before a project starts.",
-    },
-    relatedSlugs: ["design-or-disaster", "daynero"],
-    chapterTitles: {
-      context: "A studio needed a site that could take real enquiries.",
-      pivot: "We built it the way we would build a client’s.",
-      interaction: "Type, timing, and a form that actually goes somewhere.",
-      system: "Interface, data, and the boring parts that keep a site upright.",
-      proof: "The site is live and taking work.",
-    },
-    story: {
-      intro: [
-        "Fluxion is a two-person web studio I co-founded with Shreyas. We make sites for businesses that already have a voice and do not want to sound like everyone else online.",
-        "Our site had to explain what we build and take real enquiries. It also had to show the level of detail we would bring to client work.",
-      ],
-      contribution: [
-        "I worked on the structure, visual design, copy, motion, frontend, and enquiry form with Shreyas.",
-        "The finished site is live and client-facing. It introduces both founders, explains our process, and gives prospective clients a direct way to start a project.",
-      ],
-      turn:
-        "Our first piece of client-facing work was our own site.",
-      reflection: [
-        "Shipping it meant making practical calls about order, type, motion, form behaviour, and what we could maintain as a two-person studio.",
-      ],
-    },
-    problem: {
-      title: "Most studio sites describe craft and then look assembled.",
-      paragraphs: [
-        "We needed a site that could take a real project enquiry without sounding like every other two-person studio in a dark theme.",
-      ],
-    },
-    pivot: {
-      title: "Build the studio site the way we would build a client’s.",
-      before: "A holding page would have been faster.",
-      realization: "The first thing a client sees is how we treat our own work.",
-      after: "The live site is designed, written, and implemented in-house.",
-    },
-    rejectedPaths: [],
-    interactionIntro:
-      "The public site covers how we think, what we build, how we work, and a form that starts a project.",
-    interactionSteps: [],
-    systemLayers: [],
-    decisions: [
-      {
-        title: "Build it in-house",
-        choice: "Design and implement the studio site ourselves instead of parking a template.",
-        consequence: "Prospective clients can judge the work through the site itself.",
-      },
-      {
-        title: "Say the constraints out loud",
-        choice: "Publish reply time, typical duration, and that pricing is on enquiry.",
-        consequence: "People can check the fit before writing.",
-      },
-    ],
-    demonstrated: [
-      "A live studio website with navigation, process, founders, and an enquiry form.",
-      "Co-founded practice with Shreyas, based in Bengaluru.",
-      "Design and frontend implementation of the public site.",
-    ],
-    limits: [
-      "This record is the studio site, not a library of named client case studies.",
-      "Project outcomes for clients are not published here.",
-    ],
-    nextTest: {
-      title: "Add client work when it is ready to show.",
-      body: "Publish case studies with the client's context, the work we did, and outcomes we can support.",
-      success: "A visitor can tell what the studio has shipped and what we contributed.",
-    },
-    contribution:
-      "Co-founded the studio; designed and built the public website with Shreyas.",
-    disclosure:
-      "Fluxion Studios is a two-person practice. This portfolio page describes the live studio site and my role. It does not invent client results.",
-  },
-  {
     id: "design-or-disaster",
     slug: "design-or-disaster",
     title: "Design or Disaster",
@@ -879,6 +773,112 @@ export const projects: Project[] = [
       "AI assisted ideation, critique, source discovery, and code iteration. Final concept selection, scenario design, design decisions, editing, implementation, and authorship are Tanishk's.",
   },
   {
+    id: "fluxion-studios",
+    slug: "fluxion-studios",
+    title: "Fluxion Studios",
+    form: "Studio website · freelance practice",
+    thesis: "Fluxion's own site had to show the standard we would bring to a client site.",
+    question:
+      "Could our studio site explain what we build, show how we work, and take a real enquiry?",
+    oneLine:
+      "Fluxion is the two-person web studio I co-founded with Shreyas. I designed and built the public site, including its motion and enquiry flow.",
+    status: "Live studio site",
+    year: "2026",
+    context: "Co-founded studio with Shreyas",
+    ownership: "Co-founder · design and frontend with a partner",
+    role: "Co-founder · design, copy, and frontend",
+    responsibilities: [
+      "Co-founded the studio and shaped how it talks about the work",
+      "Designed and built the public studio website",
+      "Wrote interface, motion, and form behaviour for the live site",
+    ],
+    tools: ["Visual design", "UI/UX", "Frontend", "Copy"],
+    scale: "Public studio site · enquiry form · two-person practice",
+    liveUrl: "https://fluxion-studios.vercel.app/",
+    accent: "#c8102e",
+    artifact: "fluxion",
+    lensRelations: {
+      "evidence-judgment":
+        "The site has to prove craft in how it is built, not by listing awards it does not have.",
+      "agency-authority":
+        "A studio pitch that leaves room for the client’s voice instead of overwriting it.",
+      "memory-lineage":
+        "A two-person practice that grew out of years of making things together.",
+      "visibility-accountability":
+        "Scope, timing, and whether we are the right studio are stated before a project starts.",
+    },
+    relatedSlugs: ["design-or-disaster", "daynero"],
+    chapterTitles: {
+      context: "A studio needed a site that could take real enquiries.",
+      pivot: "We built it the way we would build a client’s.",
+      interaction: "Type, timing, and a form that actually goes somewhere.",
+      system: "Interface, data, and the boring parts that keep a site upright.",
+      proof: "The site is live and taking work.",
+    },
+    story: {
+      intro: [
+        "Fluxion is a two-person web studio I co-founded with Shreyas. We make sites for businesses that already have a voice and do not want to sound like everyone else online.",
+        "Our site had to explain what we build and take real enquiries. It also had to show the level of detail we would bring to client work.",
+      ],
+      contribution: [
+        "I worked on the structure, visual design, copy, motion, frontend, and enquiry form with Shreyas.",
+        "The finished site is live and client-facing. It introduces both founders, explains our process, and gives prospective clients a direct way to start a project.",
+      ],
+      turn:
+        "Our first piece of client-facing work was our own site.",
+      reflection: [
+        "Shipping it meant making practical calls about order, type, motion, form behaviour, and what we could maintain as a two-person studio.",
+      ],
+    },
+    problem: {
+      title: "Most studio sites describe craft and then look assembled.",
+      paragraphs: [
+        "We needed a site that could take a real project enquiry without sounding like every other two-person studio in a dark theme.",
+      ],
+    },
+    pivot: {
+      title: "Build the studio site the way we would build a client’s.",
+      before: "A holding page would have been faster.",
+      realization: "The first thing a client sees is how we treat our own work.",
+      after: "The live site is designed, written, and implemented in-house.",
+    },
+    rejectedPaths: [],
+    interactionIntro:
+      "The public site covers how we think, what we build, how we work, and a form that starts a project.",
+    interactionSteps: [],
+    systemLayers: [],
+    decisions: [
+      {
+        title: "Build it in-house",
+        choice: "Design and implement the studio site ourselves instead of parking a template.",
+        consequence: "Prospective clients can judge the work through the site itself.",
+      },
+      {
+        title: "Say the constraints out loud",
+        choice: "Publish reply time, typical duration, and that pricing is on enquiry.",
+        consequence: "People can check the fit before writing.",
+      },
+    ],
+    demonstrated: [
+      "A live studio website with navigation, process, founders, and an enquiry form.",
+      "Co-founded practice with Shreyas, based in Bengaluru.",
+      "Design and frontend implementation of the public site.",
+    ],
+    limits: [
+      "This record is the studio site, not a library of named client case studies.",
+      "Project outcomes for clients are not published here.",
+    ],
+    nextTest: {
+      title: "Add client work when it is ready to show.",
+      body: "Publish case studies with the client's context, the work we did, and outcomes we can support.",
+      success: "A visitor can tell what the studio has shipped and what we contributed.",
+    },
+    contribution:
+      "Co-founded the studio; designed and built the public website with Shreyas.",
+    disclosure:
+      "Fluxion Studios is a two-person practice. This portfolio page describes the live studio site and my role. It does not invent client results.",
+  },
+  {
     id: "daynero",
     slug: "daynero",
     title: "Daynero",
@@ -903,7 +903,7 @@ export const projects: Project[] = [
     tools: ["Product design", "Interaction design", "Web design", "Implementation"],
     scale: "Financial app · public website · active startup",
     liveUrl: "https://daynero.com/",
-    accent: "#b7e34b",
+    accent: "#4f6612",
     artifact: "daynero",
     lensRelations: {
       "evidence-judgment":
@@ -960,6 +960,7 @@ export const projects: Project[] = [
     disclosure:
       "This preview uses Daynero's public product language and Tanishk's stated contribution. The full evidence record is pending.",
   },
+
 ];
 
 export const lenses: LensDefinition[] = [
