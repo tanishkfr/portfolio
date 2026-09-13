@@ -34,22 +34,46 @@ export default function ContactPage() {
           I&apos;m in Bengaluru and open to interaction and product design
           roles, plus prototyping and research-through-making projects.
         </p>
+        <p className="contact-sign">
+          <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com</a>
+        </p>
       </header>
 
       <p className="contact-note">
         Complex states, software making decisions, or a research question that
         needs code: those are the problems I like working on.
-      </p>
-
-      <p className="contact-sign">
-        <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com</a>
         <a
+          className="contact-social"
           href="https://twitter.com/madebytanishk"
           target="_blank"
           rel="noreferrer"
           aria-label="Open @madebytanishk on X in a new tab"
         >
           @madebytanishk ↗
+        </a>
+        <a
+          className="contact-social"
+          href="https://www.linkedin.com/in/tanishksalagame/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          LinkedIn ↗
+        </a>
+        <a
+          className="contact-social"
+          href="https://github.com/tanishkfr"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub ↗
+        </a>
+        <a
+          className="contact-social"
+          href="/Tanishk_Salagame_Resume.pdf"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Résumé · PDF ↗
         </a>
       </p>
 

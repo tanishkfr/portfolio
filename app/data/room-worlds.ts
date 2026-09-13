@@ -24,7 +24,7 @@ export type RoomWorld = {
 };
 
 /** the housing's own ground — cornsilk, where no room is near */
-export const HOUSING: [number, number, number] = [248, 243, 228];
+export const HOUSING: [number, number, number] = [232, 234, 228];
 
 export const ROOM_WORLDS: Record<string, RoomWorld> = {
   "fluxion-studios": {
@@ -56,8 +56,10 @@ export const ROOM_WORLDS: Record<string, RoomWorld> = {
     accentInk: "#12615a",
   },
   // olive — the daily pulse
+  // olive — the daily pulse: a deeper paper than the others, so the
+  // dark ledger instrument reads as a lit screen on the desk
   daynero: {
-    ground: [242, 247, 227],
+    ground: [228, 236, 200],
     ink: "#14180d",
     accentInk: "#566f18",
   },

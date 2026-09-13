@@ -1,87 +1,92 @@
 /* ============================================================
-   QUICK REVIEW
+   WORK — THE FAST INDEX
    ------------------------------------------------------------
-   No field, no discovery, no ceremony. A reviewer with four
-   minutes gets the whole record at a glance.
+   Secondary reading, primary efficiency. The identity lives in
+   the header and in Explore; this page is a list that behaves.
+   Every row's middle column is the project's own working object
+   at index scale, so the index is evidence you can operate, not
+   a directory you can only read.
    ============================================================ */
 
 .review {
-  --ground: #f8f3e4;
-  --ink: #16150f;
-  --ink-low: rgba(22, 21, 15, 0.52);
-  --rule: rgba(22, 21, 15, 0.14);
+  --ground: #e8eae4;
+  --ink: #1b2126;
+  /* 0.52 measured 3.59:1 on the old ground and failed AA while carrying
+     every description; 0.72 clears AA without becoming the ink. */
+  --ink-low: rgba(27, 33, 38, 0.72);
+  --rule: rgba(27, 33, 38, 0.14);
 
-  background: rgb(var(--atmos, 248 243 228));
+  background: rgb(var(--atmos, 232 234 228));
   color: var(--ink);
   min-height: 100svh;
-  padding: clamp(5rem, 8vh, 7rem) var(--page-gutter) 5rem;
+  padding: clamp(3rem, 6vh, 4.5rem) var(--page-gutter) clamp(4rem, 8vh, 6rem);
 }
 
-.review-head {
-  max-width: 88rem;
-  margin: 0 auto clamp(2rem, 5vh, 3.5rem);
+.review-opening,
+.review-list,
+.review-foot {
+  width: min(100%, 80rem);
+  margin-inline: auto;
+}
+
+/* The opening is a catalogue line, not a hero. It states the offer and
+   gets out of the way; the first row begins almost immediately. */
+.review-opening {
   display: grid;
-  grid-template-columns: minmax(0, 22rem) minmax(0, 36rem);
-  gap: 0.5rem 3rem;
-  align-items: end;
+  gap: 0.7rem;
+  margin-bottom: clamp(1.4rem, 3.5vh, 2.2rem);
 }
 
-.review-kicker {
+.review-opening h1 {
   margin: 0;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  color: var(--ink-low);
-  grid-column: 1 / -1;
-}
-
-.review-head h1 {
-  font-family: var(--serif);
-  font-size: clamp(2.4rem, 6vw, 4rem);
-  font-variation-settings: "opsz" 144, "wght" 420;
-  letter-spacing: -0.025em;
-  margin: 0;
-  grid-column: 1;
-}
-
-.review-head p:not(.review-kicker) {
   font-family: var(--sans);
-  font-size: var(--step-1);
-  line-height: 1.5;
-  color: var(--ink-low);
+  font-size: var(--step-3);
+  font-weight: 640;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+
+.review-note {
   margin: 0;
-  max-width: none;
-  grid-column: 2;
+  max-width: 56ch;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.5;
 }
 
 .review-list {
   list-style: none;
   margin: 0 auto;
   padding: 0;
-  max-width: 88rem;
-}
-
-.review-list > li {
-  display: grid;
-  grid-template-columns: minmax(11rem, 16rem) 1fr;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  padding: clamp(2rem, 4vh, 2.75rem) 0;
   border-top: 1px solid var(--rule);
 }
 
-.review-list > li:last-child {
+.work-row {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 5fr) minmax(0, 4fr);
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+  padding: clamp(1.8rem, 3.6vh, 2.4rem) 0;
   border-bottom: 1px solid var(--rule);
+  align-items: start;
 }
 
-.review-id h2 {
-  font-family: var(--serif);
-  font-size: var(--step-3);
-  font-variation-settings: "opsz" 96, "wght" 420;
-  letter-spacing: -0.02em;
+.work-row-id {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.work-row-id h2 {
   margin: 0;
-  line-height: 1.05;
+  font-family: var(--display);
+  font-size: clamp(1.45rem, 2.1vw, 1.9rem);
+  font-weight: 720;
+  font-stretch: 106%;
+  letter-spacing: 0;
+  line-height: 1.02;
 }
 
-.review-id h2 a {
+.work-row-id h2 a {
   color: var(--ink);
   text-decoration: none;
   background-image: linear-gradient(var(--accent), var(--accent));
@@ -91,286 +96,227 @@
   transition: background-size 260ms var(--ease-out);
 }
 
-.review-id h2 a:hover,
-.review-id h2 a:focus-visible {
+.work-row-id h2 a:hover,
+.work-row-id h2 a:focus-visible {
   background-size: 100% 2px;
 }
 
-.review-form {
+.work-row-form {
+  margin: 0;
+  color: var(--accent-ink, var(--accent));
   font-family: var(--mono);
   font-size: var(--step--1);
   letter-spacing: 0.03em;
-  color: var(--accent);
-  margin: 0.5rem 0 0;
 }
 
-.review-line {
+/* ---------- view-transition continuity ----------
+   The row title is the carried object. It shares its name with the
+   case h1 (case.css), so opening a project from Work moves the same
+   words to the same left edge the case uses — the index line becomes
+   the record. Explore's sheet titles carry the same names. */
+
+#project-fluxion-studios .work-row-id h2 {
+  view-transition-name: project-fluxion-studios;
+}
+
+#project-design-or-disaster .work-row-id h2 {
+  view-transition-name: project-design-or-disaster;
+}
+
+#project-pentimento .work-row-id h2 {
+  view-transition-name: project-pentimento;
+}
+
+#project-invisible-interfaces .work-row-id h2 {
+  view-transition-name: project-invisible-interfaces;
+}
+
+#project-atlas .work-row-id h2 {
+  view-transition-name: project-atlas;
+}
+
+#project-daynero .work-row-id h2 {
+  view-transition-name: project-daynero;
+}
+
+/* ---------- the shared stage ----------
+   One footprint, six behaviours. The instruments were built to fill
+   whatever container the folio gives them; the index gives each one the
+   same quiet stage, so the set reads as one system while every object
+   inside it behaves differently. */
+
+.work-row-stage {
+  display: grid;
+  /* A shared floor, not a fixed frame: the row's height is set by the
+     object's own content, so nothing is ever clipped and the six rows
+     make a rhythm instead of a match. */
+  min-height: clamp(14rem, 24vw, 19rem);
+  overflow: hidden;
+}
+
+.work-row-stage > * {
+  width: 100%;
+}
+
+.work-row-body {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.work-row-line {
+  margin: 0;
   font-family: var(--sans);
   font-size: var(--step-0);
   line-height: 1.55;
-  margin: 0 0 1.25rem;
-  max-width: 40rem;
+  max-width: 40ch;
 }
 
-.review-facts {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1rem 1.25rem;
-  margin: 0 0 1.25rem;
+.work-row-contrib {
+  margin: 0;
+  color: var(--ink-low);
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.5;
+  max-width: 44ch;
 }
 
-.review-facts dt {
+.work-row-status {
+  margin: 0;
+  color: var(--accent-ink, var(--accent));
   font-family: var(--mono);
   font-size: var(--step--1);
   letter-spacing: 0.03em;
-  color: rgba(22, 21, 15, 0.38);
-  margin-bottom: 0.3rem;
 }
 
-.review-facts dd {
-  font-family: var(--sans);
-  font-size: var(--step-0);
-  line-height: 1.45;
-  color: var(--ink-low);
-  margin: 0;
-}
-
-.review-links {
+.work-row-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem;
-  margin: 0;
+  gap: 1.4rem;
+  margin: 0.2rem 0 0;
   font-family: var(--mono);
   font-size: var(--step--1);
+  letter-spacing: 0.02em;
 }
 
-.review-links a {
+.work-row-actions a {
   color: var(--ink);
   text-decoration: none;
-  border-bottom: 1px solid var(--accent);
+  border-bottom: 1px solid var(--line-strong);
   padding-bottom: 2px;
-  transition: color 180ms var(--ease-out);
+  transition: color var(--beat) var(--ease-out), border-color var(--beat) var(--ease-out);
 }
 
-.review-links a:hover,
-.review-links a:focus-visible {
-  color: var(--accent);
+.work-row-actions a:hover,
+.work-row-actions a:focus-visible {
+  color: var(--accent-ink, var(--accent));
+  border-color: var(--accent-ink, var(--accent));
 }
 
 .review-foot {
-  max-width: 88rem;
-  margin: clamp(3rem, 7vh, 5rem) auto 0;
-  font-family: var(--sans);
+  display: grid;
+  gap: 0.8rem;
+  margin-top: clamp(2rem, 5vh, 3.5rem);
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--rule);
 }
 
 .review-foot p {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--ink-low);
+  font-family: var(--sans);
   font-size: var(--step-0);
   line-height: 1.55;
-  color: var(--ink-low);
-  max-width: 38rem;
-  margin: 0 0 1.25rem;
-}
-
-.review-foot a {
-  font-family: var(--mono);
-  font-size: var(--step-0);
-  color: var(--ink);
 }
 
 .review-foot-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.85rem 1.6rem;
+  gap: 1.4rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.02em;
+}
+
+.review-foot-links a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 2px;
+  transition: color var(--beat) var(--ease-out), border-color var(--beat) var(--ease-out);
+}
+
+.review-foot-links a:hover,
+.review-foot-links a:focus-visible {
+  color: var(--accent-ink, var(--accent));
+  border-color: var(--accent-ink, var(--accent));
+}
+
+/* ---------- responsive ---------- */
+
+/* Tablet — the stage and its explanation pair up; the title sits above. */
+@media (max-width: 68.75rem) {
+  .work-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .work-row-id {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 48rem) {
-  .review-head {
+  .review-opening h1 {
+    font-size: var(--step-2);
+  }
+
+  .work-row-stage {
+    min-height: clamp(14rem, 52vw, 20rem);
+  }
+}
+
+@media (max-width: 40rem) {
+  .work-row {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 
-  .review-head h1,
-  .review-head p:not(.review-kicker) {
-    grid-column: 1;
+  .work-row-id {
+    grid-column: auto;
   }
 
-  .review-facts {
-    grid-template-columns: 1fr 1fr;
+  .work-row-stage {
+    order: 2;
+    min-height: clamp(13.5rem, 62vw, 19rem);
   }
 
-  .review-list > li {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-/* ============================================================
-   THE WAY IN
-   ============================================================ */
-
-.mode-switch {
-  display: flex;
-  gap: 2px;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.mode-switch button {
-  position: relative;
-  isolation: isolate;
-  appearance: none;
-  border: 0;
-  background: transparent;
-  color: rgba(22, 21, 15, 0.4);
-  padding: 0.4rem 0.7rem;
-  cursor: pointer;
-  letter-spacing: 0.04em;
-  transition:
-    color var(--beat) var(--ease-out),
-    letter-spacing var(--move) var(--ease-out),
-    transform var(--beat) var(--ease-out);
-}
-
-.mode-switch button::after {
-  content: "";
-  position: absolute;
-  right: 0.7rem;
-  bottom: 0.12rem;
-  left: 0.7rem;
-  height: 1px;
-  background: var(--registrar);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform var(--move) var(--ease-swing);
-}
-
-.mode-label-short {
-  display: none;
-}
-
-.mode-status {
-  margin-left: 0.25rem;
-  color: var(--registrar-deep);
-  font-size: 0.56rem;
-  letter-spacing: 0.03em;
-}
-
-@media (max-width: 48rem) {
-  .mode-label-full {
-    display: none;
-  }
-  .mode-label-short {
-    display: inline;
-  }
-  .mode-status {
-    display: none;
-  }
-  .mode-switch button {
-    padding-inline: 0.45rem;
+  .work-row-body {
+    order: 3;
   }
 }
 
-@media (max-width: 26.5rem) {
-  .mode-switch {
-    font-size: 0.64rem;
-  }
-
-  .mode-switch button {
-    padding: 0.28rem 0.28rem;
-  }
+/* ---------- Daynero at index scale ----------
+   The ledger is a representative sample, not a case embedded in the
+   list: tighter padding, a smaller amount, and the same stage floor as
+   the other objects. */
+.work-row[data-artifact="daynero"] .work-row-stage {
+  min-height: clamp(19rem, 24vw, 23rem);
 }
 
-.mode-switch button:hover {
-  color: rgba(22, 21, 15, 0.85);
-  letter-spacing: 0.055em;
+.work-row[data-artifact="daynero"] .xp-day {
+  padding: 1.7rem;
+  align-content: start;
 }
 
-.mode-switch button[aria-pressed="true"] {
-  color: #16150f;
+.work-row[data-artifact="daynero"] .xp-day-amount {
+  font-size: clamp(4.2rem, 6.4vw, 5.9rem);
 }
 
-.mode-switch button[aria-pressed="true"]::after {
-  transform: scaleX(1);
-  transform-origin: left;
+.work-row[data-artifact="daynero"] .xp-day-actions {
+  align-content: start;
+  gap: 0;
 }
 
-.mode-switch button:active {
-  transform: translateY(1px) scale(0.985);
-}
-
-.mode-switch button:focus-visible {
-  outline: 2px solid #16150f;
-  outline-offset: 2px;
-}
-
-/* Explore is still visible as an invitation, but its current state is a
-   quiet interruption rather than a route change. Keep the notice on the same
-   paper-and-ink register as the review surface. */
-.mode-notice-backdrop {
-  position: fixed;
-  z-index: 100;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 1.5rem;
-  background: rgba(22, 21, 15, 0.48);
-  animation: mode-notice-in 180ms var(--ease-out) both;
-}
-
-.mode-notice {
-  width: min(100%, 28rem);
-  padding: clamp(2rem, 5vw, 3.25rem);
-  border-top: 3px solid var(--registrar, #245b70);
-  background: var(--paper, #f8f3e4);
-  color: var(--ink, #16150f);
-  box-shadow: 0 24px 70px rgba(22, 21, 15, 0.2);
-}
-
-.mode-notice-kicker {
-  margin: 0 0 1.4rem;
-  color: var(--muted, rgba(22, 21, 15, 0.52));
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.mode-notice h2 {
-  margin: 0;
-  font-family: var(--serif);
-  font-size: clamp(2.1rem, 7vw, 3.5rem);
-  font-variation-settings: "opsz" 144, "wght" 420;
-  letter-spacing: -0.03em;
-  line-height: 0.98;
-}
-
-.mode-notice > p:not(.mode-notice-kicker) {
-  max-width: 24rem;
-  margin: 1.4rem 0 2rem;
-  color: var(--ink-soft, rgba(22, 21, 15, 0.72));
-  font-family: var(--sans);
-  font-size: var(--step-0);
-  line-height: 1.55;
-}
-
-.mode-notice-close {
-  border: 1px solid var(--registrar, #245b70);
-  background: transparent;
-  color: var(--ink, #16150f);
-  padding: 0.7rem 0.9rem;
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  letter-spacing: 0.03em;
-  transition: background-color 180ms var(--ease-out), color 180ms var(--ease-out);
-}
-
-.mode-notice-close:hover,
-.mode-notice-close:focus-visible {
-  background: var(--registrar, #245b70);
-  color: var(--paper, #f8f3e4);
-}
-
-@keyframes mode-notice-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.work-row[data-artifact="daynero"] .xp-day-btn {
+  padding: 0.75rem 0;
 }

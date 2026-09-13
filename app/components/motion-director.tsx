@@ -58,6 +58,13 @@ export function MotionDirector() {
     if (!instant) {
       observer = new IntersectionObserver(
         (entries) => {
+          /* The first delivery is the roster, not an arrival: the browser
+             reports every observed target once, mostly with
+             isIntersecting false. Treating that as "the observer fired"
+             would disarm the fail-open backstop for good and leave deep
+             sections clipped after a fast scroll. Only an actual arrival
+             counts. */
+          if (!entries.some((entry) => entry.isIntersecting)) return;
           observerFired = true;
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;

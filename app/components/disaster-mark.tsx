@@ -5,69 +5,93 @@ import { useState, type CSSProperties, type MouseEvent } from "react";
 /**
  * DESIGN OR DISASTER — point before you pronounce.
  *
- * You mark the exact place on the screen that shaped your read. Only then do
- * four other readings surface on the same screen — yours is one of five, and
- * there is no answer key. The interaction is the thesis: mark first, argue
- * second. Non-blocking; the name is always a door to the full case.
+ * You mark the place on the screen that shaped your read. The mark can be
+ * moved as often as you like, by pointer or by naming a region, before any
+ * other reading appears. Then four *authored* example marks show on the same
+ * coordinate system, each with its own argument. There is no answer key, and
+ * the example marks are labelled as examples rather than judgments.
  */
 
-const OTHER_READINGS: { x: number; y: number }[] = [
-  { x: 56, y: 29 },
-  { x: 26, y: 52 },
-  { x: 77, y: 66 },
-  { x: 45, y: 86 },
-];
+const REGIONS = [
+  { label: "Top bar", x: 50, y: 12 },
+  { label: "Primary action", x: 64, y: 44 },
+  { label: "Status area", x: 26, y: 30 },
+  { label: "Lower list", x: 50, y: 80 },
+] as const;
+
+const EXAMPLE_READINGS = [
+  {
+    x: 56,
+    y: 29,
+    label: "Hierarchy",
+    reading: "The motion competes with the primary decision.",
+  },
+  {
+    x: 26,
+    y: 52,
+    label: "Access",
+    reading: "The control's meaning disappears without precise vision.",
+  },
+  {
+    x: 77,
+    y: 66,
+    label: "Trust",
+    reading: "The visual certainty exceeds the evidence behind the state.",
+  },
+  {
+    x: 45,
+    y: 86,
+    label: "Task",
+    reading: "The interface asks for orientation before it enables action.",
+  },
+] as const;
+
+const clamp = (value: number) => Math.min(Math.max(value, 4), 96);
 
 export function DisasterMark({ src, alt }: { src: string; alt: string }) {
   const [mark, setMark] = useState<{ x: number; y: number } | null>(null);
+  const [region, setRegion] = useState<string | null>(null);
 
   function place(event: MouseEvent<HTMLButtonElement>) {
-    if (mark) return;
     const rect = event.currentTarget.getBoundingClientRect();
     const keyboard = event.clientX === 0 && event.clientY === 0;
     const x = keyboard ? 50 : ((event.clientX - rect.left) / rect.width) * 100;
-    const y = keyboard ? 42 : ((event.clientY - rect.top) / rect.height) * 100;
-    setMark({
-      x: Math.min(Math.max(x, 4), 96),
-      y: Math.min(Math.max(y, 4), 96),
-    });
+    const y = keyboard ? 44 : ((event.clientY - rect.top) / rect.height) * 100;
+    setRegion(null);
+    setMark({ x: clamp(x), y: clamp(y) });
+  }
+
+  function chooseRegion(label: string, x: number, y: number) {
+    setRegion(label);
+    setMark({ x, y });
   }
 
   return (
-    <figure
-      className="xp-room-shot xp-dod"
-      data-marked={mark ? "true" : undefined}
-      /* arrival is driven by the room it stands in, not a one-shot reveal */
-    >
+    <figure className="xp-room-shot xp-dod">
       <button
         type="button"
         className="xp-dod-surface"
         onClick={place}
         aria-label={
           mark
-            ? "Your read is marked on the screen"
+            ? "Adjust your mark on the evidence"
             : "Point at the evidence that shapes your read"
         }
       >
-        {/* Not lazy: this sits inside a horizontally translated rail, which
-            the browser never counts as approaching the viewport, so it stayed
-            unloaded with no intrinsic size and collapsed to a 1px sliver. It
-            is the only image in the track — loading it up front is cheap. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={alt} decoding="async" />
-        <span className="xp-dod-tint" aria-hidden="true" />
 
         {mark ? (
           <>
-            {OTHER_READINGS.map((reading, index) => (
+            {EXAMPLE_READINGS.map((reading, index) => (
               <span
-                key={index}
+                key={reading.label}
                 className="xp-dod-mark xp-dod-mark--other"
                 style={
                   {
                     left: `${reading.x}%`,
                     top: `${reading.y}%`,
-                    animationDelay: `${0.12 + index * 0.1}s`,
+                    animationDelay: `${0.12 + index * 0.08}s`,
                   } as CSSProperties
                 }
                 aria-hidden="true"
@@ -77,7 +101,9 @@ export function DisasterMark({ src, alt }: { src: string; alt: string }) {
               className="xp-dod-mark xp-dod-mark--mine"
               style={{ left: `${mark.x}%`, top: `${mark.y}%` } as CSSProperties}
             >
-              <span className="xp-dod-tag">your read</span>
+              <span className="xp-dod-tag">
+                {region ? `your mark · ${region}` : "your mark"}
+              </span>
             </span>
           </>
         ) : (
@@ -87,11 +113,55 @@ export function DisasterMark({ src, alt }: { src: string; alt: string }) {
         )}
       </button>
 
+      <div className="xp-dod-controls">
+        <div className="xp-dod-regions" role="group" aria-label="Choose a region of the screen">
+          <span className="xp-dod-controls-label">Or name a region</span>
+          {REGIONS.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              aria-pressed={region === item.label}
+              onClick={() => chooseRegion(item.label, item.x, item.y)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+        {mark ? (
+          <button
+            type="button"
+            className="xp-dod-reset"
+            onClick={() => {
+              setMark(null);
+              setRegion(null);
+            }}
+          >
+            Reset
+          </button>
+        ) : null}
+      </div>
+
       <figcaption className="xp-dod-cap" aria-live="polite">
         {mark
-          ? "Your mark and four others. Five readings, no answer key."
+          ? "Your mark, with four authored example marks. Five readings, no answer key."
           : "Point before you pronounce. Mark what shaped your read."}
       </figcaption>
+
+      {mark ? (
+        <div className="xp-dod-readings">
+          <p className="xp-dod-readings-label">
+            Authored example marks — not visitor judgments
+          </p>
+          <ul>
+            {EXAMPLE_READINGS.map((reading) => (
+              <li key={reading.label}>
+                <span>{reading.label}</span>
+                {reading.reading}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </figure>
   );
 }

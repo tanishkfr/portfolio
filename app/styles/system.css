@@ -7,17 +7,46 @@
    inspectable, and nothing asks to be believed unexamined.
 
    Three typographic voices:
-     serif — the claim (what is argued)
-     mono  — the record (what is evidenced)
-     sans  — the explanation (what is narrated)
+     display — the instrument (what is operated)
+     serif   — the aside (what is argued, sparingly)
+     mono    — the record (what is evidenced)
 
-   The housing's own ink is registrar blue — the ink of records.
-   The five project accents stay vivid; the housing never
+   The housing's own accent is cobalt — the ink of verification
+   marks. The five project accents stay vivid; the housing never
    competes with them.
    ============================================================ */
 
-/* The display voice: Fraunces, self-hosted, variable in optical
-   size and weight. Nothing else on the site sounds like it. */
+/* The instrument voice: Anybody, self-hosted, variable in width and
+   weight. A squarish industrial display family — used wide and heavy
+   where the site is a poster, left alone nowhere else. */
+@font-face {
+  font-family: "Anybody";
+  src: url("/fonts/anybody-var.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 50% 150%;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/fonts/instrument-sans-var.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/fonts/instrument-sans-var-italic.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* The expressive voice: Fraunces, self-hosted, variable in optical
+   size and weight. Used only where a sentence is making an argument
+   about behaviour, never as the house display face. */
 @font-face {
   font-family: "Fraunces";
   src: url("/fonts/fraunces-var.woff2") format("woff2");
@@ -36,39 +65,38 @@
 
 :root {
   /* ------------------------------------------------------------
-     ONE WARM GROUND
-     Nothing here is neutral grey. The ground is a bistre mixed dark
-     — the colour of a printed art book's endpaper in a dim room —
-     and the ink is unbleached cream. The five project rooms repaint
-     this ground with their own pigment; the housing always keeps the
-     bistre, so the work is the only thing that changes colour.
-     ------------------------------------------------------------ */
-  --atmos: 248 243 228;
-  --paper: #f8f3e4;
-  --paper-high: #fffdf5;
-  --paper-low: #eee7d3;
-  --plate: #fffdf7;
-  --plate-high: #ffffff;
-  --ink: #16150f;
-  --ink-soft: rgba(22, 21, 15, 0.72); /* 6.9:1 */
-  /* 0.56 measured 4.06:1 on this ground and failed AA, while carrying every
-     project thesis, form label and kicker on the site — the quiet voice was
-     quiet enough to be unreadable. 0.62 is the first step past 4.5:1 (4.7:1)
-     and is still visibly secondary to --ink-soft. */
-  --muted: rgba(22, 21, 15, 0.62); /* 4.7:1 — AA body */
-  --line: rgba(22, 21, 15, 0.16); /* decorative rule only, never a control edge */
+      ONE COOL GROUND
+      Washed stone, not warm cream: the ground of a lab bench and a
+      field notebook, faintly green where the light hits it. The ink
+      is graphite with a blue cast — the colour of a freshly
+      sharpened drafting pencil, not of print. Project rooms repaint
+      this ground with their own pigment; the housing always keeps
+      the stone, so the work is the only thing that changes colour.
+      ------------------------------------------------------------ */
+  --atmos: 232 234 228;
+  --paper: #e8eae4;
+  --paper-high: #f6f7f2;
+  --paper-low: #dee1d9;
+  --plate: #f3f5ee;
+  --plate-high: #fdfdf8;
+  --ink: #1b2126;
+  --ink-soft: rgba(27, 33, 38, 0.76);
+  /* The quiet voices carry labels and secondary prose on this ground;
+     both sit at or past AA body contrast. */
+  --muted: rgba(27, 33, 38, 0.66);
+  --line: rgba(27, 33, 38, 0.16); /* decorative rule only, never a control edge */
   /* draws control edges — toggles, buttons — so it owes the 3:1 non-text
-     minimum. 0.44 measured 2.83:1. */
-  --line-strong: rgba(22, 21, 15, 0.5); /* 3.2:1 — AA non-text */
+     minimum. */
+  --line-strong: rgba(27, 33, 38, 0.52);
 
-  /* The housing's own signal is record-ink blue — a cool ink held
-     against warm ground. Where a page belongs to a project, --accent
+  /* The housing's own signal is verification cobalt — the ink of the
+     proofreader's mark. Where a page belongs to a project, --accent
      takes over and the world's own colour does this work instead. */
-  --registrar: var(--accent, #2b3fb8);
-  --registrar-deep: var(--accent, #1d2c8c);
-  --registrar-wash: rgba(43, 63, 184, 0.09);
-  --focus: var(--accent, #2b3fb8);
-  --selection: rgba(43, 63, 184, 0.2);
+  --registrar: var(--accent, #3a1ff0);
+  --registrar-deep: var(--accent, #1b319c);
+  --registrar-wash: rgba(58, 31, 240, 0.09);
+  --focus: var(--accent, #3a1ff0);
+  --selection: rgba(58, 31, 240, 0.18);
 
   /* Project accents — meaning, not taste.
      vermilion: the stamp of a verdict (Design or Disaster)
@@ -91,13 +119,17 @@
   --accent-daynero-ink: #566f18;
 
   /* Voices */
+  /* The display voice: Anybody, wide and heavy at the moments the site
+     acts as a poster; left at its natural width elsewhere. */
+  --display: "Anybody", "Archivo", "Arial Black", Arial, sans-serif;
+  --sans: "Instrument Sans", "Segoe UI Variable Text", "Helvetica Neue", Arial,
+    sans-serif;
+  /* The aside voice: Fraunces, kept for the few sentences that argue
+     rather than operate — the cover's claim and a case's turning line. */
   --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
-  /* Text is set in Fraunces too, at its text optical size. Inter was never
-     shipped with the site, so on most machines the "sans voice" silently
-     became whatever the OS supplied - Segoe UI on Windows - which means the
-     typography was being decided by the visitor rather than designed. One
-     self-hosted family, used across display and text, is authored everywhere. */
-  --sans: "Fraunces", "Iowan Old Style", Georgia, serif;
+  /* The lift: the display voice's weight/stretch for poster moments. */
+  --poster-weight: 780;
+  --poster-stretch: 118%;
   /* The one voice deliberately left to the platform. Mono here is the machine
      speaking - records, counts, states - so the system's own monospace is the
      honest choice rather than a missing webfont. Used sparingly and never for
@@ -141,7 +173,7 @@
 
 @media (max-width: 56rem) {
   :root {
-    --header-h: 3.6rem;
+    --header-h: 4.2rem;
   }
 }
 
@@ -151,14 +183,14 @@
    on the dark ground, in pools of light.) */
 .signature-plate,
 .site-footer {
-  --ink: #191a15;
-  --ink-soft: #43453c;
-  --muted: #6b6d62;
-  --line: rgba(25, 26, 21, 0.15);
-  --line-strong: rgba(25, 26, 21, 0.46);
-  --registrar: #274a80;
-  --registrar-deep: #1c3560;
-  --registrar-wash: rgba(39, 74, 128, 0.08);
+  --ink: #1b2126;
+  --ink-soft: #454c53;
+  --muted: #6d747a;
+  --line: rgba(27, 33, 38, 0.15);
+  --line-strong: rgba(27, 33, 38, 0.48);
+  --registrar: #3a1ff0;
+  --registrar-deep: #2412b8;
+  --registrar-wash: rgba(58, 31, 240, 0.08);
   --accent-disaster-ink: #a92c1b;
   --accent-pentimento-ink: #6f2450;
   --accent-invisible-ink: #855d0d;
@@ -177,16 +209,16 @@
 }
 
 html {
-  background: rgb(var(--atmos, 248 243 228));
+  background: rgb(var(--atmos, 232 234 228));
   color: var(--ink);
   scroll-behavior: smooth;
-  scroll-padding-top: 6.5rem;
+  scroll-padding-top: calc(var(--header-h, 4.6rem) + 1.5rem);
   transition: background-color 700ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (max-width: 48rem) {
   html {
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: calc(var(--header-h, 5.5rem) + 1rem);
   }
 }
 
@@ -199,12 +231,11 @@ body {
   margin: 0;
   min-width: 320px;
   overflow-x: hidden;
-  background: rgb(var(--atmos, 248 243 228));
+  background: rgb(var(--atmos, 232 234 228));
   color: var(--ink);
   font-family: var(--sans);
   /* text optical size: lower stroke contrast and open apertures, which is what
      makes a display serif readable at paragraph sizes */
-  font-variation-settings: "opsz" 14, "wght" 400, "SOFT" 30;
   font-size: var(--step-0);
   line-height: 1.6;
   text-rendering: optimizeLegibility;
@@ -274,8 +305,8 @@ img {
 
 :focus-visible {
   border-radius: 2px;
-  outline: 3px solid var(--focus);
-  outline-offset: 3px;
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
 }
 
 /* ---------- shared voices ---------- */
@@ -446,46 +477,63 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  min-height: 4.6rem;
+  min-height: var(--header-h);
   width: 100%;
-  margin-inline: 0;
-  padding-inline: max(var(--page-gutter), calc((100% - 105rem) / 2 + var(--page-gutter)));
+  padding-inline: var(--page-gutter);
   border-bottom: 1px solid var(--line);
-  background: rgb(var(--atmos, 248 243 228) / 0.92);
+  background: rgb(var(--atmos, 232 234 228) / 0.92);
   transition: box-shadow var(--move) var(--ease-out);
 }
 
 /* content sliding beneath the header casts a breath of shadow —
-   depth appears only once there is something underneath */
+   depth appears only once there is something underneath. The ground
+   also settles to the page's own paper, so nothing reads through it. */
 [data-scrolled="true"] .site-header {
+  background: rgb(var(--atmos, 232 234 228));
   box-shadow: 0 10px 22px -14px rgba(0, 0, 0, 0.65);
-}
-
-/* Reading progress — a thin registrar line the page draws as it
-   is read. The record of where you are. */
-.site-header::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: -1px;
-  left: 0;
-  height: 2px;
-  background: var(--registrar);
-  transform: scaleX(var(--scroll-progress, 0));
-  transform-origin: left;
 }
 
 .site-identity {
   display: inline-flex;
-  align-items: baseline;
-  gap: 0.7rem;
+  align-items: center;
+  gap: 0.55rem;
   color: inherit;
-  font-family: var(--serif);
-  font-size: 1.18rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1;
   text-decoration: none;
+}
+
+/* The favicon's T mark, carried at header scale: the one piece of the
+   identity that is already a state (the ultramarine rule holding the
+   name). Crisp because it is the same geometry as the icon, not a
+   raster thumbnail. */
+.identity-mark {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: none;
+}
+
+/* The compact state of the hero wordmark: the same Anybody voice, held
+   in its compressed notation — the width the splash arrives from and
+   the footer resolves to. Hovering lets it breathe toward the hero's
+   width: a state, not a loop. */
+.identity-name {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 650;
+  font-stretch: 78%;
+  letter-spacing: 0.015em;
+  line-height: 1;
+  transition: font-stretch 300ms var(--ease-out);
+}
+
+.site-identity:hover .identity-name,
+.site-identity:focus-visible .identity-name {
+  font-stretch: 96%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .identity-name {
+    transition: none;
+  }
 }
 
 .site-identity small {
@@ -510,13 +558,14 @@ img {
   font-weight: 600;
 }
 
+
 .site-header nav {
   display: flex;
   align-items: center;
   gap: clamp(1.2rem, 2.4vw, 2.5rem);
   font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.05em;
+  font-size: 0.84rem;
+  letter-spacing: 0.02em;
 }
 
 .site-header nav a {
@@ -540,9 +589,13 @@ img {
   transition: transform var(--move) var(--ease-out);
 }
 
-.site-header nav a:hover,
-.site-header nav a[aria-current="page"] {
+.site-header nav a:hover {
   color: var(--ink);
+}
+
+/* the page you are on is a state, and states speak in ultramarine */
+.site-header nav a[aria-current="page"] {
+  color: var(--registrar);
 }
 
 .site-header nav a:hover::after,
@@ -552,46 +605,15 @@ img {
 }
 
 @media (max-width: 44rem) {
-  .site-header {
-    gap: 1rem;
-  }
-
-  .site-header nav {
-    gap: 1.1rem;
-  }
-
-  /* the case-record label and discipline line yield to navigation */
-  .site-mode,
   .site-identity small {
     display: none;
   }
 }
 
-/* ---------- modes ----------
-   Two ways in. The server always renders the full thing; data-mode
-   on the root recuts it. Nothing is fabricated per mode — only
-   pacing, density, and selection.
-
-   full   — the field, and the complete case record.
-   review — no ceremony: motion near-instant, density up, every case
-            reduced to what it is, what I did, and what to remember. */
-
-.site-header-tools {
-  display: flex;
-  align-items: center;
-  gap: clamp(1.2rem, 2.4vw, 2.4rem);
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-/* On the field the header recedes — but it does not leave.
-   It used to be position:absolute, which meant it scrolled away at the first
-   viewport and took three things with it: the reading progress, the way back,
-   and the Quick Review switch. Quick Review exists so that Explore can afford
-   to take its time; making it unreachable after twenty seconds of scrolling
-   removes the escape hatch from the exact person it was built for.
-   So: no ground, no rule and no shadow at rest — nothing competes with the
-   opening — and it earns them back the moment there is content beneath it. */
+/* On the homepage the header recedes — but it does not leave. Quick review
+   and Explore stay reachable through the whole reading, so the ground and
+   rule are withheld at rest to keep the opening clear, then earned back the
+   moment there is content beneath. */
 .site-header[data-bare="true"] {
   border-bottom-color: transparent;
   background: transparent;
@@ -604,63 +626,57 @@ img {
 
 [data-scrolled="true"] .site-header[data-bare="true"] {
   border-bottom-color: var(--line);
-  background: color-mix(in srgb, var(--paper) 88%, transparent);
-  backdrop-filter: blur(14px) saturate(115%);
-}
-
-.site-header[data-bare="true"]::after {
-  /* the only wayfinding on the field: one hairline of depth */
-  display: block;
+  background: rgb(var(--atmos, 232 234 228));
+  backdrop-filter: none;
 }
 
 .site-header[data-bare="true"] .site-identity {
-  color: #16150f;
+  color: #1b2126;
 }
 
 .site-header[data-bare="true"] .site-identity small {
-  color: rgba(22, 21, 15, 0.5);
+  color: rgba(27, 33, 38, 0.5);
 }
 
-@media (max-width: 56rem) {
+/* Tablet: the links close up but stay on one line beside the identity. */
+@media (max-width: 56rem) and (min-width: 40.01rem) {
   .site-header {
-    min-height: 3.6rem;
-    padding-block: 0.7rem;
-    gap: 0.7rem;
+    gap: 0.9rem;
   }
 
-  .site-header-tools {
-    width: auto;
-    flex: 1 1 auto;
-    justify-content: flex-end;
+  .site-header nav {
+    gap: 1.1rem;
     flex-wrap: nowrap;
-    gap: 0.55rem 0.8rem;
-  }
-
-  .site-header nav {
-    gap: 0.75rem;
   }
 }
 
-/* Phone: keep one row, but give Contact the same gutter as Tanishk.
-   nowrap at 390 otherwise parks Contact 3px from the right edge. */
-@media (max-width: 26.5rem) {
+/* Phone: a deliberate two-row header — identity above, four evenly spaced
+   destinations below — rather than five controls pretending to fit. */
+@media (max-width: 40rem) {
+  :root {
+    --header-h: 5.5rem;
+  }
+
   .site-header {
-    gap: 0.4rem;
-    padding-inline: 1.15rem;
-  }
-
-  .site-identity {
-    font-size: 1.06rem;
-  }
-
-  .site-header-tools {
-    gap: 0.35rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    gap: 0.3rem;
+    min-height: 0;
+    padding-block: 0.65rem 0.55rem;
   }
 
   .site-header nav {
-    gap: 0.5rem;
-    font-size: 0.64rem;
-    letter-spacing: 0.02em;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    width: 100%;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .site-header nav a {
+    padding-block: 0.55rem;
+    text-align: center;
   }
 }
 
@@ -672,8 +688,9 @@ img {
   --settle: 180ms;
 }
 
-/* choreography yields: content is simply present */
-:root[data-mode="review"] [data-reveal]:not(.is-revealed) {
+/* choreography yields in review mode — except the index's figure reveals,
+   which are the one piece of motion the concise read keeps. */
+:root[data-mode="review"] [data-reveal]:not([data-reveal="figure"]):not(.is-revealed) {
   opacity: 1 !important;
   transform: none !important;
   filter: none !important;
@@ -719,7 +736,7 @@ img {
 
 .footer-identity strong {
   color: var(--ink);
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -897,32 +914,43 @@ img {
    the page crossfades underneath. Browsers without the View
    Transitions API simply navigate. */
 
-@keyframes look-under-leave {
+/* One handoff: the selected title travels; the rest of the page crossfades
+   quietly underneath. No full-page lateral wipe. */
+@keyframes route-fade-out {
   to {
-    clip-path: inset(0 0 0 100%);
+    opacity: 0;
   }
 }
 
-@keyframes look-under-enter {
+@keyframes route-fade-in {
   from {
-    clip-path: inset(0 100% 0 0);
-  }
-  to {
-    clip-path: inset(0);
+    opacity: 0;
   }
 }
 
+/* The page the reader is leaving clears first; the incoming page fades
+   up only after it is gone. The two snapshots are never on screen at
+   once, so unrelated text cannot double-expose. */
 ::view-transition-old(root) {
-  animation: look-under-leave 280ms var(--ease-swing) both;
+  animation: route-fade-out 70ms var(--ease-out) both;
 }
 
 ::view-transition-new(root) {
-  animation: look-under-enter 360ms var(--ease-out) both;
+  animation: route-fade-in 160ms var(--ease-out) 70ms both;
 }
 
 ::view-transition-group(*) {
   animation-duration: 340ms;
   animation-timing-function: var(--ease-swing);
+}
+
+/* Explore keeps six named sheet titles in the document at once. Only the
+   one that was opened has a counterpart on the case, but the other five
+   still get a snapshot that would otherwise fade out over the incoming
+   page as ghost text. Any departing snapshot clears fast; the carried
+   title's travel is carried by its group, not by this fade. */
+::view-transition-old(*) {
+  animation-duration: 90ms;
 }
 
 /* The title is the carried object. Its pace follows the project's own
@@ -944,7 +972,7 @@ img {
 
 ::view-transition-group(project-invisible-interfaces) {
   animation-duration: 320ms;
-  animation-timing-function: ease-out;
+  animation-timing-function: var(--ease-out);
 }
 
 ::view-transition-group(project-atlas) {
@@ -968,34 +996,15 @@ img {
   }
 }
 
-/* On a small screen a full-width lateral wipe exposes tall strips of the
-   outgoing document. Keep the carried project title, but let the paper itself
-   make one short, quiet step instead of performing a desktop-sized cut. */
+/* On a small screen the handoff is a quiet opacity change, never a
+   full-screen spatial travel. */
 @media (max-width: 48rem) and (prefers-reduced-motion: no-preference) {
   ::view-transition-old(root) {
-    animation: route-mobile-out 140ms ease-out both;
+    animation: route-fade-out 60ms var(--ease-out) both;
   }
 
   ::view-transition-new(root) {
-    animation: route-mobile-in 220ms var(--ease-out) both;
-  }
-
-  @keyframes route-mobile-out {
-    to {
-      opacity: 0;
-      transform: translateY(-4px);
-    }
-  }
-
-  @keyframes route-mobile-in {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
-    }
+    animation: route-fade-in 140ms var(--ease-out) 60ms both;
   }
 }
 
@@ -1084,5 +1093,150 @@ img {
     animation-duration: 1ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
+  }
+}
+
+/* ---------- the splash ----------
+   The first state transition: the name as compressed notation, the
+   rule that opens the folio. Session-scoped, skippable, removed from
+   the DOM when done. */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.1rem;
+  background: rgb(var(--atmos, 232 234 228));
+}
+
+.splash-name {
+  font-family: var(--display);
+  font-size: clamp(3rem, 9vw, 8.4rem);
+  font-weight: var(--poster-weight);
+  font-stretch: 62%;
+  letter-spacing: 0.01em;
+  line-height: 0.92;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: font-stretch 620ms var(--ease-swing);
+}
+
+.splash[data-phase="resolve"] .splash-name {
+  font-stretch: 125%;
+}
+
+.splash-rule {
+  width: 0;
+  height: 2px;
+  background: var(--registrar);
+  transition: width 560ms var(--ease-out) 180ms;
+}
+
+.splash[data-phase="resolve"] .splash-rule {
+  width: min(58vw, 34rem);
+}
+
+.splash-note {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.06em;
+  opacity: 0;
+  transition: opacity 320ms var(--ease-out) 320ms;
+}
+
+.splash[data-phase="resolve"] .splash-note {
+  opacity: 1;
+}
+
+/* ---------- reading progress ----------
+   The state rule measures the page: it fills from the left as the
+   reader moves through the folio, and rests empty at the top. */
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--registrar);
+  transform: scaleX(var(--scroll-progress, 0));
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-header::after {
+    transition: transform 120ms linear;
+  }
+}
+
+/* ---------- the pointer state mark ----------
+   On fine-pointer devices the diamond is not a companion to the native
+   cursor — it replaces it. The page opts in with
+   html[data-cursor="custom"], which PointerMark sets only after the
+   first pointer event has already positioned the diamond at the true
+   hotspot: the native cursor never disappears before its replacement
+   exists, and if the component never runs, the attribute never lands
+   and the system cursor stays. */
+html[data-cursor="custom"],
+html[data-cursor="custom"] * {
+  cursor: none !important;
+}
+
+/* The reveal seam keeps its native directional vocabulary: ew-resize
+   says something the diamond cannot, and the two share that strip. */
+html[data-cursor="custom"] :is(.xp-under-read) {
+  cursor: ew-resize !important;
+}
+
+.pointer-mark {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--registrar);
+  /* a hard 1px paper edge, no blur — the mark keeps its edge on the
+     dark project rooms without becoming a glow */
+  box-shadow: 0 0 0 1px rgba(246, 247, 242, 0.6);
+  transform: translate(-40px, -40px) rotate(45deg);
+  pointer-events: none;
+  z-index: 70;
+  opacity: 0;
+  transition: opacity 160ms var(--ease-out);
+}
+
+.pointer-mark[data-visible="true"] {
+  opacity: 1;
+}
+
+/* over anything actionable: the signal fills and gains a point */
+.pointer-mark[data-state="active"] {
+  background: var(--registrar);
+  width: 15px;
+  height: 15px;
+}
+
+/* over selectable text and fields: the caret, not the diamond
+   (the inline transform omits the 45° turn for this state) */
+.pointer-mark[data-state="text"] {
+  width: 2px;
+  height: 1.25rem;
+  border: 0;
+  background: var(--registrar);
+}
+
+@media (pointer: coarse) {
+  .pointer-mark {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pointer-mark {
+    transition: none;
   }
 }

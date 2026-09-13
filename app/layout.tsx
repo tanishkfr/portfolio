@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 import { MotionDirector } from "./components/motion-director";
 import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
+import { PointerMark } from "./components/pointer-cursor";
+import { SplashGate } from "./components/splash";
 import { RouteSettler } from "./components/transition-link";
 import "./styles/system.css";
 import "./styles/home.css";
@@ -64,7 +66,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f8f3e4",
+  themeColor: "#e8eae4",
   colorScheme: "light",
 };
 
@@ -74,8 +76,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-mode="review" suppressHydrationWarning>
+    <html lang="en" data-mode="full" suppressHydrationWarning>
       <head>
+        <link
+          rel="preload"
+          href="/fonts/instrument-sans-var.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
         <link
           rel="preload"
           href="/fonts/fraunces-var.woff2"
@@ -83,8 +92,20 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        {/* The reading is derived from the URL and applied before first paint.
+            `/` is Explore — the primary folio; `/?mode=review` is the concise
+            Work index. The server marks the document with the default, and the
+            inline script only overrides an explicit query. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var q=new URLSearchParams(location.search).get('mode');if(q==='full'||q==='review'){document.documentElement.dataset.mode=q;}}catch(t){}})();",
+          }}
+        />
       </head>
       <body>
+      <SplashGate />
+        <PointerMark />
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>

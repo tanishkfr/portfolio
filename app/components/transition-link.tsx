@@ -14,16 +14,15 @@ import { useEffect, type ComponentProps, type MouseEvent } from "react";
 
 type StartViewTransition = (callback: () => Promise<void>) => unknown;
 
+type TransitionLinkProps = ComponentProps<typeof Link>;
+
 const settlers: Array<() => void> = [];
 
 function pathnameOf(href: string) {
   return href.split("#")[0].split("?")[0] || "/";
 }
 
-export function TransitionLink({
-  onClick,
-  ...props
-}: ComponentProps<typeof Link>) {
+export function TransitionLink({ onClick, ...props }: TransitionLinkProps) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -53,13 +52,26 @@ export function TransitionLink({
     if (!start || reduced) return;
 
     event.preventDefault();
-    start(() => {
+
+    const transition = start(() => {
+      /* The old frame is already captured, so resetting the scroll here
+         cannot move the title's origin. It does keep the incoming page
+         from being photographed at the old document's offset, which
+         otherwise flashes the case mid-page before it settles at the
+         top. Hash destinations are left to the router's anchor scroll. */
+      if (!href.includes("#")) {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      }
       router.push(href);
       return new Promise<void>((resolve) => {
         settlers.push(resolve);
         // never hold the old frame hostage to a slow route
         setTimeout(resolve, 1200);
       });
+    }) as { finished?: Promise<unknown> } | undefined;
+
+    transition?.finished?.catch(() => {
+      /* an interrupted transition simply falls back to the new route */
     });
   }
 
