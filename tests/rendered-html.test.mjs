@@ -445,7 +445,15 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     index,
     /deck-name|deck-panel|thinking-line|claim-line|ex-zone|ex-arrival|scroll-snap|exhibit--|work-grid|type="range"|Ask five systems/i,
   );
-  assert.match(motion, /IntersectionObserver/);
+  /* Reveals must not depend on IntersectionObserver. The entrance's own
+     hidden state clips the target to zero area, and Chromium folds that
+     clip into the observer's intersection rect — so a hidden target is
+     reported as never intersecting and can never be revealed by
+     observation. The sweep measures boxes instead, and fails open on
+     anything the viewport has already passed. */
+  assert.doesNotMatch(motion, /new IntersectionObserver/);
+  assert.match(motion, /getBoundingClientRect/);
+  assert.match(motion, /is-revealed/);
   assert.match(motion, /--scroll-progress/);
   assert.doesNotMatch(motion, /pointermove|--pointer-x/);
   assert.match(exploreCss, /position:\s*sticky/);

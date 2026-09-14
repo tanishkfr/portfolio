@@ -78,7 +78,7 @@ export function DayneroNumber() {
       <p className="xp-day-label">You can spend today</p>
       <p className="xp-day-amount">£{display}</p>
       <p className="xp-day-note" aria-live="polite">
-        {note ?? "Choose a sample event. Sample events show an interface response, not the product's budgeting model."}
+        {note ?? "Choose a sample event. Sample events show an interface response, not the product's budgeting model or financial advice."}
       </p>
 
       <div className="xp-day-actions">

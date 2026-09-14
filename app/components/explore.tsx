@@ -7,7 +7,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { projects, type Project } from "../data/portfolio";
+import { projects, liveLinkLabel, type Project } from "../data/portfolio";
 import { ROOM_WORLDS, rgb } from "../data/room-worlds";
 import { AtlasRule } from "./atlas-rule";
 import { DayneroNumber } from "./daynero-number";
@@ -354,7 +354,7 @@ export function Explore() {
                         <span aria-hidden="true"> →</span>
                       </TransitionLink>
                       <a href={project.liveUrl} target="_blank" rel="noreferrer">
-                        Open live <span aria-hidden="true">↗</span>
+                        {liveLinkLabel(project)} <span aria-hidden="true">↗</span>
                         <span className="sr-only"> (opens in a new tab)</span>
                       </a>
                     </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { type CSSProperties } from "react";
-import { projects, type Project } from "../data/portfolio";
+import { projects, liveLinkLabel, type Project } from "../data/portfolio";
 import { SiteFooter } from "./site-footer";
 import { TransitionLink } from "./transition-link";
 import { AtlasRule } from "./atlas-rule";
@@ -106,7 +106,7 @@ export function ReviewIndex() {
                     <span aria-hidden="true"> →</span>
                   </TransitionLink>
                   <a href={project.liveUrl} target="_blank" rel="noreferrer">
-                    Open live <span aria-hidden="true">↗</span>
+                    {liveLinkLabel(project)} <span aria-hidden="true">↗</span>
                     <span className="sr-only"> (opens in a new tab)</span>
                   </a>
                 </p>

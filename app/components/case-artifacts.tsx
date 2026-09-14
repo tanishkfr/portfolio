@@ -583,7 +583,7 @@ function FluxionArtifact() {
       bar="Live studio site"
       proof="Built in-house"
       status="Live · taking enquiries"
-      caption="The live site is the evidence. Desktop, mobile, and enquiry-flow captures remain an outstanding asset dependency; until they are captured, the site itself carries the proof."
+      caption="The live site is the evidence. Desktop and mobile frames are real captures of the shipped site, and the enquiry flow runs live on it."
     >
       <div className="fluxion-demo">
         <div className="fluxion-brand-lockup">
