@@ -16,13 +16,6 @@ export const metadata: Metadata = {
     description,
     images: [{ url: "/og.png", alt: "Contact Tanishk" }],
   },
-  twitter: {
-    card: "summary_large_image",
-    creator: "@madebytanishk",
-    title: "Contact — Tanishk",
-    description,
-    images: ["/og.png"],
-  },
 };
 
 export default function ContactPage() {
@@ -42,15 +35,6 @@ export default function ContactPage() {
       <p className="contact-note">
         Complex states, software making decisions, or a research question that
         needs code: those are the problems I like working on.
-        <a
-          className="contact-social"
-          href="https://twitter.com/madebytanishk"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Open @madebytanishk on X in a new tab"
-        >
-          @madebytanishk ↗
-        </a>
         <a
           className="contact-social"
           href="https://www.linkedin.com/in/tanishksalagame/"

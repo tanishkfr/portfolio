@@ -52,14 +52,6 @@ export async function generateMetadata(): Promise<Metadata> {
         "Fluxion Studios, four independent interaction projects, and Daynero, by Tanishk.",
       images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
     },
-    twitter: {
-      card: "summary_large_image",
-      creator: "@madebytanishk",
-      title: "Tanishk — Interaction Designer",
-      description:
-        "Studio work, four independent interaction projects, and a finance product in progress.",
-      images: ["/og.png"],
-    },
   };
 }
 

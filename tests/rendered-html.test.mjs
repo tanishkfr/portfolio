@@ -294,7 +294,10 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   assert.equal(contactResponse.status, 200);
   const contactHtml = await contactResponse.text();
   assert.match(contactHtml, /interaction is hard to explain/i);
-  assert.match(contactHtml, /@madebytanishk/);
+  assert.match(contactHtml, /madebytanishk@gmail\.com/);
+  assert.match(contactHtml, /linkedin\.com\/in\/tanishksalagame/);
+  assert.match(contactHtml, /github\.com\/tanishkfr/);
+  assert.doesNotMatch(contactHtml, /twitter\.com|x\.com/);
 
   assert.equal(resumeResponse.status, 200);
   const resumeHtml = await resumeResponse.text();

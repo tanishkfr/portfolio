@@ -49,13 +49,6 @@ export async function generateMetadata({
       description: project.oneLine,
       images: [{ url: "/og.png", alt: title }],
     },
-    twitter: {
-      card: "summary_large_image",
-      creator: "@madebytanishk",
-      title,
-      description: project.oneLine,
-      images: ["/og.png"],
-    },
   };
 }
 
