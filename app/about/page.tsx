@@ -17,13 +17,6 @@ export const metadata: Metadata = {
     description,
     images: [{ url: "/og.png", alt: "About Tanishk" }],
   },
-  twitter: {
-    card: "summary_large_image",
-    creator: "@madebytanishk",
-    title: "About — Tanishk",
-    description,
-    images: ["/og.png"],
-  },
 };
 
 /**
@@ -119,13 +112,6 @@ export default function AboutPage() {
         <h2 id="about-contact-title">In Bengaluru and available for work.</h2>
         <div>
           <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com ↗</a>
-          <a
-            href="https://twitter.com/madebytanishk"
-            target="_blank"
-            rel="noreferrer"
-          >
-            @madebytanishk ↗<span className="sr-only"> (opens in a new tab)</span>
-          </a>
           <Link href="/">See selected work →</Link>
         </div>
       </section>
