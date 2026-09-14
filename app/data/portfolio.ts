@@ -63,6 +63,19 @@ type Story = {
 export const disclosure =
   "AI helped me think, argue, and iterate on code. The concepts, research, design decisions, writing, and every line that shipped are mine.";
 
+/**
+ * A receipt of real client work, where one exists and the evidence is in
+ * the record. Itemised rather than narrated: the brief, the constraint, the
+ * contribution, and what actually shipped. Only supported lines are stated.
+ */
+export type ClientReceipt = {
+  label: string;
+  title: string;
+  rows: { term: string; value: string }[];
+  href?: string;
+  hrefLabel?: string;
+};
+
 export type Project = {
   id: string;
   slug: string;
@@ -108,6 +121,14 @@ export type Project = {
   nextTest: NextTest;
   contribution: string;
   disclosure: string;
+  /** A named client build, stated as a receipt. Present only where supported. */
+  clientWork?: ClientReceipt;
+  /**
+   * Audited anchors: references that were actually read, each tied to the
+   * empirical claim it supports. Listed only where an audit was performed —
+   * the rest of a corpus stays unaudited rather than implied.
+   */
+  sources?: { label: string; href: string; supports: string }[];
 };
 
 export type LensDefinition = {
@@ -263,8 +284,7 @@ export const projects: Project[] = [
     },
     story: {
       intro: [
-        "Design critique is full of verdicts. The evidence that produced them is often gone by the time anyone disagrees.",
-        "I built Design or Disaster to keep that evidence on the screen.",
+        "Design critique is full of verdicts. I built Design or Disaster to keep the evidence behind them on the screen.",
       ],
       contribution: [
         "You mark a coordinate, explain what it shows, and file a verdict. Only then do five other readings appear on the same screen.",
@@ -414,13 +434,14 @@ export const projects: Project[] = [
     ],
     limits: [
       "Maya's edition is authored fictional research material—not participant evidence.",
-      "The written 8–12 participant protocol has not been run, so no recognition, trust, or cultural-validity result is claimed.",
+      "The written participant protocol has not been run, so no comprehension, trust, or correction-outcome result is claimed.",
+      "The Let it stand / Read it differently / Strike it wording was stress-tested against synthetic adversarial scenarios before any human session; those scenarios are preparation, not evidence, and no participant data exists yet.",
       "The corrections corpus is intentionally empty until consented sessions produce real corrections.",
     ],
     nextTest: {
       title: "Run the right-of-reply study with 8–12 Letterboxd users.",
       body:
-        "Participants will work with their own local archive, think aloud through computed chapters, strike or accept readings, review the second draft, and choose what to share. The study will code not only whether a claim was rejected, but why the archive's interpretation failed.",
+        "Participants will work with their own local archive, think aloud through computed chapters, reply to readings, review the second draft, and choose what to share. The study records what each reply meant to the person and what, if anything, they changed—not whether the archive's reading was right.",
       success:
         "A high strike rate is not failure. The important signal is whether refusal feels possible, consequential, and trustworthy a week later.",
     },
@@ -431,7 +452,6 @@ export const projects: Project[] = [
       ],
       contribution: [
         "Every claim opens to the dates, titles, ratios, or absences behind it. A person can accept the reading, replace it, or strike it without supplying an alternative.",
-        "The machine's first draft stays visible as a withdrawn layer. The person's correction gets the final word.",
       ],
       turn:
         "The software gets a draft. The person gets the final word.",
@@ -736,21 +756,58 @@ export const projects: Project[] = [
     demonstrated: [
       "A complete claim, pressure, hold/refine/fracture, lineage, copy, and download loop.",
       "Persistent browser state and addressable routes with explicit focus movement.",
-      "W3C and Microsoft constraints anchoring the three cases without deciding the verdict.",
-      "A citation audit that names unsupported, backward, or drifting claims instead of hiding them.",
+      "W3C and Microsoft accessibility guidance anchoring the three cases without deciding the verdict.",
     ],
     limits: [
       "The three pressure cases are authored and intentionally adversarial—not sampled from practice.",
       "The mechanism has not been tested with learners, so it does not prove that transferable judgment occurred.",
-      "The 33-example corpus remains authored argument until the priority citation audit is cleared.",
+      "Three priority examples were audited against authoritative sources; the broader 33-example corpus audit remains ongoing.",
     ],
     nextTest: {
-      title: "Clear the evidence audit, then study actual revision behavior.",
+      title: "Extend the audit to the corpus, then study actual revision behavior.",
       body:
-        "Attach verifiable sources to the empirical claims, fix the known reversed or drifting examples, then compare designers who read a principle with designers who carry one through the stress trace.",
+        "Extend the source audit from the three priority examples to the 33-example corpus and fix any reversed or drifting examples it finds, then compare designers who read a principle with designers who carry one through the stress trace.",
       success:
         "Look for more conditional final rules, accurate recall of why wording changed, and transfer to a fourth case—not agreement with Atlas's authored examples.",
     },
+    sources: [
+      {
+        label: "W3C WAI · WAI-ARIA Authoring Practices, Dialog (Modal) Pattern",
+        href: "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/",
+        supports:
+          "Outside interaction may close a modal; Escape closes it; a visible close control is recommended.",
+      },
+      {
+        label: "W3C WAI · WCAG 2.1 SC 3.3.4, Error Prevention (Legal, Financial, Data)",
+        href: "https://www.w3.org/WAI/WCAG21/Understanding/error-prevention-legal-financial-data.html",
+        supports:
+          "Actions causing financial transactions must be reversible, checked, or confirmed.",
+      },
+      {
+        label: "W3C WAI · WCAG 2.1 SC 2.1.1, Keyboard",
+        href: "https://www.w3.org/WAI/WCAG21/Understanding/keyboard.html",
+        supports:
+          "Pointer actions need a keyboard equivalent; scanning software operates through the keyboard interface.",
+      },
+      {
+        label: "Microsoft Learn · Dialog controls (Windows apps)",
+        href: "https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/dialogs-and-flyouts/dialogs",
+        supports:
+          "Dialogs are dismissed by an explicit control, across mouse, keyboard, touch, and gamepad.",
+      },
+      {
+        label: "Microsoft Learn · Keyboard accessibility (Windows apps)",
+        href: "https://learn.microsoft.com/en-us/windows/apps/design/accessibility/keyboard-accessibility",
+        supports:
+          "Anything activated by pointer must also be invokable by keyboard.",
+      },
+      {
+        label: "Google · Android Accessibility Help, Switch Access",
+        href: "https://support.google.com/accessibility/android/answer/6122836",
+        supports:
+          "Switch input scans and selects; switches send keystroke signals rather than pointer positions.",
+      },
+    ],
     story: {
       intro: [
         "Design advice often arrives as a finished sentence. The case that produced it and the cases where it fails have disappeared.",
@@ -863,20 +920,63 @@ export const projects: Project[] = [
       "A live studio website with navigation, process, founders, and an enquiry form.",
       "Co-founded practice with Shreyas, based in Bengaluru.",
       "Design and frontend implementation of the public site.",
+      "One shipped client build: Taamboolam's live hospitality website.",
     ],
     limits: [
-      "This record is the studio site, not a library of named client case studies.",
-      "Project outcomes for clients are not published here.",
+      "This record covers the studio site and one named client build, not a library of client case studies.",
+      "No client results beyond the shipped site — traffic, enquiries received, or revenue — are claimed here.",
     ],
     nextTest: {
-      title: "Add client work when it is ready to show.",
-      body: "Publish case studies with the client's context, the work we did, and outcomes we can support.",
-      success: "A visitor can tell what the studio has shipped and what we contributed.",
+      title: "Publish the next client build the same way.",
+      body: "Add each client project as a receipt: the brief, the constraint, the contribution, and what shipped.",
+      success:
+        "A visitor can tell what the studio has shipped, who did what, and what the client actually got.",
+    },
+    clientWork: {
+      label: "Client work",
+      title: "Taamboolam — hospitality website",
+      rows: [
+        {
+          term: "Client need",
+          value:
+            "A small hospitality business needed a site that could explain the offer and take enquiries.",
+        },
+        {
+          term: "Constraint",
+          value:
+            "Requirements, scope, and price were agreed with the client first, then the build had to hold up against real implementation limits.",
+        },
+        {
+          term: "My role",
+          value:
+            "Designed and shipped the site: interface design, the enquiry flow, production QA, and deployment.",
+        },
+        {
+          term: "Collaboration",
+          value:
+            "Fluxion is a two-person practice with Shreyas; this receipt states my own contribution rather than a split.",
+        },
+        {
+          term: "Revision",
+          value:
+            "Client revisions were worked through in the build rather than handed off at the design file.",
+        },
+        {
+          term: "Shipped",
+          value: "taamboolam2.vercel.app — live, with its enquiry flow deployed.",
+        },
+        {
+          term: "Consequence",
+          value: "The client has a working site that can receive enquiries.",
+        },
+      ],
+      href: "https://taamboolam2.vercel.app/",
+      hrefLabel: "Taamboolam",
     },
     contribution:
-      "Co-founded the studio; designed and built the public website with Shreyas.",
+      "Co-founded the studio; designed and built the public website with Shreyas, and shipped a client build for Taamboolam.",
     disclosure:
-      "Fluxion Studios is a two-person practice. This portfolio page describes the live studio site and my role. It does not invent client results.",
+      "Fluxion Studios is a two-person practice. This portfolio page describes the live studio site, one named client build, and my role. It does not invent client results.",
   },
   {
     id: "daynero",
@@ -888,7 +988,7 @@ export const projects: Project[] = [
       "How can a first-paycheck earner see what is safe to spend today?",
     oneLine:
       "A personal-finance app for first-paycheck earners, centred on what is safe to spend today and why. The full case study is coming soon.",
-    status: "Coming soon",
+    status: "Preview · pre-MVP",
     availability: "coming-soon",
     year: "2026",
     context: "Startup product work",
@@ -1020,6 +1120,15 @@ export function getProject(slug: string) {
     (project) =>
       project.slug === slug || project.legacySlugs?.includes(slug) === true,
   );
+}
+
+/**
+ * What the outbound link actually opens. A product whose case is not yet
+ * published is not "live" — the link opens its public surface, and is
+ * labelled as the preview it is rather than as a shipped outcome.
+ */
+export function liveLinkLabel(project: Project) {
+  return project.availability === "coming-soon" ? "Product preview" : "Open live";
 }
 
 export function getLens(id: LensId) {

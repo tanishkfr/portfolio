@@ -8,91 +8,121 @@ export function MotionDirector() {
 
   useEffect(() => {
     const root = document.documentElement;
+    const view = window;
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
-    // declared up here because the scroll handler below reads it before the
-    // observer that sets it exists
-    let observerFired = false;
+
+    /* Elements waiting for their entrance.
+       ------------------------------------------------------------------
+       Geometry decides, not IntersectionObserver. The entrance's hidden
+       state is `clip-path: inset(0 0 0 100%)`, which clips the element's
+       own box to zero area — and Chromium folds that clip into the
+       observer's intersection rect, so a hidden target reports ratio 0
+       for as long as it is hidden and can never be observed as arriving.
+       The observer could therefore never reveal a default [data-reveal];
+       only a bulk fallback did, and once that fallback had run, anything
+       that mounted later stayed clipped for good — a section could sit in
+       the middle of the viewport, or be scrolled past, and never become
+       readable. getBoundingClientRect ignores clip-path, so the sweep
+       measures the box the reader will actually see. */
+    const pending = new Set<HTMLElement>();
 
     root.classList.add("motion-ready");
 
-    const setMotionPreference = () => {
-      root.dataset.motion = media.matches ? "reduced" : "full";
+    const reveal = (element: HTMLElement) => {
+      pending.delete(element);
+      element.classList.add("is-revealed");
+    };
+
+    const revealAll = () => {
+      pending.forEach((element) => element.classList.add("is-revealed"));
+      pending.clear();
+    };
+
+    /* Entrance thresholds, in the units the observer used: the bottom
+       seventh of the viewport is dead space, and an element must be at
+       least eight percent arrived before its entrance plays. Anything the
+       viewport has already passed, or that spans the whole visible band,
+       or that has no measurable box, fails open instead of staying
+       hidden. */
+    const sweep = () => {
+      if (!pending.size) return;
+      const limit = view.innerHeight * 0.93;
+      pending.forEach((element) => {
+        const box = element.getBoundingClientRect();
+        if (!box.height || !box.width) {
+          reveal(element);
+          return;
+        }
+        if (box.bottom <= 0) {
+          // already scrolled past: fail open
+          reveal(element);
+          return;
+        }
+        if (box.top <= 0 && box.bottom >= limit) {
+          // taller than the visible band: nothing to withhold
+          reveal(element);
+          return;
+        }
+        if (box.top >= limit) return;
+        const arrived = Math.min(box.bottom, limit) - box.top;
+        if (arrived >= box.height * 0.08) reveal(element);
+      });
     };
 
     const updateDocumentState = () => {
       frame = 0;
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+      const scrollable = document.documentElement.scrollHeight - view.innerHeight;
+      const progress = scrollable > 0 ? Math.min(view.scrollY / scrollable, 1) : 0;
       root.style.setProperty("--scroll-progress", progress.toFixed(4));
-      root.dataset.scrolled = window.scrollY > 20 ? "true" : "false";
-
-      /* Backstop. Reveals must fail open: if someone has scrolled a whole
-         screen and the observer has still never fired, it is not going to,
-         and choreography is not worth a blank page. Reveal everything and
-         stop checking. */
-      if (!observerFired && window.scrollY > window.innerHeight) {
-        observerFired = true;
-        document
-          .querySelectorAll<HTMLElement>("[data-reveal]:not(.is-revealed)")
-          .forEach((element) => element.classList.add("is-revealed"));
+      root.dataset.scrolled = view.scrollY > 20 ? "true" : "false";
+      /* A sweep can never be allowed to withhold content: if measuring
+         throws, the page fails open rather than staying blank. */
+      try {
+        sweep();
+      } catch {
+        revealAll();
       }
     };
 
     const onScroll = () => {
       if (frame) return;
-      frame = window.requestAnimationFrame(updateDocumentState);
+      frame = view.requestAnimationFrame(updateDocumentState);
+    };
+
+    const setMotionPreference = () => {
+      root.dataset.motion = media.matches ? "reduced" : "full";
+      // Reduced motion renders everything at once; the CSS already forces
+      // it, and marking the elements keeps the state honest.
+      if (media.matches) revealAll();
     };
 
     setMotionPreference();
     updateDocumentState();
     media.addEventListener("change", setMotionPreference);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-
-    // With reduced motion, or without the observer, content is simply
-    // present — arrival is acknowledged, never required.
-    const instant = media.matches || !("IntersectionObserver" in window);
-
-    let observer: IntersectionObserver | null = null;
-    if (!instant) {
-      observer = new IntersectionObserver(
-        (entries) => {
-          /* The first delivery is the roster, not an arrival: the browser
-             reports every observed target once, mostly with
-             isIntersecting false. Treating that as "the observer fired"
-             would disarm the fail-open backstop for good and leave deep
-             sections clipped after a fast scroll. Only an actual arrival
-             counts. */
-          if (!entries.some((entry) => entry.isIntersecting)) return;
-          observerFired = true;
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            entry.target.classList.add("is-revealed");
-            observer?.unobserve(entry.target);
-          });
-        },
-        { rootMargin: "0px 0px -7%", threshold: 0.08 },
-      );
-    }
+    view.addEventListener("scroll", onScroll, { passive: true });
+    view.addEventListener("resize", onScroll);
 
     const track = (element: HTMLElement) => {
       if (element.classList.contains("is-revealed")) return;
-      if (!observer) {
-        element.classList.add("is-revealed");
+      if (media.matches) {
+        reveal(element);
         return;
       }
-      /* Anything already on screen is revealed outright rather than waiting
-         on the observer. Entrances acknowledge arrival, so there is nothing
-         to acknowledge about content that was here on arrival — and it means
-         a first screen can never be left blank if the observer is throttled
-         or never fires. */
+      /* Content here on arrival has nothing to acknowledge: reveal it
+         outright rather than waiting on a frame, so a first screen can
+         never be left blank. Content the viewport has already passed
+         fails open for the same reason. */
       const box = element.getBoundingClientRect();
-      if (box.top < window.innerHeight && box.bottom > 0) {
-        element.classList.add("is-revealed");
+      if (box.top < view.innerHeight && box.bottom > 0) {
+        reveal(element);
         return;
       }
-      observer.observe(element);
+      if (box.bottom <= 0) {
+        reveal(element);
+        return;
+      }
+      pending.add(element);
     };
 
     const trackTree = (node: ParentNode) => {
@@ -104,26 +134,41 @@ export function MotionDirector() {
 
     trackTree(document);
 
-    /* Changing read mode remounts whole sections without changing the
-       route, so this effect does not re-run. Reveals that mount later must
-       still be picked up, or they stay at opacity 0 for good — which would
-       leave a reviewer returning from Quick review on a blank page. */
+    /* Changing read mode, or any later mount, replaces sections without
+       changing the route, so this effect does not re-run. Reveals that
+       mount later must still be caught or they stay clipped for good. */
     const mutations = new MutationObserver((records) => {
+      let added = false;
       records.forEach((record) =>
         record.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement) trackTree(node);
+          if (node instanceof HTMLElement) {
+            trackTree(node);
+            added = true;
+          }
         }),
       );
+      if (added) onScroll();
     });
     mutations.observe(document.body, { childList: true, subtree: true });
 
+    /* A sweep only runs on scroll, so content that becomes visible through
+       a reflow — an image arriving, a section expanding — would otherwise
+       wait for a scroll that may never come. Watching the document's own
+       size covers those without a timer. */
+    let resizeObserver: ResizeObserver | null = null;
+    if ("ResizeObserver" in view) {
+      resizeObserver = new ResizeObserver(onScroll);
+      resizeObserver.observe(document.documentElement);
+    }
+
     return () => {
-      observer?.disconnect();
       mutations.disconnect();
+      resizeObserver?.disconnect();
       media.removeEventListener("change", setMotionPreference);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (frame) window.cancelAnimationFrame(frame);
+      view.removeEventListener("scroll", onScroll);
+      view.removeEventListener("resize", onScroll);
+      if (frame) view.cancelAnimationFrame(frame);
+      pending.clear();
     };
   }, [pathname]);
 
