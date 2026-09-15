@@ -598,12 +598,12 @@ function FluxionArtifact() {
         </div>
         <p className="fluxion-demo-role">
           Co-founder: structure, visual design, copy, motion, frontend, and the
-          enquiry form, with Shreyas.
+          enquiry form, built together with my co-founder.
         </p>
         <dl className="fluxion-demo-facts">
           <div>
             <dt>Studio</dt>
-            <dd>Two-person practice with Shreyas, in Bengaluru.</dd>
+            <dd>Two-person practice, in Bengaluru.</dd>
           </div>
           <div>
             <dt>Live now</dt>

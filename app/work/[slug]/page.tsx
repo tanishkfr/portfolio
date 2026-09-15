@@ -8,6 +8,7 @@ import { CaseArtifact } from "../../components/case-artifacts";
 import { DayneroPreview } from "../../components/daynero-preview";
 import { TransitionLink } from "../../components/transition-link";
 import {
+  caseCtaLabels,
   disclosure,
   getProject,
   isLensId,
@@ -52,21 +53,19 @@ export async function generateMetadata({
   };
 }
 
-/** Where a case sends you back, resolved from the origin it was opened from. */
+/** Where a case sends you back, resolved from the origin it was opened from.
+    Both readings land on Projects — the anchor picks the sheet or the row. */
 function resolveReturn(slug: string, fromValue?: string) {
   if (fromValue === "explore") {
-    return { href: `/#piece-${slug}`, label: "← Back to Explore" };
+    return { href: `/#piece-${slug}` };
   }
   if (fromValue === "work") {
-    return { href: `/?mode=review#project-${slug}`, label: "← All work" };
+    return { href: `/?mode=review#project-${slug}` };
   }
   if (isLensId(fromValue)) {
-    return {
-      href: `/?lens=${fromValue}#work`,
-      label: "← Back to Explore",
-    };
+    return { href: `/?lens=${fromValue}#work` };
   }
-  return { href: "/?mode=review#work", label: "← All work" };
+  return { href: "/?mode=review#work" };
 }
 
 /* The reasoning layer: each case composes a different argument from the
@@ -191,17 +190,15 @@ function ProjectActions({ project }: { project: Project }) {
         href={project.liveUrl}
         target="_blank"
         rel="noreferrer"
-        aria-label={`Open ${project.title} live work in a new tab`}
+        aria-label={`${project.liveLabel} (opens in a new tab)`}
+        data-external="true"
       >
-        {project.artifact === "fluxion"
-          ? "Visit the studio site"
-          : "Open the live project"}{" "}
-        <span aria-hidden="true">↗</span>
+        {project.liveLabel} <span className="xp-cta-arrow" aria-hidden="true">↗</span>
         <small>New tab</small>
       </a>
       {project.sourceUrl ? (
-        <a href={project.sourceUrl} target="_blank" rel="noreferrer">
-          Inspect the source <span aria-hidden="true">↗</span>
+        <a href={project.sourceUrl} target="_blank" rel="noreferrer" data-external="true">
+          Inspect the source <span className="xp-cta-arrow" aria-hidden="true">↗</span>
           <span className="sr-only"> (opens in a new tab)</span>
         </a>
       ) : null}
@@ -255,8 +252,12 @@ export default async function ProjectPage({
     >
       <RoomPaint slug={project.slug} />
       <div className="case-return">
-        <TransitionLink href={returnTo.href}>{returnTo.label}</TransitionLink>
-        <span>{signal.focus}</span>
+        <p className="case-crumb">
+          <TransitionLink href={returnTo.href}>← Projects</TransitionLink>
+          <span aria-hidden="true">/</span>
+          <span className="case-crumb-here">{project.title}</span>
+        </p>
+        <span className="case-signal">{signal.focus}</span>
       </div>
 
       <a className="case-skip" href="#case-writing">
@@ -472,11 +473,9 @@ export default async function ProjectPage({
           >
             <span>{next.form}</span>
             <strong>{next.title}</strong>
-            <p>{next.thesis}</p>
-            <span aria-hidden="true">
-              {next.availability === "coming-soon"
-                ? "See the preview →"
-                : "Read the case →"}
+            <p>{next.plain}</p>
+            <span className="xp-cta-arrow" aria-hidden="true">
+              {caseCtaLabels(next).internal} →
             </span>
           </TransitionLink>
           {secondary ? (
@@ -487,6 +486,9 @@ export default async function ProjectPage({
               Also: {secondary.title} →
             </Link>
           ) : null}
+          <p className="case-end-flow">
+            <TransitionLink href={returnTo.href}>← Back to projects</TransitionLink>
+          </p>
         </section>
       ) : null}
     </main>

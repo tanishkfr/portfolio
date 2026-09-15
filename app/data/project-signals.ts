@@ -15,7 +15,7 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     status: "Live studio site",
     focus: "Two-person studio · public website",
     proof: "Live site with founders, process, services, and an enquiry form.",
-    interaction: "I designed and built the client-facing site with Shreyas.",
+    interaction: "I designed and built the client-facing site end to end.",
     exposure: {
       surface: "The homepage introduces the studio and its services.",
       rule: "The site itself is the first example of our web work.",

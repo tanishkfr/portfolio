@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { modeHref } from "./mode";
 
 /**
  * The global footer is the folio resolving: the name returns in its
@@ -58,8 +59,8 @@ export function SiteFooter({
         <a href="https://github.com/tanishkfr" target="_blank" rel="noreferrer">
           GitHub <span aria-hidden="true">↗</span>
         </a>
-        <Link href="/">Explore</Link>
-        <Link href="/?mode=review">Work</Link>
+        <Link href={modeHref("full")}>Projects</Link>
+        <Link href={modeHref("review")}>Quick view</Link>
         <Link href="/about">About</Link>
       </nav>
 

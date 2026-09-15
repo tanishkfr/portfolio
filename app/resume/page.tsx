@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PrintResume } from "../components/print-resume";
 
 const description =
-  "Résumé — Tanishk, interaction designer in Bengaluru. Experience, selected work, leadership, education and tools.";
+  "Résumé — Tanishk, product and interaction designer in Bengaluru. Experience, selected work, leadership, education and tools.";
 
 export const metadata: Metadata = {
   title: "Résumé",
@@ -261,7 +261,7 @@ export default function ResumePage() {
       </section>
 
       <p className="resume-back">
-        <Link href="/">← Selected work</Link>
+        <Link href="/">← Back to projects</Link>
         <Link href="/about">About</Link>
       </p>
     </main>

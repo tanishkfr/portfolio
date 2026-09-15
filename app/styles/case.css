@@ -70,8 +70,28 @@
   transition: color var(--beat) var(--ease-out);
 }
 
-.case-return a:hover {
+.case-return a:hover,
+.case-return a:focus-visible {
   color: var(--ink);
+}
+
+/* the breadcrumb answers where you are: Projects / this case. The link
+   is the way back; the tail is the room you are standing in. */
+.case-crumb {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.case-crumb span[aria-hidden="true"] {
+  color: var(--muted);
+}
+
+.case-crumb-here {
+  color: var(--muted);
 }
 
 .case-return span {
@@ -2057,6 +2077,26 @@
   border-color: var(--accent);
 }
 
+/* the quiet way out at the case's end: where you are, how to go back.
+   One mono line — the relations above already carry the onward step. */
+.case-end-flow {
+  margin: 0.6rem 0 0;
+}
+
+.case-end-flow a {
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: color var(--beat) var(--ease-out);
+}
+
+.case-end-flow a:hover,
+.case-end-flow a:focus-visible {
+  color: var(--ink);
+}
+
 /* ---------- daynero preview ---------- */
 
 .daynero-preview {
@@ -2498,8 +2538,9 @@
    block under them. Same type, same labels, no shrinking. */
 @media (max-width: 28rem) {
   /* the category label is orientation, not content: at 320 the
-     breadcrumb keeps the return link alone instead of clustering */
-  .case-return span:last-child {
+     breadcrumb keeps the return link and the room name, and only the
+     project signal steps aside */
+  .case-return .case-signal {
     display: none;
   }
 }

@@ -9,14 +9,16 @@ import { SiteFooter } from "./site-footer";
 /**
  * The homepage has two readings of the same work.
  *
- *   `/`              → Explore, the authored folio. The primary entrance.
- *   `/?mode=review`  → Work, the concise visual index.
+ *   `/`              → Explore, the authored folio. The primary entrance
+ *                      of Projects.
+ *   `/?mode=review`  → Quick view, the concise index.
  *
  * The mode is derived from the URL, never from scroll or a session guess:
- * reloading Explore keeps Explore, reloading Work keeps Work, and a direct
- * case URL is unaffected. The inline script in layout.tsx applies the mode
- * before first paint; this effect only reconciles state after a client
- * navigation that changed the query without remounting the route.
+ * reloading Explore keeps Explore, reloading Quick view keeps Quick view,
+ * and a direct case URL is unaffected. The inline script in layout.tsx
+ * applies the mode before first paint; this effect only reconciles state
+ * after a client navigation that changed the query without remounting
+ * the route.
  *
  * Both readings resolve onto the same global footer: Explore's narrative
  * close hands off to it, and the review index renders it directly.

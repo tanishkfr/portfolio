@@ -40,7 +40,11 @@ test("server-renders the folio at / and the concise index at ?mode=review", asyn
   assert.match(folio, /<span class="sr-only">Tanishk<\/span>/);
   assert.match(folio, /Things that only make sense in (<strong>)?motion(<\/strong>)?\./);
   assert.match(folio, /Product \/ Interaction Designer · Bengaluru/);
-  assert.match(folio, /Every object below is live/);
+  assert.match(folio, /One sheet per project/);
+  /* the project count is stated once on the folio — the handoff line —
+     never again in the cover deck or the field head */
+  assert.equal((folio.match(/[Ss]ix/g) ?? []).length, 1);
+  assert.match(folio, /Six projects · each one live online/);
   assert.equal((folio.match(/data-explore-piece/g) ?? []).length, 6);
   /* The folio ends once: the narrative close hands off to the global
      footer, which carries the page's only contact address. */
@@ -56,9 +60,21 @@ test("server-renders the folio at / and the concise index at ?mode=review", asyn
     "the close precedes the global footer",
   );
   assert.match(folio, /id="work"/);
-  assert.match(folio, />Work</);
+  /* One Projects destination in the nav, with the two readings as an
+     explicit control beside it — not two top-level pages repeating
+     each other. */
+  assert.match(folio, />Projects</);
+  assert.match(folio, />Quick view</);
   assert.match(folio, />Explore</);
-  assert.ok(folio.includes('href="/?mode=review"'), "Work is a real URL");
+  assert.match(folio, />Résumé</);
+  assert.ok(folio.includes('href="/?mode=review"'), "Quick view is a real URL");
+  assert.ok(folio.includes('href="/resume"'), "Résumé is a real destination");
+  /* Utility CTAs are literal: staying inside is named as a case study,
+     leaving names what opens — and never the old ambiguous pair. */
+  assert.match(folio, /Read case study/);
+  assert.ok(folio.includes("Visit studio site"), "Fluxion's CTA names the studio site");
+  assert.ok(folio.includes("Open interactive essay"), "Invisible Interfaces' CTA names the essay");
+  assert.doesNotMatch(folio, /Enter the case|>Open live</);
   assert.match(folio, /location\.search/);
   assert.match(folio, /data-mode="full"/);
   assert.match(folio, /theme-color" content="#e8eae4"/);
@@ -78,6 +94,11 @@ test("server-renders the folio at / and the concise index at ?mode=review", asyn
   assert.match(html, /class="review"/);
   assert.match(html, /Six selected projects\./);
   assert.match(html, /the row.s own object is live/);
+  /* the index names itself as the other reading of the same projects */
+  assert.match(html, /The same projects as Explore/);
+  assert.ok(html.includes('href="/"'), "Explore is a real URL");
+  /* the fast list carries the same literal internal CTA as the folio */
+  assert.match(html, /Read case study/);
 
   const works = [
     { slug: "fluxion-studios", title: "Fluxion Studios", artifact: "fluxion" },
@@ -109,7 +130,6 @@ test("server-renders the folio at / and the concise index at ?mode=review", asyn
   assert.match(html, /Illustrative spending example/);
 
   // Both readings are offered as real URLs, and the URL selects the reading.
-  assert.ok(html.includes('href="/"'), "Explore is a real URL");
   /* Work resolves onto the global closing plate exactly once; Explore keeps
      its own authored close and must not double-end. */
   assert.equal((html.match(/class="site-footer"/g) ?? []).length, 1);
@@ -165,6 +185,9 @@ test("renders an honest Daynero preview and names its case boundary", async () =
     "What you can spend today, and why.",
     "first-paycheck",
     "Visit daynero.com",
+    // orientation: the preview is part of Projects too
+    "← Projects / Daynero",
+    "Back to projects",
   ]) {
     assert.ok(html.includes(phrase), phrase);
   }
@@ -188,6 +211,7 @@ test("server-renders four interactive, evidence-bounded published cases", async 
       summary:
         "Mark the part of an interface that shaped your judgment, explain it, then compare your reading with five others.",
       proof: "Or name a region",
+      external: "Open interactive project",
       pressed: true,
     },
     {
@@ -195,6 +219,7 @@ test("server-renders four interactive, evidence-bounded published cases", async 
       summary:
         "Each machine-written claim shows its evidence. The person can accept it, rewrite it, or strike it, and their version leads the final page.",
       proof: "Reply to the machine reading",
+      external: "Open interactive project",
       pressed: true,
     },
     {
@@ -202,6 +227,7 @@ test("server-renders four interactive, evidence-bounded published cases", async 
       summary:
         "A staged restoration runs only while the tab is hidden, then shows what changed, what did not, and how to discard the result.",
       proof: "Inspect a delegation phase",
+      external: "Open interactive essay",
       pressed: true,
     },
     {
@@ -209,6 +235,7 @@ test("server-renders four interactive, evidence-bounded published cases", async 
       summary:
         "Write a provisional rule, test it against three unlike cases, and keep every hold, refinement, and fracture.",
       proof: "Your current wording",
+      external: "Open interactive tool",
       pressed: false,
     },
   ];
@@ -220,6 +247,7 @@ test("server-renders four interactive, evidence-bounded published cases", async 
 
     assert.ok(html.includes(entry.summary), `${entry.slug} summary`);
     assert.ok(html.includes(entry.proof), `${entry.slug} instrument`);
+    assert.ok(html.includes(entry.external), `${entry.slug} external CTA names what opens`);
     for (const phrase of [
       // the three-beat read replaced the five chapters, and the situation
       // states the problem the project answers
@@ -232,14 +260,19 @@ test("server-renders four interactive, evidence-bounded published cases", async 
       "Built and working",
       "Not yet proven",
       "Next test",
-      "Open the live project",
       "Inspect the source",
       // the case hands over something real to inspect
       "Try the interaction",
       "What this shows",
+      // orientation: the breadcrumb names the destination and the room,
+      // and the case ends with the quiet way back to the projects
+      "← Projects",
+      "← Back to projects",
     ]) {
       assert.match(html, new RegExp(phrase));
     }
+    // the retired, ambiguous CTA must be gone everywhere
+    assert.doesNotMatch(html, /Open the live project/);
     // the retired publication scaffolding must be gone
     assert.doesNotMatch(html, /What I made accountable|What to remember|01 \/ Context|case-chapter/);
     // Every instrument publishes its status to assistive tech.
@@ -283,10 +316,17 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   assert.equal(aboutResponse.status, 200);
   const aboutHtml = await aboutResponse.text();
   assert.match(aboutHtml, /I design interactions, then build the working version/);
+  /* the page reads person-first: who, where, what he is doing now */
+  assert.match(aboutHtml, /product and interaction designer in Bengaluru/);
+  assert.match(aboutHtml, /Human Center(ed)? Design at Srishti Manipal/);
+  assert.match(aboutHtml, /Tanishk at a glance/);
+  assert.match(aboutHtml, /The work, right now\./);
+  assert.match(aboutHtml, /five-person team/);
+  assert.match(aboutHtml, /Taamboolam/);
+  assert.match(aboutHtml, /Ariadne/);
   assert.match(aboutHtml, /Fluxion Studios/);
   assert.match(aboutHtml, /its full case is still being documented/);
-  assert.match(aboutHtml, /The four independent projects/);
-  assert.match(aboutHtml, /Human-Centred Design at Srishti/);
+  assert.match(aboutHtml, /four independent projects/);
   assert.match(aboutHtml, /I work with AI deliberately/);
   assert.match(aboutHtml, /href="\/work\/pentimento\?from=work"/);
   assert.match(aboutHtml, /rel="canonical" href="https:\/\/portfolio\.test\/about"/);
@@ -336,6 +376,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     siteHeader,
     mode,
     css,
+    invisibleAway,
     nextConfig,
     packageJson,
     vercel,
@@ -354,6 +395,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     readFile(new URL("../app/components/site-header.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/mode.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/styles/system.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/invisible-away.tsx", import.meta.url), "utf8"),
     readFile(new URL("../next.config.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../vercel.json", import.meta.url), "utf8"),
@@ -462,6 +504,29 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(exploreCss, /position:\s*sticky/);
   assert.match(exploreCss, /clip-path/);
   assert.match(exploreCss, /prefers-reduced-motion:\s*reduce/);
+
+  /* P0 REGRESSION — the Invisible Interfaces example return.
+     A pinned sheet's on-screen box is fixed at one viewport, so content the
+     sheet grows downward can never be scrolled into view: the next sticky
+     sheet slides over it before the result is readable. The inspection is
+     therefore a stage-contained overlay layer (role=dialog, positioned
+     against .xp-piece-stage), never an in-flow expansion — the sheet keeps
+     its size, the next sheet keeps its arrival, and the result stays inside
+     the intended panel. */
+  const awayExampleRule = exploreCss.match(/\.xp-away-example\s*\{[^}]*\}/)?.[0] ?? "";
+  assert.match(
+    awayExampleRule,
+    /position:\s*absolute/,
+    "the example return must be a stage-contained overlay, not in-flow growth",
+  );
+  assert.match(awayExampleRule, /inset:\s*0/);
+  assert.match(awayExampleRule, /overflow:\s*hidden auto/);
+  assert.match(invisibleAway, /role="dialog"/);
+  assert.match(invisibleAway, /aria-modal="true"/);
+  assert.match(invisibleAway, /aria-expanded=\{showReturn\}/);
+  assert.match(invisibleAway, /"Escape"/);
+  /* the modal claim is honored: Tab is wrapped inside the dialog */
+  assert.match(invisibleAway, /event\.key !== "Tab"/);
   assert.match(projectPage, /DayneroPreview/);
   assert.match(projectPage, /CaseArtifact/);
   assert.match(projectPage, /project\.sourceUrl \?/);

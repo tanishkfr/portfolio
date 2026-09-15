@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { type CSSProperties } from "react";
-import { projects, liveLinkLabel, type Project } from "../data/portfolio";
+import { caseCtaLabels, projects, type Project } from "../data/portfolio";
+import { modeHref } from "./mode";
 import { SiteFooter } from "./site-footer";
 import { TransitionLink } from "./transition-link";
 import { AtlasRule } from "./atlas-rule";
@@ -22,10 +23,12 @@ const order = [
 ];
 
 /**
- * Work — the fast index.
+ * Quick view — the fast index.
  *
  * One job: let a reviewer see every project, clearly, without ceremony.
- * The identity lives in the header and in Explore; this page is a list.
+ * The identity lives in the header and in Explore; this page is a list,
+ * and it says so — the opening names itself as the other reading of the
+ * same projects Explore tells properly.
  *
  * Each row's middle column is the project's own working object — the same
  * instruments the folio operates, at index scale. Nothing here is a
@@ -69,11 +72,16 @@ export function ReviewIndex() {
           In the order they were made. Each row links to the full case, and the
           row&rsquo;s own object is live — mark it, strike it, revise it.
         </p>
+        <p className="review-mode">
+          The same projects as Explore, without the ceremony:{" "}
+          <Link href={modeHref("full")}>
+            Explore <span aria-hidden="true">→</span>
+          </Link>
+        </p>
       </header>
 
       <ol className="review-list">
         {ordered.map((project) => {
-          const soon = project.availability === "coming-soon";
           const href = `/work/${project.slug}?from=work`;
           return (
             <li
@@ -102,11 +110,12 @@ export function ReviewIndex() {
                 <p className="work-row-status">{project.status}</p>
                 <p className="work-row-actions">
                   <TransitionLink href={href}>
-                    {soon ? "See the preview" : "Read case"}
-                    <span aria-hidden="true"> →</span>
+                    {caseCtaLabels(project).internal}
+                    <span className="xp-cta-arrow" aria-hidden="true"> →</span>
                   </TransitionLink>
-                  <a href={project.liveUrl} target="_blank" rel="noreferrer">
-                    {liveLinkLabel(project)} <span aria-hidden="true">↗</span>
+                  <a href={project.liveUrl} target="_blank" rel="noreferrer" data-external="true">
+                    {caseCtaLabels(project).external}
+                    <span className="xp-cta-arrow" aria-hidden="true"> ↗</span>
                     <span className="sr-only"> (opens in a new tab)</span>
                   </a>
                 </p>
@@ -119,7 +128,7 @@ export function ReviewIndex() {
       <footer className="review-foot">
         <p>
           The four independent projects are mine end to end. Fluxion is a
-          two-person studio I co-founded with Shreyas. Daynero is commercial
+          two-person studio I co-founded. Daynero is commercial
           team work; its full case is still being documented.
         </p>
         <p className="review-foot-links">

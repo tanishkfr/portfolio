@@ -475,39 +475,14 @@
   }
 }
 
-/* invisible: vertical composition, and the interactive control anchored
-   to the top of the panel so it is reachable while the sheet is on
-   screen. The sheet's content must fit its box, or the control is
-   clipped and the next sheet covers it. */
-.xp-piece[data-project="invisible-interfaces"] {
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr);
-}
-
-.xp-piece[data-project="invisible-interfaces"] .xp-piece-copy {
-  max-width: none;
-  align-self: start;
-  margin-bottom: clamp(1.4rem, 4vh, 2.6rem);
-}
-
-.xp-piece[data-project="invisible-interfaces"] {
-  min-height: calc(100svh - var(--header-h) + 6vh);
-}
-
-.xp-piece[data-project="invisible-interfaces"] .xp-piece-stage {
-  min-height: 0;
-  align-self: start;
-}
-
-.xp-piece[data-project="invisible-interfaces"] .xp-away {
-  align-content: start;
-  min-height: 0;
-  padding: clamp(1.4rem, 3vh, 2.2rem) clamp(1.4rem, 3vw, 2.4rem);
-}
-
-.xp-piece[data-project="invisible-interfaces"] .xp-away-title {
-  font-size: clamp(1.6rem, 2.6vw, 2.3rem);
-}
+/* invisible: the standard sheet composition. The vertical recut existed
+   to give the inline expansion room — but a pinned sheet's on-screen box
+   is fixed, so anything the sheet grows downward lands behind the next
+   sheet. The expansion is now a fixed inspection layer (see
+   .xp-away-example), so the demo returns to the shared copy-stage
+   arrangement and the whole interaction — receipt and trigger — fits the
+   pinned viewport instead of being reachable for a moment and then
+   covered. */
 
 /* ---------- orientation ---------- */
 
@@ -549,6 +524,33 @@
   text-wrap: pretty;
 }
 
+/* the two readings of one project set, stated where the set begins:
+   Explore here, Quick view one click away — same projects, plain list */
+.xp-field-mode {
+  margin: 0;
+  max-width: 44ch;
+  color: var(--ink-soft);
+  font-size: var(--step-0);
+  line-height: 1.5;
+  text-align: right;
+}
+
+.xp-field-mode a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 2px;
+  transition:
+    color var(--beat) var(--ease-out),
+    border-color var(--beat) var(--ease-out);
+}
+
+.xp-field-mode a:hover,
+.xp-field-mode a:focus-visible {
+  color: var(--registrar);
+  border-color: var(--registrar);
+}
+
 .xp-field-index {
   padding-inline: var(--page-gutter);
   padding-bottom: clamp(4rem, 8vw, 7rem);
@@ -570,8 +572,8 @@
   grid-template-columns: 3rem minmax(10rem, 1fr) minmax(5rem, 0.3fr);
   gap: 1rem;
   align-items: baseline;
-  min-height: 3.75rem;
-  padding: 0.9rem 0;
+  min-height: 4.1rem;
+  padding: 1.05rem 0;
   color: var(--ink);
   text-decoration: none;
 }
@@ -594,12 +596,21 @@
   font-family: var(--display);
   font-size: var(--step-1);
   font-weight: 460;
+  transition:
+    color var(--beat) var(--ease-out),
+    font-stretch 240ms var(--ease-out);
 }
 
 .xp-field-index a:hover strong,
 .xp-field-index a:focus-visible strong,
 .xp-field-index li[data-current="true"] strong {
   color: var(--registrar);
+}
+
+/* the row you point at opens its width a step — affordance without motion */
+.xp-field-index a:hover strong,
+.xp-field-index a:focus-visible strong {
+  font-stretch: 106%;
 }
 
 /* the sheet you are reading is a position, not a preference: its number
@@ -715,6 +726,15 @@
 .xp-piece-title a {
   color: inherit;
   text-decoration: none;
+  /* the width answers the pointer: the title breathes one step wider,
+     the same state grammar the header identity uses */
+  font-stretch: var(--poster-stretch, 118%);
+  transition: font-stretch 240ms var(--ease-out);
+}
+
+.xp-piece-title a:hover,
+.xp-piece-title a:focus-visible {
+  font-stretch: calc(var(--poster-stretch, 118%) + 4%);
 }
 
 .xp-piece-title a::after {
@@ -744,9 +764,17 @@
   line-height: 1.55;
 }
 
+.xp-piece-plain {
+  max-width: 34rem;
+  margin-top: 1.05rem;
+  font-size: var(--step-0);
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--room-ink) 74%, transparent);
+}
+
 .xp-piece-thesis {
   max-width: 34ch;
-  margin-top: 0.7rem;
+  margin-top: 1.15rem;
   font-family: var(--display);
   font-size: var(--step-1);
   line-height: 1.4;
@@ -757,7 +785,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem 1.35rem;
-  margin-top: clamp(1.5rem, 3vh, 2.4rem);
+  margin-top: clamp(1.9rem, 4vh, 3rem);
 }
 
 .xp-piece-actions a {
@@ -784,6 +812,13 @@
 .xp-piece-actions a:hover::after,
 .xp-piece-actions a:focus-visible::after {
   transform: scaleX(1);
+}
+
+/* the shared external lift-out lives in system.css; the internal
+   reading action steps forward here */
+.xp-piece-actions a:first-child:hover .xp-cta-arrow,
+.xp-piece-actions a:first-child:focus-visible .xp-cta-arrow {
+  transform: translateX(3px);
 }
 
 .xp-piece-stage {
@@ -1208,22 +1243,92 @@
   color: #0f0e0a;
 }
 
+/* ---------- the example-return inspection ----------
+   Opening the example never grows the sheet: a pinned sheet's on-screen
+   box is fixed at one viewport, so in-flow growth lands behind the
+   incoming sheet before it can be read. The inspection is instead a
+   panel layered over the sheet's own stage — the nearest positioned
+   ancestor is .xp-piece-stage — so the expansion stays inside the
+   intended panel while the sheet keeps its size and the next sheet
+   keeps its arrival. Rows auto/1fr/auto pin the bar and caption and
+   give the image exactly the room left, so nothing can overflow the
+   panel at any sheet height. */
 .xp-away-example {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
   display: grid;
-  gap: 0.6rem;
-  max-width: 40rem;
-  margin-top: 1.2rem;
+  grid-template-rows: auto minmax(10rem, 1fr) auto;
+  gap: 0.7rem;
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  padding: clamp(0.9rem, 2vh, 1.6rem) clamp(0.9rem, 1.6vw, 1.5rem);
+  background: rgba(15, 14, 10, 0.97);
+  border: 1px solid rgba(248, 239, 214, 0.22);
+  color: #f8efd6;
+  min-width: 0;
+}
+
+.xp-away-example-bar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem 1.6rem;
+  min-width: 0;
+  background: rgba(15, 14, 10, 0.97);
+  padding-block: 0.4rem;
+}
+
+.xp-away-example-bar p {
+  margin: 0;
+  min-width: 0;
+  max-width: 46ch;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: rgba(248, 239, 214, 0.74);
+}
+
+.xp-away-example-bar strong {
+  color: #d9a951;
+  font-weight: 600;
+}
+
+.xp-away-example-close {
+  min-height: 2.75rem;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0.6rem 0.85rem;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  white-space: nowrap;
+}
+
+.xp-away-example-close:hover,
+.xp-away-example-close:focus-visible {
+  background: #f8efd6;
+  color: #0f0e0a;
 }
 
 .xp-away-example img {
+  display: block;
   width: 100%;
-  max-height: 17rem;
-  height: auto;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
   object-fit: contain;
+  background: #0a0906;
   border: 1px solid rgba(248, 239, 214, 0.22);
 }
 
 .xp-away-example small {
+  min-width: 0;
   color: rgba(248, 239, 214, 0.64);
   font-family: var(--mono);
   font-size: var(--step--1);
@@ -1463,7 +1568,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   .xp-close-cta span,
-  .xp-close-cta::after {
+  .xp-close-cta::after,
+  .xp-piece-title a,
+  .xp-field-index strong,
+  .xp-cta-arrow,
+  .xp-piece-actions a::after {
     transition: none;
   }
 }
@@ -1802,6 +1911,10 @@
     max-width: 38ch;
   }
 
+  .xp-field-mode {
+    text-align: left;
+  }
+
   /* Six ordinary vertical rows, not a sideways strip. */
   .xp-field-index {
     padding-right: var(--page-gutter);
@@ -1820,7 +1933,7 @@
 
   .xp-field-index a {
     grid-template-columns: 2.5rem minmax(0, 1fr) auto;
-    padding: 1rem 0;
+    padding: 1.15rem 0;
   }
 
   .xp-field-index small {
@@ -1841,7 +1954,7 @@
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
-    gap: 2rem;
+    gap: 2.4rem;
     min-height: auto;
     padding: 4.6rem var(--page-gutter) 1.4rem;
     scroll-margin-top: calc(var(--header-h) + 0.5rem);
@@ -1877,6 +1990,14 @@
   .xp-piece-status {
     grid-column: 1;
     grid-row: 3;
+  }
+
+  /* The stage keeps a generous floor on phones (min-height below), so the
+     same stage-contained panel works at every width: bar and caption pin
+     as rows, the image takes the room left, and the panel scrolls
+     internally if a very short stage needs it. */
+  .xp-away-example-bar {
+    gap: 0.5rem 1rem;
   }
 
   .xp-piece-spine {
@@ -2062,6 +2183,11 @@
   .xp-away,
   .xp-atlas,
   .xp-day {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .xp-away-example {
     background: Canvas;
     color: CanvasText;
   }
