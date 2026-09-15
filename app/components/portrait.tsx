@@ -515,7 +515,6 @@ const PORTRAITS: Record<string, PortraitConfig> = {
     ambient: 0.44,
     tune: [0.44, 2.0],
     ground: "#150f0c",
-    pointerRadius: 8,
     shape: evidenceShape,
     glyphAt: evidenceGlyphAt,
     color: (t) =>
