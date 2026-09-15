@@ -38,9 +38,9 @@ test("server-renders the folio at / and the concise index at ?mode=review", asyn
      Tanishk without JavaScript. */
   assert.match(folio, /xp-cover-name" aria-hidden="true"><span class="xp-cover-letter">T</);
   assert.match(folio, /<span class="sr-only">Tanishk<\/span>/);
-  assert.match(folio, /Things that only make sense in (<strong>)?motion(<\/strong>)?\./);
+  assert.match(folio, /I design what interfaces (<strong>)?do(<\/strong>)?\./);
   assert.match(folio, /Product \/ Interaction Designer · Bengaluru/);
-  assert.match(folio, /One sheet per project/);
+  assert.match(folio, /Selected projects/);
   /* the project count is stated once on the folio — the handoff line —
      never again in the cover deck or the field head */
   assert.equal((folio.match(/[Ss]ix/g) ?? []).length, 1);
@@ -93,7 +93,7 @@ test("server-renders the folio at / and the concise index at ?mode=review", asyn
 
   assert.match(html, /class="review"/);
   assert.match(html, /Six selected projects\./);
-  assert.match(html, /the row.s own object is live/);
+  assert.match(html, /row.s portrait is the project.s behaviour/);
   /* the index names itself as the other reading of the same projects */
   assert.match(html, /The same projects as Explore/);
   assert.ok(html.includes('href="/"'), "Explore is a real URL");
@@ -117,17 +117,23 @@ test("server-renders the folio at / and the concise index at ?mode=review", asyn
   assert.equal((html.match(/class="work-row"/g) ?? []).length, 6);
 
   /* THE INDEX MUST SHOW WORK, NOT ONLY DESCRIBE IT. Every row's stage is
-     a native, operating instrument — the same objects the folio runs —
-     never a screenshot standing in for a behaviour. */
-  for (const instrument of ["xp-flux", "xp-dod", "xp-pent", "xp-away", "xp-atlas", "xp-day"]) {
-    assert.match(html, new RegExp(`class="xp-room-shot ${instrument}`), instrument);
+      the project's portrait — an abstract, living representation built
+      from the folio's own computational material, never a screenshot. */
+  assert.ok(
+    (html.match(/class="xp-portrait/g) ?? []).length >= 6,
+    "all six rows carry their portrait",
+  );
+  for (const artifact of [
+    "design-or-disaster",
+    "pentimento",
+    "invisible-interfaces",
+    "atlas",
+    "fluxion-studios",
+    "daynero",
+  ]) {
+    assert.match(html, new RegExp(`data-portrait="${artifact}"`), artifact);
   }
-  assert.match(html, /\/projects\/design-or-disaster\/case-010\.jpg/);
-  assert.match(html, /\/projects\/fluxion\/wordmark-transparent\.png/);
-  assert.match(html, /You fell out of love with film in 2023\./);
-  assert.match(html, /Absence demonstration\./);
-  assert.match(html, /An authored rule revision/);
-  assert.match(html, /Illustrative spending example/);
+  /* the real evidence stays out of the index; it lives in the case */
 
   // Both readings are offered as real URLs, and the URL selects the reading.
   /* Work resolves onto the global closing plate exactly once; Explore keeps
@@ -368,6 +374,7 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     data,
     index,
     explore,
+    reviewIndex,
     exploreCss,
     motion,
     projectPage,
@@ -376,17 +383,15 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     siteHeader,
     mode,
     css,
-    invisibleAway,
     nextConfig,
     packageJson,
     vercel,
     worker,
-    fluxionMark,
-    fluxionSpecimen,
   ] = await Promise.all([
     readFile(new URL("../app/data/portfolio.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/work-index.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/explore.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/review-index.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/styles/explore.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/motion-director.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/work/[slug]/page.tsx", import.meta.url), "utf8"),
@@ -395,13 +400,10 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     readFile(new URL("../app/components/site-header.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/mode.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/styles/system.css", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/invisible-away.tsx", import.meta.url), "utf8"),
     readFile(new URL("../next.config.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../vercel.json", import.meta.url), "utf8"),
     readFile(new URL("../worker/index.ts", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/fluxion-mark.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/fluxion-specimen.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(data, /availability\?: "published" \| "preview" \| "coming-soon"/);
@@ -419,17 +421,27 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(explore, /xp-piece-stack/);
   assert.match(explore, /data-explore-piece/);
   assert.match(explore, /TransitionLink/);
-  /* Every sheet carries its own usable mechanic, not a sealed modal. */
-  for (const mechanic of [
-    "FluxionSpecimen",
-    "DisasterMark",
-    "PentimentoStrike",
-    "InvisibleAway",
-    "AtlasRule",
-    "DayneroNumber",
+  /* Every Explore sheet carries its project's portrait — the same
+     abstract representation the Quick view rows mount. */
+  assert.match(explore, /ProjectPortrait/);
+  assert.match(reviewIndex, /ProjectPortrait/);
+  const portraits = await readFile(
+    new URL("../app/components/portrait.tsx", import.meta.url),
+    "utf8",
+  );
+  for (const behaviour of [
+    "evidenceShape",
+    "revisionShape",
+    "absenceShape",
+    "lineageShape",
+    "fluxShape",
+    "numberShape",
   ]) {
-    assert.match(explore, new RegExp(mechanic));
+    assert.match(portraits, new RegExp(behaviour), behaviour);
   }
+  /* the mechanical previews are gone from the two index readings */
+  assert.doesNotMatch(explore, /DisasterMark|PentimentoStrike|InvisibleAway|AtlasRule|DayneroNumber|FluxionSpecimen/);
+  assert.doesNotMatch(reviewIndex, /DisasterMark|PentimentoStrike|InvisibleAway|AtlasRule|DayneroNumber|FluxionMark/);
   /* The set carries the anchor a returning case links back to. */
   assert.match(explore, /id="work"/);
   /* Each sheet is painted with its project's own ground and reading ink. */
@@ -505,28 +517,12 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(exploreCss, /clip-path/);
   assert.match(exploreCss, /prefers-reduced-motion:\s*reduce/);
 
-  /* P0 REGRESSION — the Invisible Interfaces example return.
-     A pinned sheet's on-screen box is fixed at one viewport, so content the
-     sheet grows downward can never be scrolled into view: the next sticky
-     sheet slides over it before the result is readable. The inspection is
-     therefore a stage-contained overlay layer (role=dialog, positioned
-     against .xp-piece-stage), never an in-flow expansion — the sheet keeps
-     its size, the next sheet keeps its arrival, and the result stays inside
-     the intended panel. */
-  const awayExampleRule = exploreCss.match(/\.xp-away-example\s*\{[^}]*\}/)?.[0] ?? "";
-  assert.match(
-    awayExampleRule,
-    /position:\s*absolute/,
-    "the example return must be a stage-contained overlay, not in-flow growth",
-  );
-  assert.match(awayExampleRule, /inset:\s*0/);
-  assert.match(awayExampleRule, /overflow:\s*hidden auto/);
-  assert.match(invisibleAway, /role="dialog"/);
-  assert.match(invisibleAway, /aria-modal="true"/);
-  assert.match(invisibleAway, /aria-expanded=\{showReturn\}/);
-  assert.match(invisibleAway, /"Escape"/);
-  /* the modal claim is honored: Tab is wrapped inside the dialog */
-  assert.match(invisibleAway, /event\.key !== "Tab"/);
+  /* THE STAGE OVERLAY RULE IS GONE WITH THE INLINE INSTRUMENTS: Explore's
+     sheets now carry abstract portraits, and the real evidence lives in
+     the case study only. What must survive here is the sticky-sheet
+     architecture and the arrival material. */
+  assert.match(exploreCss, /\.xp-piece-field\s*\{[^}]*position:\s*absolute/);
+  assert.doesNotMatch(exploreCss, /\.xp-away-field|\.xp-away-example|\.xp-pent-field|\.xp-atlas-field/);
   assert.match(projectPage, /DayneroPreview/);
   assert.match(projectPage, /CaseArtifact/);
   assert.match(projectPage, /project\.sourceUrl \?/);
@@ -564,15 +560,12 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(packageJson, /"build:vercel": "next build"/);
   assert.match(vercel, /"framework": "nextjs"/);
   assert.match(worker, /!env\.ASSETS \|\| !env\.IMAGES/);
-  assert.match(fluxionMark, /\/projects\/fluxion\/wordmark-transparent\.png/);
   assert.match(artifacts, /\/projects\/fluxion\/wordmark-transparent\.png/);
 
-  /* The Explore specimen is built from real captures of the shipped studio
-     site — the desktop home plate and the same page at mobile width — not a
-     mockup. */
-  assert.match(fluxionSpecimen, /\/projects\/fluxion\/site-home-desktop\.png/);
-  assert.match(fluxionSpecimen, /\/projects\/fluxion\/site-home-mobile\.png/);
-  assert.match(fluxionSpecimen, /https:\/\/fluxion-studios\.vercel\.app\//);
+  /* The computational-material engine and the portrait family are the
+     shared representation layer; the case carries the real captures. */
+  assert.match(portraits, /ProjectPortrait/);
+  assert.match(portraits, /ROOM_WORLDS/);
 
   await access(new URL("../public/projects/atlas/atlas.png", import.meta.url));
   await access(new URL("../public/projects/invisible-interfaces/return.png", import.meta.url));

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { modeHref } from "./mode";
-import { SignalField } from "./signal-field";
+import { SignalField, type Quiet } from "./signal-field";
 
 /**
  * The global footer is the folio resolving: the name returns in its
@@ -14,6 +14,19 @@ import { SignalField } from "./signal-field";
  * after Explore's narrative close: the close states the argument, the
  * footer carries every address and destination, and the page ends once.
  */
+
+/* The footer's quiet zones: the compressed name, the note, the email
+   address, the links and the record line stay crisp over the material.
+   The plate is short, so the zones hug the text boxes and the signal
+   lives in the open quadrants between them. */
+const FOOTER_QUIET: Quiet[] = [
+  { x: 0, y: 0.06, w: 0.3, h: 0.26, falloff: 0.92, feather: 0.03 },
+  { x: 0.68, y: 0.08, w: 0.32, h: 0.24, falloff: 0.9, feather: 0.03 },
+  { x: 0, y: 0.38, w: 0.38, h: 0.24, falloff: 0.95, feather: 0.03 },
+  { x: 0, y: 0.66, w: 0.62, h: 0.16, falloff: 0.96, feather: 0.03 },
+  { x: 0, y: 0.82, w: 0.55, h: 0.18, falloff: 1, feather: 0.02 },
+];
+
 export function SiteFooter({
   year,
   force = false,
@@ -27,40 +40,61 @@ export function SiteFooter({
 
   return (
     <footer className="site-footer">
-      {/* The folio's closing material: the signal settles back into the
-          system across the whole plate — denser and broader than any page
-          surface, with ultramarine peaks where the field is densest — and
-          every real destination stays crisp over its quiet zones. */}
+      {/* The cover's material, returned at the other end of the site.
+          The same hierarchy: sparse ultramarine pixel signal dispersing
+          toward the boundaries, a faint glyph texture beneath it, and
+          every real destination crisp over the quiet zones. The hero
+          assembled the signal; this is it letting go. */}
       <SignalField
         className="footer-field"
         glyphs="·:+*#"
-        cell={11}
+        cell={13}
         seed={77}
-        ambient={0.7}
-        flow={2.4}
-        wavefront={0.15}
-        drift={0.55}
+        ambient={0.3}
+        flow={1.6}
+        wavefront={0.07}
+        drift={0.35}
+        pointerRadius={0}
+        tune={[0.52, 1.9]}
+        quiet={FOOTER_QUIET}
+        shape={(v, nx) => v * (0.55 + 0.7 * Math.abs(nx - 0.5) * 2)}
+        color={(t) => `rgba(27, 33, 38, ${0.05 + 0.15 * t})`}
+      />
+      <SignalField
+        className="footer-pixels"
+        mode="pixel"
+        cell={20}
+        seed={83}
+        ambient={0.62}
+        flow={1.2}
+        wavefront={0.09}
+        drift={0.5}
         pointerRadius={9}
-        tune={[0.34, 2.2]}
-        quiet={[
-          /* the compressed name and the note keep their air */
-          { x: 0, y: 0, w: 0.56, h: 0.3, falloff: 0.93, feather: 0.04 },
-          { x: 0.62, y: 0.02, w: 0.38, h: 0.24, falloff: 0.9, feather: 0.03 },
-          /* the address, the links and the record line stay clean */
-          { x: 0, y: 0.32, w: 1, h: 0.17, falloff: 0.95, feather: 0.03 },
-          { x: 0, y: 0.55, w: 0.85, h: 0.22, falloff: 0.96, feather: 0.03 },
-          { x: 0, y: 0.87, w: 1, h: 0.13, falloff: 1, feather: 0.02 },
-        ]}
-        shape={(v, nx, ny) =>
-          /* arriving from the top edge — the page's matter pools where
-             the folio ends, then thins as it approaches the record line */
-          v * (0.45 + 1.3 * Math.pow(1 - ny, 1.2))
-        }
-        color={(t) =>
-          t >= 0.92
-            ? "rgba(58, 31, 240, 0.4)"
-            : `rgba(27, 33, 38, ${0.09 + 0.3 * t})`
-        }
+        tune={[0.46, 2.0]}
+        quiet={FOOTER_QUIET}
+        shape={(v, nx, ny, t) => {
+          /* the end state of the hero's clusters: the matter drifts
+             apart toward the outer margins and the gaps between the
+             footer's rows */
+          const edge = Math.pow(Math.abs(nx - 0.5) * 2, 1.5);
+          const leave = Math.pow(ny, 1.1);
+          const driftA = Math.exp(
+            -Math.pow((nx - 0.5 - 0.03 * Math.sin(t * 0.12)) * 4, 2) -
+              Math.pow((ny - 0.12) * 3.6, 2),
+          );
+          const driftB = Math.exp(
+            -Math.pow((nx - 0.85) * 4.5, 2) -
+              Math.pow((ny - 0.45) * 3.4, 2),
+          );
+          const driftC = Math.exp(
+            -Math.pow((nx - 0.3) * 4.5, 2) -
+              Math.pow((ny - 0.62 - 0.03 * Math.sin(t * 0.1 + 3)) * 4.5, 2),
+          );
+          return v *
+            (0.35 + 0.7 * edge + 0.9 * driftA + 1.0 * driftB + 0.9 * driftC) *
+            (0.5 + 0.95 * leave);
+        }}
+        color={(t) => `rgba(58, 31, 240, ${0.18 + 0.52 * t})`}
       />
       <div className="footer-mast">
         <span className="footer-name" aria-hidden="true">

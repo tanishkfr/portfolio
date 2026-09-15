@@ -5,14 +5,8 @@ import { type CSSProperties } from "react";
 import { caseCtaLabels, projects, type Project } from "../data/portfolio";
 import { modeHref } from "./mode";
 import { SiteFooter } from "./site-footer";
-import { SpecimenRail } from "./specimen";
+import { ProjectPortrait } from "./portrait";
 import { TransitionLink } from "./transition-link";
-import { AtlasRule } from "./atlas-rule";
-import { DayneroNumber } from "./daynero-number";
-import { DisasterMark } from "./disaster-mark";
-import { FluxionMark } from "./fluxion-mark";
-import { InvisibleAway } from "./invisible-away";
-import { PentimentoStrike } from "./pentimento-strike";
 
 const order = [
   "design-or-disaster",
@@ -31,34 +25,10 @@ const order = [
  * and it says so — the opening names itself as the other reading of the
  * same projects Explore tells properly.
  *
- * Each row's middle column is the project's own working object — the same
- * instruments the folio operates, at index scale. Nothing here is a
- * screenshot of an interface: mark the evidence, strike the claim, spend
- * the day. The row reads without touching any of it; touching it is what
- * makes the row more than a link.
+ * Each row's middle column is the project's portrait — the same abstract,
+ * living representation the folio mounts, at index scale: same material,
+ * same behaviour, quieter. It reads without touching anything.
  */
-function HomeStage({ project }: { project: Project }) {
-  switch (project.artifact) {
-    case "fluxion":
-      return <FluxionMark />;
-    case "disaster":
-      return (
-        <DisasterMark
-          src="/projects/design-or-disaster/case-010.jpg"
-          alt="A case under critique in Design or Disaster."
-        />
-      );
-    case "pentimento":
-      return <PentimentoStrike />;
-    case "invisible":
-      return <InvisibleAway />;
-    case "atlas":
-      return <AtlasRule />;
-    case "daynero":
-      return <DayneroNumber />;
-  }
-}
-
 export function ReviewIndex() {
   const ordered = order
     .map((slug) => projects.find((project) => project.slug === slug))
@@ -70,8 +40,9 @@ export function ReviewIndex() {
       <header className="review-opening">
         <h1>Six selected projects.</h1>
         <p className="review-note">
-          In the order they were made. Each row links to the full case, and the
-          row&rsquo;s own object is live — mark it, strike it, revise it.
+          In the order they were made. Each row links to the full case; the
+          row&rsquo;s portrait is the project&rsquo;s behaviour, drawn from the
+          same material as the folio.
         </p>
         <p className="review-mode">
           The same projects as Explore, without the ceremony:{" "}
@@ -82,7 +53,7 @@ export function ReviewIndex() {
       </header>
 
       <ol className="review-list">
-        {ordered.map((project, index) => {
+        {ordered.map((project) => {
           const href = `/work/${project.slug}?from=work`;
           return (
             <li
@@ -90,7 +61,14 @@ export function ReviewIndex() {
               id={`project-${project.slug}`}
               className="work-row"
               data-artifact={project.artifact}
-              style={{ "--accent": project.accent } as CSSProperties}
+              style={
+                {
+                  "--accent": project.accent,
+                  "--title-word": Math.max(
+                    ...project.title.split(" ").map((word) => word.length),
+                  ),
+                } as CSSProperties
+              }
             >
               <div className="work-row-id">
                 <h2>
@@ -102,15 +80,10 @@ export function ReviewIndex() {
               </div>
 
               <div className="work-row-stage" data-reveal="figure">
-                {/* The specimen rail: the same edge line of project matter
-                    the Explore sheets run — the register is lighter here,
-                    the system is the same. */}
-                <SpecimenRail
+                <ProjectPortrait
                   slug={project.slug}
                   tone="index"
-                  seed={37 + index * 5}
                 />
-                <HomeStage project={project} />
               </div>
 
               <div className="work-row-body">

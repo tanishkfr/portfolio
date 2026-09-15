@@ -11,14 +11,8 @@ import Link from "next/link";
 import { caseCtaLabels, projects, type Project } from "../data/portfolio";
 import { ROOM_WORLDS, rgb } from "../data/room-worlds";
 import { modeHref } from "./mode";
-import { hexToRgba, SignalField, type Quiet } from "./signal-field";
-import { AtlasRule } from "./atlas-rule";
-import { DayneroNumber } from "./daynero-number";
-import { DisasterMark } from "./disaster-mark";
-import { FluxionSpecimen } from "./fluxion-specimen";
-import { InvisibleAway } from "./invisible-away";
-import { PentimentoStrike } from "./pentimento-strike";
-import { SpecimenRail } from "./specimen";
+import { SignalField, hexToRgba, type Quiet } from "./signal-field";
+import { ProjectPortrait } from "./portrait";
 import { TransitionLink } from "./transition-link";
 
 const order = [
@@ -29,47 +23,31 @@ const order = [
   "fluxion-studios",
   "daynero",
 ];
-const directions = {
-  "fluxion-studios": { verb: "visit", layout: "wordmark" },
-  "design-or-disaster": { verb: "point", layout: "evidence" },
-  pentimento: { verb: "strike", layout: "revision" },
-  "invisible-interfaces": { verb: "leave", layout: "absence" },
-  atlas: { verb: "revise", layout: "lineage" },
-  daynero: { verb: "spend", layout: "number" },
+const layouts = {
+  "fluxion-studios": "wordmark",
+  "design-or-disaster": "evidence",
+  pentimento: "revision",
+  "invisible-interfaces": "absence",
+  atlas: "lineage",
+  daynero: "number",
 } as const;
 
 const ordered = order
   .map((slug) => projects.find((project) => project.slug === slug))
   .filter((project): project is Project => Boolean(project));
 
-/* The cover's quiet zones frame the name instead of blanketing it: the
-   masthead and the claim's column stay crisp, and the field carries the
-   rest — the side rails, the deck's right flank, the resolve band above
-   the handoff. One array, shared by the glyph field and its atmosphere. */
+/* The cover's material hierarchy: TANISHK first, the sparse
+   ultramarine pixel signal second, the claim third, and a faint glyph
+   texture under everything. The quiet zones keep the masthead, the
+   claim's column, the handoff line and the border crisp; one array is
+   shared by both fields so the cover reads as one system. */
 const COVER_QUIET: Quiet[] = [
   { x: 0, y: 0, w: 1, h: 0.055, falloff: 0.92, feather: 0.02 },
   { x: 0.01, y: 0.26, w: 0.98, h: 0.3, falloff: 0.93, feather: 0.05 },
-  { x: 0, y: 0.6, w: 0.52, h: 0.23, falloff: 0.88, feather: 0.05 },
-  { x: 0, y: 0.855, w: 1, h: 0.09, falloff: 0.92, feather: 0.03 },
+  { x: 0, y: 0.6, w: 0.52, h: 0.23, falloff: 0.9, feather: 0.05 },
+  { x: 0, y: 0.855, w: 1, h: 0.09, falloff: 0.94, feather: 0.03 },
   { x: 0, y: 0.97, w: 1, h: 0.04, falloff: 1 },
 ];
-
-function ProjectMechanic({ slug }: { slug: string }) {
-  if (slug === "fluxion-studios") return <FluxionSpecimen />;
-  if (slug === "design-or-disaster") {
-    return (
-      <DisasterMark
-        src="/projects/design-or-disaster/case-010.jpg"
-        alt="A case under critique in Design or Disaster."
-      />
-    );
-  }
-  if (slug === "pentimento") return <PentimentoStrike />;
-  if (slug === "invisible-interfaces") return <InvisibleAway />;
-  if (slug === "atlas") return <AtlasRule />;
-  if (slug === "daynero") return <DayneroNumber />;
-  return null;
-}
 
 /**
  * The masthead behaves. Each letter is its own variable-width state:
@@ -266,60 +244,68 @@ export function Explore() {
         data-explore-cover
         aria-labelledby="explore-title"
       >
-        {/* The identity is the resolved anchor; the surrounding
-            computational field is still forming — density glyphs settle
-            as the folio arrives, answer the pointer softly, and disperse
-            as the cover scrolls into the field below. Under the glyphs a
-            halftone atmosphere drifts in ultramarine: the sampler's
-            weather, felt as a wash, never as a panel. */}
-        <SignalField
-          className="xp-cover-atmos"
-          mode="dither"
-          cell={22}
-          seed={87}
-          ambient={0.58}
-          flow={2.6}
-          wavefront={0.19}
-          drift={0.7}
-          pointerRadius={0}
-          collapse
-          quiet={COVER_QUIET}
-          shape={(v, nx, ny) =>
-            /* the atmosphere pools in the same rails and settle band, so
-               the cover reads as one weather system, not two layers */
-            v *
-            (0.4 + 1.15 * Math.pow(Math.abs(nx - 0.5) * 2, 1.35)) *
-            (0.45 + 1.05 * ny)
-          }
-          color={(t) => `rgba(58, 31, 240, ${0.04 + 0.1 * t})`}
-        />
+        {/* The cover's material: sparse ultramarine pixel signal is the
+            primary register — digital fragments suspended around the
+            identity, drifting, breathing, occasionally clustering, parting
+            for the pointer. Beneath them a faint glyph texture keeps the
+            field computational without ever competing. Both disperse as
+            the cover scrolls into the work. */}
         <SignalField
           className="xp-cover-field"
           glyphs="·:+*#"
-          cell={11}
+          cell={13}
           seed={11}
-          ambient={0.66}
-          flow={2.2}
-          wavefront={0.14}
-          drift={0.45}
+          ambient={0.32}
+          flow={1.6}
+          wavefront={0.08}
+          drift={0.3}
+          pointerRadius={0}
+          collapse
+          quiet={COVER_QUIET}
+          tune={[0.52, 1.9]}
+          shape={(v, nx, ny) =>
+            v *
+            (0.5 + 0.75 * Math.abs(nx - 0.5) * 2) *
+            (0.35 + 1.3 * Math.pow(ny, 1.4))
+          }
+          color={(t) => `rgba(27, 33, 38, ${0.05 + 0.15 * t})`}
+        />
+        <SignalField
+          className="xp-cover-pixels"
+          mode="pixel"
+          cell={20}
+          seed={29}
+          ambient={0.62}
+          flow={1.3}
+          wavefront={0.1}
+          drift={0.4}
           pointerRadius={12}
           collapse
           quiet={COVER_QUIET}
-          shape={(v, nx, ny) => {
-            /* the edges carry the matter; one plume rises through the
-               right rail where the deck's negative space opens */
-            const rail = Math.pow(Math.abs(nx - 0.5) * 2, 1.1);
-            const settle = Math.pow(ny, 1.25);
-            const plume = Math.exp(
-              -Math.pow((nx - 0.78) * 3.6, 2) - Math.pow((ny - 0.7) * 2.6, 2),
+          tune={[0.44, 2.1]}
+          shape={(v, nx, ny, t) => {
+            /* the signal pools in loose clusters that drift around the
+               identity's negative space — top-left, upper-right, and a
+               settle band that resolves toward the handoff */
+            const rail = Math.pow(Math.abs(nx - 0.5) * 2, 1.2);
+            const settle = 0.72 + 0.78 * Math.pow(ny, 1.25);
+            const clusterA = Math.exp(
+              -Math.pow((nx - 0.16) * 3.4, 2) -
+                Math.pow((ny - 0.14 + 0.05 * Math.sin(t * 0.13)) * 2.8, 2),
             );
-            return v * (0.5 + 0.8 * rail + 0.75 * plume) * (0.34 + 1.4 * settle);
+            const clusterB = Math.exp(
+              -Math.pow((nx - 0.82) * 3.4, 2) -
+                Math.pow((ny - 0.68 + 0.06 * Math.sin(t * 0.11 + 2)) * 2.7, 2),
+            );
+            const clusterC = Math.exp(
+              -Math.pow((nx - 0.86) * 4.0, 2) -
+                Math.pow((ny - 0.2 + 0.04 * Math.sin(t * 0.09 + 4)) * 3.0, 2),
+            );
+            return v *
+              (0.42 + 0.6 * rail + 1.5 * clusterA + 1.15 * clusterB + 1.25 * clusterC) *
+              settle;
           }}
-          color={(t) =>
-            t >= 0.92
-              ? "rgba(58, 31, 240, 0.45)"
-              : `rgba(27, 33, 38, ${0.1 + 0.34 * t})`
-          }
+          color={(t) => `rgba(58, 31, 240, ${0.18 + 0.55 * t})`}
         />
         <div className="xp-cover-pin">
           <div className="xp-cover-head">
@@ -335,11 +321,10 @@ export function Explore() {
             <span className="xp-cover-rule" aria-hidden="true" />
             <div className="xp-cover-axis">
               <p className="xp-cover-claim">
-                Things that only make sense in <strong>motion</strong>.
+                I design what interfaces <strong>do</strong>.
               </p>
               <p className="xp-cover-deck">
-                I design and build interfaces where the behaviour is the
-                point — the projects begin below.
+                Product and interaction design, built end to end.
               </p>
             </div>
           </div>
@@ -354,7 +339,7 @@ export function Explore() {
       <section className="xp-field" id="work" aria-labelledby="field-title">
         <header className="xp-field-head">
           <p className="xp-field-kicker" id="field-title">
-            One sheet per project — scroll through, or jump from the index
+            Selected projects
           </p>
           <p className="xp-field-mode">
             The same projects, as a plain list:{" "}
@@ -366,32 +351,27 @@ export function Explore() {
 
         <nav className="xp-field-index" aria-label="Explore projects">
           <ol>
-            {ordered.map((project, index) => {
-              const direction = directions[project.slug as keyof typeof directions];
-              return (
-                <li
-                  key={project.slug}
-                  data-current={(active === index && active >= 0) || undefined}
+            {ordered.map((project, index) => (
+              <li
+                key={project.slug}
+                data-current={(active === index && active >= 0) || undefined}
+              >
+                <a
+                  href={`#piece-${project.slug}`}
+                  aria-current={
+                    active === index && active >= 0 ? "location" : undefined
+                  }
                 >
-                  <a
-                    href={`#piece-${project.slug}`}
-                    aria-current={
-                      active === index && active >= 0 ? "location" : undefined
-                    }
-                  >
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                    <strong>{project.title}</strong>
-                    <small>{direction.verb}</small>
-                  </a>
-                </li>
-              );
-            })}
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <strong>{project.title}</strong>
+                </a>
+              </li>
+            ))}
           </ol>
         </nav>
 
         <div className="xp-piece-stack">
           {ordered.map((project, index) => {
-            const direction = directions[project.slug as keyof typeof directions];
             const world = ROOM_WORLDS[project.slug];
 
             return (
@@ -405,7 +385,7 @@ export function Explore() {
                   className="xp-piece"
                   data-explore-piece
                   data-project={project.slug}
-                  data-layout={direction.layout}
+                  data-layout={layouts[project.slug as keyof typeof layouts]}
                   style={
                     {
                       "--piece-index": index + 1,
@@ -414,25 +394,16 @@ export function Explore() {
                       "--room-ink": world.ink,
                       "--accent-ink": world.accentInk,
                       "--accent": project.accent,
+                      "--title-word": Math.max(
+                        ...project.title.split(" ").map((word) => word.length),
+                      ),
                     } as CSSProperties
                   }
                 >
                   <div className="xp-piece-spine" aria-hidden="true">
                     <span>{String(index + 1).padStart(2, "0")}</span>
-                    <span>{direction.verb}</span>
+                    <span className="xp-piece-spine-pip" />
                   </div>
-
-                  {/* The sheet's signal rail: the spine margin carries a
-                      thin line of the project's own computational matter,
-                      full height, in its pigment — the same edge device
-                      every Quick view row runs. The specimen itself is
-                      live in the stage below. */}
-                  <SpecimenRail
-                    slug={project.slug}
-                    tone="full"
-                    seed={37 + index * 5}
-                    orientation="edge"
-                  />
 
                   {/* Connective tissue between stable states: as this
                       sheet takes over the drawer, its top edge resolves
@@ -482,8 +453,13 @@ export function Explore() {
                     </div>
                   </div>
 
+                  {/* The project portrait: an abstract, living
+                      representation of the project's behaviour — the
+                      folio's own interpretation of the work, from the
+                      same computational material. The real interface
+                      lives in the case study. */}
                   <div className="xp-piece-stage">
-                    <ProjectMechanic slug={project.slug} />
+                    <ProjectPortrait slug={project.slug} />
                   </div>
 
                   <p className="xp-piece-status">{project.status}</p>

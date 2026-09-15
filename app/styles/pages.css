@@ -899,10 +899,11 @@
   position: relative;
 }
 
-/* The field spans the whole closing plate: the signal settles back into
-   the system across the footer's full breadth, under every row, with
-   quiet zones keeping each real destination crisp. */
-.footer-field {
+/* The material spans the whole closing plate: the hero's signal letting
+   go — a faint glyph texture under, the sparse ultramarine pixel signal
+   dispersing toward the boundaries above it, every destination crisp. */
+.footer-field,
+.footer-pixels {
   position: absolute;
   inset: 0;
   width: 100%;

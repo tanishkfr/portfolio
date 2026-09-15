@@ -35,13 +35,12 @@
   background: var(--paper);
 }
 
-/* The computational material around the identity: a signal field of
-   density glyphs, resolved by arrival, kept clear over the name and
-   the claim, dispersed by scroll. It sits under every cover element
-   and never takes pointers — the pointer is felt, not caught. Under
-   the glyphs, a halftone atmosphere drifts through the same rails. */
+/* The computational material around the identity: a faint glyph texture
+   under everything, and the sparse ultramarine pixel signal above it.
+   Both are quiet-zone framed, never take pointers, and disperse by
+   scroll — the hierarchy is TANISHK, pixels, claim, texture. */
 .xp-cover-field,
-.xp-cover-atmos {
+.xp-cover-pixels {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -496,14 +495,11 @@
   }
 }
 
-/* invisible: the standard sheet composition. The vertical recut existed
-   to give the inline expansion room — but a pinned sheet's on-screen box
-   is fixed, so anything the sheet grows downward lands behind the next
-   sheet. The expansion is now a fixed inspection layer (see
-   .xp-away-example), so the demo returns to the shared copy-stage
-   arrangement and the whole interaction — receipt and trigger — fits the
-   pinned viewport instead of being reachable for a moment and then
-   covered. */
+/* The sheets share one composition: copy on one side, the project's
+   portrait on the other. A pinned sheet's on-screen box is fixed, so
+   anything the sheet grows downward lands behind the next sheet — the
+   portrait lives entirely inside the stage, and the sheet's copy stays
+   inside the pinned viewport. */
 
 /* ---------- orientation ---------- */
 
@@ -695,16 +691,24 @@
 .xp-piece-title {
   width: fit-content;
   /* the meta line is an annotation; the title is the arrival — the
-     gap between them is hierarchy, not padding */
+      gap between them is hierarchy, not padding */
   margin-top: clamp(2rem, 4.5vh, 3.2rem);
   max-width: 100%;
+  /* the cap is structural: the longest word can never exceed the
+     column, at any viewport, for any title length. 0.78em per glyph is
+     the display face's measured advance at poster width, plus margin. */
+  --title-size: clamp(2.5rem, 4.6vw, 5rem);
+  font-size: min(
+    var(--title-size),
+    calc((100cqi - 0.5rem) / (var(--title-word, 8) * 0.78))
+  );
   font-family: var(--display);
-  font-size: clamp(2.5rem, 4.6vw, 5rem);
   font-weight: var(--poster-weight);
   font-stretch: var(--poster-stretch);
   letter-spacing: -0.008em;
   line-height: 0.94;
   text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 .xp-piece-spine {
@@ -730,6 +734,9 @@
   z-index: 2;
   align-self: center;
   max-width: 32rem;
+  /* the inline-size container lets the title cap itself against the
+     column it actually occupies, at every viewport, for any title */
+  container-type: inline-size;
 }
 
 /* zero the defaults, but keep the title's authored gap — the meta →
@@ -855,48 +862,21 @@
   pointer-events: none;
 }
 
-/* ---------- the shared specimen material ----------
-   One family, six behaviours: every project figure carries a persistent
-   ambient glyph field in its own pigment (SpecimenAmbient) and a signal
-   rail along its reading edge (SpecimenRail). Explore runs the full
-   register; the Quick view index runs the same components lighter. The
-   fields are decorative layers between a figure's ground and its
-   content — never above the words. */
-.specimen-field {
-  position: absolute;
-  inset: 0;
+/* ---------- project portraits ----------
+   The folio's interpretation layer: one family of abstract, living
+   glyph compositions (ProjectPortrait) — same engine, same density
+   logic, same spatial scale, each in the project's own pigment. The
+   plate is the project's ground; the material is the portfolio's. */
+.xp-portrait {
+  position: relative;
   width: 100%;
   height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.xp-room-shot
-  > *:not(.specimen-field):not(.xp-away-field):not(.xp-away-example) {
-  position: relative;
-  z-index: 1;
-}
-
-.specimen-rail {
-  position: relative;
-  height: clamp(0.85rem, 1.6vw, 1.15rem);
+  margin: 0;
   overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent-ink, currentColor) 42%, transparent);
 }
 
-/* Explore's register: the rail runs down the sheet's spine margin,
-   full height, under the vertical annotation */
-.specimen-rail--edge {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: calc(var(--page-gutter) + 3.4rem);
-  height: auto;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.specimen-rail-field {
+.xp-portrait-field {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -940,7 +920,7 @@
    sheet's title takes a size that lives inside its column instead of
    clipping against the sheet edge. */
 .xp-piece[data-layout="revision"] .xp-piece-title {
-  font-size: clamp(2.3rem, 3.55vw, 4.05rem);
+  --title-size: clamp(2.3rem, 3.55vw, 4.05rem);
 }
 
 .xp-piece[data-layout="revision"] .xp-piece-stage {
@@ -957,89 +937,9 @@
   grid-template-columns: minmax(15rem, 0.72fr) minmax(28rem, 1.28fr);
 }
 
-/* ---------- the six working objects ---------- */
-
-.xp-room-shot {
-  position: relative;
-  margin: 0;
-  overflow: hidden;
-}
-
-.xp-flux {
-  display: grid;
-  grid-template-rows: 1fr auto;
-  min-height: 100%;
-  background: #f1c9cd;
-  color: #b1112c;
-}
-
-.xp-flux-brand {
-  display: grid;
-  place-items: center;
-  padding: 3rem;
-}
-
-.xp-flux-brand img {
-  width: min(76%, 38rem);
-  height: auto;
-  filter: saturate(0.86);
-}
-
-.xp-flux > figcaption,
-.xp-soon figcaption {
-  padding: 1.1rem 1.25rem;
-  border-top: 1px solid currentColor;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.xp-dod {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 0.8rem;
-  min-height: 100%;
-  background: #150f0c;
-  color: #fff6e8;
-  padding: clamp(0.9rem, 2vw, 1.4rem);
-}
-
-.xp-dod-surface {
-  position: relative;
-  display: block;
-  width: 100%;
-  min-height: 0;
-  overflow: hidden;
-  border: 0;
-  border-radius: 0;
-  background: #120d0b;
-  color: inherit;
-  padding: 0;
-  cursor: crosshair;
-}
-
-.xp-dod-surface img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-/* the sampling sweep: an ordered-dither pocket around the visitor's
-   mark — the region is read, then the mark itself resolves */
-.xp-dod-field {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 3;
-  pointer-events: none;
-}
-
-/* The tint is gone: nothing should reduce the legibility of the evidence
-   under discussion. */
-.xp-dod-tint {
-  display: none;
-}
+/* ---------- the critique's annotation marks ----------
+   Design or Disaster's evidence marks — shared with the case
+   instrument, which mounts the same notation on its evidence. */
 
 .xp-dod-prompt {
   position: absolute;
@@ -1091,84 +991,6 @@
   transform: translateX(-50%);
 }
 
-.xp-dod-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.9rem;
-}
-
-.xp-dod-controls-label {
-  color: rgba(255, 246, 232, 0.6);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.xp-dod-regions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.xp-dod-regions button,
-.xp-dod-reset {
-  min-height: 2.5rem;
-  border: 1px solid rgba(255, 246, 232, 0.42);
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
-  padding: 0.4rem 0.6rem;
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.xp-dod-regions button[aria-pressed="true"] {
-  background: #ef4a35;
-  border-color: #ef4a35;
-  color: #fff;
-}
-
-.xp-dod-reset {
-  margin-left: auto;
-}
-
-.xp-dod-cap {
-  margin: 0;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  line-height: 1.45;
-}
-
-.xp-dod-readings {
-  grid-column: 1 / -1;
-  display: grid;
-  gap: 0.35rem;
-}
-
-.xp-dod-readings-label {
-  margin: 0;
-  color: #ef9a8b;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.xp-dod-readings ul {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.3rem 1rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.xp-dod-readings li span {
-  display: block;
-  color: #ef4a35;
-}
-
 @keyframes xp-mark-arrive {
   from {
     opacity: 0;
@@ -1178,446 +1000,6 @@
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
-}
-
-.xp-pent {
-  display: grid;
-  align-content: center;
-  gap: 1.6rem;
-  min-height: 100%;
-  background: #3b1830;
-  color: #fff7ec;
-  padding: clamp(2rem, 5vw, 5rem);
-}
-
-.xp-pent-stack {
-  display: grid;
-  gap: clamp(1.5rem, 3.5vh, 2.4rem);
-}
-
-/* The two accounts never share a box. The original stays legible above; the
-   example reply rises below it as the leading voice. */
-.xp-pent-machine,
-.xp-pent-mine {
-  margin: 0;
-  font-family: var(--display);
-  letter-spacing: -0.035em;
-}
-
-.xp-pent-machine {
-  max-width: 34ch;
-  font-size: clamp(1.15rem, 1.3vw, 1.35rem);
-  line-height: 1.4;
-  color: #e7c9dc;
-  /* the correction material overlays the machine reading */
-  position: relative;
-}
-
-.xp-pent-field {
-  position: absolute;
-  inset: -0.75rem -1.5rem;
-  width: calc(100% + 3rem);
-  height: calc(100% + 1.5rem);
-  z-index: 3;
-  pointer-events: none;
-}
-
-.xp-pent-mine {
-  max-width: 20ch;
-  font-size: clamp(2rem, 3.4vw, 2.9rem);
-  line-height: 1.02;
-  color: #fff7ec;
-  transition: opacity 240ms var(--ease-out);
-}
-
-.xp-pent-tag {
-  display: block;
-  margin-bottom: 0.6rem;
-  color: #f1bfd9;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  font-style: normal;
-  font-weight: 400;
-  letter-spacing: 0.03em;
-}
-
-.xp-pent[data-struck="true"] .xp-pent-machine {
-  color: #c99ab7;
-  text-decoration-line: line-through;
-  text-decoration-color: #f1bfd9;
-  text-decoration-thickness: 1px;
-}
-
-.xp-pent-btn,
-.xp-atlas-btn,
-.xp-day-btn {
-  width: fit-content;
-  border: 1px solid currentColor;
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
-  padding: 0.7rem 0.85rem;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  cursor: pointer;
-  transition:
-    background-color var(--beat) var(--ease-out),
-    color var(--beat) var(--ease-out),
-    transform var(--beat) var(--ease-out);
-}
-
-.xp-pent-btn:hover,
-.xp-pent-btn:focus-visible {
-  background: #fff7ec;
-  color: #3b1830;
-}
-
-.xp-away {
-  display: grid;
-  align-content: center;
-  min-height: 100%;
-  background:
-    linear-gradient(90deg, rgba(230, 171, 63, 0.1) 1px, transparent 1px),
-    #0f0e0a;
-  background-size: 4.5rem 100%;
-  color: #f8efd6;
-  padding: clamp(2rem, 5vw, 5rem);
-  /* the return moment resolves the room out of signal material */
-  position: relative;
-}
-
-.xp-away-tag,
-.xp-day-tag {
-  color: #d9a951;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-/* the reconstruct sweep: one layer over the room's ground, felt only
-   during the return moment, gone when it settles */
-.xp-away-field {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.xp-away-title {
-  max-width: 22ch;
-  margin: 1rem 0 0;
-  font-family: var(--display);
-  font-size: clamp(1.9rem, 3.2vw, 3rem);
-  letter-spacing: -0.03em;
-  line-height: 1.02;
-}
-
-.xp-away-scope {
-  max-width: 48ch;
-  margin: 1.1rem 0 0;
-  color: rgba(248, 239, 214, 0.74);
-  font-size: var(--step-0);
-  line-height: 1.55;
-}
-
-/* No meter, no percentage: progress while watched would contradict the
-   whole argument. The receipt reports only what was observed. */
-.xp-away-receipt {
-  max-width: 52ch;
-  margin: 1.6rem 0 0;
-  color: #d9a951;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  line-height: 1.5;
-}
-
-.xp-away-statement {
-  max-width: 52ch;
-  margin: 0.5rem 0 0;
-  color: rgba(248, 239, 214, 0.72);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  line-height: 1.5;
-}
-
-.xp-away-inspect {
-  width: fit-content;
-  min-height: 2.75rem;
-  margin-top: 1.4rem;
-  border: 1px solid currentColor;
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
-  padding: 0.6rem 0.85rem;
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.xp-away-inspect:hover,
-.xp-away-inspect:focus-visible {
-  background: #f8efd6;
-  color: #0f0e0a;
-}
-
-/* ---------- the example-return inspection ----------
-   Opening the example never grows the sheet: a pinned sheet's on-screen
-   box is fixed at one viewport, so in-flow growth lands behind the
-   incoming sheet before it can be read. The inspection is instead a
-   panel layered over the sheet's own stage — the nearest positioned
-   ancestor is .xp-piece-stage — so the expansion stays inside the
-   intended panel while the sheet keeps its size and the next sheet
-   keeps its arrival. Rows auto/1fr/auto pin the bar and caption and
-   give the image exactly the room left, so nothing can overflow the
-   panel at any sheet height. */
-.xp-away-example {
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  display: grid;
-  grid-template-rows: auto minmax(10rem, 1fr) auto;
-  gap: 0.7rem;
-  overflow: hidden auto;
-  overscroll-behavior: contain;
-  padding: clamp(0.9rem, 2vh, 1.6rem) clamp(0.9rem, 1.6vw, 1.5rem);
-  background: rgba(15, 14, 10, 0.97);
-  border: 1px solid rgba(248, 239, 214, 0.22);
-  color: #f8efd6;
-  min-width: 0;
-}
-
-.xp-away-example-bar {
-  position: sticky;
-  top: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.6rem 1.6rem;
-  min-width: 0;
-  background: rgba(15, 14, 10, 0.97);
-  padding-block: 0.4rem;
-}
-
-.xp-away-example-bar p {
-  margin: 0;
-  min-width: 0;
-  max-width: 46ch;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  line-height: 1.5;
-  color: rgba(248, 239, 214, 0.74);
-}
-
-.xp-away-example-bar strong {
-  color: #d9a951;
-  font-weight: 600;
-}
-
-.xp-away-example-close {
-  min-height: 2.75rem;
-  border: 1px solid currentColor;
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
-  padding: 0.6rem 0.85rem;
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  white-space: nowrap;
-}
-
-.xp-away-example-close:hover,
-.xp-away-example-close:focus-visible {
-  background: #f8efd6;
-  color: #0f0e0a;
-}
-
-.xp-away-example img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  min-width: 0;
-  object-fit: contain;
-  background: #0a0906;
-  border: 1px solid rgba(248, 239, 214, 0.22);
-}
-
-.xp-away-example small {
-  min-width: 0;
-  color: rgba(248, 239, 214, 0.64);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  line-height: 1.5;
-}
-
-.xp-atlas {
-  display: grid;
-  align-content: center;
-  gap: 1.2rem;
-  min-height: 100%;
-  background: #dcece8;
-  color: #102521;
-  padding: clamp(2rem, 5vw, 5rem);
-}
-
-.xp-atlas-tag {
-  color: #12615a;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.xp-atlas-lineage {
-  display: grid;
-  gap: 0.4rem;
-  margin-top: 0.6rem;
-  padding-left: 1rem;
-  border-left: 1px solid rgba(16, 37, 33, 0.25);
-}
-
-.xp-atlas-lineage-label {
-  margin: 0;
-  color: rgba(16, 37, 33, 0.56);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  letter-spacing: 0.03em;
-}
-
-.xp-atlas-past,
-.xp-atlas-context,
-.xp-atlas-note {
-  margin: 0;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  line-height: 1.45;
-}
-
-.xp-atlas-past {
-  color: rgba(16, 37, 33, 0.62);
-}
-
-.xp-atlas-past span {
-  display: block;
-  color: rgba(16, 37, 33, 0.5);
-}
-
-.xp-atlas-context {
-  color: #12615a;
-}
-
-.xp-atlas-rule {
-  max-width: 34ch;
-  margin: 0;
-  font-family: var(--display);
-  font-size: clamp(1.5rem, 2.6vw, 2.5rem);
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-  /* the rule passes through the sampler when it is under pressure */
-  position: relative;
-}
-
-.xp-atlas-field {
-  position: absolute;
-  inset: -0.5rem -1rem;
-  width: calc(100% + 2rem);
-  height: calc(100% + 1rem);
-  z-index: 3;
-  pointer-events: none;
-}
-
-.xp-atlas-note {
-  max-width: 45ch;
-  color: rgba(16, 37, 33, 0.66);
-}
-
-.xp-atlas-btn:hover,
-.xp-atlas-btn:focus-visible {
-  background: #102521;
-  color: #dcece8;
-}
-
-.xp-day {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.62fr);
-  grid-template-rows: auto auto 1fr;
-  align-content: center;
-  gap: 0.35rem clamp(1.5rem, 4vw, 4rem);
-  min-height: 100%;
-  background:
-    linear-gradient(90deg, rgba(184, 221, 85, 0.07) 1px, transparent 1px),
-    #161c0d;
-  background-size: 4.5rem 100%;
-  color: #eef4dc;
-  padding: clamp(2rem, 5vw, 5rem);
-}
-
-.xp-day-tag,
-.xp-day-label,
-.xp-day-amount,
-.xp-day-note,
-.xp-day-actions {
-  margin: 0;
-}
-
-.xp-day-tag {
-  grid-column: 1 / -1;
-  color: #b9dd55;
-}
-
-.xp-day-label {
-  align-self: end;
-  color: rgba(238, 244, 220, 0.62);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.xp-day-amount {
-  grid-column: 1;
-  font-family: var(--display);
-  font-size: clamp(5.5rem, 11vw, 10.5rem);
-  letter-spacing: -0.02em;
-  line-height: 0.9;
-  color: #c9f24e;
-  font-weight: var(--poster-weight);
-  font-stretch: 118%;
-  font-variant-numeric: tabular-nums;
-}
-
-.xp-day-note {
-  grid-column: 1;
-  max-width: 34ch;
-  color: rgba(238, 244, 220, 0.72);
-  font-size: var(--step-0);
-}
-
-.xp-day-actions {
-  grid-column: 2;
-  grid-row: 2 / 5;
-  display: grid;
-  align-content: center;
-  border-top: 1px solid currentColor;
-}
-
-.xp-day-btn {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  border-width: 0 0 1px;
-  padding: 0.95rem 0;
-  text-align: left;
-}
-
-.xp-day-btn:hover,
-.xp-day-btn:focus-visible {
-  color: #c9f24e;
-  transform: translateX(0.35rem);
-}
-
-.xp-day-btn span {
-  color: #b9dd55;
-  font-variant-numeric: tabular-nums;
 }
 
 /* ---------- closing note ---------- */
@@ -1754,176 +1136,6 @@
   margin-top: clamp(1.5rem, 3.2vh, 2.4rem);
 }
 
-/* Fluxion: the pink field is the studio's specimen board, and the live site
-   is registered onto it — one dominant home plate, the same site at mobile
-   width layered over its lower corner, and the notation in Fluxion's red.
-   Every frame is a real capture of the shipped studio site, not a mockup. */
-.xp-piece[data-project="fluxion-studios"] .xp-flux {
-  grid-template-rows: auto auto minmax(0, 1fr);
-  align-content: stretch;
-}
-
-.xp-piece[data-project="fluxion-studios"] .xp-flux-head {
-  grid-row: 1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 2rem clamp(1.6rem, 3vw, 3rem) 0;
-}
-
-.xp-piece[data-project="fluxion-studios"] .xp-flux-brand {
-  place-items: start;
-  padding: 0;
-}
-
-.xp-piece[data-project="fluxion-studios"] .xp-flux-brand img {
-  width: min(15rem, 58vw);
-}
-
-.xp-flux-stamp {
-  flex: none;
-  margin: 0.3em 0 0;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  color: color-mix(in srgb, currentColor 72%, transparent);
-}
-
-.xp-piece[data-project="fluxion-studios"] .xp-flux > figcaption {
-  grid-row: 2;
-  padding: 0.7rem clamp(1.6rem, 3vw, 3rem) 1.2rem;
-}
-
-.xp-flux-sheet {
-  grid-row: 3;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  padding: clamp(1rem, 2.4vw, 1.5rem) clamp(1.6rem, 3vw, 3rem)
-    clamp(1.1rem, 2.6vw, 1.7rem);
-}
-
-/* the specimen's registration line: the frame number and the live action */
-.xp-flux-legend {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 0 0 0.6rem;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  color: color-mix(in srgb, currentColor 84%, transparent);
-}
-
-.xp-flux-live {
-  padding-bottom: 0.15em;
-  border-bottom: 1px solid color-mix(in srgb, currentColor 45%, transparent);
-  color: inherit;
-  text-decoration: none;
-  transition: border-color 200ms var(--ease-out);
-}
-
-.xp-flux-live:hover,
-.xp-flux-live:focus-visible {
-  border-bottom-color: currentColor;
-}
-
-.xp-flux-frame {
-  position: relative;
-  display: flex;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-/* the dominant specimen: the whole desktop hero, at its own proportion */
-.xp-flux-plate {
-  position: relative;
-  flex: 0 1 auto;
-  height: 100%;
-  max-width: 100%;
-  aspect-ratio: 16 / 10;
-  min-height: 0;
-  margin: 0;
-  transform: translate3d(
-    calc(var(--spec-x, 0px) * -0.32),
-    calc(var(--spec-y, 0px) * -0.32),
-    0
-  );
-  transition: transform 220ms var(--ease-out);
-}
-
-.xp-flux-plate img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
-  border: 1px solid color-mix(in srgb, currentColor 36%, transparent);
-  background: #0a0a0a;
-}
-
-/* the supporting register: the same site at mobile width, matted in the
-   room's own paper so the two layers read as separate registered fragments */
-.xp-flux-detail {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  width: min(19%, 9rem);
-  margin: 0;
-  padding: 0.4rem;
-  border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
-  background: #f1c9cd;
-  transform: translate3d(var(--spec-x, 0px), var(--spec-y, 0px), 0);
-  transition: transform 220ms var(--ease-out);
-}
-
-.xp-flux-detail figcaption {
-  margin: 0 0 0.4rem;
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.04em;
-  text-align: right;
-  color: color-mix(in srgb, currentColor 88%, transparent);
-}
-
-.xp-flux-detail img {
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  object-position: top center;
-  border: 1px solid color-mix(in srgb, currentColor 36%, transparent);
-  background: #0a0a0a;
-}
-
-/* atlas: the dense reasoning field anchors to the top too */
-.xp-piece[data-project="atlas"] .xp-atlas {
-  align-content: start;
-}
-
-/* ---------- the atlas rule as a mutable instrument ----------
-   The rule is set in the display voice at a narrower width than the
-   house display - a rule reads as notation, not as a headline - and the
-   width opens as unlike cases revise it. */
-.xp-atlas-rule {
-  max-width: 30ch;
-  font-weight: 640;
-  font-stretch: var(--rule-stretch, 88%);
-  letter-spacing: -0.008em;
-  line-height: 1.14;
-  transition: font-stretch 420ms var(--ease-swing);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .xp-atlas-rule {
-    transition: none;
-  }
-}
-
 /* ---------- responsive ---------- */
 
 @media (max-width: 64rem) {
@@ -1931,26 +1143,16 @@
     grid-template-columns: minmax(12rem, 0.72fr) minmax(23rem, 1.28fr);
   }
 
-  /* the spine margin collapses below two columns; the rail goes with it */
-  .specimen-rail--edge {
-    display: none;
-  }
-
   .xp-piece[data-layout="revision"] {
     grid-template-columns: minmax(23rem, 1.15fr) minmax(13rem, 0.85fr);
   }
 
   .xp-piece-title {
-    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    --title-size: clamp(2.8rem, 6vw, 5.2rem);
   }
 
   .xp-piece[data-layout="revision"] .xp-piece-title {
-    font-size: clamp(2.4rem, 4vw, 3.4rem);
-  }
-
-  /* the specimen keeps both registers, with the mobile column a step down */
-  .xp-flux-detail {
-    width: min(17%, 8rem);
+    --title-size: clamp(2.4rem, 4vw, 3.4rem);
   }
 }
 
@@ -2104,7 +1306,7 @@
   }
 
   .xp-piece-title {
-    font-size: clamp(2.2rem, 10.8vw, 4.2rem);
+    --title-size: clamp(2.2rem, 10.8vw, 4.2rem);
   }
 
   .xp-piece-stage,
@@ -2126,14 +1328,6 @@
     grid-row: 3;
   }
 
-  /* The stage keeps a generous floor on phones (min-height below), so the
-     same stage-contained panel works at every width: bar and caption pin
-     as rows, the image takes the room left, and the panel scrolls
-     internally if a very short stage needs it. */
-  .xp-away-example-bar {
-    gap: 0.5rem 1rem;
-  }
-
   .xp-piece-spine {
     top: 1.15rem;
     right: var(--page-gutter);
@@ -2142,24 +1336,6 @@
     flex-direction: row;
     writing-mode: horizontal-tb;
     transform: none;
-  }
-
-  .xp-day {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto auto auto;
-  }
-
-  .xp-day-tag,
-  .xp-day-label,
-  .xp-day-amount,
-  .xp-day-note,
-  .xp-day-actions {
-    grid-column: 1;
-    grid-row: auto;
-  }
-
-  .xp-day-actions {
-    margin-top: 2rem;
   }
 
   .xp-close {
@@ -2174,11 +1350,6 @@
 
   .xp-close h2 {
     font-size: clamp(3rem, 13vw, 5.6rem);
-  }
-
-  /* tablet: the stage runs full width; the mobile register stays, smaller */
-  .xp-flux-detail {
-    width: min(15%, 7rem);
   }
 }
 
@@ -2215,7 +1386,7 @@
   }
 
   .xp-piece-title {
-    font-size: clamp(2rem, 10.5vw, 3.4rem);
+    --title-size: clamp(2rem, 10.5vw, 3.4rem);
   }
 
   .xp-piece-stage,
@@ -2225,23 +1396,6 @@
   .xp-piece[data-layout="lineage"] .xp-piece-stage,
   .xp-piece[data-layout="number"] .xp-piece-stage {
     min-height: 23rem;
-  }
-
-  .xp-pent,
-  .xp-away,
-  .xp-atlas,
-  .xp-day {
-    padding: 1.4rem;
-  }
-
-  /* phone: one strong specimen and the notation, nothing layered. The
-     narrow plate holds the head of the page so the headline survives. */
-  .xp-flux-detail {
-    display: none;
-  }
-
-  .xp-flux-plate img {
-    object-position: left top;
   }
 }
 
@@ -2273,8 +1427,6 @@
   .xp-cover-window,
   .xp-piece-copy,
   .xp-piece-stage,
-  .xp-flux-plate,
-  .xp-flux-detail,
   .xp-piece::before {
     transform: none !important;
     opacity: 1 !important;
@@ -2291,12 +1443,8 @@
   }
 
   .xp-under-front,
-  .xp-dod-surface img,
-  .xp-pent-machine,
-  .xp-pent-mine,
   .xp-field-index strong,
   .xp-piece-title a::after,
-  .xp-flux-live,
   .xp-piece-actions a::after {
     animation: none !important;
     transition: none !important;
@@ -2312,16 +1460,7 @@
 @media (forced-colors: active) {
   .xp-cover,
   .xp-piece,
-  .xp-flux,
-  .xp-pent,
-  .xp-away,
-  .xp-atlas,
-  .xp-day {
-    background: Canvas;
-    color: CanvasText;
-  }
-
-  .xp-away-example {
+  .xp-portrait {
     background: Canvas;
     color: CanvasText;
   }
@@ -2330,11 +1469,5 @@
   .xp-under-back {
     background: Canvas;
     color: CanvasText;
-  }
-
-  /* the paper mat is a colour device; forced colours keep the crop's edge */
-  .xp-flux-detail {
-    background: Canvas;
-    border-color: CanvasText;
   }
 }

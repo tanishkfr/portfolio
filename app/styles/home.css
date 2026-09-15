@@ -99,16 +99,21 @@
 .work-row-id {
   display: grid;
   gap: 0.75rem;
+  container-type: inline-size;
 }
 
 .work-row-id h2 {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(1.45rem, 2.1vw, 1.9rem);
   font-weight: 720;
   font-stretch: 106%;
   letter-spacing: 0;
   line-height: 1.02;
+  /* the structural cap: the longest word can never exceed the column */
+  font-size: min(
+    clamp(1.45rem, 2.1vw, 1.9rem),
+    calc((100cqi - 0.25rem) / (var(--title-word, 10) * 0.72))
+  );
 }
 
 .work-row-id h2 a {
@@ -183,16 +188,8 @@
   width: 100%;
 }
 
-/* The Quick view register of the shared specimen system: each row runs
-   the same signal rail the Explore sheets carry (grid row 1, the
-   instrument below), lighter by the index tone. */
-.work-row-stage .specimen-rail {
-  grid-row: 1;
-  margin-bottom: 0.65rem;
-}
-
-.work-row-stage > .xp-room-shot {
-  grid-row: 2;
+.work-row-stage > .xp-portrait {
+  height: 100%;
 }
 
 .work-row-body {
@@ -337,30 +334,4 @@
   .work-row-body {
     order: 3;
   }
-}
-
-/* ---------- Daynero at index scale ----------
-   The ledger is a representative sample, not a case embedded in the
-   list: tighter padding, a smaller amount, and the same stage floor as
-   the other objects. */
-.work-row[data-artifact="daynero"] .work-row-stage {
-  min-height: clamp(19rem, 24vw, 23rem);
-}
-
-.work-row[data-artifact="daynero"] .xp-day {
-  padding: 1.7rem;
-  align-content: start;
-}
-
-.work-row[data-artifact="daynero"] .xp-day-amount {
-  font-size: clamp(4.2rem, 6.4vw, 5.9rem);
-}
-
-.work-row[data-artifact="daynero"] .xp-day-actions {
-  align-content: start;
-  gap: 0;
-}
-
-.work-row[data-artifact="daynero"] .xp-day-btn {
-  padding: 0.75rem 0;
 }

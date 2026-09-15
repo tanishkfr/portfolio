@@ -64,8 +64,10 @@ export type SignalFieldProps = {
   ambient?: number;
   quiet?: Quiet[];
   /** Compositional shaping over the clamped field, in normalised
-      coordinates — e.g. a vertical resolve ramp toward one edge. */
-  shape?: (v: number, nx: number, ny: number) => number;
+      coordinates — e.g. a vertical resolve ramp toward one edge. The
+      fourth argument is seconds since mount (frozen at 0 under
+      reduced motion), so scripts can evolve over a period. */
+  shape?: (v: number, nx: number, ny: number, t: number) => number;
   /** Domain advection: how far the noise field bends its own sampling
       coordinates — streamlines and interference, felt not seen. */
   flow?: number;
@@ -79,8 +81,18 @@ export type SignalFieldProps = {
       losing the quiet pockets between structures. */
   tune?: [number, number];
   /** "glyph" resolves the field into characters; "dither" into
-      Bayer-thresholded halftone dots. */
-  mode?: "glyph" | "dither";
+      Bayer-thresholded halftone dots; "pixel" into sparse solid
+      squares — the signal-fragment register. */
+  mode?: "glyph" | "dither" | "pixel";
+  /** Per-cell glyph override: the index into `glyphs` to draw at this
+      coordinate this frame, or a negative value to keep the field's
+      own choice. Lets a portrait mark structure (a crosshair, a
+      strike, a connector) without leaving the engine. */
+  glyphAt?: (t: number, nx: number, ny: number) => number;
+  /** Per-cell draw offset in pixels — slow wander for formation and
+      displacement behaviours. Quantised to whole pixels for the
+      repaint cache. */
+  displace?: (t: number, nx: number, ny: number) => [number, number];
   pointerRadius?: number;
   pulseKey?: number | string | null;
   pulseMs?: number;
@@ -139,6 +151,8 @@ export function SignalField({
      kept out of the effect deps */
   tune = [0.42, 2.1],
   mode = "glyph",
+  glyphAt,
+  displace,
   pointerRadius = 9,
   pulseKey = null,
   pulseMs = 1100,
@@ -147,9 +161,9 @@ export function SignalField({
   className,
 }: SignalFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  /** inline functions and tuples would rebind the effect every render;
+  /* inline functions and tuples would rebind the effect every render;
       the engine reads them through this ref, refreshed before each paint */
-  const lookRef = useRef({ color, quiet, shape, tune });
+  const lookRef = useRef({ color, quiet, shape, tune, glyphAt, displace });
 
   useEffect(() => {
     const el = canvasRef.current;
@@ -158,7 +172,7 @@ export function SignalField({
     if (!ctx0) return;
     const canvas = el;
     const ctx = ctx0;
-    lookRef.current = { color, quiet, shape, tune };
+    lookRef.current = { color, quiet, shape, tune, glyphAt, displace };
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const coarse = window.matchMedia("(pointer: coarse)");
@@ -231,6 +245,7 @@ export function SignalField({
       y: number,
       clock: number,
       resolve: number,
+      tNow: number,
     ): number {
       /* domain bend: sample the noise through a slow curl of itself —
          the pattern gains streamlines without any visible displacement
@@ -293,7 +308,9 @@ export function SignalField({
       v *= 0.5 + 0.5 * resolve;
       v = v < 0 ? 0 : v > 1 ? 1 : v;
       const shapeFn = lookRef.current.shape;
-      if (shapeFn) v = Math.max(0, Math.min(1, shapeFn(v, x / width, y / height)));
+      if (shapeFn) {
+        v = Math.max(0, Math.min(1, shapeFn(v, x / width, y / height, tNow)));
+      }
       return v;
     }
 
@@ -315,6 +332,9 @@ export function SignalField({
         lastPulseKey = pulseKey;
       }
       const clock = (now - clockStart) / 24000 + Math.floor(seed * 13);
+      /* script time for portraits: seconds since mount, frozen under
+         reduced motion so the single static frame is a composed state */
+      const tNow = reduced.matches ? 0 : (now - clockStart) / 1000;
       const arrive = reduced.matches
         ? 1
         : smooth(Math.min(1, (now - arriveStart) / 1500));
@@ -323,12 +343,27 @@ export function SignalField({
          while the cover is still half on screen */
       const resolve =
         arrive * Math.max(0, 1 - collapseP * 2.2);
-      const densityScale = width < 760 ? 0.68 : 1;
+      const densityScale = width < 760 ? (mode === "pixel" ? 1 : 0.68) : 1;
+      const dispFn = lookRef.current.displace;
 
       let pulseP = 1;
       if (pulseOpen) {
         pulseP = Math.min(1, (now - pulseStart) / pulseMs);
       }
+
+      /* a cell's previous paint is decodable from its cache key, so a
+         move (displacement) can erase exactly where it last drew */
+      const clearPrev = (index: number, c: number, r: number): void => {
+        if (lastPaint[index] === -1) return;
+        const d = lastPaint[index] % 262144;
+        ctx.clearRect(
+          c * step + Math.floor(d / 512) - 256,
+          r * step + (d % 512) - 256,
+          step,
+          step,
+        );
+        lastPaint[index] = -1;
+      };
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
@@ -336,13 +371,10 @@ export function SignalField({
           const x = c * step + step / 2;
           const y = r * step + step / 2;
           if (collapse && r < rows * collapseP * 1.12) {
-            if (lastPaint[index] !== -1) {
-              ctx.clearRect(c * step, r * step, step, step);
-              lastPaint[index] = -1;
-            }
+            clearPrev(index, c, r);
             continue;
           }
-          let v = field(x, y, clock, resolve) * densityScale;
+          let v = field(x, y, clock, resolve, tNow) * densityScale;
           let alpha = 1;
           if (pulseOpen) {
             if (pulseP >= 1) {
@@ -365,37 +397,72 @@ export function SignalField({
             }
           }
           if (v <= 0.05 || alpha <= 0.002) {
-            if (lastPaint[index] !== -1) {
-              ctx.clearRect(c * step, r * step, step, step);
-              lastPaint[index] = -1;
-            }
+            clearPrev(index, c, r);
             continue;
           }
+          let dx = 0;
+          let dy = 0;
+          if (dispFn) {
+            const d = dispFn(tNow, x / width, y / height);
+            dx = Math.round(d[0]);
+            dy = Math.round(d[1]);
+          }
+          const dKey = (dx + 256) * 512 + (dy + 256);
+
+          if (mode === "pixel") {
+            /* sparse signal fragments: only the field's upper range
+               resolves, as solid squares whose size carries the
+               strength — pixels, not wallpaper */
+            const on = v > 0.5;
+            const strength = on ? Math.min(1, (v - 0.5) / 0.5) : 0;
+            const key =
+              (on ? 1 + Math.round(strength * 12) : 0) * 262144 + dKey;
+            if (!force && lastPaint[index] === key) continue;
+            clearPrev(index, c, r);
+            lastPaint[index] = key;
+            if (!on) continue;
+            const s = step * (0.24 + 0.6 * strength);
+            ctx.fillStyle =
+              lookRef.current.color(strength) ?? "transparent";
+            ctx.fillRect(x - s / 2 + dx, y - s / 2 + dy, s, s);
+            continue;
+          }
+
           const band = Math.min(BANDS - 1, Math.floor(v * BANDS));
           if (mode === "dither") {
             /* ordered halftone: the Bayer matrix decides on/off, the
-               dot carries the weight — sampled material, not glyphs */
+                dot carries the weight — sampled material, not glyphs */
             const on = v > BAYER[r & 3][c & 3];
-            const key = on ? Math.min(11, 1 + Math.floor(v * 11)) : 0;
+            const key =
+              (on ? Math.min(11, 1 + Math.floor(v * 11)) : 0) * 262144 +
+              dKey;
             if (!force && lastPaint[index] === key) continue;
+            clearPrev(index, c, r);
             lastPaint[index] = key;
             if (!on) {
-              ctx.clearRect(c * step, r * step, step, step);
               continue;
             }
             const size = step * (0.18 + 0.4 * v);
             ctx.fillStyle = lookRef.current.color(Math.min(1, 0.35 + v * 0.65)) ?? "transparent";
             ctx.fillRect(
-              x - size / 2,
-              y - size / 2,
+              x - size / 2 + dx,
+              y - size / 2 + dy,
               size,
               size,
             );
             continue;
           }
-          const glyph = Math.min(glyphs.length - 1, Math.floor(v * glyphs.length));
-          const key = glyph * BANDS + band;
+          const glyphFn = lookRef.current.glyphAt;
+          const override = glyphFn
+            ? glyphFn(tNow, x / width, y / height)
+            : -1;
+          const glyph =
+            override >= 0
+              ? Math.min(glyphs.length - 1, override)
+              : Math.min(glyphs.length - 1, Math.floor(v * glyphs.length));
+          const key = (glyph * BANDS + band) * 262144 + dKey;
           if (!force && lastPaint[index] === key) continue;
+          clearPrev(index, c, r);
           lastPaint[index] = key;
           const sw = sprite.width / glyphs.length;
           const sh = sprite.height / BANDS;
@@ -405,8 +472,8 @@ export function SignalField({
             band * sh,
             sw,
             sh,
-            c * step,
-            r * step,
+            c * step + dx,
+            r * step + dy,
             step,
             step,
           );

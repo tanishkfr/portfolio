@@ -1003,7 +1003,7 @@ export const projects: Project[] = [
     title: "Daynero",
     form: "AI-native financial product",
     plain:
-      "A personal-finance product for first-paycheck earners, built around what is safe to spend today.",
+      "A personal-finance product that compresses many small spending decisions into one safe daily amount.",
     thesis: "A money product for first-paycheck earners who need to know what they can spend today.",
     question:
       "How can a first-paycheck earner see what is safe to spend today?",

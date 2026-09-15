@@ -80,13 +80,10 @@ export default function AboutPage() {
             studio, and I&apos;m the product designer at Daynero.
           </p>
           <p>
-            What I&apos;m interested in underneath: what interfaces do — how
-            they respond, decide, remember, and explain themselves. Most of my
-            own projects start with one behaviour I can&apos;t leave alone — a
-            critique with no evidence, software writing about a person, work
-            that continues after someone leaves, a rule that fails outside its
-            original case. I build the interaction to find out whether the idea
-            survives.
+            What I care about underneath: what interfaces do — how they
+            respond, decide, remember, and explain themselves. Each of my own
+            projects started with one behaviour I couldn&apos;t leave alone; I
+            build the interaction to find out whether the idea survives.
           </p>
         </div>
         <dl className="about-facts" aria-label="Tanishk at a glance">
@@ -146,8 +143,8 @@ export default function AboutPage() {
       </section>
 
       <section className="about-authorship" aria-labelledby="authorship-title">
-        <p className="eyebrow">Working with AI · as a collaborator</p>
-        <h2 id="authorship-title">What I actually did.</h2>
+        <p className="eyebrow">Working with AI</p>
+        <h2 id="authorship-title">What that looks like.</h2>
         <div>
           <p>
             I work with AI deliberately. It helps me open up directions,
@@ -170,8 +167,7 @@ export default function AboutPage() {
           </p>
           <p>
             Buildings, films, and games keep the references from getting
-            narrow. I tend to notice how things behave, not just how they
-            look.
+            narrow.
           </p>
         </div>
       </section>
