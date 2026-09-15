@@ -85,7 +85,6 @@ export type Project = {
   /** One plain-language line: what the project actually is, for a
       first-time visitor. Sits under the title; the thesis argues above it. */
   plain: string;
-  thesis: string;
   oneLine: string;
   /** The external CTA label — names what opens before the click. */
   liveLabel: string;
@@ -150,9 +149,7 @@ export const projects: Project[] = [
     title: "Design or Disaster",
     form: "Spatial critique archive",
     plain:
-      "A critique tool where you mark the evidence on a real screen before you judge it.",
-    thesis:
-      "Your marks sit next to five written readings, so pointing comes before opinions.",
+      "A critique tool where you mark the evidence on a real screen before you judge it. Your marks sit next to five written readings, so pointing comes before opinions.",
     oneLine:
       "Mark the part of an interface that shaped your judgment, explain it, then compare your reading with five others.",
     status: "Working archive",
@@ -314,9 +311,7 @@ export const projects: Project[] = [
     title: "Pentimento",
     form: "Algorithmic autobiography",
     plain:
-      "An interactive piece about what software writes about people — and who gets the last word.",
-    thesis:
-      "I made the person's correction outrank the machine's sentence: strike it, rewrite it, or let it stand.",
+      "An interactive piece about what software writes about people — and who gets the last word. The person's correction outranks the machine's sentence: strike it, rewrite it, or let it stand.",
     oneLine:
       "Each machine-written claim shows its evidence. The person can accept it, rewrite it, or strike it, and their version leads the final page.",
     status: "Working artifact · participant study pending",
@@ -480,9 +475,7 @@ export const projects: Project[] = [
     title: "Invisible Interfaces",
     form: "Interactive essay",
     plain:
-      "A research project about the work interfaces keep doing when nobody is watching.",
-    thesis:
-      "Leave the tab and it keeps working; come back and it hands you a receipt.",
+      "A research project about the work interfaces keep doing when nobody is watching. Leave the tab and it keeps working; come back and it hands you a receipt.",
     oneLine:
       "A staged restoration runs only while the tab is hidden, then shows what changed, what did not, and how to discard the result.",
     status: "Complete v1.0 exhibition",
@@ -645,9 +638,7 @@ export const projects: Project[] = [
     title: "Atlas",
     form: "Reasoning instrument",
     plain:
-      "A tool for stress-testing interface rules against cases very unlike the one they were written for.",
-    thesis:
-      "I turned each rule change into a visible lineage, so a rule shows what shaped it.",
+      "A tool for stress-testing interface rules against cases very unlike the one they were written for. I turned each rule change into a visible lineage, so a rule shows what shaped it.",
     oneLine:
       "Write a provisional rule, test it against three unlike cases, and keep every hold, refinement, and fracture.",
     status: "Working instrument · evidence audit open",
@@ -847,9 +838,7 @@ export const projects: Project[] = [
     title: "Fluxion Studios",
     form: "Studio website · freelance practice",
     plain:
-      "The website for the two-person studio I co-founded, designed and built in-house.",
-    thesis:
-      "It had to meet the standard we sell clients — every section ships from one system.",
+      "The website for the two-person studio I co-founded, designed and built in-house. It had to meet the standard we sell clients — every section ships from one system.",
     oneLine:
       "Fluxion is the two-person web studio I co-founded. I designed and built the public site, including its motion and enquiry flow.",
     status: "Live studio site",
@@ -998,9 +987,7 @@ export const projects: Project[] = [
     title: "Daynero",
     form: "AI-native financial product",
     plain:
-      "A personal-finance product that turns a month of spending into one safe daily amount.",
-    thesis:
-      "I designed and built it around first-paycheck earners — the number is the interface.",
+      "A personal-finance product that turns a month of spending into one safe daily amount. I designed and built it around first-paycheck earners — the number is the interface.",
     oneLine:
       "A personal-finance app for first-paycheck earners, centred on what is safe to spend today and why. The full case study is coming soon.",
     status: "Preview · pre-MVP",

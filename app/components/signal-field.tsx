@@ -311,6 +311,18 @@ export function SignalField({
       if (shapeFn) {
         v = Math.max(0, Math.min(1, shapeFn(v, x / width, y / height, tNow)));
       }
+      /* quiet zones are re-applied after the shape, so they win over
+         every liveliness source — including max-blended structure, which
+         otherwise bypasses its own suppression and paints over text */
+      if (zones) {
+        for (const q of zones) {
+          const dx = Math.max(0, Math.abs(x / width - (q.x + q.w / 2)) - q.w / 2);
+          const dy = Math.max(0, Math.abs(y / height - (q.y + q.h / 2)) - q.h / 2);
+          const feather = q.feather ?? 0.04;
+          const hold = 1 - smooth(Math.min(1, Math.hypot(dx, dy) / feather));
+          v *= 1 - (q.falloff ?? 1) * hold;
+        }
+      }
       return v;
     }
 

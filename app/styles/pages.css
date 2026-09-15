@@ -628,6 +628,11 @@
   padding: clamp(4rem, 10vh, 7rem) var(--page-gutter) 5rem;
 }
 
+.resume-intro {
+  position: relative;
+  isolation: isolate;
+}
+
 .resume-kicker {
   margin: 0 0 1rem;
   font-family: var(--mono);

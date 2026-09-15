@@ -14,16 +14,17 @@ import { SignalField, type Quiet } from "./signal-field";
  * footer carries every address and destination, and the page ends once.
  */
 
-/* The footer's quiet zones: the compressed name, the note, the email
-   address, the links and the record line stay crisp over the material.
-   The plate is short, so the zones hug the text boxes and the signal
-   lives in the open quadrants between them. */
+/* The footer's quiet zones, measured against the plate at width: the
+   compressed name, the note, the email row, the links row and the
+   record line stay crisp; the signal holds the open top band, the
+   centre gap and the lower-right corner. */
 const FOOTER_QUIET: Quiet[] = [
-  { x: 0, y: 0.06, w: 0.3, h: 0.26, falloff: 0.92, feather: 0.03 },
-  { x: 0.68, y: 0.08, w: 0.32, h: 0.24, falloff: 0.9, feather: 0.03 },
-  { x: 0, y: 0.38, w: 0.38, h: 0.24, falloff: 0.95, feather: 0.03 },
-  { x: 0, y: 0.66, w: 0.62, h: 0.16, falloff: 0.96, feather: 0.03 },
-  { x: 0, y: 0.82, w: 0.55, h: 0.18, falloff: 1, feather: 0.02 },
+  { x: 0.02, y: 0.16, w: 0.24, h: 0.26, falloff: 0.95, feather: 0.035 },
+  { x: 0.76, y: 0.28, w: 0.24, h: 0.18, falloff: 0.95, feather: 0.03 },
+  /* the email, links and record text all sit left; their boxes' right
+     halves stay open for the signal */
+  { x: 0, y: 0.44, w: 0.56, h: 0.22, falloff: 0.96, feather: 0.03 },
+  { x: 0, y: 0.7, w: 0.56, h: 0.28, falloff: 0.97, feather: 0.03 },
 ];
 
 export function SiteFooter({
@@ -72,26 +73,31 @@ export function SiteFooter({
         tune={[0.4, 2.1]}
         quiet={FOOTER_QUIET}
         shape={(v, nx, ny, t) => {
-          /* the end state of the hero's clusters: the matter drifts
-             apart toward the outer margins and the gaps between the
-             footer's rows */
-          const edge = Math.pow(Math.abs(nx - 0.5) * 2, 1.5);
-          const leave = 0.62 + 0.75 * Math.pow(ny, 1.1);
-          const driftA = Math.exp(
+          /* the closing counterpart of the hero's diagonal: one cluster
+             in the open top-centre gap, one at the mid-right, and the
+             matter dispersing outward along the open bottom edge. The
+             structured elements max-blend over the texture. */
+          const hash = Math.sin(nx * 619.7 + ny * 311.3) * 43758.5453;
+          const grain = 0.7 + 0.55 * (hash - Math.floor(hash));
+          const clusterTC = Math.exp(
             -Math.pow((nx - 0.5 - 0.03 * Math.sin(t * 0.12)) * 4, 2) -
               Math.pow((ny - 0.12) * 3.6, 2),
           );
-          const driftB = Math.exp(
-            -Math.pow((nx - 0.85) * 4.5, 2) -
-              Math.pow((ny - 0.45) * 3.4, 2),
+          const clusterBR = Math.exp(
+            -Math.pow((nx - 0.85 - 0.03 * Math.sin(t * 0.1 + 3)) * 4, 2) -
+              Math.pow((ny - 0.56) * 3.2, 2),
           );
-          const driftC = Math.exp(
-            -Math.pow((nx - 0.3) * 4.5, 2) -
-              Math.pow((ny - 0.62 - 0.03 * Math.sin(t * 0.1 + 3)) * 4.5, 2),
+          const leave = Math.exp(
+            -Math.pow((ny - 0.94 - 0.015 * Math.sin(t * 0.09)) * 8, 2) -
+              Math.pow((nx - 0.78) * 3, 2),
           );
-          return v *
-            (0.35 + 0.7 * edge + 1.2 * driftA + 1.3 * driftB + 1.1 * driftC) *
-            leave;
+          const texture = v * 0.8;
+          return Math.max(
+            texture,
+            clusterTC * 0.75 * grain,
+            clusterBR * 0.8 * grain,
+            leave * 0.7 * grain,
+          );
         }}
         color={(t) => `rgba(58, 31, 240, ${0.18 + 0.52 * t})`}
       />

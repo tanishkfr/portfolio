@@ -280,28 +280,35 @@ export function Explore() {
           pointerRadius={12}
           collapse
           quiet={COVER_QUIET}
-          tune={[0.44, 2.1]}
+          tune={[0.4, 2.1]}
           shape={(v, nx, ny, t) => {
-            /* the signal holds three deliberate clusters around the
-               identity's negative space — no scattered confetti between
-               them; the settle band resolves toward the handoff */
-            const rail = Math.pow(Math.abs(nx - 0.5) * 2, 1.6);
-            const settle = 0.72 + 0.78 * Math.pow(ny, 1.25);
-            const clusterA = Math.exp(
-              -Math.pow((nx - 0.16) * 3.4, 2) -
-                Math.pow((ny - 0.14 + 0.05 * Math.sin(t * 0.13)) * 2.8, 2),
+            /* the signal frames the identity: a thin registration strip
+               under the header line, two matched clusters holding the
+               top-left and bottom-right diagonals. The structured
+               elements max-blend over the ambient texture — they render
+               at their own strength, never starved by the noise field —
+               and a per-cell grain keeps them matter, not blocks. */
+            const hash = Math.sin(nx * 812.3 + ny * 431.7) * 43758.5453;
+            const grain = 0.7 + 0.55 * (hash - Math.floor(hash));
+            const strip = Math.exp(
+              -Math.pow((ny - 0.09 - 0.006 * Math.sin(t * 0.2)) * 16, 2),
             );
-            const clusterB = Math.exp(
-              -Math.pow((nx - 0.82) * 3.4, 2) -
-                Math.pow((ny - 0.68 + 0.06 * Math.sin(t * 0.11 + 2)) * 2.7, 2),
+            const clusterTL = Math.exp(
+              -Math.pow((nx - 0.17 - 0.03 * Math.sin(t * 0.12)) * 3.4, 2) -
+                Math.pow((ny - 0.15) * 3, 2),
             );
-            const clusterC = Math.exp(
-              -Math.pow((nx - 0.86) * 4.0, 2) -
-                Math.pow((ny - 0.2 + 0.04 * Math.sin(t * 0.09 + 4)) * 3.0, 2),
+            const clusterBR = Math.exp(
+              -Math.pow((nx - 0.8 - 0.03 * Math.sin(t * 0.1 + 2)) * 3.4, 2) -
+                Math.pow((ny - 0.7) * 2.7, 2),
             );
-            return v *
-              (0.3 + 0.5 * rail + 1.5 * clusterA + 1.15 * clusterB + 1.25 * clusterC) *
-              settle;
+            const settle = 0.9 + 0.2 * Math.pow(ny, 1.25);
+            const texture = v * 0.8;
+            return Math.max(
+              texture,
+              clusterTL * 0.85 * grain * settle,
+              clusterBR * 0.9 * grain * settle,
+              strip * 0.85 * grain,
+            );
           }}
           color={(t) => `rgba(58, 31, 240, ${0.18 + 0.55 * t})`}
         />
@@ -425,8 +432,7 @@ export function Explore() {
                         {project.title}
                       </TransitionLink>
                     </h3>
-                    <p className="xp-piece-plain">{project.plain}</p>
-                    <p className="xp-piece-thesis">{project.thesis}</p>
+                    <p className="xp-piece-intro">{project.plain}</p>
                     <div className="xp-piece-actions">
                       <TransitionLink href={`/work/${project.slug}?from=explore`}>
                         {caseCtaLabels(project).internal}
