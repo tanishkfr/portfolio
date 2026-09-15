@@ -60,7 +60,7 @@
 .about-facts dt {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 500;
   letter-spacing: 0.03em;
 }
@@ -68,7 +68,7 @@
 .about-facts dd {
   margin: 0.45rem 0 0;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.55;
 }
 
@@ -224,15 +224,43 @@
   isolation: isolate;
 }
 
-/* The page signal spans the shell's top region at full width: the
-   letter's copy holds the left column, the signal holds the open
-   right side. The canvas is bounded so only the hero area animates. */
+/* The page signal holds ONLY the open right side of the shell's top
+   region: the canvas itself starts past the letter's column — the
+   32em intro plus the gutter — so a pixel can never render behind or
+   under the headline, the intro, the email or the links. The width is
+   explicit: a canvas with a definite height and an auto width sizes
+   itself by its own bitmap ratio, which the engine rewrites every
+   measure — runaway feedback. Wide desktops get more of the open
+   right side; below 56rem the letter owns the full width, so the
+   signal steps out entirely — decoration never outranks reading. */
 .contact-shell > .page-signal {
   position: absolute;
-  inset: 0 0 auto 0;
-  height: clamp(22rem, 50vh, 30rem);
+  top: 0;
+  right: 0;
+  left: auto;
+  bottom: auto;
+  width: 30%;
+  height: clamp(20rem, 46vh, 30rem);
   z-index: -1;
   pointer-events: none;
+}
+
+@media (min-width: 90rem) {
+  .contact-shell > .page-signal {
+    /* the letter's column caps at ~65rem, so past 90rem the canvas
+       begins at a fixed 68rem boundary — genuinely empty page. The
+       width must stay explicit: a canvas with auto width sizes itself
+       by its own bitmap ratio, which the engine rewrites every
+       measure — runaway feedback. */
+    left: max(70%, 68rem);
+    width: calc(100% - max(70%, 68rem));
+  }
+}
+
+@media (max-width: 56rem) {
+  .contact-shell > .page-signal {
+    display: none;
+  }
 }
 
 .contact-intro {
@@ -268,6 +296,10 @@
   color: var(--ink-soft);
   font-size: var(--step-1);
   line-height: 1.55;
+}
+
+.contact-intro p + p {
+  margin-top: 1.1rem;
 }
 
 .contact-brief {
@@ -352,7 +384,7 @@
 .contact-label {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 
@@ -368,7 +400,7 @@
   margin-top: 0.3rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.05em;
   transition: color var(--beat) var(--ease-out);
 }
@@ -592,7 +624,7 @@
 .about-under-copy span {
   color: var(--registrar-deep);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.05em;
 }
@@ -610,7 +642,7 @@
 .about-under-copy small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   line-height: 1.45;
 }
 
@@ -658,7 +690,7 @@
 .resume-kicker {
   margin: 0 0 1rem;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   color: var(--muted);
 }
 
@@ -921,14 +953,15 @@
   }
 }
 
-/* ---------- the closing plate ---------- */
+/* ---------- the closing plate ----------
+   The footer is structured by typography, spacing and the signal —
+   no coloured divider line runs through it. */
 .site-footer {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0.9rem;
   padding: clamp(2.6rem, 7vh, 4.4rem) var(--page-gutter) clamp(1.8rem, 4vh, 2.6rem);
-  border-top: 2px solid var(--registrar);
   isolation: isolate;
 }
 
@@ -968,7 +1001,7 @@
 .footer-note {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.65;
   text-align: right;
 }
@@ -1005,7 +1038,7 @@
 .footer-state {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   margin-top: 1.3rem;
 }
 

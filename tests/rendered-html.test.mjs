@@ -41,16 +41,30 @@ test("server-renders the folio at / — one projects reading", async () => {
   /* the project count is stated once on the folio — the handoff line —
      never again in the cover deck or the field head */
   assert.equal((folio.match(/[Ss]ix/g) ?? []).length, 1);
-  assert.match(folio, /Six projects · each one live online/);
+  assert.match(folio, /Six projects · all live online/);
   assert.equal((folio.match(/data-explore-piece/g) ?? []).length, 6);
-  /* The folio ends once: the last sheet resolves straight onto the global
-     footer, which carries the page's only contact address and the nav's
-     Contact destination — no interstitial closing section. */
-  assert.doesNotMatch(folio, /Have something that needs a better behaviour|xp-close|Tell me about it/);
+  /* The folio ends once: the last sheet hands over to one quiet closing
+     note — the folio's argument and one small Contact link — and then the
+     global footer, which keeps the page's only contact address. The old
+     sales-CTA language must never return. */
+  assert.doesNotMatch(folio, /Have something that needs a better behaviour|Tell me about it|Let's build something|Get in touch/);
+  assert.equal((folio.match(/data-close-note/g) ?? []).length, 1);
+  const bridgeStart = folio.indexOf("data-close-note");
+  const footerAt = folio.indexOf('class="site-footer"');
+  assert.ok(bridgeStart > folio.lastIndexOf("data-explore-piece"), "the closing note follows the projects");
+  assert.ok(footerAt > bridgeStart, "the footer follows the closing note");
+  const bridge = folio.slice(bridgeStart, footerAt);
+  assert.match(bridge, /explain themselves, adapt, and leave evidence behind/);
+  assert.match(bridge, /If that sounds like the kind of problem you/);
+  assert.match(bridge, /href="\/contact"/);
+  assert.match(bridge, />Contact </);
+  /* the bridge is not a second footer: no contact address or social
+     destinations inside it */
+  assert.doesNotMatch(bridge, /mailto:|footer-invite/);
   assert.equal((folio.match(/class="site-footer"/g) ?? []).length, 1);
   assert.equal((folio.match(/class="footer-invite"/g) ?? []).length, 1);
   assert.ok(
-    folio.indexOf('class="footer-invite"') > folio.indexOf('data-explore-piece'),
+    folio.indexOf('class="footer-invite"') > folio.indexOf("data-explore-piece"),
     "the footer follows the projects",
   );
   assert.match(folio, /id="work"/);
@@ -267,7 +281,7 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   assert.match(aboutHtml, /product and interaction designer in Bengaluru/);
   assert.match(aboutHtml, /Human Center(ed)? Design at Srishti Manipal/);
   assert.match(aboutHtml, /Tanishk at a glance/);
-  assert.match(aboutHtml, /The work, right now\./);
+  assert.match(aboutHtml, /Four things running at once\./);
   assert.match(aboutHtml, /five-person team/);
   assert.match(aboutHtml, /Taamboolam/);
   assert.match(aboutHtml, /Ariadne/);
@@ -282,7 +296,7 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   const contactHtml = await contactResponse.text();
   /* the contact page says plainly what he does, what conversations are
      welcome, and how to reach him — no slogans */
-  assert.match(contactHtml, /Tell me about the interface you&#x27;re fighting with|Tell me about the interface you're fighting with/);
+  assert.match(contactHtml, /Bring me the interface, not just the brief\./);
   assert.match(contactHtml, /Useful conversations/);
   assert.match(contactHtml, /madebytanishk@gmail\.com/);
   assert.match(contactHtml, /linkedin\.com\/in\/tanishksalagame/);

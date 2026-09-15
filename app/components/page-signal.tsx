@@ -13,19 +13,23 @@ import { SignalField, type Quiet } from "./signal-field";
  */
 
 const ABOUT_QUIET: Quiet[] = [
-  /* the intro's text column: the heading block and both lede columns
-     stay completely quiet; the signal holds the open upper-right area
-     beside the heading only */
-  { x: 0, y: 0.04, w: 0.6, h: 0.66, falloff: 0.96, feather: 0.04 },
-  { x: 0.55, y: 0.42, w: 0.45, h: 0.58, falloff: 0.97, feather: 0.04 },
-  { x: 0, y: 0.94, w: 1, h: 0.06, falloff: 1, feather: 0.02 },
+  /* the intro's text column: the heading block, both lede columns and
+     the at-a-glance facts stay completely quiet; the signal holds the
+     open upper-right area beside the heading only */
+  { x: 0, y: 0.04, w: 0.62, h: 0.93, falloff: 0.96, feather: 0.04 },
+  { x: 0.56, y: 0.4, w: 0.44, h: 0.57, falloff: 0.97, feather: 0.04 },
+  { x: 0, y: 0.76, w: 1, h: 0.24, falloff: 1, feather: 0.02 },
 ];
 
 const CONTACT_QUIET: Quiet[] = [
-  /* the letter's copy occupies the left column of the page's top region;
-     the signal holds the open right side only */
-  { x: 0, y: 0, w: 0.54, h: 1, falloff: 0.96, feather: 0.04 },
-  { x: 0.54, y: 0.66, w: 0.46, h: 0.34, falloff: 0.97, feather: 0.04 },
+  /* the canvas only holds the open right strip of the shell's top
+     region — the letter's column is structurally out of reach. The
+     zones frame the strip's own edges so the field dissolves instead
+     of stopping: a feather at the strip's left edge keeps pixels a
+     clear distance from the copy's column. */
+  { x: 0, y: 0, w: 0.2, h: 1, falloff: 0.9, feather: 0.06 },
+  { x: 0, y: 0, w: 1, h: 0.07, falloff: 0.9, feather: 0.03 },
+  { x: 0, y: 0.86, w: 1, h: 0.14, falloff: 0.9, feather: 0.05 },
 ];
 
 const RESUME_QUIET: Quiet[] = [
@@ -46,18 +50,15 @@ const CONFIGS = {
     ambient: 0.5,
     quiet: ABOUT_QUIET,
     shape: (v: number, nx: number, ny: number, t: number) => {
-      /* the signal holds the open upper-right area beside the heading,
-         with a faint echo at the far bottom-left. The structured
-         elements max-blend over the ambient texture. */
+      /* the signal holds the open upper-right area beside the heading.
+         The structured element max-blends over the ambient texture;
+         the old bottom-left echo is gone — it sat behind the facts. */
       const grain = grainAt(nx, ny);
       const cluster = Math.exp(
         -Math.pow((nx - 0.87 - 0.02 * Math.sin(t * 0.12)) * 5.5, 2) -
           Math.pow((ny - 0.18 + 0.05 * Math.sin(t * 0.09 + 2)) * 3.2, 2),
       );
-      const echo = Math.exp(
-        -Math.pow((nx - 0.06) * 8, 2) - Math.pow((ny - 0.93) * 11, 2),
-      );
-      return Math.max(v * 0.8, cluster * 0.85 * grain, echo * 0.7 * grain);
+      return Math.max(v * 0.8, cluster * 0.85 * grain);
     },
   },
   contact: {
@@ -65,10 +66,12 @@ const CONFIGS = {
     ambient: 0.5,
     quiet: CONTACT_QUIET,
     shape: (v: number, nx: number, ny: number, t: number) => {
-      /* one breathing cluster column in the open right side, clear of
-         the heading, the copy and the email row */
+      /* one breathing cluster column, clear of every word: the canvas
+         itself is bounded to the open right side, so the cluster's
+         centre sits at the strip's middle and the field holds the
+         margins without ever touching the copy */
       const cluster = Math.exp(
-        -Math.pow((nx - 0.86 - 0.02 * Math.sin(t * 0.11)) * 5, 2) -
+        -Math.pow((nx - 0.62 - 0.02 * Math.sin(t * 0.11)) * 5, 2) -
           Math.pow((ny - 0.3 + 0.04 * Math.sin(t * 0.09)) * 2.4, 2),
       );
       return Math.max(v * 0.8, cluster * 0.85 * grainAt(nx, ny));

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    EXPLORE — THE WORKING FOLIO
 
    One tactile cover, one quick index, six project sheets. The
@@ -22,16 +22,16 @@
   outline-offset: 4px;
 }
 
-/* ---------- cover ---------- */
-
+/* ---------- cover ----------
+   One immersive composition: the identity sits centered inside the
+   signal field, the claim speaks beneath it, and the field holds the
+   margins on both sides. No divider line runs through it — structure
+   comes from the head registration line, spacing and the signal. */
 .xp-cover {
   --cover-progress: 0;
   position: relative;
-  /* Most of one viewport. The cover names the designer, states the claim,
-     and hands over to the field while its first edge is still arriving —
-     the folio starts moving before the opening finishes. */
-  min-height: 86svh;
-  border-bottom: 1px solid var(--line);
+  min-height: 100svh;
+  border-bottom: 0;
   background: var(--paper);
 }
 
@@ -53,10 +53,10 @@
   position: sticky;
   top: var(--header-h);
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: clamp(1rem, 2.4vh, 2rem);
-  min-height: calc(86svh - var(--header-h));
-  padding: clamp(1.2rem, 3vh, 2.25rem) var(--page-gutter) clamp(1.3rem, 3vh, 2.4rem);
+  grid-template-rows: auto 1fr auto;
+  gap: 0;
+  min-height: calc(100svh - var(--header-h));
+  padding: 0 var(--page-gutter);
 }
 
 .xp-cover-pin > * {
@@ -67,11 +67,9 @@
 .xp-cover-head,
 .xp-piece-meta,
 .xp-piece-status,
-.xp-cover-next,
-.xp-cover-face-label,
 .xp-field-kicker {
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.04em;
 }
 
@@ -79,78 +77,119 @@
   display: flex;
   justify-content: space-between;
   gap: 2rem;
+  padding-block: 0.7rem;
   border-bottom: 1px solid var(--xp-rule);
-  padding-bottom: 0.65rem;
   color: var(--muted);
 }
 
 .xp-cover-head p,
-.xp-cover-issue,
-.xp-cover-title h1,
-.xp-cover-face p,
-.xp-cover-face ol,
-.xp-cover-next {
+.xp-cover-claim,
+.xp-cover-deck,
+.xp-cover-handoff p {
   margin: 0;
 }
 
-.xp-cover-title {
+/* The mast is the composition's centre: the name, the claim and the
+   deck stack centered on the page axis, held by the signal on both
+   flanks. One axis, one object — not stacked strips. */
+.xp-cover-mast {
   display: grid;
-  grid-template-columns: minmax(3rem, 0.32fr) minmax(0, 1.68fr);
-  align-items: start;
-  gap: clamp(1rem, 4vw, 4rem);
-  /* The name hangs over the reveal object's top edge: the intro and the
-     seam are one object, and the seam never has to interrupt the name. */
-  position: relative;
-  z-index: 3;
-  margin-bottom: calc(-1 * clamp(0.4rem, 1.6vh, 1.1rem));
-  pointer-events: none;
+  justify-items: center;
+  align-content: center;
+  gap: clamp(1.2rem, 3vh, 2.2rem);
+  padding-block: clamp(1.4rem, 4vh, 3rem) clamp(1.2rem, 3vh, 2.4rem);
 }
 
-.xp-cover-issue {
-  padding-top: 0.65em;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  letter-spacing: 0.08em;
-}
-
-.xp-cover-title h1 {
-  max-width: none;
-  margin: 0;
-}
-
-.xp-cover-title h1 span {
-  display: block;
-}
-
-/* The cover is the masthead now: the name is the poster voice — wide,
-   heavy, capitals — and the claim beneath it is the one place the house
-   serif still speaks. Both arrive in the first second. */
 .xp-cover-name {
+  display: block;
   font-family: var(--display);
-  font-size: clamp(3.4rem, 8.6vw, 8.6rem);
+  font-size: clamp(2.9rem, 12.4vw, 12.5rem);
   font-weight: var(--poster-weight);
-  font-stretch: 125%;
+  font-stretch: 122%;
   text-transform: uppercase;
-  letter-spacing: 0.005em;
-  line-height: 0.92;
+  letter-spacing: -0.012em;
+  line-height: 0.8;
+  white-space: nowrap;
+  text-align: center;
 }
 
-/* The cover is the one deliberate manual reveal. It teaches the
-   site's finished-surface / underlying-rule grammar without a modal. */
+/* Each letter is its own width state (driven in CoverName). Without
+   JS — or under reduced motion — the letters simply rest at the name's
+   authored width. */
+.xp-cover-letter {
+  display: inline-block;
+  font-variation-settings: "wdth" 122;
+}
+
+/* The claim is the wordmark's own voice turned down, centered on the
+   same axis: Anybody, compressed at rest, with the one word the folio
+   is about — behaviour — opening to the wordmark's width. */
+.xp-cover-claim {
+  max-width: 30ch;
+  font-family: var(--display);
+  font-size: clamp(1.3rem, 2.3vw, 2.1rem);
+  font-weight: 540;
+  font-stretch: 80%;
+  line-height: 1.12;
+  letter-spacing: 0.004em;
+  text-wrap: balance;
+  text-align: center;
+}
+
+.xp-cover-claim strong {
+  font-weight: 660;
+  font-stretch: 122%;
+  letter-spacing: -0.005em;
+}
+
+.xp-cover-deck {
+  max-width: 46ch;
+  color: var(--ink-soft);
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.5;
+  text-wrap: balance;
+  text-align: center;
+}
+
+.xp-cover-handoff {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 1.1rem;
+  padding-block: clamp(1rem, 2.4vh, 1.6rem) clamp(0.9rem, 2vh, 1.4rem);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.xp-cover-handoff p {
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.05em;
+}
+
+.xp-cover-handoff span {
+  color: var(--registrar);
+}
+
+@media (max-width: 52rem) {
+  .xp-cover-name {
+    font-size: clamp(2.6rem, 11.6vw, 6.4rem);
+    white-space: nowrap;
+  }
+
+  .xp-cover-claim {
+    max-width: 21ch;
+  }
+}
+
+/* The manual reveal grammar (finished surface / underlying rule), shared
+   with the case pages' look-under instrument. */
 .xp-under {
   --reveal: 0.16;
   position: relative;
   isolation: isolate;
   overflow: hidden;
-}
-
-.xp-cover-window {
-  width: calc(100% + 2 * var(--page-gutter));
-  margin-inline: calc(var(--page-gutter) * -1);
-  min-height: clamp(17rem, 38vh, 27rem);
-  border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--ink);
 }
 
 .xp-under-back,
@@ -232,7 +271,7 @@
   padding: 0.55rem 0.9rem;
   cursor: pointer;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.02em;
 }
 
@@ -240,259 +279,6 @@
 .xp-under-toggle:focus-visible {
   background: var(--ink);
   color: var(--paper);
-}
-
-.xp-cover-face {
-  display: grid;
-  height: 100%;
-  min-height: inherit;
-  padding: clamp(1.2rem, 3vh, 2rem) var(--page-gutter);
-}
-
-/* The surface carries the point of view; its content always sits to the
-   right of the seam on wide screens, so no glyph is ever cut by the
-   reveal. Faces stack by default and split at 52rem. */
-.xp-cover-face[data-side="surface"] {
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr auto auto;
-  gap: 0.9rem 0;
-}
-
-.xp-cover-face[data-side="under"] {
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
-  gap: 1.4rem;
-  align-content: start;
-}
-
-.xp-cover-face-label {
-  color: currentColor;
-  opacity: 0.62;
-}
-
-.xp-cover-deck {
-  grid-column: 1;
-  grid-row: 3;
-  align-self: start;
-  max-width: 30ch;
-  font-family: var(--sans);
-  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  line-height: 1.3;
-  color: var(--ink-soft);
-}
-
-.xp-cover-instruction {
-  grid-column: 1;
-  grid-row: 4;
-  justify-self: start;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-/* Wide: the surface splits into a quiet label column and the content,
-   which the seam can never cover. */
-@media (min-width: 52.01rem) {
-  .xp-cover-face[data-side="surface"] {
-    grid-template-columns: minmax(7rem, 0.3fr) minmax(0, 1fr);
-    grid-template-rows: auto 1fr auto;
-    gap: 1rem 2rem;
-    padding-left: max(var(--page-gutter), calc(var(--reveal) * 100% + 2.5rem));
-  }
-
-  .xp-cover-face[data-side="surface"] .xp-cover-face-label {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .xp-cover-claim {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: center;
-  }
-
-  .xp-cover-deck {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .xp-cover-instruction {
-    grid-column: 2;
-    grid-row: 3;
-  }
-}
-
-/* The index peek: numbers, verbs and names in one compact column that
-   fits inside the resting reveal, so the seam shows real content. */
-.xp-cover-face[data-side="under"] ol {
-  align-self: start;
-  list-style: none;
-  padding: 0;
-  max-width: 21rem;
-}
-
-.xp-cover-face li {
-  display: grid;
-  grid-template-columns: 1.9rem minmax(4rem, auto) minmax(6rem, 1fr);
-  gap: 0.7rem;
-  align-items: baseline;
-  border-bottom: 1px solid rgba(240, 238, 255, 0.22);
-  padding: 0.35rem 0;
-}
-
-.xp-cover-face li span,
-.xp-cover-face li small {
-  color: rgba(240, 238, 255, 0.6);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  font-weight: 400;
-}
-
-.xp-cover-face li span {
-  color: #a795ff;
-}
-
-.xp-cover-face li strong {
-  font-family: var(--display);
-  font-size: var(--step-1);
-  font-style: italic;
-  font-weight: 500;
-  font-stretch: 106%;
-}
-
-/* ---------- the opening ----------
-   TANISHK is the primary object: set at viewport scale, cropped against
-   the right edge, resting on the signal rule that divides designer from
-   work. The claim sits in the negative space the wordmark leaves. The
-   cover holds for a beat while the field arrives over it. */
-.xp-cover {
-  --cover-progress: 0;
-  min-height: 76svh;
-  border-bottom: 0;
-  background: var(--paper);
-}
-
-.xp-cover-pin {
-  position: sticky;
-  top: var(--header-h);
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 0;
-  min-height: calc(76svh - var(--header-h));
-  padding: 0 var(--page-gutter) 0;
-}
-
-.xp-cover-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 2rem;
-  padding-block: 0.65rem;
-  border-bottom: 1px solid var(--xp-rule);
-  color: var(--muted);
-}
-
-.xp-cover-head p,
-.xp-cover-next {
-  margin: 0;
-}
-
-.xp-cover-mast {
-  display: grid;
-  align-content: end;
-  gap: 1.2rem;
-  padding-block: clamp(1.2rem, 4vh, 3rem) 0;
-}
-
-.xp-cover-name {
-  display: block;
-  font-family: var(--display);
-  font-size: clamp(4.4rem, 16.4vw, 16rem);
-  font-weight: var(--poster-weight);
-  font-stretch: 122%;
-  text-transform: uppercase;
-  letter-spacing: -0.012em;
-  line-height: 0.8;
-  white-space: nowrap;
-  margin-left: calc(var(--page-gutter) * -0.16);
-}
-
-/* Each letter is its own width state (driven in CoverName). Without
-   JS — or under reduced motion — the letters simply rest at the
-   name's authored width. */
-.xp-cover-letter {
-  display: inline-block;
-  font-variation-settings: "wdth" 122;
-}
-
-.xp-cover-rule {
-  height: 2px;
-  background: var(--registrar);
-  margin-left: calc(var(--page-gutter) * -1);
-  margin-right: calc(var(--page-gutter) * -1);
-}
-
-/* The claim is the wordmark's own voice turned down, not an aside in
-   another family: Anybody, compressed at rest, with the one word the
-   folio is about — motion — opening to the wordmark's width. Same
-   system, secondary scale. */
-.xp-cover-claim {
-  margin: 0;
-  max-width: 24ch;
-  font-family: var(--display);
-  font-size: clamp(1.35rem, 2.5vw, 2.25rem);
-  font-weight: 540;
-  font-stretch: 80%;
-  line-height: 1.12;
-  letter-spacing: 0.004em;
-  text-wrap: balance;
-}
-
-.xp-cover-claim strong {
-  font-weight: 660;
-  font-stretch: 122%;
-  letter-spacing: -0.005em;
-}
-
-.xp-cover-deck {
-  margin: 0.4rem 0 0;
-  max-width: 46ch;
-  color: var(--ink-soft);
-  font-size: var(--step-1);
-  line-height: 1.42;
-}
-
-.xp-cover-handoff {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 2rem;
-  padding-block: clamp(1.1rem, 2.6vh, 1.8rem) clamp(0.9rem, 2vh, 1.4rem);
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-}
-
-.xp-cover-handoff p {
-  margin: 0;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  letter-spacing: 0.05em;
-}
-
-.xp-cover-handoff span {
-  color: var(--registrar);
-}
-
-@media (max-width: 52rem) {
-  .xp-cover-name {
-    font-size: clamp(4rem, 15.4vw, 9rem);
-    white-space: nowrap;
-  }
-
-  .xp-cover-claim {
-    max-width: 21ch;
-  }
 }
 
 /* The sheets share one composition: copy on one side, the project's
@@ -557,7 +343,7 @@
 .xp-field-index small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   font-weight: 400;
 }
 
@@ -646,9 +432,6 @@
 
 .xp-piece-title {
   width: fit-content;
-  /* the meta line is an annotation; the title is the arrival — the
-      gap between them is hierarchy, not padding */
-  margin-top: clamp(2rem, 4.5vh, 3.2rem);
   max-width: 100%;
   /* the cap is structural: the longest word can never exceed the
      column, at any viewport, for any title length. 0.78em per glyph is
@@ -679,10 +462,18 @@
   align-items: center;
   color: var(--accent-ink);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   letter-spacing: 0.08em;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
+}
+
+/* the spine's signal pip: one pixel of the project's pigment, marking
+   the sheet's own edge of the drawer */
+.xp-piece-spine-pip {
+  width: 4px;
+  height: 4px;
+  background: var(--accent-ink);
 }
 
 .xp-piece-copy {
@@ -695,10 +486,19 @@
   container-type: inline-size;
 }
 
-/* zero the defaults, but keep the title's authored gap — the meta →
-   title separation is hierarchy, not an inherited margin to strip */
-.xp-piece-copy > :not(.xp-piece-title) {
+/* Zero the inherited margins once, then author every gap explicitly —
+   the meta → title → intro → actions rhythm is hierarchy, not an
+   inherited margin to strip. */
+.xp-piece-copy > * {
   margin: 0;
+}
+
+/* the meta line is an annotation; the title is the arrival — the gap
+   between them is hierarchy, not padding. It scales with the title's
+   own size, so a poster-size anchor title and a smaller revision title
+   read as the same deliberate relationship on every layout. */
+.xp-piece-title {
+  margin-top: clamp(2.6rem, 6vh, 0.95em);
 }
 
 .xp-piece-meta,
@@ -706,347 +506,76 @@
   color: color-mix(in srgb, currentColor 62%, transparent);
 }
 
-
-
-.xp-piece-title a {
-  color: inherit;
-  text-decoration: none;
-  /* the width answers the pointer: the title breathes one step wider,
-     the same state grammar the header identity uses */
-  font-stretch: var(--poster-stretch, 118%);
-  transition: font-stretch 240ms var(--ease-out);
-}
-
-.xp-piece-title a:hover,
-.xp-piece-title a:focus-visible {
-  font-stretch: calc(var(--poster-stretch, 118%) + 4%);
-}
-
-.xp-piece-title a::after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 2px;
-  margin-top: 0.12em;
-  background: var(--accent-ink);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform var(--move) var(--ease-swing);
-}
-
-.xp-piece-title a:hover::after,
-.xp-piece-title a:focus-visible::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-.xp-piece-cue {
-  max-width: 29ch;
-  margin-top: clamp(1.2rem, 3vh, 2.2rem);
-  color: var(--accent-ink);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  line-height: 1.55;
-}
-
-.xp-piece-actions a::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: -0.25rem;
-  left: 0;
-  height: 1px;
-  background: var(--accent-ink);
-  transform: scaleX(0.24);
-  transform-origin: left;
-  transition: transform var(--move) var(--ease-out);
-}
-
-.xp-piece-actions a:hover::after,
-.xp-piece-actions a:focus-visible::after {
-  transform: scaleX(1);
-}
-
-/* the shared external lift-out lives in system.css; the internal
-   reading action steps forward here */
-.xp-piece-actions a:first-child:hover .xp-cta-arrow,
-.xp-piece-actions a:first-child:focus-visible .xp-cta-arrow {
-  transform: translateX(3px);
-}
-
-/* the arrival material: a pigment strip along the sheet's top edge
-   that resolves as the sheet takes over the drawer, then is gone */
-.xp-piece-field {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: clamp(4.5rem, 9vh, 7.5rem);
-  z-index: 4;
-  pointer-events: none;
-}
-
-/* ---------- project portraits ----------
-   The folio's interpretation layer: one family of abstract, living
-   glyph compositions (ProjectPortrait) — same engine, same density
-   logic, same spatial scale, each in the project's own pigment. The
-   plate is the project's ground; the material is the portfolio's. */
-.xp-portrait {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--accent-ink, currentColor) 42%, transparent);
-}
-
-.xp-portrait-field {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.xp-piece-stage {
-  position: relative;
-  z-index: 1;
-  align-self: stretch;
-  height: min(67vh, 42rem);
-  min-height: 0;
-  overflow: hidden;
-  transform-origin: center;
-}
-
-.xp-piece-stage > * {
-  width: 100%;
-  height: 100%;
-}
-
-.xp-piece-status {
-  grid-column: 1 / -1;
-  justify-self: end;
-  margin: 0;
-}
-
-/* Sheet overlap is the section movement. No extra stage travel, scaling,
-   or entry masks — the six projects already move differently by behaving
-   differently, not by arriving differently. */
-/* Sheet overlap is the section movement. No extra stage travel, scaling,
-   or entry masks — the six projects already move differently by behaving
-   differently, not by arriving differently. */
-.xp-piece[data-layout="revision"] {
-  grid-template-columns: minmax(28rem, 1.2fr) minmax(14rem, 0.8fr);
-}
-
-.xp-piece[data-layout="revision"] .xp-piece-copy {
-  grid-column: 2;
-}
-
-/* The longest one-word title in the set cannot wrap: the revision
-   sheet's title takes a size that lives inside its column instead of
-   clipping against the sheet edge. */
-.xp-piece[data-layout="revision"] .xp-piece-title {
-  --title-size: clamp(2.3rem, 3.55vw, 4.05rem);
-}
-
-.xp-piece[data-layout="revision"] .xp-piece-stage {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-/* lineage: stage left, copy right, copy column narrow and bottom-settled */
-.xp-piece[data-layout="lineage"] {
-  grid-template-columns: minmax(26rem, 1.2fr) minmax(13rem, 0.8fr);
-}
-
-.xp-piece[data-layout="lineage"] .xp-piece-copy {
-  grid-column: 2;
-  align-self: end;
-}
-
-.xp-piece[data-layout="lineage"] .xp-piece-title {
-  --title-size: clamp(2.3rem, 3.55vw, 4.05rem);
-}
-
-.xp-piece[data-layout="lineage"] .xp-piece-stage {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-/* absence: copy narrow and bottom-settled against a wider plate */
-.xp-piece[data-layout="absence"] {
-  grid-template-columns: minmax(12rem, 0.52fr) minmax(30rem, 1.48fr);
-}
-
-.xp-piece[data-layout="absence"] .xp-piece-copy {
-  align-self: end;
-  padding-bottom: clamp(1.6rem, 4vh, 3rem);
-}
-
-/* wordmark: the plate runs full width above the copy — one site,
-   presented like the thing it is */
-.xp-piece[data-layout="wordmark"] {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.xp-piece[data-layout="wordmark"] .xp-piece-stage {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  min-height: min(58vh, 34rem);
-}
-
-.xp-piece[data-layout="wordmark"] .xp-piece-copy {
-  grid-row: 2;
-  align-self: start;
-  padding-block: clamp(1.6rem, 3.5vh, 2.6rem);
-}
-
-.xp-piece[data-layout="number"] {
-  grid-template-columns: minmax(13rem, 0.55fr) minmax(30rem, 1.45fr);
-}
-
-.xp-piece[data-layout="number"] .xp-piece-copy {
-  align-self: end;
-}
-
-/* ---------- the critique's annotation marks ----------
-   Design or Disaster's evidence marks — shared with the case
-   instrument, which mounts the same notation on its evidence. */
-
-.xp-dod-prompt {
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  border-left: 2px solid #ef4a35;
-  background: rgba(18, 13, 11, 0.78);
-  padding: 0.55rem 0.7rem;
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.xp-dod-mark {
-  position: absolute;
-  width: 0.8rem;
-  height: 0.8rem;
-  border: 2px solid #fff6e8;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.xp-dod-mark--mine {
-  z-index: 2;
-  width: 1rem;
-  height: 1rem;
-  border-color: #ef4a35;
-  background: #ef4a35;
-}
-
-.xp-dod-mark--other {
-  animation: xp-mark-arrive 200ms var(--ease-out) both;
-}
-
-.xp-dod-mark--other[data-active="true"] {
-  border-color: #ef4a35;
-  background: rgba(239, 74, 53, 0.4);
-}
-
-.xp-dod-tag {
-  position: absolute;
-  top: 1rem;
-  left: 50%;
-  width: max-content;
-  background: #ef4a35;
-  padding: 0.25rem 0.4rem;
-  color: #fff;
-  font-family: var(--mono);
-  font-size: 0.64rem;
-  transform: translateX(-50%);
-}
-
-@keyframes xp-mark-arrive {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.88);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-.xp-piece-status {
-  color: color-mix(in srgb, currentColor 62%, transparent);
-}
-
-
-
-.xp-piece-title a {
-  color: inherit;
-  text-decoration: none;
-  /* the width answers the pointer: the title breathes one step wider,
-     the same state grammar the header identity uses */
-  font-stretch: var(--poster-stretch, 118%);
-  transition: font-stretch 240ms var(--ease-out);
-}
-
-.xp-piece-title a:hover,
-.xp-piece-title a:focus-visible {
-  font-stretch: calc(var(--poster-stretch, 118%) + 4%);
-}
-
-.xp-piece-title a::after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 2px;
-  margin-top: 0.12em;
-  background: var(--accent-ink);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform var(--move) var(--ease-swing);
-}
-
-.xp-piece-title a:hover::after,
-.xp-piece-title a:focus-visible::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-.xp-piece-cue {
-  max-width: 29ch;
-  margin-top: clamp(1.2rem, 3vh, 2.2rem);
-  color: var(--accent-ink);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-  line-height: 1.55;
-}
-
-/* The one intro block: what the project is, in two plain sentences.
-   The meta is the label, the title is the arrival, the intro is the
-   only prose — then the actions breathe below. */
+/* The one intro block: what the project is, in plain sentences. It
+   follows the title at reading distance... */
 .xp-piece-intro {
   max-width: 36rem;
-  margin-top: 1.8rem;
+  margin-top: 1.6rem;
   font-size: var(--step-0);
   line-height: 1.65;
   color: color-mix(in srgb, var(--room-ink) 76%, transparent);
   text-wrap: pretty;
 }
 
+/* ...and the actions are a separate row: the wide gap before them is
+   deliberate — the intro describes, the links act. Applied identically
+   on every sheet. */
 .xp-piece-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem 1.35rem;
-  margin-top: clamp(3.4rem, 8vh, 5.2rem);
+  margin-top: clamp(3.4rem, 9vh, 5.6rem);
 }
 
 .xp-piece-actions a {
   position: relative;
   color: inherit;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   text-decoration: none;
+}
+
+
+
+.xp-piece-title a {
+  color: inherit;
+  text-decoration: none;
+  /* the width answers the pointer: the title breathes one step wider,
+     the same state grammar the header identity uses */
+  font-stretch: var(--poster-stretch, 118%);
+  transition: font-stretch 240ms var(--ease-out);
+}
+
+.xp-piece-title a:hover,
+.xp-piece-title a:focus-visible {
+  font-stretch: calc(var(--poster-stretch, 118%) + 4%);
+}
+
+.xp-piece-title a::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  margin-top: 0.12em;
+  background: var(--accent-ink);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--move) var(--ease-swing);
+}
+
+.xp-piece-title a:hover::after,
+.xp-piece-title a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.xp-piece-cue {
+  max-width: 29ch;
+  margin-top: clamp(1.2rem, 3vh, 2.2rem);
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  line-height: 1.55;
 }
 
 .xp-piece-actions a::after {
@@ -1150,6 +679,71 @@
 .xp-piece[data-layout="revision"] .xp-piece-stage {
   grid-column: 1;
   grid-row: 1;
+}
+
+/* lineage: stage left, copy right, copy column narrow and bottom-settled */
+.xp-piece[data-layout="lineage"] {
+  grid-template-columns: minmax(26rem, 1.2fr) minmax(13rem, 0.8fr);
+}
+
+.xp-piece[data-layout="lineage"] .xp-piece-copy {
+  grid-column: 2;
+  align-self: end;
+}
+
+.xp-piece[data-layout="lineage"] .xp-piece-title {
+  --title-size: clamp(2.3rem, 3.55vw, 4.05rem);
+}
+
+.xp-piece[data-layout="lineage"] .xp-piece-stage {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* absence: copy narrow and bottom-settled against a wider plate */
+.xp-piece[data-layout="absence"] {
+  grid-template-columns: minmax(12rem, 0.52fr) minmax(30rem, 1.48fr);
+}
+
+.xp-piece[data-layout="absence"] .xp-piece-copy {
+  align-self: end;
+  padding-bottom: clamp(1.6rem, 4vh, 3rem);
+}
+
+/* wordmark: the plate runs full width above the copy — one site,
+   presented like the thing it is. The sheet is exactly the pinned
+   viewport: the stage row absorbs the leftover space (minmax(0,1fr))
+   so the copy always sits fully inside the pinned sheet — the plate
+   never overflows below the fold and the next sheet never arrives
+   before this one has finished. */
+.xp-piece[data-layout="wordmark"] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: clamp(1rem, 2.2vh, 1.8rem) clamp(1.5rem, 4vw, 5rem);
+  min-height: calc(100svh - var(--header-h) - 1rem);
+  padding-top: clamp(1.5rem, 4.5vh, 3rem);
+}
+
+.xp-piece[data-layout="wordmark"] .xp-piece-stage {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  height: 100%;
+  min-height: 0;
+}
+
+.xp-piece[data-layout="wordmark"] .xp-piece-copy {
+  grid-row: 2;
+  align-self: start;
+  max-width: none;
+  padding-block: clamp(0.6rem, 1.6vh, 1.2rem);
+}
+
+.xp-piece[data-layout="number"] {
+  grid-template-columns: minmax(13rem, 0.55fr) minmax(30rem, 1.45fr);
+}
+
+.xp-piece[data-layout="number"] .xp-piece-copy {
+  align-self: end;
 }
 
 /* ---------- the critique's annotation marks ----------
@@ -1269,12 +863,20 @@
   padding-top: clamp(0.4rem, 1.6vh, 1.2rem);
 }
 
-.xp-piece[data-project="fluxion-studios"] .xp-piece-title,
-.xp-piece[data-project="atlas"] .xp-piece-title {
-  margin-top: clamp(1.5rem, 3.2vh, 2.4rem);
-}
-
 /* ---------- responsive ---------- */
+
+/* Short laptop viewports: a pinned sheet's on-screen box is fixed, so
+   the stage and the top margin give way before any copy or status
+   does — no sheet's text ever sits below the fold while pinned. */
+@media (min-width: 52.01rem) and (max-height: 48.5rem) {
+  .xp-piece {
+    padding-top: clamp(1.6rem, 4vh, 2.6rem);
+  }
+
+  .xp-piece-stage {
+    height: min(56vh, 36rem);
+  }
+}
 
 @media (max-width: 64rem) {
   .xp-piece {
@@ -1326,16 +928,6 @@
     display: none;
   }
 
-  .xp-cover-title {
-    grid-template-columns: 1fr;
-    gap: 0.6rem;
-    margin-top: 2rem;
-  }
-
-  .xp-cover-issue {
-    padding: 0;
-  }
-
   .xp-cover-name {
     font-size: clamp(3.2rem, 14vw, 5.4rem);
   }
@@ -1345,31 +937,6 @@
     font-size: clamp(1.35rem, 5.4vw, 1.9rem);
   }
 
-  .xp-cover-window {
-    min-height: 15rem;
-    max-height: 16.5rem;
-    margin-top: 1.5rem;
-  }
-
-  /* Opening the index on a phone needs the room to read all six rows;
-     the closed cover keeps its compact height. */
-  .xp-cover-window[data-revealed="true"] {
-    min-height: 23rem;
-    max-height: none;
-  }
-
-  /* The faces already stack mobile-first; only the deck's size changes. */
-  .xp-cover-deck {
-    align-self: start;
-    font-size: clamp(1.05rem, 4.4vw, 1.35rem);
-    padding-left: 0;
-    max-width: 34ch;
-  }
-
-  .xp-cover-instruction {
-    grid-column: 1;
-  }
-
   /* On narrow screens the reveal control used to land on top of the
      cover deck. It moves to the quiet top-right corner; the mechanic,
      the labels and the seam are unchanged. */
@@ -1377,15 +944,6 @@
     top: 0.6rem;
     right: 0.6rem;
     bottom: auto;
-  }
-
-  .xp-cover-face[data-side="under"] ol {
-    align-self: end;
-  }
-
-  .xp-cover-face li {
-    grid-template-columns: 2rem minmax(4rem, 0.55fr) minmax(6rem, 1fr);
-    gap: 0.5rem;
   }
 
   .xp-field-head {
@@ -1501,23 +1059,10 @@
 }
 
 @media (max-width: 28rem) {
-  /* the closing statement must fit a 320 screen: one long word cannot
-     wrap, so the display size comes down rather than the word breaking */
-
-  .xp-cover-face {
-    padding: 1rem;
-  }
-
   /* Keep the reveal control clear of the under-layer label. */
   .xp-under-toggle {
     font-size: 0.72rem;
     padding: 0.45rem 0.6rem;
-  }
-
-  .xp-cover-face li small {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .xp-piece-title {
@@ -1558,8 +1103,6 @@
     top: auto;
   }
 
-  .xp-cover-title h1 span,
-  .xp-cover-window,
   .xp-piece-copy,
   .xp-piece-stage,
   .xp-piece::before {
@@ -1604,5 +1147,118 @@
   .xp-under-back {
     background: Canvas;
     color: CanvasText;
+  }
+}
+
+/* ---------- the closing note ----------
+   One quiet beat between the last sheet and the global footer: the
+   folio's argument on the left, a faint glyph pattern settling on the
+   right — the material at its calmest, no signal fragments. The
+   canvas spans the section's open right half and the pattern drifts
+   toward the bottom edge, so the footer reads as the same material
+   continuing. Quiet zones dissolve every edge facing the words; the
+   text column itself is structurally out of reach. */
+.xp-close {
+  position: relative;
+  isolation: isolate;
+  --close-pad-top: clamp(2.6rem, 7vh, 4rem);
+  --close-pad-bottom: clamp(1.6rem, 4vh, 2.4rem);
+  display: grid;
+  grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
+  column-gap: clamp(2rem, 6vw, 5rem);
+  row-gap: clamp(0.8rem, 1.8vh, 1.1rem);
+  align-content: center;
+  padding: var(--close-pad-top) var(--page-gutter) var(--close-pad-bottom);
+  overflow-x: clip;
+}
+
+.xp-close > .xp-close-statement {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.xp-close > .xp-close-note {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.xp-close > .xp-close-link {
+  grid-column: 1;
+  grid-row: 3;
+  justify-self: start;
+  margin-top: clamp(0.6rem, 1.5vh, 1rem);
+}
+
+/* the material lives absolutely beside the text: out of the grid's
+   row sizing, stretched from the section's own padding edges, so the
+   note's height is the text's alone */
+.xp-close > .xp-close-texture,
+.xp-close > .xp-close-signal {
+  position: absolute;
+  top: var(--close-pad-top);
+  right: var(--page-gutter);
+  bottom: var(--close-pad-bottom);
+  width: calc(100% - var(--page-gutter) * 2 - 30rem - clamp(2rem, 6vw, 5rem));
+  height: auto;
+  z-index: -1;
+}
+
+.xp-close-statement {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.xp-close-note {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--ink) 76%, transparent);
+  text-wrap: pretty;
+}
+
+.xp-close-link {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.02em;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 32%, transparent);
+  text-underline-offset: 0.32em;
+  transition: text-decoration-color var(--beat) var(--ease-out);
+}
+
+.xp-close-link:hover,
+.xp-close-link:focus-visible {
+  text-decoration-color: currentColor;
+}
+
+@media (max-width: 56rem) {
+  /* narrow rooms read the note first, then the pattern settles
+     beneath it as a short, faint band — text and texture never
+     share space */
+  .xp-close {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(0.9rem, 2.5vh, 1.2rem);
+    padding-block: clamp(2.6rem, 7vh, 4rem) 0;
+  }
+
+  .xp-close > .xp-close-texture {
+    grid-column: 1;
+    grid-row: 4;
+    position: relative;
+    inset: auto;
+    align-self: stretch;
+    justify-self: stretch;
+    width: 100%;
+    height: clamp(6rem, 20vw, 9rem);
+    margin-top: clamp(0.8rem, 2.5vh, 1.4rem);
+    z-index: 0;
   }
 }

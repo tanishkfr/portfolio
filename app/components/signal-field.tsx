@@ -104,6 +104,13 @@ export type SignalFieldProps = {
 
 const BANDS = 7;
 
+/* One time origin for every field on the page. Simultaneously mounted
+   fields (the splash's and the cover's, say) therefore run in exactly
+   the same noise phase — the splash is literally the hero's first
+   frames — and a field that remounts resumes the shared clock instead
+   of restarting its material from zero. */
+let SHARED_EPOCH = 0;
+
 function hash3(x: number, y: number, z: number, seed: number): number {
   let h = seed;
   h = Math.imul(h ^ (x | 0), 0x27d4eb2d);
@@ -165,6 +172,12 @@ export function SignalField({
       the engine reads them through this ref, refreshed before each paint */
   const lookRef = useRef({ color, quiet, shape, tune, glyphAt, displace });
 
+  /* keep the ref fresh between renders without rebinding listeners —
+     the engine reads colour, quiet zones and scripts per paint */
+  useEffect(() => {
+    lookRef.current = { color, quiet, shape, tune, glyphAt, displace };
+  });
+
   useEffect(() => {
     const el = canvasRef.current;
     if (!el) return;
@@ -185,14 +198,30 @@ export function SignalField({
     let dpr = 1;
     let sprite: HTMLCanvasElement | null = null;
     let lastPaint = new Int32Array(1);
+    /* painted colour strings for the solid-square modes, quantised to
+       13 weights — no per-cell string allocation per frame; rebuilt per
+       effect run, same lifetime as the sprites */
+    const inkCache: string[] = [];
     const pointerCell = { x: -9999, y: -9999 };
     let inView = false;
     let raf = 0;
-    const clockStart = performance.now();
+    const clockStart = SHARED_EPOCH || (SHARED_EPOCH = performance.now());
     const arriveStart = performance.now();
     let pulseStart = -1;
     let lastPulseKey: number | string | null = null;
     let pulseOpen = false;
+
+    /** quantised ink lookup: 13 steps is finer than any square or dot
+        can express, so nothing is lost, and the fillStyle string is
+        built at most once per weight per field */
+    const inkFor = (t: number): string => {
+      const q = Math.min(12, Math.max(0, Math.round(t * 12)));
+      const cached = inkCache[q];
+      if (cached !== undefined) return cached;
+      const built = lookRef.current.color(q / 12) ?? "transparent";
+      inkCache[q] = built;
+      return built;
+    };
 
     function buildSprites(): void {
       sprite = document.createElement("canvas");
@@ -219,6 +248,10 @@ export function SignalField({
     }
 
     function measure(): void {
+      /* read the stylesheet's own resolution: a stale inline size would
+         otherwise feed itself back through getBoundingClientRect */
+      canvas.style.width = "";
+      canvas.style.height = "";
       const box = canvas.getBoundingClientRect();
       width = Math.max(1, Math.round(box.width));
       height = Math.max(1, Math.round(box.height));
@@ -346,10 +379,20 @@ export function SignalField({
         pulseStart = now;
         lastPulseKey = pulseKey;
       }
-      const clock = (now - clockStart) / 24000 + Math.floor(seed * 13);
-      /* script time for portraits: seconds since mount, frozen under
-         reduced motion so the single static frame is a composed state */
-      const tNow = reduced.matches ? 0 : (now - clockStart) / 1000;
+      /* the noise clock freezes under reduced motion: any forced repaint
+         (resize, re-entry) re-evaluates the identical field, so the
+         reader's one stable composition is exact, not approximate */
+      const clock = reduced.matches
+        ? Math.floor(seed * 13)
+        : (now - clockStart) / 24000 + Math.floor(seed * 13);
+      /* script time for portraits: seconds since mount, quantised to
+         eighth-seconds so shape, glyph and displacement scripts repaint
+         in visible steps — the repaint cache absorbs the frames in
+         between. Frozen at 0 under reduced motion so the single static
+         frame is a composed state. */
+      const tNow = reduced.matches
+        ? 0
+        : Math.floor(((now - clockStart) * 8) / 1000) / 8;
       const arrive = reduced.matches
         ? 1
         : smooth(Math.min(1, (now - arriveStart) / 1500));
@@ -437,8 +480,7 @@ export function SignalField({
             lastPaint[index] = key;
             if (!on) continue;
             const s = step * (0.24 + 0.6 * strength);
-            ctx.fillStyle =
-              lookRef.current.color(strength) ?? "transparent";
+            ctx.fillStyle = inkFor(strength);
             ctx.fillRect(x - s / 2 + dx, y - s / 2 + dy, s, s);
             continue;
           }
@@ -458,7 +500,7 @@ export function SignalField({
               continue;
             }
             const size = step * (0.18 + 0.4 * v);
-            ctx.fillStyle = lookRef.current.color(Math.min(1, 0.35 + v * 0.65)) ?? "transparent";
+            ctx.fillStyle = inkFor(Math.min(1, 0.35 + v * 0.65));
             ctx.fillRect(
               x - size / 2 + dx,
               y - size / 2 + dy,
@@ -543,9 +585,13 @@ export function SignalField({
     };
     document.addEventListener("visibilitychange", onVisibility);
 
+    /* only fields that actually read the pointer subscribe to
+       pointermove — page signals and textures skip the per-move work
+       entirely */
+    const wantsPointer = pointerRadius > 0;
+
     const onMove = (event: PointerEvent): void => {
-      if (event.pointerType === "touch" || pointerRadius <= 0 || coarse.matches)
-        return;
+      if (event.pointerType === "touch" || coarse.matches) return;
       const box = canvas.getBoundingClientRect();
       pointerCell.x = event.clientX - box.left;
       pointerCell.y = event.clientY - box.top;
@@ -556,12 +602,22 @@ export function SignalField({
       pointerCell.y = -9999;
       schedule();
     };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerout", onOut);
+    if (wantsPointer) {
+      window.addEventListener("pointermove", onMove, { passive: true });
+      window.addEventListener("pointerout", onOut);
+    }
 
+    /* window resize and the element ResizeObserver fire together on
+       every real resize; coalesce the burst into one measure per frame */
+    let measureQueued = false;
     const onResize = (): void => {
-      measure();
-      schedule();
+      if (measureQueued) return;
+      measureQueued = true;
+      window.requestAnimationFrame(() => {
+        measureQueued = false;
+        measure();
+        schedule();
+      });
     };
     window.addEventListener("resize", onResize);
     /* the canvas box can change without a window resize — styles landing
@@ -584,8 +640,10 @@ export function SignalField({
       io.disconnect();
       if (ro) ro.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerout", onOut);
+      if (wantsPointer) {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerout", onOut);
+      }
       window.removeEventListener("resize", onResize);
       reduced.removeEventListener("change", onMotionChange);
     };

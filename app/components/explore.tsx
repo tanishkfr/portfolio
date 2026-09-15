@@ -36,16 +36,122 @@ const ordered = order
 
 /* The cover's material hierarchy: TANISHK first, the sparse
    ultramarine pixel signal second, the claim third, and a faint glyph
-   texture under everything. The quiet zones keep the masthead, the
-   claim's column, the handoff line and the border crisp; one array is
-   shared by both fields so the cover reads as one system. */
-const COVER_QUIET: Quiet[] = [
-  { x: 0, y: 0, w: 1, h: 0.055, falloff: 0.92, feather: 0.02 },
-  { x: 0.01, y: 0.26, w: 0.98, h: 0.3, falloff: 0.93, feather: 0.05 },
-  { x: 0, y: 0.6, w: 0.52, h: 0.23, falloff: 0.9, feather: 0.05 },
-  { x: 0, y: 0.855, w: 1, h: 0.09, falloff: 0.94, feather: 0.03 },
+   texture under everything. The composition is centered: the identity
+   sits in the middle of the field, so the quiet zone is a wide band
+   across the centre — the signal keeps the margins, the top band under
+   the header line and the two lower corners, and both fields share one
+    array so the cover reads as one system. Shared with the splash: its
+    fields run these exact configs, so the splash is the hero's opening
+    phase rather than a separate composition. */
+export const COVER_QUIET: Quiet[] = [
+  { x: 0, y: 0, w: 1, h: 0.135, falloff: 0.94, feather: 0.03 },
+  { x: 0.1, y: 0.27, w: 0.8, h: 0.56, falloff: 0.95, feather: 0.06 },
+  { x: 0, y: 0.83, w: 1, h: 0.11, falloff: 0.95, feather: 0.03 },
   { x: 0, y: 0.97, w: 1, h: 0.04, falloff: 1 },
 ];
+
+/* Below the pinned-sheet breakpoint the cover is content-height and
+   the registration line wraps: the quiet geometry follows the
+   composition, so the wrapped head, the whole mast and the handoff
+   stay protected while the flanks stay alive. */
+export const COVER_QUIET_NARROW: Quiet[] = [
+  { x: 0, y: 0, w: 1, h: 0.21, falloff: 0.94, feather: 0.03 },
+  { x: 0.06, y: 0.25, w: 0.9, h: 0.55, falloff: 0.95, feather: 0.05 },
+  { x: 0, y: 0.86, w: 1, h: 0.14, falloff: 1 },
+];
+
+/* The cover texture: dark ink holds the margins and dies toward the
+   centre, where the identity sits. Shared with the splash so its
+   texture is the same material. */
+export function coverTextureShape(
+  v: number,
+  nx: number,
+  ny: number,
+): number {
+  return (
+    v * (0.45 + 0.7 * Math.abs(nx - 0.5) * 2) *
+    (0.4 + 1.25 * Math.pow(ny, 1.4))
+  );
+}
+
+/**
+ * The living signal. The composition is stable — two flank clusters,
+ * a thin registration strip, two corner edges — but nothing holds
+ * still: a slow global breath (~47s) swells and relaxes the whole
+ * matter; each cluster gathers and disperses on its own
+ * incommensurate period (~31s, ~41s), tightening toward a harder peak
+ * then softening outward; the cluster centres wander on slow
+ * Lissajous paths well inside their margins; and a faint satellite
+ * pocket rises and dissolves (~73s) in the upper channel, so the
+ * field occasionally reforms somewhere new. The periods share no
+ * small common multiple, so ten seconds of watching shows evolution,
+ * never a loop. The quiet zones are re-applied after this shape, so
+ * none of the motion can reach the name or the copy.
+ */
+export function coverPixelShape(
+  v: number,
+  nx: number,
+  ny: number,
+  t: number,
+): number {
+  const hash = Math.sin(nx * 812.3 + ny * 431.7) * 43758.5453;
+  const grain = 0.7 + 0.55 * (hash - Math.floor(hash));
+  const breath = 0.9 + 0.14 * Math.sin(t * 0.133 + 1.7);
+  /* gathering: the effective sigma tightens while the peak hardens, so
+     the matter visibly converges and then lets go */
+  const gatherL = 1 + 0.24 * Math.sin(t * 0.202 + 0.6);
+  const gatherR = 1 + 0.24 * Math.sin(t * 0.157 + 2.9);
+  /* the registration strip lives below the head meta's own quiet
+     band — deep enough to never phase in behind the text */
+  const strip = Math.exp(
+    -Math.pow((ny - 0.175 - 0.006 * Math.sin(t * 0.2)) * 14, 2),
+  );
+  const clusterL =
+    Math.exp(
+      -Math.pow(
+        ((nx - 0.115 - 0.028 * Math.sin(t * 0.093) -
+          0.011 * Math.sin(t * 0.043)) * 4.6) / gatherL,
+        2,
+      ),
+    ) *
+    Math.exp(
+      -Math.pow((ny - 0.44 + 0.05 * Math.sin(t * 0.09)) * 3, 2),
+    ) /
+    (0.84 + 0.3 * gatherL);
+  const clusterR =
+    Math.exp(
+      -Math.pow(
+        ((nx - 0.885 + 0.028 * Math.sin(t * 0.084 + 2) +
+          0.011 * Math.sin(t * 0.047 + 1)) * 4.6) / gatherR,
+        2,
+      ),
+    ) *
+    Math.exp(
+      -Math.pow((ny - 0.56 - 0.05 * Math.sin(t * 0.08 + 1)) * 3, 2),
+    ) /
+    (0.84 + 0.3 * gatherR);
+  const edge = Math.exp(
+    -Math.pow((ny - 0.93) * 9, 2) -
+      Math.pow((nx - (nx < 0.5 ? 0.24 : 0.76)) * 4, 2),
+  );
+  /* the satellite: a small pocket that forms above the wordmark's
+     left channel, holds briefly, and dissolves back into nothing */
+  const satellite =
+    Math.pow(Math.max(0, Math.sin(t * 0.086 + 2.4)), 3) *
+    Math.exp(
+      -Math.pow((nx - 0.38) * 5.5, 2) - Math.pow((ny - 0.185) * 7, 2),
+    );
+  const settle = (0.9 + 0.2 * Math.pow(ny, 1.25)) * breath;
+  const texture = v * 0.8;
+  return Math.max(
+    texture,
+    clusterL * 0.88 * grain * settle,
+    clusterR * 0.95 * grain * settle,
+    strip * 0.55 * grain * (0.85 + 0.3 * Math.sin(t * 0.113 + 0.4)),
+    edge * 0.6 * grain,
+    satellite * 0.55 * grain,
+  );
+}
 
 /**
  * The masthead behaves. Each letter is its own variable-width state:
@@ -80,9 +186,9 @@ function CoverName() {
 
     const REST = 122; // the resting width, the CSS font-stretch value
     const FROM = 60; // the splash's compressed notation
-    const SETTLE_AT = seen ? 0 : 760; // begin as the splash resolves
+    const SETTLE_AT = seen ? 0 : 1180; // begin as the splash resolves
     const SETTLE_STEP = 70;
-    const SETTLE_DUR = 900;
+    const SETTLE_DUR = 1400;
     const REACH = 190; // gaussian sigma: one letter strong, two faint
     const LIFT = 15; // widest pointer response, in wdth points
     const RISE = 2; // nearest letter's positional lift, in px
@@ -195,6 +301,17 @@ export function Explore() {
      line: a first-index default would paint Design or Disaster as
      selected while the visitor is still on the cover. */
   const [active, setActive] = useState(-1);
+  /* Below the pinned-sheet breakpoint the cover's quiet geometry
+     follows its own, content-height composition. */
+  const [narrow, setNarrow] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 52rem)");
+    const update = () => setNarrow(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   /* One passive, rAF-throttled loop: the index marks the sheet you are
      reading, and it goes quiet for reduced-motion readers. */
@@ -258,13 +375,9 @@ export function Explore() {
           wavefront={0.07}
           drift={0.3}
           pointerRadius={0}
-          quiet={COVER_QUIET}
+          quiet={narrow ? COVER_QUIET_NARROW : COVER_QUIET}
           tune={[0.54, 1.9]}
-          shape={(v, nx, ny) =>
-            v *
-            (0.45 + 0.7 * Math.abs(nx - 0.5) * 2) *
-            (0.4 + 1.25 * Math.pow(ny, 1.4))
-          }
+          shape={coverTextureShape}
           color={(t) => `rgba(27, 33, 38, ${0.04 + 0.13 * t})`}
         />
         <SignalField
@@ -277,37 +390,9 @@ export function Explore() {
           wavefront={0.1}
           drift={0.4}
           pointerRadius={12}
-          quiet={COVER_QUIET}
+          quiet={narrow ? COVER_QUIET_NARROW : COVER_QUIET}
           tune={[0.4, 2.1]}
-          shape={(v, nx, ny, t) => {
-            /* the signal frames the identity: a thin registration strip
-               under the header line, two matched clusters holding the
-               top-left and bottom-right diagonals. The structured
-               elements max-blend over the ambient texture — they render
-               at their own strength, never starved by the noise field —
-               and a per-cell grain keeps them matter, not blocks. */
-            const hash = Math.sin(nx * 812.3 + ny * 431.7) * 43758.5453;
-            const grain = 0.7 + 0.55 * (hash - Math.floor(hash));
-            const strip = Math.exp(
-              -Math.pow((ny - 0.09 - 0.006 * Math.sin(t * 0.2)) * 16, 2),
-            );
-            const clusterTL = Math.exp(
-              -Math.pow((nx - 0.17 - 0.03 * Math.sin(t * 0.12)) * 3.4, 2) -
-                Math.pow((ny - 0.15) * 3, 2),
-            );
-            const clusterBR = Math.exp(
-              -Math.pow((nx - 0.8 - 0.03 * Math.sin(t * 0.1 + 2)) * 3.4, 2) -
-                Math.pow((ny - 0.7) * 2.7, 2),
-            );
-            const settle = 0.9 + 0.2 * Math.pow(ny, 1.25);
-            const texture = v * 0.8;
-            return Math.max(
-              texture,
-              clusterTL * 0.85 * grain * settle,
-              clusterBR * 0.9 * grain * settle,
-              strip * 0.55 * grain,
-            );
-          }}
+          shape={coverPixelShape}
           color={(t) => `rgba(58, 31, 240, ${0.18 + 0.55 * t})`}
         />
         <div className="xp-cover-pin">
@@ -321,19 +406,17 @@ export function Explore() {
               <CoverName />
               <span className="sr-only">Tanishk</span>
             </h1>
-            <span className="xp-cover-rule" aria-hidden="true" />
-            <div className="xp-cover-axis">
-              <p className="xp-cover-claim">
-                I design what interfaces <strong>do</strong>.
-              </p>
-              <p className="xp-cover-deck">
-                Product and interaction design, built end to end.
-              </p>
-            </div>
+            <p className="xp-cover-claim">
+              I design what interfaces <strong>do</strong>.
+            </p>
+            <p className="xp-cover-deck">
+              Product and interaction design — I design the behaviour and
+              build the front end.
+            </p>
           </div>
 
           <div className="xp-cover-handoff">
-            <p>Six projects · each one live online</p>
+            <p>Six projects · all live online</p>
             <span aria-hidden="true">↓</span>
           </div>
         </div>
