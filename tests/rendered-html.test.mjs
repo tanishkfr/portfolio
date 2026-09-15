@@ -25,10 +25,7 @@ function assertCleanEncoding(html) {
   assert.doesNotMatch(html, /(?:Ã.|Â.|â€|â†|âœ|ï¿½|�)/);
 }
 
-test("server-renders the folio at / and the concise index at ?mode=review", async () => {
-  // `/` is Explore — the primary folio. Each URL's own reading is what the
-  // server sends, so a no-JavaScript visitor gets the reading the address
-  // promises, and hydration never flashes the other reading.
+test("server-renders the folio at / — one projects reading", async () => {
   const folioResponse = await render();
   assert.equal(folioResponse.status, 200);
   const folio = await folioResponse.text();
@@ -60,68 +57,28 @@ test("server-renders the folio at / and the concise index at ?mode=review", asyn
     "the close precedes the global footer",
   );
   assert.match(folio, /id="work"/);
-  /* One Projects destination in the nav, with the two readings as an
-     explicit control beside it — not two top-level pages repeating
-     each other. */
+  /* One Projects destination: the header carries plain navigation, with
+     no second reading control anywhere. */
   assert.match(folio, />Projects</);
-  assert.match(folio, />Quick view</);
-  assert.match(folio, />Explore</);
   assert.match(folio, />Résumé</);
-  assert.ok(folio.includes('href="/?mode=review"'), "Quick view is a real URL");
   assert.ok(folio.includes('href="/resume"'), "Résumé is a real destination");
+  assert.doesNotMatch(folio, /Quick view|nav-modes|data-mode=/);
   /* Utility CTAs are literal: staying inside is named as a case study,
      leaving names what opens — and never the old ambiguous pair. */
   assert.match(folio, /Read case study/);
   assert.ok(folio.includes("Visit studio site"), "Fluxion's CTA names the studio site");
   assert.ok(folio.includes("Open interactive essay"), "Invisible Interfaces' CTA names the essay");
   assert.doesNotMatch(folio, /Enter the case|>Open live</);
-  assert.match(folio, /location\.search/);
-  assert.match(folio, /data-mode="full"/);
   assert.match(folio, /theme-color" content="#e8eae4"/);
   assert.match(folio, /rel="canonical" href="https:\/\/portfolio\.test\/"/);
   assert.doesNotMatch(
     folio,
     /class="exhibit|claim-line|ex-zone|ex-arrival|deck-name|thinking-line|Ask five systems/i,
   );
-  assertCleanEncoding(folio);
-
-  // `/?mode=review` is the fast index: a catalogue line, then six rows
-  // whose middle columns are the projects' own working objects.
-  const workResponse = await render("/?mode=review");
-  assert.equal(workResponse.status, 200);
-  const html = await workResponse.text();
-
-  assert.match(html, /class="review"/);
-  assert.match(html, /Six selected projects\./);
-  assert.match(html, /row.s portrait is the project.s behaviour/);
-  /* the index names itself as the other reading of the same projects */
-  assert.match(html, /The same projects as Explore/);
-  assert.ok(html.includes('href="/"'), "Explore is a real URL");
-  /* the fast list carries the same literal internal CTA as the folio */
-  assert.match(html, /Read case study/);
-
-  const works = [
-    { slug: "fluxion-studios", title: "Fluxion Studios", artifact: "fluxion" },
-    { slug: "design-or-disaster", title: "Design or Disaster", artifact: "disaster" },
-    { slug: "pentimento", title: "Pentimento", artifact: "pentimento" },
-    { slug: "invisible-interfaces", title: "Invisible Interfaces", artifact: "invisible" },
-    { slug: "atlas", title: "Atlas", artifact: "atlas" },
-    { slug: "daynero", title: "Daynero", artifact: "daynero" },
-  ];
-  for (const work of works) {
-    assert.ok(html.includes(`href="/work/${work.slug}?from=work"`), `${work.slug} link`);
-    assert.ok(html.includes(`id="project-${work.slug}"`), `${work.slug} row id`);
-    assert.ok(html.includes(`data-artifact="${work.artifact}"`), `${work.slug} artifact`);
-    assert.ok(html.includes(work.title), `${work.slug} title`);
-  }
-  assert.equal((html.match(/class="work-row"/g) ?? []).length, 6);
-
-  /* THE INDEX MUST SHOW WORK, NOT ONLY DESCRIBE IT. Every row's stage is
-      the project's portrait — an abstract, living representation built
-      from the folio's own computational material, never a screenshot. */
+  /* all six portraits render in the folio — the only project preview */
   assert.ok(
-    (html.match(/class="xp-portrait/g) ?? []).length >= 6,
-    "all six rows carry their portrait",
+    (folio.match(/class="xp-portrait/g) ?? []).length >= 6,
+    "all six sheets carry their portrait",
   );
   for (const artifact of [
     "design-or-disaster",
@@ -131,27 +88,14 @@ test("server-renders the folio at / and the concise index at ?mode=review", asyn
     "fluxion-studios",
     "daynero",
   ]) {
-    assert.match(html, new RegExp(`data-portrait="${artifact}"`), artifact);
+    assert.match(folio, new RegExp(`data-portrait="${artifact}"`), artifact);
   }
-  /* the real evidence stays out of the index; it lives in the case */
+  assertCleanEncoding(folio);
 
-  // Both readings are offered as real URLs, and the URL selects the reading.
-  /* Work resolves onto the global closing plate exactly once; Explore keeps
-     its own authored close and must not double-end. */
-  assert.equal((html.match(/class="site-footer"/g) ?? []).length, 1);
-  assert.doesNotMatch(html, /Under construction|role="dialog"/);
-  assert.doesNotMatch(
-    html,
-    /class="exhibit|claim-line|ex-zone|ex-arrival|deck-name|thinking-line|Ask five systems/i,
-  );
-  assertCleanEncoding(html);
-
-  // `/?mode=full` remains an accepted, server-answered reading of the folio.
-  const fullResponse = await render("/?mode=full");
-  assert.equal(fullResponse.status, 200);
-  const fullHtml = await fullResponse.text();
-  assert.match(fullHtml, /data-explore-cover/);
-  assert.match(fullHtml, /location\.search/);
+  /* A stale review URL still resolves to the one reading, gracefully. */
+  const legacy = await render("/?mode=review");
+  assert.equal(legacy.status, 200);
+  assert.match(await legacy.text(), /data-explore-cover/);
 });
 
 test("defines a meaningful interface, logic, and consequence for every project", async () => {
@@ -369,19 +313,17 @@ test("exposes crawl metadata for Daynero and the four published cases", async ()
   assert.match(await robotsResponse.text(), /Sitemap: https:\/\/portfolio\.test\/sitemap\.xml/);
 });
 
-test("keeps motion, image, and dual-deployment contracts explicit", async () => {
+test("keeps motion, image, and single-deployment contracts explicit", async () => {
   const [
     data,
     index,
     explore,
-    reviewIndex,
     exploreCss,
     motion,
     projectPage,
     artifacts,
     transitionLink,
     siteHeader,
-    mode,
     css,
     nextConfig,
     packageJson,
@@ -391,14 +333,12 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
     readFile(new URL("../app/data/portfolio.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/work-index.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/explore.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/review-index.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/styles/explore.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/motion-director.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/work/[slug]/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/case-artifacts.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/transition-link.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/site-header.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/components/mode.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/styles/system.css", import.meta.url), "utf8"),
     readFile(new URL("../next.config.ts", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
@@ -411,20 +351,19 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.doesNotMatch(data, /remainder|command-center/i);
   assert.match(data, /form: "Spatial critique archive"/);
 
-  // Two ways in: work-index only dispatches, so no design lives in it.
-  assert.match(index, /ReviewIndex/);
+  // One reading: work-index mounts the folio and the footer, nothing else.
   assert.match(index, /Explore/);
+  assert.doesNotMatch(index, /ReviewIndex|useMode|setMode/);
 
-  // Explore is a working folio: a draggable cover, an addressable index, and
-  // six sticky sheets with distinct project mechanics.
+  // Explore is a working folio: an addressable index and six sticky sheets
+  // with distinct project portraits.
   assert.doesNotMatch(explore, /CoverIndex/); // the hero is identity + handoff, not an index
   assert.match(explore, /xp-piece-stack/);
   assert.match(explore, /data-explore-piece/);
   assert.match(explore, /TransitionLink/);
-  /* Every Explore sheet carries its project's portrait — the same
-     abstract representation the Quick view rows mount. */
+  /* Every Explore sheet carries its project's portrait — the only
+     project preview, in both the index and the sheets. */
   assert.match(explore, /ProjectPortrait/);
-  assert.match(reviewIndex, /ProjectPortrait/);
   const portraits = await readFile(
     new URL("../app/components/portrait.tsx", import.meta.url),
     "utf8",
@@ -439,9 +378,8 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   ]) {
     assert.match(portraits, new RegExp(behaviour), behaviour);
   }
-  /* the mechanical previews are gone from the two index readings */
+  /* the mechanical previews are gone from the reading */
   assert.doesNotMatch(explore, /DisasterMark|PentimentoStrike|InvisibleAway|AtlasRule|DayneroNumber|FluxionSpecimen/);
-  assert.doesNotMatch(reviewIndex, /DisasterMark|PentimentoStrike|InvisibleAway|AtlasRule|DayneroNumber|FluxionMark/);
   /* The set carries the anchor a returning case links back to. */
   assert.match(explore, /id="work"/);
   /* Each sheet is painted with its project's own ground and reading ink. */
@@ -535,19 +473,11 @@ test("keeps motion, image, and dual-deployment contracts explicit", async () => 
   assert.match(transitionLink, /startViewTransition/);
   assert.match(transitionLink, /prefers-reduced-motion/);
   assert.match(transitionLink, /requestAnimationFrame/);
-  /* Session-scoped on purpose: a reviewer who once chose the digest should not
-     be silently returned to it on a later visit and never see the work. */
-  assert.match(mode, /useSyncExternalStore/);
-  assert.match(mode, /sessionStorage/);
-  assert.doesNotMatch(mode, /localStorage/);
-  assert.match(mode, /dataset\.mode/);
-  /* The header owns the in-place switch: no route change, no lost reading. */
-  assert.match(siteHeader, /history\.replaceState/);
-  assert.match(siteHeader, /window\.scrollTo\(/);
-  // two modes, not three — and no stale edition contract left anywhere
-  assert.match(css, /data-mode="review"/);
+  /* One reading: no mode state, no reading control, no stale edition
+     contract anywhere. The header is plain navigation. */
+  assert.doesNotMatch(siteHeader, /replaceState|setMode|useMode|nav-modes/);
+  assert.doesNotMatch(css, /data-mode=|data-edition=/);
   assert.match(css, /route-fade-in/);
-  assert.doesNotMatch(css, /data-edition=/);
   assert.match(projectPage, /TransitionLink/);
   assert.match(css, /view-transition/);
   for (const accent of ["#ef4a35", "#8b2f63", "#d79a29", "#1d756d", "#4f6612"]) {

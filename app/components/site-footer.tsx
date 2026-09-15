@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { modeHref } from "./mode";
 import { SignalField, type Quiet } from "./signal-field";
 
 /**
@@ -55,29 +54,29 @@ export function SiteFooter({
         wavefront={0.07}
         drift={0.35}
         pointerRadius={0}
-        tune={[0.52, 1.9]}
+        tune={[0.48, 1.9]}
         quiet={FOOTER_QUIET}
         shape={(v, nx) => v * (0.55 + 0.7 * Math.abs(nx - 0.5) * 2)}
-        color={(t) => `rgba(27, 33, 38, ${0.05 + 0.15 * t})`}
+        color={(t) => `rgba(27, 33, 38, ${0.06 + 0.17 * t})`}
       />
       <SignalField
         className="footer-pixels"
         mode="pixel"
         cell={20}
         seed={83}
-        ambient={0.62}
+        ambient={0.66}
         flow={1.2}
         wavefront={0.09}
         drift={0.5}
         pointerRadius={9}
-        tune={[0.46, 2.0]}
+        tune={[0.4, 2.1]}
         quiet={FOOTER_QUIET}
         shape={(v, nx, ny, t) => {
           /* the end state of the hero's clusters: the matter drifts
              apart toward the outer margins and the gaps between the
              footer's rows */
           const edge = Math.pow(Math.abs(nx - 0.5) * 2, 1.5);
-          const leave = Math.pow(ny, 1.1);
+          const leave = 0.62 + 0.75 * Math.pow(ny, 1.1);
           const driftA = Math.exp(
             -Math.pow((nx - 0.5 - 0.03 * Math.sin(t * 0.12)) * 4, 2) -
               Math.pow((ny - 0.12) * 3.6, 2),
@@ -91,8 +90,8 @@ export function SiteFooter({
               Math.pow((ny - 0.62 - 0.03 * Math.sin(t * 0.1 + 3)) * 4.5, 2),
           );
           return v *
-            (0.35 + 0.7 * edge + 0.9 * driftA + 1.0 * driftB + 0.9 * driftC) *
-            (0.5 + 0.95 * leave);
+            (0.35 + 0.7 * edge + 1.2 * driftA + 1.3 * driftB + 1.1 * driftC) *
+            leave;
         }}
         color={(t) => `rgba(58, 31, 240, ${0.18 + 0.52 * t})`}
       />
@@ -129,8 +128,7 @@ export function SiteFooter({
         <a href="https://github.com/tanishkfr" target="_blank" rel="noreferrer">
           GitHub <span aria-hidden="true">↗</span>
         </a>
-        <Link href={modeHref("full")}>Projects</Link>
-        <Link href={modeHref("review")}>Quick view</Link>
+        <Link href="/#work">Projects</Link>
         <Link href="/about">About</Link>
       </nav>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageSignal } from "../components/page-signal";
 
 const description = "Contact Tanishk about interaction and product design work.";
 
@@ -22,6 +23,7 @@ export default function ContactPage() {
   return (
     <main id="main-content" className="contact-shell contact-letter">
       <header className="contact-intro" data-reveal>
+        <PageSignal variant="contact" />
         <h1>If the interaction is hard to explain, show me.</h1>
         <p>
           I&apos;m in Bengaluru and open to interaction and product design

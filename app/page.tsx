@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { WorkIndex } from "./components/work-index";
-import type { Mode } from "./components/mode";
 
 export const metadata: Metadata = {
   title: { absolute: "Tanishk — Product & Interaction Designer" },
@@ -18,19 +17,6 @@ export const metadata: Metadata = {
   },
 };
 
-/**
- * The reading is decided by the URL before anything renders: `/` is the
- * folio, `/?mode=review` is the concise index. Passing the resolved mode
- * down as the server snapshot means each URL's own markup is what the
- * server sends — a no-JavaScript visitor gets the reading the address
- * promises, and hydration never flashes the other reading.
- */
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ mode?: string }>;
-}) {
-  const params = await searchParams;
-  const initialMode: Mode = params.mode === "review" ? "review" : "full";
-  return <WorkIndex initialMode={initialMode} />;
+export default function Home() {
+  return <WorkIndex />;
 }

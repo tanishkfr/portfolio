@@ -14,6 +14,8 @@
 }
 
 .about-intro {
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 1.6rem;
@@ -218,7 +220,20 @@
 /* ---------- contact ---------- */
 
 .contact-intro {
+  position: relative;
+  isolation: isolate;
   padding-block: clamp(3rem, 8vh, 5.5rem) clamp(2.4rem, 6vh, 4rem);
+}
+
+/* The purple pixel signal on the secondary page heroes: the cover's
+   material in the header's margins, quiet over every word. */
+.page-signal {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .contact-intro h1 {

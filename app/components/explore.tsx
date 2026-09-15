@@ -7,10 +7,8 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import Link from "next/link";
 import { caseCtaLabels, projects, type Project } from "../data/portfolio";
 import { ROOM_WORLDS, rgb } from "../data/room-worlds";
-import { modeHref } from "./mode";
 import { SignalField, hexToRgba, type Quiet } from "./signal-field";
 import { ProjectPortrait } from "./portrait";
 import { TransitionLink } from "./transition-link";
@@ -253,22 +251,22 @@ export function Explore() {
         <SignalField
           className="xp-cover-field"
           glyphs="·:+*#"
-          cell={13}
+          cell={14}
           seed={11}
-          ambient={0.32}
+          ambient={0.26}
           flow={1.6}
-          wavefront={0.08}
+          wavefront={0.07}
           drift={0.3}
           pointerRadius={0}
           collapse
           quiet={COVER_QUIET}
-          tune={[0.52, 1.9]}
+          tune={[0.54, 1.9]}
           shape={(v, nx, ny) =>
             v *
-            (0.5 + 0.75 * Math.abs(nx - 0.5) * 2) *
-            (0.35 + 1.3 * Math.pow(ny, 1.4))
+            (0.45 + 0.7 * Math.abs(nx - 0.5) * 2) *
+            (0.4 + 1.25 * Math.pow(ny, 1.4))
           }
-          color={(t) => `rgba(27, 33, 38, ${0.05 + 0.15 * t})`}
+          color={(t) => `rgba(27, 33, 38, ${0.04 + 0.13 * t})`}
         />
         <SignalField
           className="xp-cover-pixels"
@@ -284,10 +282,10 @@ export function Explore() {
           quiet={COVER_QUIET}
           tune={[0.44, 2.1]}
           shape={(v, nx, ny, t) => {
-            /* the signal pools in loose clusters that drift around the
-               identity's negative space — top-left, upper-right, and a
-               settle band that resolves toward the handoff */
-            const rail = Math.pow(Math.abs(nx - 0.5) * 2, 1.2);
+            /* the signal holds three deliberate clusters around the
+               identity's negative space — no scattered confetti between
+               them; the settle band resolves toward the handoff */
+            const rail = Math.pow(Math.abs(nx - 0.5) * 2, 1.6);
             const settle = 0.72 + 0.78 * Math.pow(ny, 1.25);
             const clusterA = Math.exp(
               -Math.pow((nx - 0.16) * 3.4, 2) -
@@ -302,7 +300,7 @@ export function Explore() {
                 Math.pow((ny - 0.2 + 0.04 * Math.sin(t * 0.09 + 4)) * 3.0, 2),
             );
             return v *
-              (0.42 + 0.6 * rail + 1.5 * clusterA + 1.15 * clusterB + 1.25 * clusterC) *
+              (0.3 + 0.5 * rail + 1.5 * clusterA + 1.15 * clusterB + 1.25 * clusterC) *
               settle;
           }}
           color={(t) => `rgba(58, 31, 240, ${0.18 + 0.55 * t})`}
@@ -340,12 +338,6 @@ export function Explore() {
         <header className="xp-field-head">
           <p className="xp-field-kicker" id="field-title">
             Selected projects
-          </p>
-          <p className="xp-field-mode">
-            The same projects, as a plain list:{" "}
-            <Link href={modeHref("review")}>
-              Quick view <span aria-hidden="true">→</span>
-            </Link>
           </p>
         </header>
 

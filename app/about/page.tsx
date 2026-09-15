@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageSignal } from "../components/page-signal";
 
 const description =
   "About Tanishk — a product and interaction designer in Bengaluru who designs and builds.";
@@ -69,6 +70,7 @@ export default function AboutPage() {
   return (
     <main id="main-content" className="about-shell">
       <header className="about-intro">
+        <PageSignal variant="about" />
         <p className="eyebrow">About · Bengaluru · Available for work</p>
         <h1>I design interactions, then build the working version.</h1>
         <div className="about-lede">

@@ -7,7 +7,6 @@ import { PointerMark } from "./components/pointer-cursor";
 import { SplashGate } from "./components/splash";
 import { RouteSettler } from "./components/transition-link";
 import "./styles/system.css";
-import "./styles/home.css";
 import "./styles/explore.css";
 import "./styles/case.css";
 import "./styles/pages.css";
@@ -68,7 +67,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-mode="full" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link
           rel="preload"
@@ -83,16 +82,6 @@ export default function RootLayout({
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
-        />
-        {/* The reading is derived from the URL and applied before first paint.
-            `/` is Explore — the primary folio; `/?mode=review` is the concise
-            Work index. The server marks the document with the default, and the
-            inline script only overrides an explicit query. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "(function(){try{var q=new URLSearchParams(location.search).get('mode');if(q==='full'||q==='review'){document.documentElement.dataset.mode=q;}}catch(t){}})();",
-          }}
         />
       </head>
       <body>

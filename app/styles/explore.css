@@ -509,11 +509,6 @@
 }
 
 .xp-field-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem 2rem;
   padding: clamp(3.5rem, 8vw, 6rem) var(--page-gutter) clamp(1.2rem, 3vw, 2rem);
 }
 
@@ -523,49 +518,6 @@
 
 .xp-field-kicker {
   color: var(--ink);
-}
-
-.xp-field-head h2 {
-  font-family: var(--display);
-  font-size: clamp(1.4rem, 2.4vw, 2rem);
-  font-weight: 430;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.xp-field-head > p:last-child {
-  max-width: 32ch;
-  color: var(--ink-soft);
-  font-size: var(--step-0);
-  line-height: 1.55;
-  text-wrap: pretty;
-}
-
-/* the two readings of one project set, stated where the set begins:
-   Explore here, Quick view one click away — same projects, plain list */
-.xp-field-mode {
-  margin: 0;
-  max-width: 44ch;
-  color: var(--ink-soft);
-  font-size: var(--step-0);
-  line-height: 1.5;
-  text-align: right;
-}
-
-.xp-field-mode a {
-  color: var(--ink);
-  text-decoration: none;
-  border-bottom: 1px solid var(--line-strong);
-  padding-bottom: 2px;
-  transition:
-    color var(--beat) var(--ease-out),
-    border-color var(--beat) var(--ease-out);
-}
-
-.xp-field-mode a:hover,
-.xp-field-mode a:focus-visible {
-  color: var(--registrar);
-  border-color: var(--registrar);
 }
 
 .xp-field-index {
@@ -795,15 +747,15 @@
 
 .xp-piece-plain {
   max-width: 34rem;
-  margin-top: 1.4rem;
+  margin-top: 1.6rem;
   font-size: var(--step-0);
-  line-height: 1.5;
+  line-height: 1.55;
   color: color-mix(in srgb, var(--room-ink) 74%, transparent);
 }
 
 .xp-piece-thesis {
   max-width: 34ch;
-  margin-top: 1.7rem;
+  margin-top: 2rem;
   font-family: var(--display);
   font-size: var(--step-1);
   line-height: 1.4;
@@ -814,7 +766,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem 1.35rem;
-  margin-top: clamp(2.6rem, 5vh, 3.8rem);
+  margin-top: clamp(3rem, 6vh, 4.2rem);
 }
 
 .xp-piece-actions a {
@@ -1238,17 +1190,7 @@
   }
 
   .xp-field-head {
-    flex-direction: column;
-    align-items: flex-start;
     padding-top: 5rem;
-  }
-
-  .xp-field-head > p:last-child {
-    max-width: 38ch;
-  }
-
-  .xp-field-mode {
-    text-align: left;
   }
 
   /* Six ordinary vertical rows, not a sideways strip. */
