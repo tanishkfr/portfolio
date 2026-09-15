@@ -614,6 +614,10 @@
     var(--header-h) + min(calc((var(--piece-index) - 1) * 0.5rem), 1rem)
   );
   display: grid;
+  /* One grid, five arrangements: the anchor is copy-left, visual-right;
+     revision and lineage flip it; absence narrows the copy and drops it
+     to the bottom; wordmark stacks the plate over the copy; number
+     widens the stage. Varied by design, coherent by tokens. */
   grid-template-columns: minmax(13rem, 0.62fr) minmax(28rem, 1.38fr);
   grid-template-rows: minmax(0, 1fr) auto;
   gap: clamp(1.5rem, 4vw, 5rem);
@@ -745,14 +749,287 @@
   line-height: 1.55;
 }
 
+.xp-piece-actions a::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -0.25rem;
+  left: 0;
+  height: 1px;
+  background: var(--accent-ink);
+  transform: scaleX(0.24);
+  transform-origin: left;
+  transition: transform var(--move) var(--ease-out);
+}
+
+.xp-piece-actions a:hover::after,
+.xp-piece-actions a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* the shared external lift-out lives in system.css; the internal
+   reading action steps forward here */
+.xp-piece-actions a:first-child:hover .xp-cta-arrow,
+.xp-piece-actions a:first-child:focus-visible .xp-cta-arrow {
+  transform: translateX(3px);
+}
+
+/* the arrival material: a pigment strip along the sheet's top edge
+   that resolves as the sheet takes over the drawer, then is gone */
+.xp-piece-field {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(4.5rem, 9vh, 7.5rem);
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* ---------- project portraits ----------
+   The folio's interpretation layer: one family of abstract, living
+   glyph compositions (ProjectPortrait) — same engine, same density
+   logic, same spatial scale, each in the project's own pigment. The
+   plate is the project's ground; the material is the portfolio's. */
+.xp-portrait {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--accent-ink, currentColor) 42%, transparent);
+}
+
+.xp-portrait-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.xp-piece-stage {
+  position: relative;
+  z-index: 1;
+  align-self: stretch;
+  height: min(67vh, 42rem);
+  min-height: 0;
+  overflow: hidden;
+  transform-origin: center;
+}
+
+.xp-piece-stage > * {
+  width: 100%;
+  height: 100%;
+}
+
+.xp-piece-status {
+  grid-column: 1 / -1;
+  justify-self: end;
+  margin: 0;
+}
+
+/* Sheet overlap is the section movement. No extra stage travel, scaling,
+   or entry masks — the six projects already move differently by behaving
+   differently, not by arriving differently. */
+/* Sheet overlap is the section movement. No extra stage travel, scaling,
+   or entry masks — the six projects already move differently by behaving
+   differently, not by arriving differently. */
+.xp-piece[data-layout="revision"] {
+  grid-template-columns: minmax(28rem, 1.2fr) minmax(14rem, 0.8fr);
+}
+
+.xp-piece[data-layout="revision"] .xp-piece-copy {
+  grid-column: 2;
+}
+
+/* The longest one-word title in the set cannot wrap: the revision
+   sheet's title takes a size that lives inside its column instead of
+   clipping against the sheet edge. */
+.xp-piece[data-layout="revision"] .xp-piece-title {
+  --title-size: clamp(2.3rem, 3.55vw, 4.05rem);
+}
+
+.xp-piece[data-layout="revision"] .xp-piece-stage {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* lineage: stage left, copy right, copy column narrow and bottom-settled */
+.xp-piece[data-layout="lineage"] {
+  grid-template-columns: minmax(26rem, 1.2fr) minmax(13rem, 0.8fr);
+}
+
+.xp-piece[data-layout="lineage"] .xp-piece-copy {
+  grid-column: 2;
+  align-self: end;
+}
+
+.xp-piece[data-layout="lineage"] .xp-piece-title {
+  --title-size: clamp(2.3rem, 3.55vw, 4.05rem);
+}
+
+.xp-piece[data-layout="lineage"] .xp-piece-stage {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* absence: copy narrow and bottom-settled against a wider plate */
+.xp-piece[data-layout="absence"] {
+  grid-template-columns: minmax(12rem, 0.52fr) minmax(30rem, 1.48fr);
+}
+
+.xp-piece[data-layout="absence"] .xp-piece-copy {
+  align-self: end;
+  padding-bottom: clamp(1.6rem, 4vh, 3rem);
+}
+
+/* wordmark: the plate runs full width above the copy — one site,
+   presented like the thing it is */
+.xp-piece[data-layout="wordmark"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.xp-piece[data-layout="wordmark"] .xp-piece-stage {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  min-height: min(58vh, 34rem);
+}
+
+.xp-piece[data-layout="wordmark"] .xp-piece-copy {
+  grid-row: 2;
+  align-self: start;
+  padding-block: clamp(1.6rem, 3.5vh, 2.6rem);
+}
+
+.xp-piece[data-layout="number"] {
+  grid-template-columns: minmax(13rem, 0.55fr) minmax(30rem, 1.45fr);
+}
+
+.xp-piece[data-layout="number"] .xp-piece-copy {
+  align-self: end;
+}
+
+/* ---------- the critique's annotation marks ----------
+   Design or Disaster's evidence marks — shared with the case
+   instrument, which mounts the same notation on its evidence. */
+
+.xp-dod-prompt {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  border-left: 2px solid #ef4a35;
+  background: rgba(18, 13, 11, 0.78);
+  padding: 0.55rem 0.7rem;
+  font-family: var(--mono);
+  font-size: var(--step--1);
+}
+
+.xp-dod-mark {
+  position: absolute;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 2px solid #fff6e8;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.xp-dod-mark--mine {
+  z-index: 2;
+  width: 1rem;
+  height: 1rem;
+  border-color: #ef4a35;
+  background: #ef4a35;
+}
+
+.xp-dod-mark--other {
+  animation: xp-mark-arrive 200ms var(--ease-out) both;
+}
+
+.xp-dod-mark--other[data-active="true"] {
+  border-color: #ef4a35;
+  background: rgba(239, 74, 53, 0.4);
+}
+
+.xp-dod-tag {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  width: max-content;
+  background: #ef4a35;
+  padding: 0.25rem 0.4rem;
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  transform: translateX(-50%);
+}
+
+@keyframes xp-mark-arrive {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.xp-piece-status {
+  color: color-mix(in srgb, currentColor 62%, transparent);
+}
+
+
+
+.xp-piece-title a {
+  color: inherit;
+  text-decoration: none;
+  /* the width answers the pointer: the title breathes one step wider,
+     the same state grammar the header identity uses */
+  font-stretch: var(--poster-stretch, 118%);
+  transition: font-stretch 240ms var(--ease-out);
+}
+
+.xp-piece-title a:hover,
+.xp-piece-title a:focus-visible {
+  font-stretch: calc(var(--poster-stretch, 118%) + 4%);
+}
+
+.xp-piece-title a::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  margin-top: 0.12em;
+  background: var(--accent-ink);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--move) var(--ease-swing);
+}
+
+.xp-piece-title a:hover::after,
+.xp-piece-title a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.xp-piece-cue {
+  max-width: 29ch;
+  margin-top: clamp(1.2rem, 3vh, 2.2rem);
+  color: var(--accent-ink);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  line-height: 1.55;
+}
+
 /* The one intro block: what the project is, in two plain sentences.
    The meta is the label, the title is the arrival, the intro is the
    only prose — then the actions breathe below. */
 .xp-piece-intro {
   max-width: 36rem;
-  margin-top: 1.6rem;
+  margin-top: 1.8rem;
   font-size: var(--step-0);
-  line-height: 1.6;
+  line-height: 1.65;
   color: color-mix(in srgb, var(--room-ink) 76%, transparent);
   text-wrap: pretty;
 }
@@ -761,7 +1038,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem 1.35rem;
-  margin-top: clamp(3rem, 6vh, 4.2rem);
+  margin-top: clamp(3.4rem, 8vh, 5.2rem);
 }
 
 .xp-piece-actions a {
@@ -875,15 +1152,6 @@
   grid-row: 1;
 }
 
-.xp-piece[data-layout="absence"] {
-  background: #19170f;
-  color: #f7efd7;
-}
-
-.xp-piece[data-layout="number"] {
-  grid-template-columns: minmax(15rem, 0.72fr) minmax(28rem, 1.28fr);
-}
-
 /* ---------- the critique's annotation marks ----------
    Design or Disaster's evidence marks — shared with the case
    instrument, which mounts the same notation on its evidence. */
@@ -949,84 +1217,7 @@
   }
 }
 
-/* ---------- closing note ---------- */
-
-.xp-close {
-  display: grid;
-  grid-template-columns: minmax(11rem, 0.42fr) minmax(18rem, 1fr);
-  gap: 1.2rem clamp(2rem, 7vw, 8rem);
-  min-height: 78svh;
-  padding: clamp(6rem, 12vw, 12rem) var(--page-gutter) clamp(5rem, 10vw, 9rem);
-  background: var(--paper);
-}
-
-.xp-close > * {
-  margin: 0;
-}
-
-/* the line is a state claim — it announces the signal colour itself */
-.xp-close-kicker {
-  color: var(--registrar);
-  font-family: var(--mono);
-  font-size: var(--step--1);
-}
-
-.xp-close h2 {
-  max-width: min(13ch, 100%);
-  font-family: var(--display);
-  font-size: clamp(2.9rem, 5.8vw, 5.8rem);
-  font-weight: var(--poster-weight);
-  font-stretch: var(--poster-stretch);
-  letter-spacing: 0;
-  line-height: 0.94;
-  text-wrap: balance;
-}
-
-/* the one action the statement was leading to: a mono annotation in the
-   statement's own column — the state rule draws in ultramarine on
-   approach, the arrow steps out. Small on purpose; the statement leads. */
-.xp-close-cta {
-  grid-column: 2;
-  width: fit-content;
-  margin-top: clamp(1.2rem, 2.4vw, 1.8rem);
-  color: var(--ink);
-  font-family: var(--mono);
-  font-size: var(--step-0);
-  text-decoration: none;
-}
-
-.xp-close-cta span {
-  display: inline-block;
-  color: var(--registrar);
-  transition: transform var(--beat) var(--ease-out);
-}
-
-.xp-close-cta::after {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 1px;
-  margin-top: 0.35rem;
-  background: var(--registrar);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform var(--move) var(--ease-out);
-}
-
-.xp-close-cta:hover span,
-.xp-close-cta:focus-visible span {
-  transform: translate(3px, -3px);
-}
-
-.xp-close-cta:hover::after,
-.xp-close-cta:focus-visible::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .xp-close-cta span,
-  .xp-close-cta::after,
   .xp-piece-title a,
   .xp-field-index strong,
   .xp-cta-arrow,
@@ -1094,11 +1285,24 @@
     grid-template-columns: minmax(23rem, 1.15fr) minmax(13rem, 0.85fr);
   }
 
+  .xp-piece[data-layout="lineage"] {
+    grid-template-columns: minmax(21rem, 1.15fr) minmax(12rem, 0.85fr);
+  }
+
+  .xp-piece[data-layout="absence"] {
+    grid-template-columns: minmax(11rem, 0.5fr) minmax(24rem, 1.5fr);
+  }
+
+  .xp-piece[data-layout="number"] {
+    grid-template-columns: minmax(11rem, 0.55fr) minmax(24rem, 1.45fr);
+  }
+
   .xp-piece-title {
     --title-size: clamp(2.8rem, 6vw, 5.2rem);
   }
 
-  .xp-piece[data-layout="revision"] .xp-piece-title {
+  .xp-piece[data-layout="revision"] .xp-piece-title,
+  .xp-piece[data-layout="lineage"] .xp-piece-title {
     --title-size: clamp(2.4rem, 4vw, 3.4rem);
   }
 }
@@ -1221,6 +1425,9 @@
 
   .xp-piece,
   .xp-piece[data-layout="revision"],
+  .xp-piece[data-layout="lineage"],
+  .xp-piece[data-layout="absence"],
+  .xp-piece[data-layout="wordmark"],
   .xp-piece[data-layout="number"] {
     position: relative;
     top: auto;
@@ -1234,10 +1441,14 @@
   }
 
   .xp-piece-copy,
-  .xp-piece[data-layout="revision"] .xp-piece-copy {
+  .xp-piece[data-layout="revision"] .xp-piece-copy,
+  .xp-piece[data-layout="lineage"] .xp-piece-copy,
+  .xp-piece[data-layout="absence"] .xp-piece-copy {
     grid-column: 1;
     grid-row: 1;
+    align-self: start;
     max-width: 36rem;
+    padding-block: 0;
     transform: none;
     opacity: 1;
   }
@@ -1251,6 +1462,7 @@
   .xp-piece[data-layout="evidence"] .xp-piece-stage,
   .xp-piece[data-layout="absence"] .xp-piece-stage,
   .xp-piece[data-layout="lineage"] .xp-piece-stage,
+  .xp-piece[data-layout="wordmark"] .xp-piece-stage,
   .xp-piece[data-layout="number"] .xp-piece-stage {
     grid-column: 1;
     grid-row: 2;
@@ -1275,19 +1487,8 @@
     transform: none;
   }
 
-  .xp-close {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
 
-  .xp-close h2,
-  .xp-close-cta {
-    grid-column: 1;
-  }
 
-  .xp-close h2 {
-    font-size: clamp(3rem, 13vw, 5.6rem);
-  }
 }
 
 /* The cover rests fully concealed on a phone, so the seam handle is
@@ -1302,9 +1503,6 @@
 @media (max-width: 28rem) {
   /* the closing statement must fit a 320 screen: one long word cannot
      wrap, so the display size comes down rather than the word breaking */
-  .xp-close h2 {
-    font-size: clamp(2rem, 10vw, 3rem);
-  }
 
   .xp-cover-face {
     padding: 1rem;

@@ -22,10 +22,10 @@ const ABOUT_QUIET: Quiet[] = [
 ];
 
 const CONTACT_QUIET: Quiet[] = [
-  /* the letter's copy is centred and fills its column — the quiet zone
-     covers it fully; the signal only lives in the padding band */
-  { x: 0, y: 0.04, w: 1, h: 0.66, falloff: 0.95, feather: 0.035 },
-  { x: 0.06, y: 0.72, w: 0.88, h: 0.2, falloff: 0.96, feather: 0.03 },
+  /* the letter's copy occupies the left column of the page's top region;
+     the signal holds the open right side only */
+  { x: 0, y: 0, w: 0.54, h: 1, falloff: 0.96, feather: 0.04 },
+  { x: 0.54, y: 0.66, w: 0.46, h: 0.34, falloff: 0.97, feather: 0.04 },
 ];
 
 const RESUME_QUIET: Quiet[] = [
@@ -33,6 +33,12 @@ const RESUME_QUIET: Quiet[] = [
   { x: 0, y: 0.04, w: 0.78, h: 0.82, falloff: 0.96, feather: 0.04 },
   { x: 0, y: 0.9, w: 1, h: 0.1, falloff: 1, feather: 0.02 },
 ];
+
+/* per-cell grain: the same hole-punching the cover clusters use */
+const grainAt = (nx: number, ny: number): number => {
+  const hash = Math.sin(nx * 733.1 + ny * 289.7) * 43758.5453;
+  return 0.7 + 0.55 * (hash - Math.floor(hash));
+};
 
 const CONFIGS = {
   about: {
@@ -43,8 +49,7 @@ const CONFIGS = {
       /* the signal holds the open upper-right area beside the heading,
          with a faint echo at the far bottom-left. The structured
          elements max-blend over the ambient texture. */
-      const hash = Math.sin(nx * 733.1 + ny * 289.7) * 43758.5453;
-      const grain = 0.7 + 0.55 * (hash - Math.floor(hash));
+      const grain = grainAt(nx, ny);
       const cluster = Math.exp(
         -Math.pow((nx - 0.87 - 0.02 * Math.sin(t * 0.12)) * 5.5, 2) -
           Math.pow((ny - 0.18 + 0.05 * Math.sin(t * 0.09 + 2)) * 3.2, 2),
@@ -57,16 +62,16 @@ const CONFIGS = {
   },
   contact: {
     seed: 97,
-    ambient: 0.48,
+    ambient: 0.5,
     quiet: CONTACT_QUIET,
     shape: (v: number, nx: number, ny: number, t: number) => {
-      /* the letter keeps its margins clean: the signal resolves as one
-         drifting band in the padding below the email */
-      const band = Math.exp(
-        -Math.pow((ny - 0.96 + 0.02 * Math.sin(t * 0.1)) * 10, 2),
+      /* one breathing cluster column in the open right side, clear of
+         the heading, the copy and the email row */
+      const cluster = Math.exp(
+        -Math.pow((nx - 0.86 - 0.02 * Math.sin(t * 0.11)) * 5, 2) -
+          Math.pow((ny - 0.3 + 0.04 * Math.sin(t * 0.09)) * 2.4, 2),
       );
-      const edge = Math.pow(Math.abs(nx - 0.5) * 2, 1.2);
-      return Math.max(v * 0.8, band * 0.8 * (0.5 + 0.6 * edge));
+      return Math.max(v * 0.8, cluster * 0.85 * grainAt(nx, ny));
     },
   },
   resume: {

@@ -222,7 +222,7 @@ export function SignalField({
       const box = canvas.getBoundingClientRect();
       width = Math.max(1, Math.round(box.width));
       height = Math.max(1, Math.round(box.height));
-      dpr = Math.min(window.devicePixelRatio || 1, width < 760 ? 1.5 : 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       step = width < 760 ? Math.max(cell, 16) : cell;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
@@ -249,24 +249,27 @@ export function SignalField({
     ): number {
       /* domain bend: sample the noise through a slow curl of itself —
          the pattern gains streamlines without any visible displacement
-         of the grid */
+         of the grid. The noise clock is quantised to eighths of a
+         second: the field evolves in visible steps, so the repaint
+         cache absorbs most frames — fewer redraws, smoother feel. */
+      const nq = Math.floor(clock * 8) / 8;
       let gx = (x / step) * 0.055;
       let gy = (y / step) * 0.055;
       if (drift > 0) {
         /* the whole field slowly travels: one lattice cell every few
            minutes, so the matter relocates instead of boiling in place */
-        gx += clock * drift * 0.5;
-        gy += clock * drift * 0.13;
+        gx += nq * drift * 0.5;
+        gy += nq * drift * 0.13;
       }
       if (flow > 0) {
-        const wx = lattice(gx * 0.9 + 11, gy * 0.9, clock * 0.5, seed + 19);
-        const wy = lattice(gx * 0.9, gy * 0.9 + 7, clock * 0.5, seed + 23);
+        const wx = lattice(gx * 0.9 + 11, gy * 0.9, nq * 0.5, seed + 19);
+        const wy = lattice(gx * 0.9, gy * 0.9 + 7, nq * 0.5, seed + 23);
         gx += (wx - 0.5) * flow;
         gy += (wy - 0.5) * flow;
       }
       let v =
-        lattice(gx, gy, clock, seed) * 0.62 +
-        lattice((x / step) * 0.19, (y / step) * 0.19, clock * 1.6, seed + 7) *
+        lattice(gx, gy, nq, seed) * 0.62 +
+        lattice((x / step) * 0.19, (y / step) * 0.19, nq * 1.6, seed + 7) *
           0.33;
       /* contrast: a thresholded field reads as sampled material —
          structure with quiet pockets — instead of uniform mush */
@@ -274,7 +277,7 @@ export function SignalField({
       v = (v - curve[0]) * curve[1];
       if (!reduced.matches && ambient > 0) {
         if (
-          hash3(Math.floor(x / step), Math.floor(y / step), Math.floor(clock * 3), seed + 31) <
+          hash3(Math.floor(x / step), Math.floor(y / step), Math.floor(nq * 3), seed + 31) <
           0.05
         ) {
           v = Math.min(1, v + 0.2);
@@ -302,7 +305,7 @@ export function SignalField({
         /* one slow diagonal band drifts through, lifting density as it
            passes — the field has weather */
         const s = (x / width + y / height) * 1.2;
-        const wave = Math.sin(s * 6.2 - clock * 22 - seed);
+        const wave = Math.sin(s * 6.2 - nq * 22 - seed);
         v += Math.max(0, wave) * wavefront;
       }
       v *= 0.5 + 0.5 * resolve;

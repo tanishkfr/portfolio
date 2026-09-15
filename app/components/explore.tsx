@@ -244,10 +244,10 @@ export function Explore() {
       >
         {/* The cover's material: sparse ultramarine pixel signal is the
             primary register — digital fragments suspended around the
-            identity, drifting, breathing, occasionally clustering, parting
-            for the pointer. Beneath them a faint glyph texture keeps the
-            field computational without ever competing. Both disperse as
-            the cover scrolls into the work. */}
+            identity, drifting and breathing. Beneath them a faint glyph
+            texture keeps the field computational without competing. The
+            whole cover — name, signal, texture — scrolls as one
+            composition: no layer disperses separately. */}
         <SignalField
           className="xp-cover-field"
           glyphs="·:+*#"
@@ -258,7 +258,6 @@ export function Explore() {
           wavefront={0.07}
           drift={0.3}
           pointerRadius={0}
-          collapse
           quiet={COVER_QUIET}
           tune={[0.54, 1.9]}
           shape={(v, nx, ny) =>
@@ -278,7 +277,6 @@ export function Explore() {
           wavefront={0.1}
           drift={0.4}
           pointerRadius={12}
-          collapse
           quiet={COVER_QUIET}
           tune={[0.4, 2.1]}
           shape={(v, nx, ny, t) => {
@@ -307,7 +305,7 @@ export function Explore() {
               texture,
               clusterTL * 0.85 * grain * settle,
               clusterBR * 0.9 * grain * settle,
-              strip * 0.85 * grain,
+              strip * 0.55 * grain,
             );
           }}
           color={(t) => `rgba(58, 31, 240, ${0.18 + 0.55 * t})`}
@@ -466,19 +464,6 @@ export function Explore() {
             );
           })}
         </div>
-      </section>
-
-      <section className="xp-close" aria-labelledby="explore-close-title">
-        {/* The close is narrative: it states the argument, then hands off —
-            first to the one action the statement was leading to, then to
-            the global footer, which carries every address and destination. */}
-        <p className="xp-close-kicker">That is the state of the work.</p>
-        <h2 id="explore-close-title">
-          Have something that needs a better behaviour?
-        </h2>
-        <TransitionLink className="xp-close-cta" href="/contact">
-          Tell me about it <span className="xp-cta-arrow" aria-hidden="true">→</span>
-        </TransitionLink>
       </section>
     </main>
   );

@@ -219,9 +219,23 @@
 
 /* ---------- contact ---------- */
 
-.contact-intro {
+.contact-shell {
   position: relative;
   isolation: isolate;
+}
+
+/* The page signal spans the shell's top region at full width: the
+   letter's copy holds the left column, the signal holds the open
+   right side. The canvas is bounded so only the hero area animates. */
+.contact-shell > .page-signal {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: clamp(22rem, 50vh, 30rem);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.contact-intro {
   padding-block: clamp(3rem, 8vh, 5.5rem) clamp(2.4rem, 6vh, 4rem);
 }
 
@@ -468,11 +482,19 @@
   line-height: 1.04;
 }
 
-.contact-note {
-  margin: 1.8rem 0 0;
+.contact-body {
+  margin: 1.3rem 0 0;
+  max-width: 34em;
   font-size: var(--step-0);
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--ink-soft);
+}
+
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 1.6rem;
+  margin: 2rem 0 0;
 }
 
 .contact-sign {

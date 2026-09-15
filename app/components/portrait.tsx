@@ -165,8 +165,8 @@ function revisionShape(v: number, nx: number, ny: number, t: number): number {
     }
   }
   /* the third machine line: struck, then a ghost once the rewrite leads */
-  const sweep = smooth((c - 0.36) / 0.14);
-  const rewritten = smooth((c - 0.62) / 0.12);
+  const sweep = smooth((c - 0.36) / 0.18);
+  const rewritten = smooth((c - 0.66) / 0.12);
   if (Math.abs(ny - STRUCK_LINE.y) < 0.03 && nx > 0.1 && nx < 0.72) {
     out = Math.max(out, 0.85 * (1 - 0.62 * rewritten));
   }
@@ -256,45 +256,62 @@ function absenceShape(v: number, nx: number, ny: number, t: number): number {
 
 /* --------------------------------------------------------------
    04 · INTERACTION ATLAS — a rule changing under pressure.
-   A structured ladder of authored rules: each wording run sits
-   on a thin rule line; a solid elbow connector carries the rule
-   from one case to the next; one entry branches in two; the
-   current wording is pigment-led while ancestry stays legible
-   but dimmed. A rule evolving through related cases.
+   A structured ladder of authored rules, drawn at full strength:
+   each wording run sits on a thin rule line; solid elbow
+   connectors carry the rule from case to case; one entry
+   branches in two; and a bright pressure pulse travels along
+   the current wording — the rule being tested right now. The
+   current wording is pigment-led; ancestry stays legible but
+   dimmed. The base texture is suppressed so the ladder is the
+   whole message.
    -------------------------------------------------------------- */
 
 const LINEAGE_RUNS = [
-  { y: 0.18, x0: 0.1, w: 0.36 },
-  { y: 0.32, x0: 0.1, w: 0.3 },
-  { y: 0.47, x0: 0.1, w: 0.2 },
-  { y: 0.47, x0: 0.36, w: 0.18 },
-  { y: 0.62, x0: 0.18, w: 0.34 },
-  { y: 0.77, x0: 0.26, w: 0.3 },
+  { y: 0.14, x0: 0.08, w: 0.4 },
+  { y: 0.3, x0: 0.08, w: 0.32 },
+  { y: 0.46, x0: 0.08, w: 0.22 },
+  { y: 0.46, x0: 0.38, w: 0.22 },
+  { y: 0.63, x0: 0.16, w: 0.38 },
+  { y: 0.8, x0: 0.24, w: 0.34 },
 ] as const;
 const LINEAGE_COUNT = 6;
 
 function lineageState(t: number): { current: number; slot: number } {
-  /* phase 0.45: the portrait arrives mid-lineage, ancestry present */
-  const c = cyc(t, 44, 0.45);
+  /* phase 0.4: the portrait arrives mid-lineage, ancestry present */
+  const c = cyc(t, 48, 0.4);
   const current = Math.floor(c * LINEAGE_COUNT);
   return { current, slot: c * LINEAGE_COUNT - current };
 }
 
 function lineageShape(v: number, nx: number, ny: number, t: number): number {
   const { current, slot } = lineageState(t);
-  let out = v * 0.3;
+  let out = v * 0.22;
   for (let i = 0; i < LINEAGE_RUNS.length; i++) {
     const run = LINEAGE_RUNS[i];
     if (i > current) continue;
-    const inRun = Math.abs(ny - run.y) < 0.04 && nx > run.x0 && nx < run.x0 + run.w;
+    const inRun = Math.abs(ny - run.y) < 0.045 && nx > run.x0 && nx < run.x0 + run.w;
     if (!inRun) continue;
     /* the current wording: dense and pigment-led; ancestry dimmed but
        legible */
     const amp = i === current ? 0.98 : 0.56;
     out = Math.max(out, amp * (0.66 + 0.34 * v));
     /* the authored rule: a thin line under each wording */
-    if (Math.abs(ny - (run.y + 0.062)) < 0.013 && nx > run.x0 && nx < run.x0 + run.w) {
-      out = Math.max(out, i === current ? 0.95 : 0.6);
+    if (Math.abs(ny - (run.y + 0.068)) < 0.014 && nx > run.x0 && nx < run.x0 + run.w) {
+      out = Math.max(out, i === current ? 0.95 : 0.62);
+    }
+  }
+  /* the pressure pulse: a bright segment travelling along the current
+     wording — the rule being tested right now */
+  {
+    const run = LINEAGE_RUNS[current];
+    const pulse = cyc(t, 9);
+    const px = run.x0 + pulse * run.w;
+    const d = Math.abs(nx - px);
+    if (Math.abs(ny - run.y) < 0.05 && d < 0.07) {
+      out = Math.max(out, (1 - d / 0.07) * 0.95);
+    }
+    if (Math.abs(ny - (run.y + 0.068)) < 0.014 && d < 0.07) {
+      out = Math.max(out, (1 - d / 0.07) * 0.95);
     }
   }
   /* the elbow connector: a solid vertical drop, then a horizontal
@@ -305,11 +322,11 @@ function lineageShape(v: number, nx: number, ny: number, t: number): number {
     const env2 = env(slot, 0.04, 0.9, 0.16);
     if (env2 > 0) {
       const ex = Math.max(prev.x0 + prev.w, run.x0);
-      if (Math.abs(nx - ex) < 0.011 && ny > prev.y + 0.03 && ny < run.y - 0.02) {
-        out = Math.max(out, env2 * 0.85);
+      if (Math.abs(nx - ex) < 0.013 && ny > prev.y + 0.04 && ny < run.y - 0.02) {
+        out = Math.max(out, env2 * 0.88);
       }
-      if (Math.abs(ny - (run.y - 0.034)) < 0.011 && nx > run.x0 - 0.02 && nx < ex) {
-        out = Math.max(out, env2 * 0.85);
+      if (Math.abs(ny - (run.y - 0.036)) < 0.013 && nx > run.x0 - 0.02 && nx < ex) {
+        out = Math.max(out, env2 * 0.88);
       }
     }
   }
@@ -343,35 +360,37 @@ function fluxShape(v: number, nx: number, ny: number, t: number): number {
   const hash = Math.sin(nx * 619.7 + ny * 311.3) * 43758.5453;
   const frac = hash - Math.floor(hash);
   /* loose fragments stay visible while the matter is unformed */
-  let out = Math.max(v * (0.75 + 0.35 * f), (1 - f) * 0.5 * (frac > 0.84 ? 1 : 0));
+  let out = Math.max(v * (0.75 + 0.35 * f), (1 - f) * 0.55 * (frac > 0.78 ? 1 : 0));
   if (inX && inY) {
     /* the wireframe: frame edges, top bar, column rule, footer bar */
     const barY = r.y + 0.1;
     const footY = r.y + r.h - 0.08;
     const colX = r.x + r.w * 0.52;
     const onRule =
-      bx < 0.014 ||
-      by < 0.014 ||
-      (inX && Math.abs(ny - barY) < 0.014) ||
-      (inX && Math.abs(ny - footY) < 0.014) ||
-      (Math.abs(nx - colX) < 0.012 && ny > barY && ny < footY);
+      bx < 0.018 ||
+      by < 0.018 ||
+      (inX && Math.abs(ny - barY) < 0.016) ||
+      (inX && Math.abs(ny - footY) < 0.016) ||
+      (Math.abs(nx - colX) < 0.014 && ny > barY && ny < footY);
     /* the logo block: a dense square at the frame's top-left */
     const logo =
       nx > r.x + 0.03 &&
-      nx < r.x + 0.13 &&
-      ny > barY + 0.03 &&
-      ny < barY + 0.13;
+      nx < r.x + 0.15 &&
+      ny > barY + 0.035 &&
+      ny < barY + 0.155;
     if (onRule) {
       out = Math.max(out, f * (0.92 + 0.08 * v));
     } else if (logo && ny < footY) {
       out = Math.max(out, f * 0.85);
     } else if (inX && inY && ny > barY && ny < footY) {
-      /* two stable content runs inside the built surface */
+      /* two content rows inside the built surface */
       const rowA =
-        Math.abs(ny - (barY + 0.15)) < 0.03 && nx > r.x + 0.18 && nx < colX - 0.03;
+        Math.abs(ny - (barY + 0.17)) < 0.03 && nx > r.x + 0.19 && nx < colX - 0.03;
       const rowB =
-        Math.abs(ny - (barY + 0.15)) < 0.03 && nx > colX + 0.03 && nx < r.x + r.w - 0.02;
-      if (rowA || rowB) {
+        Math.abs(ny - (barY + 0.17)) < 0.03 && nx > colX + 0.03 && nx < r.x + r.w - 0.02;
+      const rowC =
+        Math.abs(ny - (barY + 0.3)) < 0.03 && nx > r.x + 0.19 && nx < colX - 0.03;
+      if (rowA || rowB || rowC) {
         out = Math.max(out, f * (0.62 + 0.28 * v));
       } else {
         /* the delivered surface stays calm */
@@ -413,11 +432,12 @@ const NUMBER_CORE = { x0: 0.32, x1: 0.68, y0: 0.38, y1: 0.55 };
 const AMOUNT_A = [13, 7, 9];
 const AMOUNT_B = [13, 5, 14]; /* '809' — the cycle's other value */
 const TX_SLOTS = [
-  { y: 0.14, phase: 0.02 },
-  { y: 0.78, phase: 0.2 },
-  { y: 0.2, phase: 0.4 },
-  { y: 0.84, phase: 0.58 },
-  { y: 0.24, phase: 0.76 },
+  { y: 0.38, from: "left", phase: 0.02 },
+  { y: 0.54, from: "right", phase: 0.2 },
+  { y: 0.44, from: "left", phase: 0.38 },
+  { y: 0.48, from: "right", phase: 0.56 },
+  { y: 0.42, from: "left", phase: 0.72 },
+  { y: 0.52, from: "left", phase: 0.88 },
 ] as const;
 
 function numberAmountIndex(t: number, nx: number): number {
@@ -448,23 +468,22 @@ function numberShape(v: number, nx: number, ny: number, t: number): number {
     ny < NUMBER_CORE.y1
   ) {
     const digit = numberAmountIndex(t, nx);
-    if (digit >= 0 && Math.abs(ny - 0.465) < 0.07) {
+    if (digit >= 0 && Math.abs(ny - 0.465) < 0.075) {
       out = Math.max(out, 0.97);
     } else {
       out = Math.max(out, 0.36 + 0.07 * Math.sin(t * 0.6));
     }
   }
-  /* transactions: fragments travel inward, compress, and are absorbed */
+  /* transactions: ledger rows slide along the rules band toward the
+     amount and are absorbed at its edges */
   for (const slot of TX_SLOTS) {
-    const c = cyc(t, 24, slot.phase);
-    const travel = Math.min(1, c / 0.4);
+    const c = cyc(t, 22, slot.phase);
+    const travel = Math.min(1, c / 0.44);
     if (travel >= 1) continue;
-    const fromLeft = slot.y < 0.5;
-    const xEdge = fromLeft ? 0.04 : 0.96;
-    const x = lerp(xEdge, xEdge + (fromLeft ? 0.3 : -0.3), smooth(travel));
-    const y = lerp(slot.y, slot.y < 0.5 ? 0.32 : 0.6, smooth(travel));
-    const width = 0.09 * (1 - travel * 0.65);
-    if (Math.abs(ny - y) < 0.022 && Math.abs(nx - x) < width / 2) {
+    const xEdge = slot.from === "left" ? 0.02 : 0.98;
+    const x = lerp(xEdge, xEdge + (slot.from === "left" ? 0.3 : -0.3), smooth(travel));
+    const width = 0.085 * (1 - travel * 0.7);
+    if (Math.abs(ny - slot.y) < 0.02 && Math.abs(nx - x) < width / 2) {
       out = Math.max(out, 0.6 * (0.4 + 0.6 * travel) * (1 - smooth((travel - 0.85) / 0.15)));
     }
   }
@@ -491,7 +510,7 @@ function numberGlyphAt(t: number, nx: number, ny: number): number {
 
 const PORTRAITS: Record<string, PortraitConfig> = {
   "design-or-disaster": {
-    cell: 10,
+    cell: 11,
     seed: 41,
     ambient: 0.44,
     tune: [0.44, 2.0],
@@ -506,7 +525,7 @@ const PORTRAITS: Record<string, PortraitConfig> = {
   },
   pentimento: {
     glyphs: "·:+*#/x",
-    cell: 11,
+    cell: 12,
     seed: 57,
     ambient: 0.32,
     drift: 0.25,
@@ -521,7 +540,7 @@ const PORTRAITS: Record<string, PortraitConfig> = {
   },
   "invisible-interfaces": {
     glyphs: "01",
-    cell: 12,
+    cell: 13,
     seed: 23,
     ambient: 0.48,
     tune: [0.42, 2.0],
@@ -530,18 +549,18 @@ const PORTRAITS: Record<string, PortraitConfig> = {
     color: (t) => `rgba(230, 171, 63, ${0.11 + 0.4 * t})`,
   },
   atlas: {
-    cell: 11,
+    cell: 10,
     seed: 79,
     ambient: 0.3,
     ground: "#dcece8",
     shape: lineageShape,
     color: (t) =>
       t >= 0.85
-        ? "rgba(18, 97, 90, 0.8)"
-        : `rgba(13, 24, 23, ${0.14 + 0.3 * t})`,
+        ? "rgba(18, 97, 90, 0.85)"
+        : `rgba(13, 24, 23, ${0.17 + 0.3 * t})`,
   },
   "fluxion-studios": {
-    cell: 12,
+    cell: 13,
     seed: 61,
     ambient: 0.52,
     drift: 0.35,
@@ -555,7 +574,7 @@ const PORTRAITS: Record<string, PortraitConfig> = {
   },
   daynero: {
     glyphs: NUMBER_GLYPHS,
-    cell: 12,
+    cell: 13,
     seed: 83,
     ambient: 0.3,
     ground: "#161c0d",

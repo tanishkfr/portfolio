@@ -43,18 +43,15 @@ test("server-renders the folio at / — one projects reading", async () => {
   assert.equal((folio.match(/[Ss]ix/g) ?? []).length, 1);
   assert.match(folio, /Six projects · each one live online/);
   assert.equal((folio.match(/data-explore-piece/g) ?? []).length, 6);
-  /* The folio ends once: the narrative close hands off to the global
-     footer, which carries the page's only contact address. */
-  assert.match(folio, /Have something that needs a better behaviour\?/);
-  /* The close offers the one action the statement was leading to — a small
-     mono CTA to the contact page, not a second contact section. */
-  assert.match(folio, /href="\/contact"[^>]*class="xp-close-cta"[^>]*>Tell me about it|class="xp-close-cta"[^>]*href="\/contact"[^>]*>Tell me about it/);
-  assert.doesNotMatch(folio, /xp-close-mail/);
+  /* The folio ends once: the last sheet resolves straight onto the global
+     footer, which carries the page's only contact address and the nav's
+     Contact destination — no interstitial closing section. */
+  assert.doesNotMatch(folio, /Have something that needs a better behaviour|xp-close|Tell me about it/);
   assert.equal((folio.match(/class="site-footer"/g) ?? []).length, 1);
   assert.equal((folio.match(/class="footer-invite"/g) ?? []).length, 1);
   assert.ok(
-    folio.indexOf('class="xp-close"') < folio.indexOf('class="site-footer"'),
-    "the close precedes the global footer",
+    folio.indexOf('class="footer-invite"') > folio.indexOf('data-explore-piece'),
+    "the footer follows the projects",
   );
   assert.match(folio, /id="work"/);
   /* One Projects destination: the header carries plain navigation, with
@@ -283,11 +280,15 @@ test("publishes accurate identity, commercial context, and contact", async () =>
 
   assert.equal(contactResponse.status, 200);
   const contactHtml = await contactResponse.text();
-  assert.match(contactHtml, /interaction is hard to explain/i);
+  /* the contact page says plainly what he does, what conversations are
+     welcome, and how to reach him — no slogans */
+  assert.match(contactHtml, /Tell me about the interface you&#x27;re fighting with|Tell me about the interface you're fighting with/);
+  assert.match(contactHtml, /Useful conversations/);
   assert.match(contactHtml, /madebytanishk@gmail\.com/);
   assert.match(contactHtml, /linkedin\.com\/in\/tanishksalagame/);
   assert.match(contactHtml, /github\.com\/tanishkfr/);
   assert.doesNotMatch(contactHtml, /twitter\.com|x\.com/);
+  assert.doesNotMatch(contactHtml, /digital experiences|where design meets|Let's build something/);
 
   assert.equal(resumeResponse.status, 200);
   const resumeHtml = await resumeResponse.text();
