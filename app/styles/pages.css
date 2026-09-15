@@ -71,6 +71,7 @@
 }
 
 .about-practice,
+.about-current,
 .about-authorship,
 .about-contact {
   border-top: 1px solid var(--line);
@@ -78,6 +79,7 @@
 }
 
 .about-practice h2,
+.about-current h2,
 .about-authorship h2,
 .about-contact h2 {
   margin: 0 0 1.8rem;
@@ -149,10 +151,47 @@
   max-width: 72rem;
 }
 
-.about-authorship p {
+/* prose only — the section's kicker is a direct child and keeps the
+   shared eyebrow rhythm (mono, muted, one step of air below) */
+.about-authorship > div p {
   margin: 0;
   color: var(--ink-soft);
   line-height: 1.65;
+}
+
+/* the current-work rows: same unboxed grammar as the practices */
+.current-list {
+  display: grid;
+}
+
+.current-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 0.6rem clamp(2rem, 5vw, 5rem);
+  border-top: 1px solid var(--line);
+  padding-block: 1.6rem;
+}
+
+.current-list article:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.current-list h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: var(--step-1);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.current-list p {
+  margin: 0;
+  max-width: 56ch;
+  color: var(--ink-soft);
+  font-size: var(--step-0);
+  line-height: 1.6;
 }
 
 .about-contact > div {
@@ -380,12 +419,18 @@
 @media (max-width: 56rem) {
   .about-lede,
   .about-authorship > div,
-  .practice-list article {
+  .practice-list article,
+  .current-list article {
     grid-template-columns: 1fr;
   }
 
-  .practice-list article {
+  .practice-list article,
+  .current-list article {
     gap: 0.5rem;
+  }
+
+  .about-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .contact-options {
@@ -540,6 +585,10 @@
   .about-under-copy {
     grid-template-columns: 1fr;
     gap: 0.45rem;
+  }
+
+  .about-facts {
+    grid-template-columns: 1fr;
   }
 
   /* The poster headline's longest word must fit a 320px column. */

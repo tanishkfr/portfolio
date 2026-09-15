@@ -3,18 +3,18 @@ import { WorkIndex } from "./components/work-index";
 import type { Mode } from "./components/mode";
 
 export const metadata: Metadata = {
-  title: { absolute: "Tanishk — Interaction Designer" },
+  title: { absolute: "Tanishk — Product & Interaction Designer" },
   description:
     "Selected work by Tanishk: Fluxion Studios, four independent interaction projects, and Daynero.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: "/",
-    siteName: "Tanishk — Interaction Designer",
-    title: "Tanishk — Interaction Designer",
+    siteName: "Tanishk — Product & Interaction Designer",
+    title: "Tanishk — Product & Interaction Designer",
     description:
       "Studio work, four independent interaction projects, and a product case in progress.",
-    images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
+    images: [{ url: "/og.png", alt: "Tanishk — Product & Interaction Designer" }],
   },
 };
 

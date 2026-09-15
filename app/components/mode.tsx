@@ -7,15 +7,15 @@ import { useSyncExternalStore } from "react";
  *
  *   full   — Explore. The authored folio. Six working sheets, entered
  *            through a cover that names the designer and opens straight
- *            into the work. This is the primary portfolio and the
- *            default route.
- *   review — Work. The concise visual index. Every project, scannable,
+ *            into the work. This is the primary reading and the default
+ *            route of Projects.
+ *   review — Quick view. The concise index. Every project, scannable,
  *            each row carrying a working piece of the project.
  *
  * The mode is a presentation state on the root element, mirrored into
  * the URL so it is deterministic: `/` is Explore, and `/?mode=review` is
- * Work. Both remain real URLs, so a reload always keeps the reading you
- * chose. The mode persists for the session only — a reviewer who once
+ * Quick view. Both remain real URLs, so a reload always keeps the reading
+ * you chose. The mode persists for the session only — a reviewer who once
  * chose the index should not be silently returned to it weeks later and
  * never see the folio again.
  */

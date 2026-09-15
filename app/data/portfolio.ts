@@ -69,9 +69,14 @@ export type Project = {
   legacySlugs?: string[];
   title: string;
   form: string;
+  /** One plain-language line: what the project actually is, for a
+      first-time visitor. Sits under the title; the thesis argues above it. */
+  plain: string;
   thesis: string;
   question: string;
   oneLine: string;
+  /** The external CTA label — names what opens before the click. */
+  liveLabel: string;
   status: string;
   availability?: "published" | "preview" | "coming-soon";
   year: string;
@@ -124,7 +129,8 @@ export const projects: Project[] = [
     slug: "design-or-disaster",
     title: "Design or Disaster",
     form: "Spatial critique archive",
-    thesis: "Critique becomes accountable when you have to point before you pronounce.",
+    plain:
+      "A critique archive where you mark the evidence before judging — then compare your verdict with five other readings of the same screen.",    thesis: "Critique becomes accountable when you have to point before you pronounce.",
     question:
       "What changes when a critique has to point to evidence before it gives a verdict?",
     oneLine:
@@ -144,6 +150,7 @@ export const projects: Project[] = [
     scale: "10 cases · 5 jurors · 2 experience paths",
     liveUrl: "https://design-or-disaster.vercel.app/",
     sourceUrl: "https://github.com/tanishkfr/design-or-disaster",
+    liveLabel: "Open interactive project",
     accent: "#ef4a35",
     artifact: "disaster",
     lensRelations: {
@@ -287,6 +294,8 @@ export const projects: Project[] = [
     slug: "pentimento",
     title: "Pentimento",
     form: "Algorithmic autobiography",
+    plain:
+      "An interactive project about giving people the final say over what software writes about them.",
     thesis: "If software writes about you, your correction must outrank its sentence.",
     question:
       "What should happen when software writes a story about someone and they disagree with it?",
@@ -307,6 +316,7 @@ export const projects: Project[] = [
     scale: "2 archive modes · 3 reply paths · complete revision lineage",
     liveUrl: "https://pentimento-lovat.vercel.app/",
     sourceUrl: "https://github.com/tanishkfr/pentimento",
+    liveLabel: "Open interactive project",
     accent: "#8b2f63",
     artifact: "pentimento",
     lensRelations: {
@@ -451,6 +461,8 @@ export const projects: Project[] = [
     legacySlugs: ["invisible-interactions"],
     title: "Invisible Interfaces",
     form: "Interactive essay",
+    plain:
+      "An interactive research project about interfaces that keep working while you're away — leave the tab, come back, and read the receipt.",
     thesis: "When work leaves the screen, accountability has to return.",
     question:
       "What should an interface show before someone delegates work and after they return?",
@@ -471,6 +483,7 @@ export const projects: Project[] = [
     scale: "5 scenes · 1 repeated task · causal absence loop",
     liveUrl: "https://invisible-interfaces.vercel.app/",
     sourceUrl: "https://github.com/tanishkfr/invisible-interfaces",
+    liveLabel: "Open interactive essay",
     accent: "#d79a29",
     artifact: "invisible",
     lensRelations: {
@@ -614,6 +627,8 @@ export const projects: Project[] = [
     slug: "atlas",
     title: "Atlas",
     form: "Reasoning instrument",
+    plain:
+      "A tool for testing whether an interface rule survives being carried into very different situations.",
     thesis: "A design rule is only as useful as the unlike cases that are allowed to change it.",
     question:
       "How does one rule change across a lightbox, a financial transfer, and switch access?",
@@ -634,6 +649,7 @@ export const projects: Project[] = [
     scale: "1 rule test · 3 pressure cases · 33 supporting examples",
     liveUrl: "https://atlas-slice.vercel.app/",
     sourceUrl: "https://github.com/tanishkfr/atlas-slice",
+    liveLabel: "Open interactive tool",
     accent: "#1d756d",
     artifact: "atlas",
     lensRelations: {
@@ -777,14 +793,16 @@ export const projects: Project[] = [
     slug: "fluxion-studios",
     title: "Fluxion Studios",
     form: "Studio website · freelance practice",
+    plain:
+      "The public website of the two-person studio I co-founded — designed, written, and built in-house.",
     thesis: "Fluxion's own site had to show the standard we would bring to a client site.",
     question:
       "Could our studio site explain what we build, show how we work, and take a real enquiry?",
     oneLine:
-      "Fluxion is the two-person web studio I co-founded with Shreyas. I designed and built the public site, including its motion and enquiry flow.",
+      "Fluxion is the two-person web studio I co-founded. I designed and built the public site, including its motion and enquiry flow.",
     status: "Live studio site",
     year: "2026",
-    context: "Co-founded studio with Shreyas",
+    context: "Co-founded two-person studio",
     ownership: "Co-founder · design and frontend with a partner",
     role: "Co-founder · design, copy, and frontend",
     responsibilities: [
@@ -795,6 +813,7 @@ export const projects: Project[] = [
     tools: ["Visual design", "UI/UX", "Frontend", "Copy"],
     scale: "Public studio site · enquiry form · two-person practice",
     liveUrl: "https://fluxion-studios.vercel.app/",
+    liveLabel: "Visit studio site",
     accent: "#c8102e",
     artifact: "fluxion",
     lensRelations: {
@@ -817,11 +836,11 @@ export const projects: Project[] = [
     },
     story: {
       intro: [
-        "Fluxion is a two-person web studio I co-founded with Shreyas. We make sites for businesses that already have a voice and do not want to sound like everyone else online.",
+        "Fluxion is a two-person web studio I co-founded with a partner. We make sites for businesses that already have a voice and do not want to sound like everyone else online.",
         "Our site had to explain what we build and take real enquiries. It also had to show the level of detail we would bring to client work.",
       ],
       contribution: [
-        "I worked on the structure, visual design, copy, motion, frontend, and enquiry form with Shreyas.",
+        "I worked on the structure, visual design, copy, motion, frontend, and enquiry form, working directly with my co-founder.",
         "The finished site is live and client-facing. It introduces both founders, explains our process, and gives prospective clients a direct way to start a project.",
       ],
       turn:
@@ -861,7 +880,7 @@ export const projects: Project[] = [
     ],
     demonstrated: [
       "A live studio website with navigation, process, founders, and an enquiry form.",
-      "Co-founded practice with Shreyas, based in Bengaluru.",
+      "Co-founded practice, based in Bengaluru.",
       "Design and frontend implementation of the public site.",
     ],
     limits: [
@@ -874,7 +893,7 @@ export const projects: Project[] = [
       success: "A visitor can tell what the studio has shipped and what we contributed.",
     },
     contribution:
-      "Co-founded the studio; designed and built the public website with Shreyas.",
+      "Co-founded the studio; designed and built the public website.",
     disclosure:
       "Fluxion Studios is a two-person practice. This portfolio page describes the live studio site and my role. It does not invent client results.",
   },
@@ -883,6 +902,8 @@ export const projects: Project[] = [
     slug: "daynero",
     title: "Daynero",
     form: "AI-native financial product",
+    plain:
+      "A personal-finance product for first-paycheck earners, built around what is safe to spend today.",
     thesis: "A money product for first-paycheck earners who need to know what they can spend today.",
     question:
       "How can a first-paycheck earner see what is safe to spend today?",
@@ -903,6 +924,7 @@ export const projects: Project[] = [
     tools: ["Product design", "Interaction design", "Web design", "Implementation"],
     scale: "Financial app · public website · active startup",
     liveUrl: "https://daynero.com/",
+    liveLabel: "Visit daynero.com",
     accent: "#4f6612",
     artifact: "daynero",
     lensRelations: {
@@ -960,8 +982,23 @@ export const projects: Project[] = [
     disclosure:
       "This preview uses Daynero's public product language and Tanishk's stated contribution. The full evidence record is pending.",
   },
-
 ];
+
+/** The pair of case CTAs every surface links to a project with: the
+    internal label is literal about what opens (a full case, or the
+    deliberately limited preview), and the external one is the project's
+    own liveLabel. One source so every surface stays in step. */
+export function caseCtaLabels(project: Project) {
+  return {
+    /* only an unpublished project gets the preview label; absence means
+       the full case is the destination */
+    internal:
+      project.availability && project.availability !== "published"
+        ? "See the preview"
+        : "Read case study",
+    external: project.liveLabel,
+  } as const;
+}
 
 export const lenses: LensDefinition[] = [
   {

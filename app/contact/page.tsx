@@ -62,7 +62,7 @@ export default function ContactPage() {
       </p>
 
       <div className="contact-return" data-reveal>
-        <Link href="/">← Return to selected work</Link>
+        <Link href="/">← Back to projects</Link>
       </div>
     </main>
   );

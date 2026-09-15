@@ -33,24 +33,24 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase,
     title: {
-      default: "Tanishk — Interaction Designer",
+      default: "Tanishk — Product & Interaction Designer",
       template: "%s — Tanishk",
     },
     description:
-      "Work by Tanishk, an interaction designer in Bengaluru who also builds.",
+      "Work by Tanishk, a product and interaction designer in Bengaluru who also builds.",
     authors: [{ name: "Tanishk" }],
     creator: "Tanishk",
-    category: "Interaction Design",
+    category: "Product & Interaction Design",
     formatDetection: { email: false, address: false, telephone: false },
     openGraph: {
       type: "website",
       locale: "en_IN",
       url: "/",
-      siteName: "Tanishk — Interaction Designer",
-      title: "Tanishk — Interaction Designer",
+      siteName: "Tanishk — Product & Interaction Designer",
+      title: "Tanishk — Product & Interaction Designer",
       description:
         "Fluxion Studios, four independent interaction projects, and Daynero, by Tanishk.",
-      images: [{ url: "/og.png", alt: "Tanishk — Interaction Designer" }],
+      images: [{ url: "/og.png", alt: "Tanishk — Product & Interaction Designer" }],
     },
   };
 }

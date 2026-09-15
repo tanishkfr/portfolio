@@ -7,8 +7,10 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { projects, type Project } from "../data/portfolio";
+import Link from "next/link";
+import { caseCtaLabels, projects, type Project } from "../data/portfolio";
 import { ROOM_WORLDS, rgb } from "../data/room-worlds";
+import { modeHref } from "./mode";
 import { AtlasRule } from "./atlas-rule";
 import { DayneroNumber } from "./daynero-number";
 import { DisasterMark } from "./disaster-mark";
@@ -199,7 +201,10 @@ function CoverName() {
 
 export function Explore() {
   const mainRef = useRef<HTMLElement>(null);
-  const [active, setActive] = useState(0);
+  /* No sheet is "current" until one has actually crossed the reading
+     line: a first-index default would paint Design or Disaster as
+     selected while the visitor is still on the cover. */
+  const [active, setActive] = useState(-1);
 
   /* One passive, rAF-throttled loop: the index marks the sheet you are
      reading, and it goes quiet for reduced-motion readers. */
@@ -215,7 +220,7 @@ export function Explore() {
     const measure = () => {
       frame = 0;
       const line = window.innerHeight * 0.42;
-      let next = 0;
+      let next = -1;
       pieces.forEach((piece, index) => {
         if (piece.getBoundingClientRect().top <= line) next = index;
       });
@@ -265,13 +270,13 @@ export function Explore() {
               </p>
               <p className="xp-cover-deck">
                 I design and build interfaces where the behaviour is the
-                point — six of them are below, and every one is live.
+                point — the projects begin below.
               </p>
             </div>
           </div>
 
           <div className="xp-cover-handoff">
-            <p>The field begins below · six working objects, all live</p>
+            <p>Six projects · each one live online</p>
             <span aria-hidden="true">↓</span>
           </div>
         </div>
@@ -280,7 +285,13 @@ export function Explore() {
       <section className="xp-field" id="work" aria-labelledby="field-title">
         <header className="xp-field-head">
           <p className="xp-field-kicker" id="field-title">
-            Every object below is live — six behaviours, six instruments
+            One sheet per project — scroll through, or jump from the index
+          </p>
+          <p className="xp-field-mode">
+            The same projects, as a plain list:{" "}
+            <Link href={modeHref("review")}>
+              Quick view <span aria-hidden="true">→</span>
+            </Link>
           </p>
         </header>
 
@@ -289,10 +300,15 @@ export function Explore() {
             {ordered.map((project, index) => {
               const direction = directions[project.slug as keyof typeof directions];
               return (
-                <li key={project.slug} data-current={active === index || undefined}>
+                <li
+                  key={project.slug}
+                  data-current={(active === index && active >= 0) || undefined}
+                >
                   <a
                     href={`#piece-${project.slug}`}
-                    aria-current={active === index ? "location" : undefined}
+                    aria-current={
+                      active === index && active >= 0 ? "location" : undefined
+                    }
                   >
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <strong>{project.title}</strong>
@@ -308,7 +324,6 @@ export function Explore() {
           {ordered.map((project, index) => {
             const direction = directions[project.slug as keyof typeof directions];
             const world = ROOM_WORLDS[project.slug];
-            const comingSoon = project.availability === "coming-soon";
 
             return (
               <Fragment key={project.slug}>
@@ -347,14 +362,21 @@ export function Explore() {
                         {project.title}
                       </TransitionLink>
                     </h3>
+                    <p className="xp-piece-plain">{project.plain}</p>
                     <p className="xp-piece-thesis">{project.thesis}</p>
                     <div className="xp-piece-actions">
                       <TransitionLink href={`/work/${project.slug}?from=explore`}>
-                        {comingSoon ? "See the preview" : "Enter the case"}
-                        <span aria-hidden="true"> →</span>
+                        {caseCtaLabels(project).internal}
+                        <span className="xp-cta-arrow" aria-hidden="true"> →</span>
                       </TransitionLink>
-                      <a href={project.liveUrl} target="_blank" rel="noreferrer">
-                        Open live <span aria-hidden="true">↗</span>
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        data-external="true"
+                      >
+                        {caseCtaLabels(project).external}
+                        <span className="xp-cta-arrow" aria-hidden="true"> ↗</span>
                         <span className="sr-only"> (opens in a new tab)</span>
                       </a>
                     </div>
@@ -381,7 +403,7 @@ export function Explore() {
           Have something that needs a better behaviour?
         </h2>
         <TransitionLink className="xp-close-cta" href="/contact">
-          Tell me about it <span aria-hidden="true">↗</span>
+          Tell me about it <span className="xp-cta-arrow" aria-hidden="true">→</span>
         </TransitionLink>
       </section>
     </main>

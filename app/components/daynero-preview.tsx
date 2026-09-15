@@ -30,7 +30,7 @@ export function DayneroPreview({
     >
       <RoomPaint slug="daynero" />
       <div className="daynero-return">
-        <TransitionLink href={returnHref}>← All work</TransitionLink>
+        <TransitionLink href={returnHref}>{"← Projects / " + project.title}</TransitionLink>
         <span>Commercial product · case in preparation</span>
       </div>
 
@@ -47,10 +47,10 @@ export function DayneroPreview({
             I designed the app experience and the public website.
           </p>
           <div className="daynero-actions">
-            <a href="https://daynero.com/" target="_blank" rel="noreferrer">
-              Visit daynero.com <span aria-hidden="true">↗</span>
+            <a href={project.liveUrl} target="_blank" rel="noreferrer">
+              {project.liveLabel} <span aria-hidden="true">↗</span>
             </a>
-            <TransitionLink href={returnHref}>Back to selected work</TransitionLink>
+            <TransitionLink href={returnHref}>Back to projects</TransitionLink>
           </div>
           <p className="daynero-note">
             Full case in preparation: team context, constraints, and publishable
@@ -134,6 +134,10 @@ export function DayneroPreview({
 
         <p className="record-disclosure">{project.disclosure}</p>
       </section>
+
+      <p className="case-end-flow">
+        <TransitionLink href={returnHref}>← Back to projects</TransitionLink>
+      </p>
     </main>
   );
 }
