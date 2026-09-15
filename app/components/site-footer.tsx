@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { modeHref } from "./mode";
+import { SignalField } from "./signal-field";
 
 /**
  * The global footer is the folio resolving: the name returns in its
@@ -27,6 +28,24 @@ export function SiteFooter({
   return (
     <footer className="site-footer">
       <div className="footer-mast">
+        {/* The playful corner of the material system: a sparse field
+            that drifts around the compressed name and answers the
+            pointer. It never carries information and only runs while
+            the footer is on screen. */}
+        <SignalField
+          className="footer-field"
+          glyphs="·:+*#"
+          cell={14}
+          seed={77}
+          ambient={0.55}
+          pointerRadius={6}
+          quiet={[{ x: 0.68, y: 0.12, w: 0.32, h: 0.66, falloff: 0.9, feather: 0.02 }]}
+          color={(t) =>
+            t >= 0.94
+              ? "rgba(58, 31, 240, 0.3)"
+              : `rgba(27, 33, 38, ${0.06 + 0.2 * t})`
+          }
+        />
         <span className="footer-name" aria-hidden="true">
           Tanishk
         </span>

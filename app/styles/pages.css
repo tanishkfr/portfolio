@@ -894,6 +894,22 @@
   justify-content: space-between;
   align-items: baseline;
   gap: 1rem 2rem;
+  /* the field drifts behind the compressed name */
+  position: relative;
+}
+
+.footer-field {
+  position: absolute;
+  inset: -1.5rem -0.25rem;
+  width: calc(100% + 0.5rem);
+  height: calc(100% + 3rem);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.footer-mast > *:not(.footer-field) {
+  position: relative;
+  z-index: 1;
 }
 
 .footer-name {

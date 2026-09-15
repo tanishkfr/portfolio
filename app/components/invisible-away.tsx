@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { SignalField } from "./signal-field";
 
 /**
  * INVISIBLE INTERFACES — absence, and an honest return.
@@ -123,6 +124,26 @@ export function InvisibleAway() {
       >
         Inspect the project&apos;s example return
       </button>
+
+      {/* The material grammar of this project: during the return moment
+          the room resolves out of binary signal into its crisp state —
+          the work that continued while nobody was watching settles back
+          into evidence. It plays once per return, then the room is
+          ordinary again. */}
+      {awayMs != null ? (
+        <SignalField
+          className="xp-away-field"
+          glyphs="01"
+          cell={12}
+          seed={23 + returns}
+          ambient={0}
+          pointerRadius={0}
+          pulseKey={returns}
+          pulseMs={1500}
+          pulseDirection="disperse"
+          color={(t) => `rgba(230, 171, 63, ${0.08 + 0.36 * t})`}
+        />
+      ) : null}
 
       {showReturn ? (
         <div

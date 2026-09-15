@@ -26,12 +26,26 @@
 
 .xp-cover {
   --cover-progress: 0;
+  position: relative;
   /* Most of one viewport. The cover names the designer, states the claim,
      and hands over to the field while its first edge is still arriving —
      the folio starts moving before the opening finishes. */
   min-height: 86svh;
   border-bottom: 1px solid var(--line);
   background: var(--paper);
+}
+
+/* The computational material around the identity: a signal field of
+   density glyphs, resolved by arrival, kept clear over the name and
+   the claim, dispersed by scroll. It sits under every cover element
+   and never takes pointers — the pointer is felt, not caught. */
+.xp-cover-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .xp-cover-pin {
@@ -42,6 +56,11 @@
   gap: clamp(1rem, 2.4vh, 2rem);
   min-height: calc(86svh - var(--header-h));
   padding: clamp(1.2rem, 3vh, 2.25rem) var(--page-gutter) clamp(1.3rem, 3vh, 2.4rem);
+}
+
+.xp-cover-pin > * {
+  position: relative;
+  z-index: 1;
 }
 
 .xp-cover-head,
@@ -1115,6 +1134,17 @@
   font-size: clamp(1.15rem, 1.3vw, 1.35rem);
   line-height: 1.4;
   color: #e7c9dc;
+  /* the correction material overlays the machine reading */
+  position: relative;
+}
+
+.xp-pent-field {
+  position: absolute;
+  inset: -0.75rem -1.5rem;
+  width: calc(100% + 3rem);
+  height: calc(100% + 1.5rem);
+  z-index: 3;
+  pointer-events: none;
 }
 
 .xp-pent-mine {
@@ -1177,6 +1207,8 @@
   background-size: 4.5rem 100%;
   color: #f8efd6;
   padding: clamp(2rem, 5vw, 5rem);
+  /* the return moment resolves the room out of signal material */
+  position: relative;
 }
 
 .xp-away-tag,
@@ -1184,6 +1216,17 @@
   color: #d9a951;
   font-family: var(--mono);
   font-size: var(--step--1);
+}
+
+/* the reconstruct sweep: one layer over the room's ground, felt only
+   during the return moment, gone when it settles */
+.xp-away-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
 }
 
 .xp-away-title {

@@ -1,0 +1,432 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
+/**
+ * SIGNAL FIELD — the portfolio's computational material.
+ *
+ * One Canvas-2D primitive, many states. A field is a low-resolution grid
+ * whose cells resolve into density glyphs; how much of the field is
+ * resolved is the state the host wants to express:
+ *
+ *   CRISP        — the field is absent; the DOM carries the information
+ *   GLYPH FIELD  — being processed, transmitted, partially known
+ *   DISPERSED    — contested, withdrawn, collapsing
+ *   REASSEMBLED  — returned, settled
+ *
+ * Engine contract: one rAF loop at most, and only while the canvas is in
+ * the viewport, the tab is visible, and the reader allows motion. Cells
+ * repaint only when their glyph/level changes. Glyphs are pre-rendered
+ * sprites (one small sprite sheet per field), so the per-frame cost is a
+ * grid of integer field evaluations plus a handful of drawImage calls.
+ * Colour and quiet zones are read through refs so they can be inline
+ * values without re-binding the effect; geometry coarsens on narrow
+ * viewports, DPR is capped, and coarse pointers get no pointer field.
+ */
+
+type Quiet = {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  falloff?: number;
+  /** Suppression feather beyond the rect, in normalised units. */
+  feather?: number;
+};
+
+export type SignalFieldProps = {
+  glyphs?: string;
+  color?: (t: number) => string | null;
+  cell?: number;
+  seed?: number;
+  ambient?: number;
+  quiet?: Quiet[];
+  /** Compositional shaping over the clamped field, in normalised
+      coordinates — e.g. a vertical resolve ramp toward one edge. */
+  shape?: (v: number, nx: number, ny: number) => number;
+  pointerRadius?: number;
+  pulseKey?: number | string | null;
+  pulseMs?: number;
+  pulseDirection?: "resolve" | "disperse";
+  /** Disperse the field as its container scrolls out (the hero). */
+  collapse?: boolean;
+  className?: string;
+};
+
+const BANDS = 7;
+
+function hash3(x: number, y: number, z: number, seed: number): number {
+  let h = seed;
+  h = Math.imul(h ^ (x | 0), 0x27d4eb2d);
+  h = Math.imul(h ^ (y | 0), 0x165667b1);
+  h = Math.imul(h ^ (z | 0), 0x9e3779b9);
+  h ^= h >>> 15;
+  return ((h >>> 0) % 100000) / 100000;
+}
+
+function smooth(edge: number): number {
+  return edge * edge * (3 - 2 * edge);
+}
+
+function lattice(gx: number, gy: number, gz: number, seed: number): number {
+  const x0 = Math.floor(gx);
+  const y0 = Math.floor(gy);
+  const fx = gx - x0;
+  const fy = gy - y0;
+  const ux = smooth(fx);
+  const uy = smooth(fy);
+  const z0 = Math.floor(gz);
+  const fz = gz - z0;
+  const corner = (dx: number, dy: number): number => {
+    const a = hash3(x0 + dx, y0 + dy, z0, seed);
+    const b = hash3(x0 + dx, y0 + dy, z0 + 1, seed);
+    return a + (b - a) * fz;
+  };
+  const top = corner(0, 0) * (1 - ux) + corner(1, 0) * ux;
+  const bottom = corner(0, 1) * (1 - ux) + corner(1, 1) * ux;
+  return top * (1 - uy) + bottom * uy;
+}
+
+export function SignalField({
+  glyphs = "·:+*#",
+  color = (t) => `rgba(27, 33, 38, ${0.08 + 0.26 * t})`,
+  cell = 13,
+  seed = 1,
+  ambient = 0.25,
+  quiet,
+  pointerRadius = 9,
+  pulseKey = null,
+  pulseMs = 1100,
+  pulseDirection = "resolve",
+  collapse = false,
+  shape,
+  className,
+}: SignalFieldProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  /* inline functions would rebind the effect every render; the engine
+     reads them through this ref, refreshed before each paint */
+  const lookRef = useRef({ color, quiet, shape });
+
+  useEffect(() => {
+    const el = canvasRef.current;
+    if (!el) return;
+    const ctx0 = el.getContext("2d");
+    if (!ctx0) return;
+    const canvas = el;
+    const ctx = ctx0;
+    lookRef.current = { color, quiet, shape };
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const coarse = window.matchMedia("(pointer: coarse)");
+
+    let width = 1;
+    let height = 1;
+    let cols = 1;
+    let rows = 1;
+    let step = cell;
+    let dpr = 1;
+    let sprite: HTMLCanvasElement | null = null;
+    let lastPaint = new Int32Array(1);
+    const pointerCell = { x: -9999, y: -9999 };
+    let inView = false;
+    let raf = 0;
+    const clockStart = performance.now();
+    const arriveStart = performance.now();
+    let pulseStart = -1;
+    let lastPulseKey: number | string | null = null;
+    let pulseOpen = false;
+
+    function buildSprites(): void {
+      sprite = document.createElement("canvas");
+      const size = Math.ceil(step * dpr);
+      sprite.width = size * glyphs.length;
+      sprite.height = size * BANDS;
+      const sctx = sprite.getContext("2d");
+      if (!sctx) return;
+      sctx.font = `${Math.round(size * 0.94)}px ui-monospace, "SF Mono", "Cascadia Mono", Consolas, "Liberation Mono", Menlo, monospace`;
+      sctx.textAlign = "center";
+      sctx.textBaseline = "middle";
+      for (let g = 0; g < glyphs.length; g++) {
+        for (let b = 0; b < BANDS; b++) {
+          const ink = lookRef.current.color(b / (BANDS - 1));
+          if (ink == null) continue;
+          sctx.fillStyle = ink;
+          sctx.fillText(
+            glyphs.charAt(g),
+            size * g + size / 2,
+            size * b + size * 0.55,
+          );
+        }
+      }
+    }
+
+    function measure(): void {
+      const box = canvas.getBoundingClientRect();
+      width = Math.max(1, Math.round(box.width));
+      height = Math.max(1, Math.round(box.height));
+      dpr = Math.min(window.devicePixelRatio || 1, width < 760 ? 1.5 : 2);
+      step = width < 760 ? Math.max(cell, 16) : cell;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      cols = Math.ceil(width / step) + 1;
+      rows = Math.ceil(height / step) + 1;
+      lastPaint = new Int32Array(cols * rows).fill(-1);
+      buildSprites();
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      paint(performance.now(), true);
+    }
+
+    /** The field value at a cell centre, before envelopes. Order matters:
+        noise, ambient re-tuning, quiet suppression, pointer, resolve —
+        so quiet zones win over every liveliness source. */
+    function field(
+      x: number,
+      y: number,
+      clock: number,
+      resolve: number,
+    ): number {
+      let v =
+        lattice((x / step) * 0.055, (y / step) * 0.055, clock, seed) * 0.62 +
+        lattice((x / step) * 0.19, (y / step) * 0.19, clock * 1.6, seed + 7) *
+          0.33;
+      /* contrast: a thresholded field reads as sampled material —
+           structure with quiet pockets — instead of uniform mush */
+      v = (v - 0.42) * 2.1;
+      if (!reduced.matches && ambient > 0) {
+        if (
+          hash3(Math.floor(x / step), Math.floor(y / step), Math.floor(clock * 3), seed + 31) <
+          0.05
+        ) {
+          v = Math.min(1, v + 0.2);
+        }
+      }
+      const zones = lookRef.current.quiet;
+      if (zones) {
+        for (const q of zones) {
+          const dx = Math.max(0, Math.abs(x / width - (q.x + q.w / 2)) - q.w / 2);
+          const dy = Math.max(0, Math.abs(y / height - (q.y + q.h / 2)) - q.h / 2);
+          const feather = q.feather ?? 0.04;
+          /* full suppression inside the zone, a short dissolve beyond it —
+             nothing reaches further, so neighbouring compositions survive */
+          const hold = 1 - smooth(Math.min(1, Math.hypot(dx, dy) / feather));
+          v *= 1 - (q.falloff ?? 1) * hold;
+        }
+      }
+      if (pointerRadius > 0 && pointerCell.x > -9000) {
+        const d = Math.hypot(pointerCell.x - x, pointerCell.y - y);
+        if (d < pointerRadius * step) {
+          v -= smooth(1 - d / (pointerRadius * step)) * 0.92;
+        }
+      }
+      v *= 0.5 + 0.5 * resolve;
+      v = v < 0 ? 0 : v > 1 ? 1 : v;
+      const shapeFn = lookRef.current.shape;
+      if (shapeFn) v = Math.max(0, Math.min(1, shapeFn(v, x / width, y / height)));
+      return v;
+    }
+
+    function collapseProgress(): number {
+      if (!collapse) return 0;
+      const cover = canvas.closest(".xp-cover");
+      if (!cover) return 0;
+      const box = cover.getBoundingClientRect();
+      return Math.max(0, Math.min(1, -box.top / (box.height * 0.85)));
+    }
+
+    function paint(now: number, force = false): void {
+      if (!sprite) return;
+      /* a changed pulse key opens the material sweep; the effect also
+         rebinds on the same change, so this only guards idle replays */
+      if (pulseKey != null && pulseKey !== lastPulseKey) {
+        pulseOpen = true;
+        pulseStart = now;
+        lastPulseKey = pulseKey;
+      }
+      const clock = (now - clockStart) / 24000 + Math.floor(seed * 13);
+      const arrive = reduced.matches
+        ? 1
+        : smooth(Math.min(1, (now - arriveStart) / 1500));
+      const collapseP = smooth(collapseProgress());
+      /* the collapse is felt, not just scrolled: the field gives out
+         while the cover is still half on screen */
+      const resolve =
+        arrive * Math.max(0, 1 - collapseP * 2.2);
+      const densityScale = width < 760 ? 0.68 : 1;
+
+      let pulseP = 1;
+      if (pulseOpen) {
+        pulseP = Math.min(1, (now - pulseStart) / pulseMs);
+      }
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const index = r * cols + c;
+          const x = c * step + step / 2;
+          const y = r * step + step / 2;
+          if (collapse && r < rows * collapseP * 1.12) {
+            if (lastPaint[index] !== -1) {
+              ctx.clearRect(c * step, r * step, step, step);
+              lastPaint[index] = -1;
+            }
+            continue;
+          }
+          let v = field(x, y, clock, resolve) * densityScale;
+          let alpha = 1;
+          if (pulseOpen) {
+            if (pulseP >= 1) {
+              alpha = 0;
+            } else {
+              alpha = pulseDirection === "disperse"
+                ? smooth(Math.min(1, pulseP * 3.2)) *
+                  (1 - smooth(Math.max(0, (pulseP - 0.4) / 0.6)))
+                : smooth(Math.min(1, pulseP * 1.5)) *
+                  (1 - smooth(Math.max(0, (pulseP - 0.55) / 0.45)));
+              /* the sweep carries its own density so the material reads
+                 even over a quiet base field */
+              v = Math.max(
+                v * (0.35 + 0.65 * alpha),
+                (0.3 + 0.42 * hash3(c, r, 9, seed)) * alpha,
+              );
+              if (pulseDirection === "disperse") {
+                v *= 1 - pulseP * 0.3;
+              }
+            }
+          }
+          if (v <= 0.05 || alpha <= 0.002) {
+            if (lastPaint[index] !== -1) {
+              ctx.clearRect(c * step, r * step, step, step);
+              lastPaint[index] = -1;
+            }
+            continue;
+          }
+          const band = Math.min(BANDS - 1, Math.floor(v * BANDS));
+          const glyph = Math.min(glyphs.length - 1, Math.floor(v * glyphs.length));
+          const key = glyph * BANDS + band;
+          if (!force && lastPaint[index] === key) continue;
+          lastPaint[index] = key;
+          const sw = sprite.width / glyphs.length;
+          const sh = sprite.height / BANDS;
+          ctx.drawImage(
+            sprite,
+            glyph * sw,
+            band * sh,
+            sw,
+            sh,
+            c * step,
+            r * step,
+            step,
+            step,
+          );
+        }
+      }
+
+      if (pulseOpen && pulseP >= 1) {
+        pulseOpen = false;
+        lastPulseKey = pulseKey;
+      }
+    }
+
+    function active(): boolean {
+      return (
+        !reduced.matches &&
+        inView &&
+        !document.hidden &&
+        (ambient > 0 || pulseOpen || collapse)
+      );
+    }
+
+    const tick = (now: number): void => {
+      raf = 0;
+      paint(now);
+      if (active()) raf = window.requestAnimationFrame(tick);
+    };
+
+    const schedule = (): void => {
+      if (raf || !inView || document.hidden || reduced.matches) return;
+      raf = window.requestAnimationFrame(tick);
+    };
+
+    const stop = (): void => {
+      if (raf) {
+        window.cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+
+    const io = new IntersectionObserver((entries) => {
+      inView = entries.some((entry) => entry.isIntersecting);
+      if (inView) {
+        measure();
+        schedule();
+      } else stop();
+    });
+    io.observe(canvas);
+
+    const onVisibility = (): void => {
+      if (document.hidden) stop();
+      else schedule();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    const onMove = (event: PointerEvent): void => {
+      if (event.pointerType === "touch" || pointerRadius <= 0 || coarse.matches)
+        return;
+      const box = canvas.getBoundingClientRect();
+      pointerCell.x = event.clientX - box.left;
+      pointerCell.y = event.clientY - box.top;
+      schedule();
+    };
+    const onOut = (): void => {
+      pointerCell.x = -9999;
+      pointerCell.y = -9999;
+      schedule();
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerout", onOut);
+
+    const onResize = (): void => {
+      measure();
+      schedule();
+    };
+    window.addEventListener("resize", onResize);
+    /* the canvas box can change without a window resize — styles landing
+       late, layout settling — so watch the element itself */
+    const ro =
+      "ResizeObserver" in window ? new ResizeObserver(onResize) : null;
+    if (ro) ro.observe(canvas);
+
+    const onMotionChange = (): void => {
+      measure();
+      schedule();
+    };
+    reduced.addEventListener("change", onMotionChange);
+
+    measure();
+    schedule();
+
+    return () => {
+      stop();
+      io.disconnect();
+      if (ro) ro.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerout", onOut);
+      window.removeEventListener("resize", onResize);
+      reduced.removeEventListener("change", onMotionChange);
+    };
+    /* colour/quiet reach the engine through lookRef, refreshed above, so
+       inline prop functions never rebind the field mid-paint */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [glyphs, cell, seed, ambient, pointerRadius, collapse, pulseKey, pulseMs, pulseDirection]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className={className}
+      aria-hidden="true"
+      role="presentation"
+    />
+  );
+}
