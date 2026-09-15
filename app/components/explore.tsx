@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { caseCtaLabels, projects, type Project } from "../data/portfolio";
 import { ROOM_WORLDS, rgb } from "../data/room-worlds";
+import { SignalField } from "./signal-field";
 import { modeHref } from "./mode";
 import { AtlasRule } from "./atlas-rule";
 import { DayneroNumber } from "./daynero-number";
@@ -252,6 +253,31 @@ export function Explore() {
         data-explore-cover
         aria-labelledby="explore-title"
       >
+        {/* The identity is the resolved anchor; the surrounding
+            computational field is still forming — density glyphs settle
+            as the folio arrives, answer the pointer softly, and disperse
+            as the cover scrolls into the field below. */}
+        <SignalField
+          className="xp-cover-field"
+          glyphs="·:+*#"
+          cell={13}
+          seed={11}
+          ambient={0.3}
+          pointerRadius={9}
+          collapse
+          quiet={[
+            { x: 0, y: 0, w: 1, h: 0.58, falloff: 0.97 },
+            { x: 0, y: 0.58, w: 0.62, h: 0.24, falloff: 0.9 },
+            { x: 0, y: 0.8, w: 1, h: 0.075, falloff: 0.95 },
+            { x: 0, y: 0.97, w: 1, h: 0.04, falloff: 1 },
+          ]}
+          shape={(v, _nx, ny) => v * (0.3 + 1.9 * Math.pow(ny, 1.5))}
+          color={(t) =>
+            t >= 0.93
+              ? "rgba(58, 31, 240, 0.34)"
+              : `rgba(27, 33, 38, ${0.07 + 0.26 * t})`
+          }
+        />
         <div className="xp-cover-pin">
           <div className="xp-cover-head">
             <p>Product / Interaction Designer · Bengaluru</p>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { SignalField } from "./signal-field";
 
 /**
  * PENTIMENTO — the person takes the page back.
@@ -9,10 +10,21 @@ import { useEffect, useState } from "react";
  * original stays legible above, struck through and labelled as withdrawn,
  * while the example reply rises below as the leading voice. Reversible,
  * because a correction should never be a trap either.
+ *
+ * The material grammar: when the machine reading's authority is
+ * contested it is shown for a moment as unstable matter — on STRIKE the
+ * sentence fragments and settles into its withdrawn state; when the
+ * person puts it back the material recomposes. STAND (no interaction)
+ * stays crisp; the field exists only for the transition.
  */
+
+type Pulse = { key: number; direction: "disperse" | "resolve" } | null;
 
 export function PentimentoStrike() {
   const [struck, setStruck] = useState(false);
+  const [pulse, setPulse] = useState<Pulse>(null);
+  const transitionMs = 950;
+  const pulseRef = useRef(0);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -25,24 +37,51 @@ export function PentimentoStrike() {
 
     return () => {
       window.cancelAnimationFrame(frame);
+      window.clearTimeout(pulseRef.current);
     };
   }, []);
 
   function strike() {
-    setStruck((value) => {
-      const next = !value;
-      try {
-        sessionStorage.setItem("xp-pent-struck", next ? "1" : "0");
-      } catch {
-        /* private mode */
-      }
-      return next;
+    const next = !struck;
+    setStruck(next);
+    try {
+      sessionStorage.setItem("xp-pent-struck", next ? "1" : "0");
+    } catch {
+      /* private mode */
+    }
+    /* the material is the transition, not the state: under reduced
+       motion the correction settles instantly and no field plays */
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+    window.clearTimeout(pulseRef.current);
+    setPulse({
+      key: Date.now(),
+      direction: next ? "disperse" : "resolve",
     });
+    pulseRef.current = window.setTimeout(
+      () => setPulse(null),
+      transitionMs + 80,
+    );
   }
 
   return (
     <figure className="xp-room-shot xp-pent" data-struck={struck ? "true" : undefined}>
       <div className="xp-pent-stack">
+        {pulse ? (
+          <SignalField
+            className="xp-pent-field"
+            glyphs="·:+*#"
+            cell={11}
+            seed={pulse.direction === "disperse" ? 41 : 57}
+            ambient={0}
+            pointerRadius={0}
+            pulseKey={pulse.key}
+            pulseMs={transitionMs}
+            pulseDirection={pulse.direction}
+            color={(t) => `rgba(125, 38, 87, ${0.2 + 0.55 * t})`}
+          />
+        ) : null}
         <p className="xp-pent-machine">
           <span className="xp-pent-tag">
             {struck ? "machine reading · withdrawn" : "machine reading"}
