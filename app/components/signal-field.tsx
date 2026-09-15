@@ -34,6 +34,28 @@ type Quiet = {
   feather?: number;
 };
 
+/** Project pigments reach the engine as plain hex values. */
+export function hexToRgba(hex: string, alpha: number): string {
+  const raw = hex.replace("#", "");
+  const full =
+    raw.length === 3
+      ? raw
+          .split("")
+          .map((ch) => ch + ch)
+          .join("")
+      : raw;
+  const n = parseInt(full, 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+}
+
+/** The ordered 4×4 dither matrix, normalised. */
+const BAYER = [
+  [0, 8, 2, 10],
+  [12, 4, 14, 6],
+  [3, 11, 1, 9],
+  [15, 7, 13, 5],
+].map((row) => row.map((value) => (value + 0.5) / 16));
+
 export type SignalFieldProps = {
   glyphs?: string;
   color?: (t: number) => string | null;
@@ -44,6 +66,14 @@ export type SignalFieldProps = {
   /** Compositional shaping over the clamped field, in normalised
       coordinates — e.g. a vertical resolve ramp toward one edge. */
   shape?: (v: number, nx: number, ny: number) => number;
+  /** Domain advection: how far the noise field bends its own sampling
+      coordinates — streamlines and interference, felt not seen. */
+  flow?: number;
+  /** A slow diagonal signal band that lifts density as it passes. */
+  wavefront?: number;
+  /** "glyph" resolves the field into characters; "dither" into
+      Bayer-thresholded halftone dots. */
+  mode?: "glyph" | "dither";
   pointerRadius?: number;
   pulseKey?: number | string | null;
   pulseMs?: number;
@@ -94,12 +124,15 @@ export function SignalField({
   seed = 1,
   ambient = 0.25,
   quiet,
+  shape,
+  flow = 0,
+  wavefront = 0,
+  mode = "glyph",
   pointerRadius = 9,
   pulseKey = null,
   pulseMs = 1100,
   pulseDirection = "resolve",
   collapse = false,
-  shape,
   className,
 }: SignalFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -179,20 +212,32 @@ export function SignalField({
     }
 
     /** The field value at a cell centre, before envelopes. Order matters:
-        noise, ambient re-tuning, quiet suppression, pointer, resolve —
-        so quiet zones win over every liveliness source. */
+        flow-bent noise, ambient re-tuning, quiet suppression, pointer,
+        wavefront, resolve — so quiet zones win over every liveliness
+        source. */
     function field(
       x: number,
       y: number,
       clock: number,
       resolve: number,
     ): number {
+      /* domain bend: sample the noise through a slow curl of itself —
+         the pattern gains streamlines without any visible displacement
+         of the grid */
+      let gx = (x / step) * 0.055;
+      let gy = (y / step) * 0.055;
+      if (flow > 0) {
+        const wx = lattice(gx * 0.9 + 11, gy * 0.9, clock * 0.5, seed + 19);
+        const wy = lattice(gx * 0.9, gy * 0.9 + 7, clock * 0.5, seed + 23);
+        gx += (wx - 0.5) * flow;
+        gy += (wy - 0.5) * flow;
+      }
       let v =
-        lattice((x / step) * 0.055, (y / step) * 0.055, clock, seed) * 0.62 +
+        lattice(gx, gy, clock, seed) * 0.62 +
         lattice((x / step) * 0.19, (y / step) * 0.19, clock * 1.6, seed + 7) *
           0.33;
       /* contrast: a thresholded field reads as sampled material —
-           structure with quiet pockets — instead of uniform mush */
+         structure with quiet pockets — instead of uniform mush */
       v = (v - 0.42) * 2.1;
       if (!reduced.matches && ambient > 0) {
         if (
@@ -219,6 +264,13 @@ export function SignalField({
         if (d < pointerRadius * step) {
           v -= smooth(1 - d / (pointerRadius * step)) * 0.92;
         }
+      }
+      if (wavefront > 0 && !reduced.matches) {
+        /* one slow diagonal band drifts through, lifting density as it
+           passes — the field has weather */
+        const s = (x / width + y / height) * 1.2;
+        const wave = Math.sin(s * 6.2 - clock * 22 - seed);
+        v += Math.max(0, wave) * wavefront;
       }
       v *= 0.5 + 0.5 * resolve;
       v = v < 0 ? 0 : v > 1 ? 1 : v;
@@ -302,6 +354,27 @@ export function SignalField({
             continue;
           }
           const band = Math.min(BANDS - 1, Math.floor(v * BANDS));
+          if (mode === "dither") {
+            /* ordered halftone: the Bayer matrix decides on/off, the
+               dot carries the weight — sampled material, not glyphs */
+            const on = v > BAYER[r & 3][c & 3];
+            const key = on ? Math.min(11, 1 + Math.floor(v * 11)) : 0;
+            if (!force && lastPaint[index] === key) continue;
+            lastPaint[index] = key;
+            if (!on) {
+              ctx.clearRect(c * step, r * step, step, step);
+              continue;
+            }
+            const size = step * (0.18 + 0.4 * v);
+            ctx.fillStyle = lookRef.current.color(Math.min(1, 0.35 + v * 0.65)) ?? "transparent";
+            ctx.fillRect(
+              x - size / 2,
+              y - size / 2,
+              size,
+              size,
+            );
+            continue;
+          }
           const glyph = Math.min(glyphs.length - 1, Math.floor(v * glyphs.length));
           const key = glyph * BANDS + band;
           if (!force && lastPaint[index] === key) continue;
@@ -419,7 +492,7 @@ export function SignalField({
     /* colour/quiet reach the engine through lookRef, refreshed above, so
        inline prop functions never rebind the field mid-paint */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [glyphs, cell, seed, ambient, pointerRadius, collapse, pulseKey, pulseMs, pulseDirection]);
+  }, [glyphs, cell, seed, ambient, pointerRadius, collapse, pulseKey, pulseMs, pulseDirection, flow, wavefront, mode]);
 
   return (
     <canvas

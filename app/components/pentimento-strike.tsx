@@ -72,14 +72,16 @@ export function PentimentoStrike() {
           <SignalField
             className="xp-pent-field"
             glyphs="·:+*#"
-            cell={11}
+            cell={10}
             seed={pulse.direction === "disperse" ? 41 : 57}
             ambient={0}
             pointerRadius={0}
             pulseKey={pulse.key}
             pulseMs={transitionMs}
             pulseDirection={pulse.direction}
-            color={(t) => `rgba(125, 38, 87, ${0.2 + 0.55 * t})`}
+            /* the fragments drift with the same field the hero uses */
+            flow={pulse.direction === "disperse" ? 2.4 : 1.4}
+            color={(t) => `rgba(125, 38, 87, ${0.22 + 0.55 * t})`}
           />
         ) : null}
         <p className="xp-pent-machine">

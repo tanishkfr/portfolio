@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type CSSProperties, type MouseEvent } from "react";
+import { SignalField } from "./signal-field";
 
 /**
  * DESIGN OR DISASTER — point before you pronounce.
@@ -80,6 +81,29 @@ export function DisasterMark({ src, alt }: { src: string; alt: string }) {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={src} alt={alt} decoding="async" />
+
+        {/* The reading material: when the visitor marks a place, that
+            region passes through the sampler — a brief ordered dither
+            around the mark, resolving into the explicit mark. Evidence
+            before judgment, shown as matter. */}
+        {mark ? (
+          <SignalField
+            className="xp-dod-field"
+            mode="dither"
+            cell={9}
+            seed={61}
+            ambient={0}
+            pointerRadius={0}
+            pulseKey={`${mark.x | 0}:${mark.y | 0}`}
+            pulseMs={820}
+            pulseDirection="disperse"
+            color={(t) => `rgba(239, 74, 53, ${0.16 + 0.44 * t})`}
+            shape={(v, nx, ny) => {
+              const d = Math.hypot(nx - mark.x / 100, ny - mark.y / 100);
+              return v * 0.25 + Math.exp(-Math.pow(d * 6.5, 2)) * 0.85;
+            }}
+          />
+        ) : null}
 
         {mark ? (
           <>

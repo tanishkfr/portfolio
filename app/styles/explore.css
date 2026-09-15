@@ -785,7 +785,7 @@
 
 .xp-piece-plain {
   max-width: 34rem;
-  margin-top: 1.05rem;
+  margin-top: 1.4rem;
   font-size: var(--step-0);
   line-height: 1.5;
   color: color-mix(in srgb, var(--room-ink) 74%, transparent);
@@ -793,7 +793,7 @@
 
 .xp-piece-thesis {
   max-width: 34ch;
-  margin-top: 1.15rem;
+  margin-top: 1.7rem;
   font-family: var(--display);
   font-size: var(--step-1);
   line-height: 1.4;
@@ -804,7 +804,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem 1.35rem;
-  margin-top: clamp(1.9rem, 4vh, 3rem);
+  margin-top: clamp(2.6rem, 5vh, 3.8rem);
 }
 
 .xp-piece-actions a {
@@ -838,6 +838,18 @@
 .xp-piece-actions a:first-child:hover .xp-cta-arrow,
 .xp-piece-actions a:first-child:focus-visible .xp-cta-arrow {
   transform: translateX(3px);
+}
+
+/* the arrival material: a pigment strip along the sheet's top edge
+   that resolves as the sheet takes over the drawer, then is gone */
+.xp-piece-field {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(4.5rem, 9vh, 7.5rem);
+  z-index: 4;
+  pointer-events: none;
 }
 
 .xp-piece-stage {
@@ -958,6 +970,17 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+/* the sampling sweep: an ordered-dither pocket around the visitor's
+   mark — the region is read, then the mark itself resolves */
+.xp-dod-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
 }
 
 /* The tint is gone: nothing should reduce the legibility of the evidence
@@ -1439,6 +1462,17 @@
   font-size: clamp(1.5rem, 2.6vw, 2.5rem);
   letter-spacing: -0.025em;
   line-height: 1.1;
+  /* the rule passes through the sampler when it is under pressure */
+  position: relative;
+}
+
+.xp-atlas-field {
+  position: absolute;
+  inset: -0.5rem -1rem;
+  width: calc(100% + 2rem);
+  height: calc(100% + 1rem);
+  z-index: 3;
+  pointer-events: none;
 }
 
 .xp-atlas-note {

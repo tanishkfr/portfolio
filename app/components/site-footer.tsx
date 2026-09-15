@@ -35,15 +35,17 @@ export function SiteFooter({
         <SignalField
           className="footer-field"
           glyphs="·:+*#"
-          cell={14}
+          cell={13}
           seed={77}
-          ambient={0.55}
-          pointerRadius={6}
+          ambient={0.5}
+          flow={2}
+          wavefront={0.12}
+          pointerRadius={7}
           quiet={[{ x: 0.68, y: 0.12, w: 0.32, h: 0.66, falloff: 0.9, feather: 0.02 }]}
           color={(t) =>
             t >= 0.94
-              ? "rgba(58, 31, 240, 0.3)"
-              : `rgba(27, 33, 38, ${0.06 + 0.2 * t})`
+              ? "rgba(58, 31, 240, 0.32)"
+              : `rgba(27, 33, 38, ${0.07 + 0.22 * t})`
           }
         />
         <span className="footer-name" aria-hidden="true">

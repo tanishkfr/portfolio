@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { SignalField } from "./signal-field";
 
 /**
  * ATLAS — an authored rule revision.
@@ -35,8 +36,22 @@ const STRETCH = ["88%", "88%", "97%", "105%"];
 
 export function AtlasRule() {
   const [step, setStep] = useState(0);
+  const [pulse, setPulse] = useState<{ key: number; dir: "disperse" | "resolve" } | null>(null);
+  const timer = useRef(0);
   const atEnd = step >= EVOLUTION.length - 1;
   const current = EVOLUTION[step];
+
+  function advance(): void {
+    const next = atEnd ? 0 : Math.min(step + 1, EVOLUTION.length - 1);
+    setStep(next);
+    if (next === step) return;
+    /* the rule under pressure: one short destabilise before the new
+       wording settles — under reduced motion it just changes */
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setPulse({ key: Date.now(), dir: "disperse" });
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setPulse(null), 640);
+  }
 
   return (
     <figure className="xp-room-shot xp-atlas">
@@ -48,6 +63,21 @@ export function AtlasRule() {
         aria-live="polite"
         style={{ fontStretch: STRETCH[step] }}
       >
+        {pulse ? (
+          <SignalField
+            className="xp-atlas-field"
+            glyphs="·:+*#"
+            cell={10}
+            seed={83 + step}
+            ambient={0}
+            pointerRadius={0}
+            pulseKey={pulse.key}
+            pulseMs={560}
+            pulseDirection={pulse.dir}
+            flow={1.6}
+            color={(t) => `rgba(18, 97, 90, ${0.18 + 0.48 * t})`}
+          />
+        ) : null}
         {current.rule}
       </p>
 
@@ -73,11 +103,7 @@ export function AtlasRule() {
       <button
         type="button"
         className="xp-atlas-btn"
-        onClick={() =>
-          setStep((value) =>
-            atEnd ? 0 : Math.min(value + 1, EVOLUTION.length - 1),
-          )
-        }
+        onClick={advance}
       >
         {atEnd ? "Start over" : "Show the next case →"}
       </button>

@@ -10,8 +10,8 @@ import {
 import Link from "next/link";
 import { caseCtaLabels, projects, type Project } from "../data/portfolio";
 import { ROOM_WORLDS, rgb } from "../data/room-worlds";
-import { SignalField } from "./signal-field";
 import { modeHref } from "./mode";
+import { hexToRgba, SignalField } from "./signal-field";
 import { AtlasRule } from "./atlas-rule";
 import { DayneroNumber } from "./daynero-number";
 import { DisasterMark } from "./disaster-mark";
@@ -260,10 +260,12 @@ export function Explore() {
         <SignalField
           className="xp-cover-field"
           glyphs="·:+*#"
-          cell={13}
+          cell={12}
           seed={11}
-          ambient={0.3}
-          pointerRadius={9}
+          ambient={0.4}
+          flow={1.8}
+          wavefront={0.07}
+          pointerRadius={10}
           collapse
           quiet={[
             { x: 0, y: 0, w: 1, h: 0.58, falloff: 0.97 },
@@ -271,11 +273,17 @@ export function Explore() {
             { x: 0, y: 0.8, w: 1, h: 0.075, falloff: 0.95 },
             { x: 0, y: 0.97, w: 1, h: 0.04, falloff: 1 },
           ]}
-          shape={(v, _nx, ny) => v * (0.3 + 1.9 * Math.pow(ny, 1.5))}
+          shape={(v, nx, ny) =>
+            /* the edges carry the matter: it drifts inward from the
+               sides and resolves downward toward the projects */
+            v *
+            (0.62 + 0.62 * Math.abs(nx - 0.5) * 2) *
+            (0.3 + 1.6 * Math.pow(ny, 1.4))
+          }
           color={(t) =>
             t >= 0.93
-              ? "rgba(58, 31, 240, 0.34)"
-              : `rgba(27, 33, 38, ${0.07 + 0.26 * t})`
+              ? "rgba(58, 31, 240, 0.36)"
+              : `rgba(27, 33, 38, ${0.08 + 0.28 * t})`
           }
         />
         <div className="xp-cover-pin">
@@ -378,6 +386,25 @@ export function Explore() {
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <span>{direction.verb}</span>
                   </div>
+
+                  {/* Connective tissue between stable states: as this
+                      sheet takes over the drawer, its top edge resolves
+                      out of its own pigment — the material moment
+                      between one project and the next. */}
+                  {active === index ? (
+                    <SignalField
+                      className="xp-piece-field"
+                      glyphs="·:+*#"
+                      cell={11}
+                      seed={29 + index * 5}
+                      ambient={0}
+                      pointerRadius={0}
+                      pulseKey={`arrival-${index}`}
+                      pulseMs={340}
+                      pulseDirection="resolve"
+                      color={(t) => hexToRgba(world.accentInk, 0.12 + 0.4 * t)}
+                    />
+                  ) : null}
 
                   <div className="xp-piece-copy">
                     <p className="xp-piece-meta">
