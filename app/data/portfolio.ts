@@ -85,8 +85,6 @@ export type Project = {
   /** One plain-language line: what the project actually is, for a
       first-time visitor. Sits under the title; the thesis argues above it. */
   plain: string;
-  thesis: string;
-  question: string;
   oneLine: string;
   /** The external CTA label — names what opens before the click. */
   liveLabel: string;
@@ -151,9 +149,7 @@ export const projects: Project[] = [
     title: "Design or Disaster",
     form: "Spatial critique archive",
     plain:
-      "A critique archive where you mark the evidence before judging — then compare your verdict with five other readings of the same screen.",    thesis: "Critique becomes accountable when you have to point before you pronounce.",
-    question:
-      "What changes when a critique has to point to evidence before it gives a verdict?",
+      "A critique tool where you mark the evidence on a real screen before you judge it. Your marks sit next to five written readings, so pointing comes before opinions.",
     oneLine:
       "Mark the part of an interface that shaped your judgment, explain it, then compare your reading with five others.",
     status: "Working archive",
@@ -315,10 +311,7 @@ export const projects: Project[] = [
     title: "Pentimento",
     form: "Algorithmic autobiography",
     plain:
-      "An interactive project about giving people the final say over what software writes about them.",
-    thesis: "If software writes about you, your correction must outrank its sentence.",
-    question:
-      "What should happen when software writes a story about someone and they disagree with it?",
+      "An interactive piece about what software writes about people — and who gets the last word. The person's correction outranks the machine's sentence: strike it, rewrite it, or let it stand.",
     oneLine:
       "Each machine-written claim shows its evidence. The person can accept it, rewrite it, or strike it, and their version leads the final page.",
     status: "Working artifact · participant study pending",
@@ -482,10 +475,7 @@ export const projects: Project[] = [
     title: "Invisible Interfaces",
     form: "Interactive essay",
     plain:
-      "An interactive research project about interfaces that keep working while you're away — leave the tab, come back, and read the receipt.",
-    thesis: "When work leaves the screen, accountability has to return.",
-    question:
-      "What should an interface show before someone delegates work and after they return?",
+      "A research project about the work interfaces keep doing when nobody is watching. Leave the tab and it keeps working; come back and it hands you a receipt.",
     oneLine:
       "A staged restoration runs only while the tab is hidden, then shows what changed, what did not, and how to discard the result.",
     status: "Complete v1.0 exhibition",
@@ -648,10 +638,7 @@ export const projects: Project[] = [
     title: "Atlas",
     form: "Reasoning instrument",
     plain:
-      "A tool for testing whether an interface rule survives being carried into very different situations.",
-    thesis: "A design rule is only as useful as the unlike cases that are allowed to change it.",
-    question:
-      "How does one rule change across a lightbox, a financial transfer, and switch access?",
+      "A tool for stress-testing interface rules against cases very unlike the one they were written for. I turned each rule change into a visible lineage, so a rule shows what shaped it.",
     oneLine:
       "Write a provisional rule, test it against three unlike cases, and keep every hold, refinement, and fracture.",
     status: "Working instrument · evidence audit open",
@@ -851,10 +838,7 @@ export const projects: Project[] = [
     title: "Fluxion Studios",
     form: "Studio website · freelance practice",
     plain:
-      "The public website of the two-person studio I co-founded — designed, written, and built in-house.",
-    thesis: "Fluxion's own site had to show the standard we would bring to a client site.",
-    question:
-      "Could our studio site explain what we build, show how we work, and take a real enquiry?",
+      "The website for the two-person studio I co-founded, designed and built in-house. It had to meet the standard we sell clients — every section ships from one system.",
     oneLine:
       "Fluxion is the two-person web studio I co-founded. I designed and built the public site, including its motion and enquiry flow.",
     status: "Live studio site",
@@ -1003,10 +987,7 @@ export const projects: Project[] = [
     title: "Daynero",
     form: "AI-native financial product",
     plain:
-      "A personal-finance product for first-paycheck earners, built around what is safe to spend today.",
-    thesis: "A money product for first-paycheck earners who need to know what they can spend today.",
-    question:
-      "How can a first-paycheck earner see what is safe to spend today?",
+      "A personal-finance product that turns a month of spending into one safe daily amount. I designed and built it around first-paycheck earners — the number is the interface.",
     oneLine:
       "A personal-finance app for first-paycheck earners, centred on what is safe to spend today and why. The full case study is coming soon.",
     status: "Preview · pre-MVP",

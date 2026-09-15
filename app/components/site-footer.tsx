@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { modeHref } from "./mode";
-import { SignalField } from "./signal-field";
+import { SignalField, type Quiet } from "./signal-field";
 
 /**
  * The global footer is the folio resolving: the name returns in its
@@ -14,6 +13,20 @@ import { SignalField } from "./signal-field";
  * after Explore's narrative close: the close states the argument, the
  * footer carries every address and destination, and the page ends once.
  */
+
+/* The footer's quiet zones, measured against the plate at width: the
+   compressed name, the note, the email row, the links row and the
+   record line stay crisp; the signal holds the open top band, the
+   centre gap and the lower-right corner. */
+const FOOTER_QUIET: Quiet[] = [
+  { x: 0.02, y: 0.16, w: 0.24, h: 0.26, falloff: 0.95, feather: 0.035 },
+  { x: 0.76, y: 0.28, w: 0.24, h: 0.18, falloff: 0.95, feather: 0.03 },
+  /* the email, links and record text all sit left; their boxes' right
+     halves stay open for the signal */
+  { x: 0, y: 0.44, w: 0.56, h: 0.22, falloff: 0.96, feather: 0.03 },
+  { x: 0, y: 0.7, w: 0.56, h: 0.28, falloff: 0.97, feather: 0.03 },
+];
+
 export function SiteFooter({
   year,
   force = false,
@@ -27,25 +40,68 @@ export function SiteFooter({
 
   return (
     <footer className="site-footer">
+      {/* The cover's material, returned at the other end of the site.
+          The same hierarchy: sparse ultramarine pixel signal dispersing
+          toward the boundaries, a faint glyph texture beneath it, and
+          every real destination crisp over the quiet zones. The hero
+          assembled the signal; this is it letting go. */}
+      <SignalField
+        className="footer-field"
+        glyphs="·:+*#"
+        cell={13}
+        seed={77}
+        ambient={0.3}
+        flow={1.6}
+        wavefront={0.07}
+        drift={0.35}
+        pointerRadius={0}
+        tune={[0.48, 1.9]}
+        quiet={FOOTER_QUIET}
+        shape={(v, nx) => v * (0.55 + 0.7 * Math.abs(nx - 0.5) * 2)}
+        color={(t) => `rgba(27, 33, 38, ${0.06 + 0.17 * t})`}
+      />
+      <SignalField
+        className="footer-pixels"
+        mode="pixel"
+        cell={20}
+        seed={83}
+        ambient={0.66}
+        flow={1.2}
+        wavefront={0.09}
+        drift={0.5}
+        pointerRadius={9}
+        tune={[0.4, 2.1]}
+        quiet={FOOTER_QUIET}
+        shape={(v, nx, ny, t) => {
+          /* the closing counterpart of the hero's diagonal: one cluster
+             in the open top-centre gap, one at the mid-right, and the
+             matter dispersing outward along the open bottom edge. The
+             structured elements max-blend over the texture. */
+          const hash = Math.sin(nx * 619.7 + ny * 311.3) * 43758.5453;
+          const grain = 0.7 + 0.55 * (hash - Math.floor(hash));
+          const clusterTC = Math.exp(
+            -Math.pow((nx - 0.5 - 0.03 * Math.sin(t * 0.12)) * 4, 2) -
+              Math.pow((ny - 0.12) * 3.6, 2),
+          );
+          const clusterBR = Math.exp(
+            -Math.pow((nx - 0.85 - 0.03 * Math.sin(t * 0.1 + 3)) * 4, 2) -
+              Math.pow((ny - 0.56) * 3.2, 2),
+          );
+          const leave = Math.exp(
+            -Math.pow((ny - 0.94 - 0.015 * Math.sin(t * 0.09)) * 8, 2) -
+              Math.pow((nx - 0.78) * 3, 2),
+          );
+          const texture = v * 0.8;
+          return Math.max(
+            texture,
+            clusterTC * 0.75 * grain,
+            clusterBR * 0.8 * grain,
+            leave * 0.7 * grain,
+          );
+        }}
+        color={(t) => `rgba(58, 31, 240, ${0.18 + 0.52 * t})`}
+      />
       <div className="footer-mast">
-        {/* The playful corner of the material system: a sparse field
-            that drifts around the compressed name and answers the
-            pointer. It never carries information and only runs while
-            the footer is on screen. */}
-        <SignalField
-          className="footer-field"
-          glyphs="·:+*#"
-          cell={14}
-          seed={77}
-          ambient={0.55}
-          pointerRadius={6}
-          quiet={[{ x: 0.68, y: 0.12, w: 0.32, h: 0.66, falloff: 0.9, feather: 0.02 }]}
-          color={(t) =>
-            t >= 0.94
-              ? "rgba(58, 31, 240, 0.3)"
-              : `rgba(27, 33, 38, ${0.06 + 0.2 * t})`
-          }
-        />
         <span className="footer-name" aria-hidden="true">
           Tanishk
         </span>
@@ -78,8 +134,7 @@ export function SiteFooter({
         <a href="https://github.com/tanishkfr" target="_blank" rel="noreferrer">
           GitHub <span aria-hidden="true">↗</span>
         </a>
-        <Link href={modeHref("full")}>Projects</Link>
-        <Link href={modeHref("review")}>Quick view</Link>
+        <Link href="/#work">Projects</Link>
         <Link href="/about">About</Link>
       </nav>
 

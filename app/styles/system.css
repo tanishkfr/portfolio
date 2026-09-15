@@ -605,29 +605,6 @@ img {
   transform-origin: left;
 }
 
-/* The two readings of Projects, attached to the Projects link: one
-   destination, two ways in. The pair keeps the nav's editorial voice —
-   no pills, no tabs — but with the nav's own breathing room so the two
-   readings are distinct targets, and the active reading holds the
-   underline and the registrar ink. */
-.site-header nav .nav-modes {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 1.1rem;
-  margin-left: 0.4rem;
-  padding-left: 1.4rem;
-  border-left: 1px solid var(--line);
-}
-
-.nav-modes a[data-active="true"] {
-  color: var(--registrar);
-}
-
-.nav-modes a[data-active="true"]::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
 /* The shared arrow acknowledgement: an external action's arrow lifts
    out, no matter which surface renders it — the direction says the
    destination is outside the portfolio. Internal actions keep their
@@ -717,48 +694,6 @@ a[data-external]:focus-visible .xp-cta-arrow {
     padding-block: 0.55rem;
     text-align: center;
   }
-
-  /* The reading control stays in the header on wide screens only: on a
-     phone it would grow the header between readings. The projects'
-     content carries the same cross-links instead. */
-  .site-header nav .nav-modes {
-    display: none;
-  }
-}
-
-/* --- digest and abstract share one tempo: immediate --- */
-
-:root[data-mode="review"] {
-  --beat: 80ms;
-  --move: 140ms;
-  --settle: 180ms;
-}
-
-/* choreography yields in review mode — except the index's figure reveals,
-   which are the one piece of motion the concise read keeps. */
-:root[data-mode="review"] [data-reveal]:not([data-reveal="figure"]):not(.is-revealed) {
-  opacity: 1 !important;
-  transform: none !important;
-  filter: none !important;
-  clip-path: none !important;
-}
-
-:root[data-mode="review"]::view-transition-old(root) {
-  animation-duration: 110ms;
-}
-
-:root[data-mode="review"]::view-transition-new(root) {
-  animation-duration: 150ms;
-}
-
-:root[data-mode="review"]::view-transition-group(*) {
-  animation-duration: 180ms;
-}
-
-/* digest density: the reading sizes hold; the stage shrinks */
-:root[data-mode="review"] {
-  --step-5: clamp(2.4rem, 1.8rem + 2.8vw, 3.9rem);
-  --step-4: clamp(2rem, 1.65rem + 1.7vw, 3rem);
 }
 
 /* ---------- footer ----------

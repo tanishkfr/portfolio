@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageSignal } from "../components/page-signal";
 
 const description = "Contact Tanishk about interaction and product design work.";
 
@@ -20,21 +21,28 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main id="main-content" className="contact-shell contact-letter">
+    <main id="main-content" className="contact-shell">
+      {/* The page signal holds the open right side of the top region;
+          every word of the letter sits in its quiet zone. */}
+      <PageSignal variant="contact" />
       <header className="contact-intro" data-reveal>
-        <h1>If the interaction is hard to explain, show me.</h1>
-        <p>
-          I&apos;m in Bengaluru and open to interaction and product design
-          roles, plus prototyping and research-through-making projects.
+        <h1>Tell me about the interface you&apos;re fighting with.</h1>
+        <p className="contact-body">
+          I&apos;m a product and interaction designer in Bengaluru. I design
+          and build interfaces — product work, working prototypes, and
+          research-through-making.
+        </p>
+        <p className="contact-body">
+          Useful conversations: confusing states, software that decides things
+          on its own, flows nobody can explain, or a question worth building an
+          answer for.
         </p>
         <p className="contact-sign">
           <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com</a>
         </p>
       </header>
 
-      <p className="contact-note">
-        Complex states, software making decisions, or a research question that
-        needs code: those are the problems I like working on.
+      <p className="contact-links">
         <a
           className="contact-social"
           href="https://www.linkedin.com/in/tanishksalagame/"

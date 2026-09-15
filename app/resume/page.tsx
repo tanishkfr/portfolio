@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PrintResume } from "../components/print-resume";
+import { PageSignal } from "../components/page-signal";
 
 const description =
   "Résumé — Tanishk, product and interaction designer in Bengaluru. Experience, selected work, leadership, education and tools.";
@@ -195,6 +196,7 @@ export default function ResumePage() {
   return (
     <main id="main-content" className="resume-shell">
       <header className="resume-intro">
+        <PageSignal variant="resume" />
         <p className="resume-kicker">Résumé · Bengaluru · Available for work</p>
         <h1>Tanishk</h1>
         <p className="resume-lede">
