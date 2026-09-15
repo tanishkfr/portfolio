@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { SpecimenAmbient } from "./specimen";
 
 /**
  * The Fluxion field is the studio's specimen board.
@@ -69,6 +70,10 @@ export function FluxionSpecimen() {
 
   return (
     <figure className="xp-room-shot xp-flux" ref={ref}>
+      {/* The studio's own computational matter: directional flow in the
+          wordmark's red, drifting behind the board — the same field the
+          Quick view wordmark carries. */}
+      <SpecimenAmbient slug="fluxion-studios" seed={61} />
       <div className="xp-flux-head">
         <div className="xp-flux-brand">
           <Image

@@ -38,8 +38,10 @@
 /* The computational material around the identity: a signal field of
    density glyphs, resolved by arrival, kept clear over the name and
    the claim, dispersed by scroll. It sits under every cover element
-   and never takes pointers — the pointer is felt, not caught. */
-.xp-cover-field {
+   and never takes pointers — the pointer is felt, not caught. Under
+   the glyphs, a halftone atmosphere drifts through the same rails. */
+.xp-cover-field,
+.xp-cover-atmos {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -710,6 +712,7 @@
   top: 2rem;
   bottom: 2rem;
   left: var(--page-gutter);
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -849,6 +852,55 @@
   right: 0;
   height: clamp(4.5rem, 9vh, 7.5rem);
   z-index: 4;
+  pointer-events: none;
+}
+
+/* ---------- the shared specimen material ----------
+   One family, six behaviours: every project figure carries a persistent
+   ambient glyph field in its own pigment (SpecimenAmbient) and a signal
+   rail along its reading edge (SpecimenRail). Explore runs the full
+   register; the Quick view index runs the same components lighter. The
+   fields are decorative layers between a figure's ground and its
+   content — never above the words. */
+.specimen-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.xp-room-shot
+  > *:not(.specimen-field):not(.xp-away-field):not(.xp-away-example) {
+  position: relative;
+  z-index: 1;
+}
+
+.specimen-rail {
+  position: relative;
+  height: clamp(0.85rem, 1.6vw, 1.15rem);
+  overflow: hidden;
+}
+
+/* Explore's register: the rail runs down the sheet's spine margin,
+   full height, under the vertical annotation */
+.specimen-rail--edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(var(--page-gutter) + 3.4rem);
+  height: auto;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.specimen-rail-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 
@@ -1877,6 +1929,11 @@
 @media (max-width: 64rem) {
   .xp-piece {
     grid-template-columns: minmax(12rem, 0.72fr) minmax(23rem, 1.28fr);
+  }
+
+  /* the spine margin collapses below two columns; the rail goes with it */
+  .specimen-rail--edge {
+    display: none;
   }
 
   .xp-piece[data-layout="revision"] {

@@ -27,27 +27,42 @@ export function SiteFooter({
 
   return (
     <footer className="site-footer">
+      {/* The folio's closing material: the signal settles back into the
+          system across the whole plate — denser and broader than any page
+          surface, with ultramarine peaks where the field is densest — and
+          every real destination stays crisp over its quiet zones. */}
+      <SignalField
+        className="footer-field"
+        glyphs="·:+*#"
+        cell={11}
+        seed={77}
+        ambient={0.7}
+        flow={2.4}
+        wavefront={0.15}
+        drift={0.55}
+        pointerRadius={9}
+        tune={[0.34, 2.2]}
+        quiet={[
+          /* the compressed name and the note keep their air */
+          { x: 0, y: 0, w: 0.56, h: 0.3, falloff: 0.93, feather: 0.04 },
+          { x: 0.62, y: 0.02, w: 0.38, h: 0.24, falloff: 0.9, feather: 0.03 },
+          /* the address, the links and the record line stay clean */
+          { x: 0, y: 0.32, w: 1, h: 0.17, falloff: 0.95, feather: 0.03 },
+          { x: 0, y: 0.55, w: 0.85, h: 0.22, falloff: 0.96, feather: 0.03 },
+          { x: 0, y: 0.87, w: 1, h: 0.13, falloff: 1, feather: 0.02 },
+        ]}
+        shape={(v, nx, ny) =>
+          /* arriving from the top edge — the page's matter pools where
+             the folio ends, then thins as it approaches the record line */
+          v * (0.45 + 1.3 * Math.pow(1 - ny, 1.2))
+        }
+        color={(t) =>
+          t >= 0.92
+            ? "rgba(58, 31, 240, 0.4)"
+            : `rgba(27, 33, 38, ${0.09 + 0.3 * t})`
+        }
+      />
       <div className="footer-mast">
-        {/* The playful corner of the material system: a sparse field
-            that drifts around the compressed name and answers the
-            pointer. It never carries information and only runs while
-            the footer is on screen. */}
-        <SignalField
-          className="footer-field"
-          glyphs="·:+*#"
-          cell={13}
-          seed={77}
-          ambient={0.5}
-          flow={2}
-          wavefront={0.12}
-          pointerRadius={7}
-          quiet={[{ x: 0.68, y: 0.12, w: 0.32, h: 0.66, falloff: 0.9, feather: 0.02 }]}
-          color={(t) =>
-            t >= 0.94
-              ? "rgba(58, 31, 240, 0.32)"
-              : `rgba(27, 33, 38, ${0.07 + 0.22 * t})`
-          }
-        />
         <span className="footer-name" aria-hidden="true">
           Tanishk
         </span>

@@ -24,7 +24,7 @@ import { useEffect, useRef } from "react";
  * viewports, DPR is capped, and coarse pointers get no pointer field.
  */
 
-type Quiet = {
+export type Quiet = {
   x: number;
   y: number;
   w: number;
@@ -71,6 +71,13 @@ export type SignalFieldProps = {
   flow?: number;
   /** A slow diagonal signal band that lifts density as it passes. */
   wavefront?: number;
+  /** Slow advection of the whole lattice origin — the field travels,
+      slowly, instead of boiling in place. */
+  drift?: number;
+  /** Contrast curve of the sampled field as [offset, gain]; a lower
+      offset with a higher gain resolves more of the field without
+      losing the quiet pockets between structures. */
+  tune?: [number, number];
   /** "glyph" resolves the field into characters; "dither" into
       Bayer-thresholded halftone dots. */
   mode?: "glyph" | "dither";
@@ -127,6 +134,10 @@ export function SignalField({
   shape,
   flow = 0,
   wavefront = 0,
+  drift = 0,
+  /* a fresh array per render is fine: tune is read through lookRef and
+     kept out of the effect deps */
+  tune = [0.42, 2.1],
   mode = "glyph",
   pointerRadius = 9,
   pulseKey = null,
@@ -136,9 +147,9 @@ export function SignalField({
   className,
 }: SignalFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  /* inline functions would rebind the effect every render; the engine
-     reads them through this ref, refreshed before each paint */
-  const lookRef = useRef({ color, quiet, shape });
+  /** inline functions and tuples would rebind the effect every render;
+      the engine reads them through this ref, refreshed before each paint */
+  const lookRef = useRef({ color, quiet, shape, tune });
 
   useEffect(() => {
     const el = canvasRef.current;
@@ -147,7 +158,7 @@ export function SignalField({
     if (!ctx0) return;
     const canvas = el;
     const ctx = ctx0;
-    lookRef.current = { color, quiet, shape };
+    lookRef.current = { color, quiet, shape, tune };
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const coarse = window.matchMedia("(pointer: coarse)");
@@ -226,6 +237,12 @@ export function SignalField({
          of the grid */
       let gx = (x / step) * 0.055;
       let gy = (y / step) * 0.055;
+      if (drift > 0) {
+        /* the whole field slowly travels: one lattice cell every few
+           minutes, so the matter relocates instead of boiling in place */
+        gx += clock * drift * 0.5;
+        gy += clock * drift * 0.13;
+      }
       if (flow > 0) {
         const wx = lattice(gx * 0.9 + 11, gy * 0.9, clock * 0.5, seed + 19);
         const wy = lattice(gx * 0.9, gy * 0.9 + 7, clock * 0.5, seed + 23);
@@ -238,7 +255,8 @@ export function SignalField({
           0.33;
       /* contrast: a thresholded field reads as sampled material —
          structure with quiet pockets — instead of uniform mush */
-      v = (v - 0.42) * 2.1;
+      const curve = lookRef.current.tune ?? [0.42, 2.1];
+      v = (v - curve[0]) * curve[1];
       if (!reduced.matches && ambient > 0) {
         if (
           hash3(Math.floor(x / step), Math.floor(y / step), Math.floor(clock * 3), seed + 31) <
@@ -492,7 +510,7 @@ export function SignalField({
     /* colour/quiet reach the engine through lookRef, refreshed above, so
        inline prop functions never rebind the field mid-paint */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [glyphs, cell, seed, ambient, pointerRadius, collapse, pulseKey, pulseMs, pulseDirection, flow, wavefront, mode]);
+  }, [glyphs, cell, seed, ambient, pointerRadius, collapse, pulseKey, pulseMs, pulseDirection, flow, wavefront, drift, mode]);
 
   return (
     <canvas

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { SignalField } from "./signal-field";
+import { SpecimenAmbient } from "./specimen";
 
 /**
  * PENTIMENTO — the person takes the page back.
@@ -67,6 +68,10 @@ export function PentimentoStrike() {
 
   return (
     <figure className="xp-room-shot xp-pent" data-struck={struck ? "true" : undefined}>
+      {/* The contested reading sits in unstable matter even at rest: a
+          quiet fragment field behind the machine's claim, clear of the
+          person's correction below. The strike sweeps the same material. */}
+      <SpecimenAmbient slug="pentimento" seed={73} />
       <div className="xp-pent-stack">
         {pulse ? (
           <SignalField

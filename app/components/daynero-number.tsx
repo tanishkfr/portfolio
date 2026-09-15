@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { SpecimenAmbient } from "./specimen";
 
 /**
  * DAYNERO — an illustrative spending example.
@@ -74,6 +75,9 @@ export function DayneroNumber() {
 
   return (
     <figure className="xp-room-shot xp-day">
+      {/* The ledger's signal: a sparse drift in the daily amount's own
+          lime, held clear of the number — a screen that is being read. */}
+      <SpecimenAmbient slug="daynero" seed={83} />
       <span className="xp-day-tag">Illustrative spending example</span>
       <p className="xp-day-label">You can spend today</p>
       <p className="xp-day-amount">£{display}</p>

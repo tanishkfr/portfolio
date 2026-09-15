@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { SignalField } from "./signal-field";
+import { SpecimenAmbient } from "./specimen";
 
 /**
  * ATLAS — an authored rule revision.
@@ -55,6 +56,9 @@ export function AtlasRule() {
 
   return (
     <figure className="xp-room-shot xp-atlas">
+      {/* The surveyor's field: a faint revision atmosphere behind the
+          lineage, held clear of the wording under discussion. */}
+      <SpecimenAmbient slug="atlas" seed={79} />
       <span className="xp-atlas-tag">An authored rule revision</span>
 
       <p className="xp-atlas-context">{current.case}</p>

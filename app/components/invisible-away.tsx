@@ -136,11 +136,13 @@ export function InvisibleAway() {
           glyphs="01"
           cell={12}
           seed={23}
-          ambient={0.22}
+          ambient={0.42}
           flow={1.8}
-          wavefront={0.1}
+          wavefront={0.12}
+          drift={0.5}
+          tune={[0.38, 2.2]}
           pointerRadius={0}
-          color={(t) => `rgba(230, 171, 63, ${0.05 + 0.3 * t})`}
+          color={(t) => `rgba(230, 171, 63, ${0.07 + 0.36 * t})`}
         />
       ) : (
         <SignalField

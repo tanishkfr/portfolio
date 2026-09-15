@@ -5,6 +5,7 @@ import { type CSSProperties } from "react";
 import { caseCtaLabels, projects, type Project } from "../data/portfolio";
 import { modeHref } from "./mode";
 import { SiteFooter } from "./site-footer";
+import { SpecimenRail } from "./specimen";
 import { TransitionLink } from "./transition-link";
 import { AtlasRule } from "./atlas-rule";
 import { DayneroNumber } from "./daynero-number";
@@ -81,7 +82,7 @@ export function ReviewIndex() {
       </header>
 
       <ol className="review-list">
-        {ordered.map((project) => {
+        {ordered.map((project, index) => {
           const href = `/work/${project.slug}?from=work`;
           return (
             <li
@@ -101,6 +102,14 @@ export function ReviewIndex() {
               </div>
 
               <div className="work-row-stage" data-reveal="figure">
+                {/* The specimen rail: the same edge line of project matter
+                    the Explore sheets run — the register is lighter here,
+                    the system is the same. */}
+                <SpecimenRail
+                  slug={project.slug}
+                  tone="index"
+                  seed={37 + index * 5}
+                />
                 <HomeStage project={project} />
               </div>
 

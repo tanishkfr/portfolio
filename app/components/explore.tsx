@@ -11,13 +11,14 @@ import Link from "next/link";
 import { caseCtaLabels, projects, type Project } from "../data/portfolio";
 import { ROOM_WORLDS, rgb } from "../data/room-worlds";
 import { modeHref } from "./mode";
-import { hexToRgba, SignalField } from "./signal-field";
+import { hexToRgba, SignalField, type Quiet } from "./signal-field";
 import { AtlasRule } from "./atlas-rule";
 import { DayneroNumber } from "./daynero-number";
 import { DisasterMark } from "./disaster-mark";
 import { FluxionSpecimen } from "./fluxion-specimen";
 import { InvisibleAway } from "./invisible-away";
 import { PentimentoStrike } from "./pentimento-strike";
+import { SpecimenRail } from "./specimen";
 import { TransitionLink } from "./transition-link";
 
 const order = [
@@ -40,6 +41,18 @@ const directions = {
 const ordered = order
   .map((slug) => projects.find((project) => project.slug === slug))
   .filter((project): project is Project => Boolean(project));
+
+/* The cover's quiet zones frame the name instead of blanketing it: the
+   masthead and the claim's column stay crisp, and the field carries the
+   rest — the side rails, the deck's right flank, the resolve band above
+   the handoff. One array, shared by the glyph field and its atmosphere. */
+const COVER_QUIET: Quiet[] = [
+  { x: 0, y: 0, w: 1, h: 0.055, falloff: 0.92, feather: 0.02 },
+  { x: 0.01, y: 0.26, w: 0.98, h: 0.3, falloff: 0.93, feather: 0.05 },
+  { x: 0, y: 0.6, w: 0.52, h: 0.23, falloff: 0.88, feather: 0.05 },
+  { x: 0, y: 0.855, w: 1, h: 0.09, falloff: 0.92, feather: 0.03 },
+  { x: 0, y: 0.97, w: 1, h: 0.04, falloff: 1 },
+];
 
 function ProjectMechanic({ slug }: { slug: string }) {
   if (slug === "fluxion-studios") return <FluxionSpecimen />;
@@ -256,34 +269,56 @@ export function Explore() {
         {/* The identity is the resolved anchor; the surrounding
             computational field is still forming — density glyphs settle
             as the folio arrives, answer the pointer softly, and disperse
-            as the cover scrolls into the field below. */}
+            as the cover scrolls into the field below. Under the glyphs a
+            halftone atmosphere drifts in ultramarine: the sampler's
+            weather, felt as a wash, never as a panel. */}
+        <SignalField
+          className="xp-cover-atmos"
+          mode="dither"
+          cell={22}
+          seed={87}
+          ambient={0.58}
+          flow={2.6}
+          wavefront={0.19}
+          drift={0.7}
+          pointerRadius={0}
+          collapse
+          quiet={COVER_QUIET}
+          shape={(v, nx, ny) =>
+            /* the atmosphere pools in the same rails and settle band, so
+               the cover reads as one weather system, not two layers */
+            v *
+            (0.4 + 1.15 * Math.pow(Math.abs(nx - 0.5) * 2, 1.35)) *
+            (0.45 + 1.05 * ny)
+          }
+          color={(t) => `rgba(58, 31, 240, ${0.04 + 0.1 * t})`}
+        />
         <SignalField
           className="xp-cover-field"
           glyphs="·:+*#"
-          cell={12}
+          cell={11}
           seed={11}
-          ambient={0.4}
-          flow={1.8}
-          wavefront={0.07}
-          pointerRadius={10}
+          ambient={0.66}
+          flow={2.2}
+          wavefront={0.14}
+          drift={0.45}
+          pointerRadius={12}
           collapse
-          quiet={[
-            { x: 0, y: 0, w: 1, h: 0.58, falloff: 0.97 },
-            { x: 0, y: 0.58, w: 0.62, h: 0.24, falloff: 0.9 },
-            { x: 0, y: 0.8, w: 1, h: 0.075, falloff: 0.95 },
-            { x: 0, y: 0.97, w: 1, h: 0.04, falloff: 1 },
-          ]}
-          shape={(v, nx, ny) =>
-            /* the edges carry the matter: it drifts inward from the
-               sides and resolves downward toward the projects */
-            v *
-            (0.62 + 0.62 * Math.abs(nx - 0.5) * 2) *
-            (0.3 + 1.6 * Math.pow(ny, 1.4))
-          }
+          quiet={COVER_QUIET}
+          shape={(v, nx, ny) => {
+            /* the edges carry the matter; one plume rises through the
+               right rail where the deck's negative space opens */
+            const rail = Math.pow(Math.abs(nx - 0.5) * 2, 1.1);
+            const settle = Math.pow(ny, 1.25);
+            const plume = Math.exp(
+              -Math.pow((nx - 0.78) * 3.6, 2) - Math.pow((ny - 0.7) * 2.6, 2),
+            );
+            return v * (0.5 + 0.8 * rail + 0.75 * plume) * (0.34 + 1.4 * settle);
+          }}
           color={(t) =>
-            t >= 0.93
-              ? "rgba(58, 31, 240, 0.36)"
-              : `rgba(27, 33, 38, ${0.08 + 0.28 * t})`
+            t >= 0.92
+              ? "rgba(58, 31, 240, 0.45)"
+              : `rgba(27, 33, 38, ${0.1 + 0.34 * t})`
           }
         />
         <div className="xp-cover-pin">
@@ -386,6 +421,18 @@ export function Explore() {
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <span>{direction.verb}</span>
                   </div>
+
+                  {/* The sheet's signal rail: the spine margin carries a
+                      thin line of the project's own computational matter,
+                      full height, in its pigment — the same edge device
+                      every Quick view row runs. The specimen itself is
+                      live in the stage below. */}
+                  <SpecimenRail
+                    slug={project.slug}
+                    tone="full"
+                    seed={37 + index * 5}
+                    orientation="edge"
+                  />
 
                   {/* Connective tissue between stable states: as this
                       sheet takes over the drawer, its top edge resolves

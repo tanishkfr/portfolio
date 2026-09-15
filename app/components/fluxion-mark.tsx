@@ -1,8 +1,10 @@
 import Image from "next/image";
+import { SpecimenAmbient } from "./specimen";
 
 export function FluxionMark() {
   return (
     <figure className="xp-room-shot xp-flux">
+      <SpecimenAmbient slug="fluxion-studios" tone="index" seed={61} />
       <div className="xp-flux-brand">
         <Image
           unoptimized

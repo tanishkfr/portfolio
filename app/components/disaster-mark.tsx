@@ -2,6 +2,7 @@
 
 import { useState, type CSSProperties, type MouseEvent } from "react";
 import { SignalField } from "./signal-field";
+import { SpecimenAmbient } from "./specimen";
 
 /**
  * DESIGN OR DISASTER — point before you pronounce.
@@ -69,6 +70,9 @@ export function DisasterMark({ src, alt }: { src: string; alt: string }) {
 
   return (
     <figure className="xp-room-shot xp-dod">
+      {/* The critique's own material: an ordered-dither frame around the
+          evidence — the sampler holds the plate before anyone marks it. */}
+      <SpecimenAmbient slug="design-or-disaster" seed={71} />
       <button
         type="button"
         className="xp-dod-surface"
