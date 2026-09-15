@@ -88,7 +88,7 @@ export function SiteFooter({
         flow={1.2}
         wavefront={0.09}
         drift={0.5}
-        pointerRadius={9}
+        pointerRadius={0}
         tune={[0.4, 2.1]}
         quiet={quiet}
         shape={(v, nx, ny, t) => {
