@@ -375,6 +375,35 @@ export default async function ProjectPage({
           ))}
         </div>
 
+        {project.clientWork ? (
+          <div className="record-client">
+            <header className="record-head">
+              <p className="case-label">{project.clientWork.label}</p>
+              <h3>{project.clientWork.title}</h3>
+            </header>
+            <dl className="case-facts">
+              {project.clientWork.rows.map((row) => (
+                <div key={row.term}>
+                  <dt>{row.term}</dt>
+                  <dd>{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+            {project.clientWork.href ? (
+              <a
+                className="record-client-link"
+                href={project.clientWork.href}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {project.clientWork.hrefLabel}{" "}
+                <span aria-hidden="true">↗</span>
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            ) : null}
+          </div>
+        ) : null}
+
         <div className="record-boundary">
           <section>
             <span className="boundary-state boundary-state--built">Built and working</span>
@@ -393,6 +422,23 @@ export default async function ProjectPage({
             </ul>
           </section>
         </div>
+
+        {project.sources ? (
+          <div className="record-sources">
+            <p className="case-label">Sources</p>
+            <ul>
+              {project.sources.map((source) => (
+                <li key={source.href}>
+                  <a href={source.href} target="_blank" rel="noreferrer">
+                    {source.label} <span aria-hidden="true">↗</span>
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                  <span>{source.supports}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
         <div className="record-next">
           <p className="case-label">Next test</p>
