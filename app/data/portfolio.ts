@@ -219,7 +219,7 @@ export const projects: Project[] = [
       },
     ],
     interactionIntro:
-      "Every case uses the same sequence. The five-minute path teaches it immediately; the full archive lets the visitor see their repeated patterns of attention across ten cases.",
+      "Every case uses the same sequence. The five-minute path teaches it; the full archive shows how your attention repeats across ten cases.",
     interactionSteps: [
       "Choose what kind of evidence you are looking for: hierarchy, access, task, trust, or feeling.",
       "Place a mark on the exact coordinate—or choose a named region when precision input is unavailable.",
@@ -708,7 +708,7 @@ export const projects: Project[] = [
       },
     ],
     interactionIntro:
-      "One familiar question—when should tapping outside a dialog close it?—moves through three cases selected for increasing distance rather than increasing difficulty.",
+      "One familiar question—when should tapping outside a dialog close it?—moves through three cases chosen for increasing distance, not difficulty.",
     interactionSteps: [
       "Edit a suggested starting rule until it states what you currently believe.",
       "Apply it to a low-consequence lightbox and choose whether it holds, needs refinement, or fractures.",

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { SignalField, type Quiet } from "./signal-field";
 
 /**
@@ -27,6 +28,13 @@ const FOOTER_QUIET: Quiet[] = [
   { x: 0, y: 0.7, w: 0.56, h: 0.28, falloff: 0.97, feather: 0.03 },
 ];
 
+/* Stacked, the footer's text owns nearly the full width — the signal
+   keeps only the quiet band above the name. */
+const FOOTER_QUIET_NARROW: Quiet[] = [
+  { x: 0, y: 0.2, w: 1, h: 0.8, falloff: 1, feather: 0.03 },
+  { x: 0.5, y: 0, w: 0.5, h: 0.2, falloff: 0.95, feather: 0.05 },
+];
+
 export function SiteFooter({
   year,
   force = false,
@@ -35,8 +43,19 @@ export function SiteFooter({
   force?: boolean;
 }) {
   const pathname = usePathname();
+  const [narrow, setNarrow] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 52rem)");
+    const update = () => setNarrow(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   if (!force && pathname === "/") return null;
+
+  const quiet = narrow ? FOOTER_QUIET_NARROW : FOOTER_QUIET;
 
   return (
     <footer className="site-footer">
@@ -56,7 +75,7 @@ export function SiteFooter({
         drift={0.35}
         pointerRadius={0}
         tune={[0.48, 1.9]}
-        quiet={FOOTER_QUIET}
+        quiet={quiet}
         shape={(v, nx) => v * (0.55 + 0.7 * Math.abs(nx - 0.5) * 2)}
         color={(t) => `rgba(27, 33, 38, ${0.06 + 0.17 * t})`}
       />
@@ -71,7 +90,7 @@ export function SiteFooter({
         drift={0.5}
         pointerRadius={9}
         tune={[0.4, 2.1]}
-        quiet={FOOTER_QUIET}
+        quiet={quiet}
         shape={(v, nx, ny, t) => {
           /* the closing counterpart of the hero's diagonal: one cluster
              in the open top-centre gap, one at the mid-right, and the

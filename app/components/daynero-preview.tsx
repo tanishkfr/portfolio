@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react";
 import type { Project } from "../data/portfolio";
 import { RoomPaint } from "./atmosphere";
+import { CaseSignal } from "./case-signal";
+import { ROOM_WORLDS } from "../data/room-worlds";
 import { TransitionLink } from "./transition-link";
 
 /**
@@ -63,6 +65,11 @@ export function DayneroPreview({
           exists now, what is not yet proven. Same grammar as the
           published cases, no invented evidence. */}
       <section className="case-reasoning" aria-labelledby="reasoning-title" data-reveal>
+        <CaseSignal
+          accent={ROOM_WORLDS.daynero.accentInk}
+          ink={ROOM_WORLDS.daynero.ink}
+          seed={1337}
+        />
         <header className="record-head">
           <p className="case-label">The reasoning</p>
           <h2 id="reasoning-title">{project.pivot.title}</h2>

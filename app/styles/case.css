@@ -61,7 +61,7 @@
   padding-block: 1.1rem;
   border-bottom: 1px solid var(--line);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
 }
 
 .case-return a {
@@ -97,19 +97,19 @@
 .case-return span {
   color: var(--accent-ink);
   letter-spacing: 0.06em;
-  font-size: 0.7rem;
+  font-size: var(--meta-size);
 }
 
 .case-skip {
   display: inline-block;
   margin: 1rem 0 0;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   color: var(--ink-soft);
 }
 
 .case-hero .case-instrument {
-  margin-block: clamp(1.6rem, 4vh, 2.6rem);
+  margin-block: clamp(2rem, 5vh, 3rem);
   width: 100%;
 }
 
@@ -171,7 +171,9 @@
   flex-wrap: wrap;
   justify-content: start;
   gap: 0.5rem 1.5rem;
-  margin-bottom: clamp(1.6rem, 4vh, 2.6rem);
+  /* the same deliberate meta → title relationship the project sheets
+     hold: clearly more air than the title → summary step below */
+  margin-bottom: clamp(2.2rem, 5.5vh, 3.6rem);
 }
 
 .case-title-lockup {
@@ -202,8 +204,12 @@
 
 .case-hero-main {
   display: grid;
-  gap: 1.1rem;
+  gap: 1.25rem;
   justify-items: start;
+}
+
+.case-hero-main .case-actions {
+  margin-top: 0.35rem;
 }
 
 .case[data-room="fluxion-studios"] .case-hero-main h1 {
@@ -231,7 +237,6 @@
   font-family: var(--display);
   font-size: var(--step-2);
   font-weight: 500;
-  font-style: italic;
   letter-spacing: -0.005em;
   line-height: 1.25;
   color: var(--ink-soft);
@@ -266,13 +271,13 @@
 
 .signature-plate figcaption span {
   color: var(--muted);
-  font-size: 0.66rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 
 .signature-plate figcaption strong {
   color: var(--accent-ink);
-  font-size: 0.7rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.07em;
 }
@@ -313,7 +318,7 @@
   display: block;
   color: var(--accent-invisible-ink);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.1em;
 }
@@ -321,7 +326,7 @@
 .away-ledger p {
   margin: 0.5rem 0 0;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.6;
 }
 
@@ -336,7 +341,7 @@
   margin: 0 0 0.6rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 500;
   letter-spacing: 0.03em;
 }
@@ -383,7 +388,7 @@
   gap: 0.5rem;
   padding: 0.72rem 1.15rem;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.02em;
   text-decoration: none;
   transition:
@@ -411,7 +416,7 @@
 
 .case-actions a:first-child small {
   color: rgba(27, 33, 38, 0.62);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
 }
 
 .case-actions a + a {
@@ -427,7 +432,7 @@
 
 .case-facts {
   display: grid;
-  gap: 1.1rem;
+  gap: 1.3rem;
   align-content: start;
   border-left: 1px solid var(--line);
   padding-left: clamp(1.2rem, 3vw, 2rem);
@@ -441,7 +446,7 @@
 .case-facts dt {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: var(--meta-size);
   font-weight: 500;
   letter-spacing: 0.03em;
 }
@@ -461,7 +466,7 @@
   flex-wrap: wrap;
   gap: 0.35rem 1.5rem;
   width: 100%;
-  margin-top: clamp(1.4rem, 3vh, 2rem);
+  margin-top: clamp(1.8rem, 4vh, 2.6rem);
   padding-top: 1rem;
   border-top: 1px solid var(--line);
 }
@@ -509,7 +514,7 @@
   border-top: 1px solid var(--line);
   padding: 0.85rem 0 0.85rem 1.4rem;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.5;
 }
 
@@ -538,7 +543,7 @@
   border-bottom: 1px solid var(--line);
   padding: 0.8rem 1.3rem;
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 
@@ -558,14 +563,14 @@
   border-top: 1px solid var(--line);
   padding: 0.9rem 1.3rem;
   color: var(--muted);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.55;
 }
 
 .case-instrument figcaption strong {
   color: var(--ink);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -583,7 +588,7 @@
   padding: 0.45rem 0.95rem;
   color: var(--ink-soft);
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
   cursor: pointer;
   transition:
@@ -662,7 +667,7 @@
 .fluxion-demo-facts dt {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: var(--meta-size);
   font-weight: 500;
   letter-spacing: 0.03em;
 }
@@ -678,7 +683,7 @@
 .fluxion-demo a {
   width: fit-content;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   color: var(--accent-ink);
   text-decoration: none;
   border-bottom: 1px solid currentColor;
@@ -702,7 +707,7 @@
 .juror-reading span {
   color: var(--accent-disaster-ink);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -733,7 +738,7 @@
   color: var(--paper);
   background: var(--accent-disaster);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.05em;
   padding: 0.28rem 0.6rem;
@@ -764,7 +769,7 @@
   color: #f2efe5;
   background: rgba(0, 0, 0, 0.55);
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.06em;
 }
 
@@ -797,14 +802,14 @@
 .pentimento-demo-evidence dt {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.07em;
 }
 
 .pentimento-demo-evidence dd {
   margin: 0;
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: var(--meta-size);
   color: var(--ink-soft);
 }
 
@@ -818,7 +823,7 @@
   display: block;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 
@@ -891,7 +896,7 @@
   margin-top: 0.9rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 
@@ -909,7 +914,7 @@
   border-left: 2px solid var(--accent-invisible);
   padding-left: 1rem;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.6;
 }
 
@@ -935,7 +940,7 @@
   background: rgba(0, 0, 0, 0.72);
   color: #f2efe5;
   font-family: var(--mono);
-  font-size: 0.64rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.06em;
 }
 
@@ -946,7 +951,7 @@
   text-align: center;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.07em;
   max-width: 7.5rem;
 }
@@ -995,7 +1000,7 @@
 .atlas-demo aside > p {
   margin: 0 0 1.1rem;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.55;
 }
 
@@ -1016,7 +1021,7 @@
   margin-bottom: 0.35rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 
@@ -1046,7 +1051,7 @@
   padding-inline: 0.3rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.07em;
 }
 
@@ -1069,7 +1074,7 @@
   border-radius: 0;
   padding: 0.5rem 0.85rem;
   color: var(--ink);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
 }
 
 .case-choice-group button[aria-pressed="true"] {
@@ -1115,7 +1120,7 @@
   padding: 0.45rem 0.7rem;
   cursor: pointer;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
 }
 
 .disaster-regions button[aria-pressed="true"] {
@@ -1127,7 +1132,7 @@
   margin: 0;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.5;
 }
 
@@ -1186,7 +1191,7 @@
   border-top: 1px solid rgba(242, 240, 232, 0.16);
   color: rgba(242, 240, 232, 0.72);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
 }
 
 .invisible-receipt {
@@ -1212,7 +1217,7 @@
 .invisible-receipt dt {
   color: var(--accent-invisible-ink);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
 }
 
 .invisible-receipt dd {
@@ -1226,7 +1231,7 @@
   margin: 0;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.5;
 }
 
@@ -1283,7 +1288,7 @@
   margin: 0;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.5;
 }
 
@@ -1302,7 +1307,7 @@
   padding: 0.5rem 0.95rem;
   cursor: pointer;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
 }
 
 .atlas-editor-actions button:first-child {
@@ -1345,13 +1350,13 @@
 .atlas-trace li span {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
 }
 
 .atlas-trace li em {
   color: var(--accent-atlas-ink);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   font-style: normal;
 }
 
@@ -1415,14 +1420,14 @@
   border-radius: 999px;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
   text-decoration: none;
   transition: color var(--beat) var(--ease-out), background-color var(--beat) var(--ease-out);
 }
 
 .chapter-rail-no {
-  font-size: 0.64rem;
+  font-size: var(--meta-size);
   opacity: 0.7;
 }
 
@@ -1505,7 +1510,7 @@
   padding-bottom: 0.8rem;
   color: var(--accent-ink);
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.1em;
 }
@@ -1585,7 +1590,7 @@
 .case-question-card span {
   color: var(--accent-ink);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -1642,7 +1647,7 @@
   margin-bottom: 0.6rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 500;
   letter-spacing: 0.03em;
 }
@@ -1654,7 +1659,7 @@
 .pivot-sequence p {
   margin: 0;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.6;
 }
 
@@ -1687,7 +1692,7 @@
 .rejected-heading span {
   color: var(--accent-ink);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -1695,7 +1700,7 @@
 .rejected-heading p {
   margin: 0.6rem 0 0;
   color: var(--muted);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.55;
 }
 
@@ -1712,7 +1717,7 @@
 .rejected-paths article p {
   margin: 0;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.55;
 }
 
@@ -1737,7 +1742,7 @@
 .case-sequence li span {
   color: var(--accent-ink);
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: var(--meta-size);
   font-weight: 600;
 }
 
@@ -1804,7 +1809,7 @@
 .system-model span {
   color: var(--accent-ink);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -1819,7 +1824,7 @@
 .system-model p {
   margin: 0;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.6;
 }
 
@@ -1844,7 +1849,7 @@
 .decision-ledger-head span {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 500;
   letter-spacing: 0.03em;
 }
@@ -1863,7 +1868,7 @@
 .decision-ledger p {
   margin: 0;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.6;
 }
 
@@ -1896,7 +1901,7 @@
   display: inline-block;
   padding: 0.3rem 0.7rem;
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -1922,7 +1927,7 @@
   border-top: 1px solid var(--line);
   padding: 0.75rem 0 0.75rem 1.3rem;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.55;
 }
 
@@ -1965,7 +1970,7 @@
 .next-test div span {
   color: var(--accent-ink);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -1974,7 +1979,6 @@
   margin: 0.4rem 0 0;
   font-family: var(--display);
   font-size: var(--step-1);
-  font-style: italic;
   line-height: 1.4;
 }
 
@@ -1985,7 +1989,7 @@
   padding-top: 1.1rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: var(--meta-size);
   line-height: 1.7;
 }
 
@@ -2021,7 +2025,7 @@
 .relation-primary > span:first-child {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 
@@ -2047,7 +2051,7 @@
   margin-top: 0.2rem;
   color: var(--accent-ink, var(--accent));
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
   transition: transform var(--beat) var(--ease-out);
 }
@@ -2063,7 +2067,7 @@
   width: fit-content;
   color: var(--ink);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.02em;
   text-decoration: none;
   border-bottom: 1px solid var(--line-strong);
@@ -2086,7 +2090,7 @@
 .case-end-flow a {
   color: var(--ink-soft);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.02em;
   text-decoration: none;
   transition: color var(--beat) var(--ease-out);
@@ -2116,6 +2120,12 @@
   padding-top: clamp(3rem, 9vh, 6rem);
 }
 
+/* the preview's eyebrow → title keeps the same annotation-to-arrival
+   distance the sheets and case heroes hold */
+.daynero-hero .eyebrow {
+  margin-bottom: clamp(2.2rem, 5.5vh, 3.6rem);
+}
+
 .daynero-hero-copy {
   max-width: 46rem;
 }
@@ -2127,7 +2137,7 @@
   max-width: 40ch;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.5;
   letter-spacing: 0.02em;
 }
@@ -2146,7 +2156,7 @@
   max-width: 34ch;
   color: var(--ink-soft);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.6;
 }
 
@@ -2158,7 +2168,7 @@
   padding-block: 1.1rem;
   border-bottom: 1px solid var(--line);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
 }
 
 .daynero-return a {
@@ -2172,7 +2182,7 @@
 
 .daynero-return span {
   color: var(--accent-daynero-ink);
-  font-size: 0.7rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.06em;
 }
 
@@ -2204,7 +2214,6 @@
   margin: 1.2rem 0 0;
   font-family: var(--display);
   font-size: var(--step-2);
-  font-style: italic;
   font-weight: 500;
   color: var(--accent-daynero-ink);
 }
@@ -2229,7 +2238,7 @@
   gap: 0.5rem;
   padding: 0.72rem 1.15rem;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   text-decoration: none;
   transition:
     background-color var(--beat) var(--ease-out),
@@ -2271,14 +2280,14 @@
 .daynero-facts dt {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 
 .daynero-facts dd {
   margin: 0.45rem 0 0;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.55;
 }
 
@@ -2324,7 +2333,7 @@
 .daynero-capabilities span {
   color: var(--accent-daynero-ink);
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
 }
 
@@ -2338,7 +2347,7 @@
 .daynero-capabilities p {
   margin: 0;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.6;
 }
 
@@ -2373,7 +2382,7 @@
 .daynero-boundary-grid article > span {
   display: inline-block;
   font-family: var(--mono);
-  font-size: 0.68rem;
+  font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -2400,7 +2409,7 @@
   border-top: 1px solid var(--line);
   padding: 0.75rem 0;
   color: var(--ink-soft);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.55;
 }
 
@@ -2620,8 +2629,9 @@
 }
 
 /* The turn is the one authored statement set large — unboxed, so the
-   sentence carries the emphasis rather than a container. It is the only
-   italic display in the case. */
+    sentence carries the emphasis rather than a container. It speaks in
+    the same direct Anybody voice as the opening hook: no italic, no
+    serif aside — the argument states itself. */
 .story-turn {
   margin: 0;
   max-width: 34rem;
@@ -2631,11 +2641,11 @@
 
 .story-turn p {
   margin: 0;
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: clamp(1.55rem, 3.6vw, 2.7rem);
-  line-height: 1.14;
-  letter-spacing: -0.02em;
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 3vw, 2.15rem);
+  line-height: 1.18;
+  letter-spacing: -0.017em;
+  font-weight: 500;
   color: var(--ink);
   text-wrap: balance;
 }
@@ -2692,7 +2702,7 @@
   grid-column: 1 / -1;
   margin: 0 0 0.3rem;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
   color: var(--accent);
 }
@@ -2750,7 +2760,7 @@
   padding-bottom: 0.1em;
   border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
   color: var(--accent);
   text-decoration: none;
@@ -2782,7 +2792,7 @@
 .record-sources li {
   display: grid;
   gap: 0.2rem;
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.45;
 }
 
@@ -2791,7 +2801,7 @@
   padding-bottom: 0.1em;
   border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.02em;
   color: var(--accent);
   text-decoration: none;
@@ -2856,7 +2866,7 @@
 
 .boundary-state {
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 .boundary-state--built {
@@ -2892,7 +2902,7 @@
 .record-rule span {
   display: block;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
   color: var(--accent);
   margin-bottom: 0.3rem;
@@ -2901,7 +2911,7 @@
 .record-disclosure {
   margin: 0;
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   line-height: 1.5;
   letter-spacing: 0.01em;
   color: rgba(27, 33, 38, 0.34);
@@ -3040,11 +3050,47 @@
    The order differs per project; the treatments stay one system: mono
    labels, one accent rule, records you can scan. */
 .case-reasoning {
+  position: relative;
+  isolation: isolate;
   display: grid;
   gap: clamp(2.2rem, 5vh, 3.4rem);
   border-top: 2px solid var(--registrar);
   margin-top: clamp(3rem, 7vh, 5rem);
   padding-top: clamp(2.2rem, 5vh, 3.2rem);
+}
+
+/* ---------- the reasoning's signal rail ----------
+   The folio's material continues into the rooms: a faint glyph texture
+   runs down the reasoning's open right margin like an annotation, and
+   one small cluster of the room's ink breathes in the rail's upper
+   half. The prose is capped near 58ch on the left edge, so the rail
+   is structurally clear of text; the quiet zones still cover the
+   text-facing edge, and pixel mode only paints above its threshold. */
+.case-reasoning > .case-texture {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(8rem, 16%, 14rem);
+  z-index: -1;
+}
+
+.case-reasoning > .case-pixels {
+  position: absolute;
+  top: clamp(1rem, 4vh, 3rem);
+  right: 0;
+  width: clamp(8rem, 16%, 14rem);
+  height: clamp(14rem, 32vh, 21rem);
+  z-index: -1;
+}
+
+@media (max-width: 64rem) {
+  /* narrow rooms have no open right rail — the material yields to the
+     single reading column */
+  .case-reasoning > .case-texture,
+  .case-reasoning > .case-pixels {
+    display: none;
+  }
 }
 
 .reason-block {
@@ -3095,7 +3141,7 @@
   display: block;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 
@@ -3130,7 +3176,7 @@
   content: counter(step, decimal-leading-zero);
   color: var(--accent-ink, var(--accent));
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.04em;
 }
 
@@ -3161,7 +3207,7 @@
 .reason-system li span {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   letter-spacing: 0.03em;
 }
 

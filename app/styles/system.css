@@ -142,6 +142,10 @@
   /* Scale — body never dips below 16px (avoids iOS input zoom,
      keeps mobile prose readable) */
   --step--1: clamp(0.75rem, 0.72rem + 0.14vw, 0.8rem);
+  /* The record voice at annotation scale — meta lines, eyebrows,
+     handoff notes: one deliberate step above the old 12px floor so
+     every small label stays readable, never heading-sized. */
+  --meta-size: clamp(0.8rem, 0.75rem + 0.16vw, 0.95rem);
   --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.08rem);
   --step-1: clamp(1.15rem, 1.08rem + 0.35vw, 1.35rem);
   --step-2: clamp(1.4rem, 1.26rem + 0.7vw, 1.8rem);
@@ -315,7 +319,7 @@ img {
   margin: 0;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   font-weight: 500;
   letter-spacing: 0.03em;
 }
@@ -324,7 +328,7 @@ img {
   margin: 0 0 1rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--step--1);
+  font-size: var(--meta-size);
   font-weight: 500;
   letter-spacing: 0.03em;
 }
@@ -562,18 +566,34 @@ img {
 .site-header nav {
   display: flex;
   align-items: center;
-  gap: clamp(1.2rem, 2.4vw, 2.5rem);
+  gap: clamp(1.3rem, 2.4vw, 2.4rem);
   font-family: var(--mono);
-  font-size: 0.84rem;
-  letter-spacing: 0.02em;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
 }
 
 .site-header nav a {
   position: relative;
-  padding-block: 0.35rem;
+  padding-block: 0.55rem;
   color: var(--muted);
   text-decoration: none;
   transition: color var(--beat) var(--ease-out);
+}
+
+/* The signal pip: the page you are on is marked the way the field marks
+   matter — a small pixel square in the housing's ink, held above the
+   label. Quiet registration, not decoration. */
+.site-header nav a::before {
+  content: "";
+  position: absolute;
+  top: -0.3rem;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  translate: -50% 0;
+  background: var(--registrar);
+  opacity: 0;
+  transition: opacity var(--beat) var(--ease-out);
 }
 
 .site-header nav a::after {
@@ -598,9 +618,12 @@ img {
   color: var(--registrar);
 }
 
+.site-header nav a[aria-current="page"]::before {
+  opacity: 1;
+}
+
 .site-header nav a:hover::after,
-.site-header nav a:focus-visible::after,
-.site-header nav a[aria-current="page"]::after {
+.site-header nav a:focus-visible::after {
   transform: scaleX(1);
   transform-origin: left;
 }
@@ -693,6 +716,10 @@ a[data-external]:focus-visible .xp-cta-arrow {
   .site-header nav a {
     padding-block: 0.55rem;
     text-align: center;
+  }
+
+  .site-header nav a::before {
+    top: 0.05rem;
   }
 }
 
@@ -1079,8 +1106,10 @@ a[data-external]:focus-visible .xp-cta-arrow {
 
 /* ---------- the splash ----------
    The first state transition: the name as compressed notation, the
-   rule that opens the folio. Session-scoped, skippable, removed from
-   the DOM when done. */
+   rule that opens the folio, and the cover's own material already
+   settling around it — the same pixel signal and glyph texture, quiet
+   where the name sits, so the handoff into the hero is continuous.
+   Session-scoped, skippable, removed from the DOM when done. */
 .splash {
   position: fixed;
   inset: 0;
@@ -1092,6 +1121,25 @@ a[data-external]:focus-visible .xp-cta-arrow {
   background: rgb(var(--atmos, 232 234 228));
 }
 
+/* the material: the same two-layer field the cover carries, framed by
+   one shared quiet zone so nothing sits under the name */
+.splash-field,
+.splash-pixels {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.splash-rule,
+.splash-name,
+.splash-note {
+  position: relative;
+  z-index: 1;
+}
+
 .splash-name {
   font-family: var(--display);
   font-size: clamp(3rem, 9vw, 8.4rem);
@@ -1101,22 +1149,32 @@ a[data-external]:focus-visible .xp-cta-arrow {
   line-height: 0.92;
   text-transform: uppercase;
   color: var(--ink);
-  transition: font-stretch 620ms var(--ease-swing);
+  transition: font-stretch 1300ms var(--ease-swing);
 }
 
 .splash[data-phase="resolve"] .splash-name {
   font-stretch: 125%;
 }
 
+/* The loading bar: the folio's opening rule. The fill is driven by
+   the splash's own JS clock (Web Animations API) so it always
+   completes ~0.45s before the splash lifts, regardless of when the
+   stylesheet lands or hydration settles — its full width is what
+   hands off into the hero's own hairlines. */
 .splash-rule {
-  width: 0;
-  height: 2px;
-  background: var(--registrar);
-  transition: width 560ms var(--ease-out) 180ms;
+  position: relative;
+  width: min(58vw, 34rem);
+  height: 3px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
 }
 
-.splash[data-phase="resolve"] .splash-rule {
-  width: min(58vw, 34rem);
+.splash-rule-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--registrar);
+  transform: scaleX(0);
+  transform-origin: left;
 }
 
 .splash-note {
@@ -1125,7 +1183,7 @@ a[data-external]:focus-visible .xp-cta-arrow {
   font-size: var(--step--1);
   letter-spacing: 0.06em;
   opacity: 0;
-  transition: opacity 320ms var(--ease-out) 320ms;
+  transition: opacity 420ms var(--ease-out) 700ms;
 }
 
 .splash[data-phase="resolve"] .splash-note {

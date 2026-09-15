@@ -113,8 +113,8 @@ export default function AboutPage() {
 
       <section className="about-current" aria-labelledby="current-title">
         <div className="about-practice-head">
-          <p className="eyebrow">What I actually do</p>
-          <h2 id="current-title">The work, right now.</h2>
+          <p className="eyebrow">Right now</p>
+          <h2 id="current-title">Four things running at once.</h2>
         </div>
         <div className="current-list">
           {currentWork.map((item) => (
@@ -128,8 +128,8 @@ export default function AboutPage() {
 
       <section className="about-practice" aria-labelledby="practice-title">
         <div className="about-practice-head">
-          <p className="eyebrow">How I work</p>
-          <h2 id="practice-title">Three things the work has to do.</h2>
+          <p className="eyebrow">How I design</p>
+          <h2 id="practice-title">Three tests every idea has to pass.</h2>
         </div>
         <div className="practice-list">
           {practices.map((practice) => (
@@ -145,8 +145,8 @@ export default function AboutPage() {
       </section>
 
       <section className="about-authorship" aria-labelledby="authorship-title">
-        <p className="eyebrow">Working with AI</p>
-        <h2 id="authorship-title">What that looks like.</h2>
+        <p className="eyebrow">Making with AI</p>
+        <h2 id="authorship-title">Where it sits in my process.</h2>
         <div>
           <p>
             I work with AI deliberately. It helps me open up directions,
@@ -176,7 +176,7 @@ export default function AboutPage() {
 
       <section className="about-contact" aria-labelledby="about-contact-title">
         <p className="eyebrow">Currently</p>
-        <h2 id="about-contact-title">In Bengaluru and available for work.</h2>
+        <h2 id="about-contact-title">In Bengaluru, and open to new product roles.</h2>
         <div>
           <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com ↗</a>
           <Link href="/">See selected work →</Link>

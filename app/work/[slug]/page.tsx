@@ -5,6 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import { AwayLedger } from "../../components/away-ledger";
 import { RoomPaint } from "../../components/atmosphere";
 import { CaseArtifact } from "../../components/case-artifacts";
+import { CaseSignal } from "../../components/case-signal";
 import { DayneroPreview } from "../../components/daynero-preview";
 import { TransitionLink } from "../../components/transition-link";
 import {
@@ -235,6 +236,8 @@ export default async function ProjectPage({
   const [next, secondary] = related;
 
   const world = ROOM_WORLDS[project.slug];
+  const caseSeed =
+    [...project.slug].reduce((hash, ch) => (hash * 31 + ch.charCodeAt(0)) & 0xffff, 17) % 997;
 
   return (
     <main
@@ -350,6 +353,11 @@ export default async function ProjectPage({
       the system, the dropped paths — composed per project, not per
       template. */}
       <section className="case-reasoning" aria-labelledby="reasoning-title" data-reveal>
+        <CaseSignal
+          accent={world?.accentInk ?? project.accent}
+          ink={world?.ink ?? "#1b2126"}
+          seed={caseSeed}
+        />
         <header className="record-head">
           <p className="case-label">The reasoning</p>
           <h2 id="reasoning-title">{project.pivot.title}</h2>
