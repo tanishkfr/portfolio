@@ -15,6 +15,12 @@ import { SignalField, type Quiet } from "./signal-field";
  * structure is the message: a recognizable base layout, one clear action,
  * one legible resolved state. Ambient texture stays subordinate so the
  * diagram reads in one or two seconds.
+ *
+ * The set shares one drawing vocabulary — frame, rule, text row, block,
+ * terminal, connector, under-rule — so six unlike behaviours still read
+ * as one family. Each portrait's cycle is phase-offset so the
+ * reduced-motion freeze lands on its resolved state, never on an empty
+ * setup frame.
  */
 
 export type PortraitTone = "full" | "index";
@@ -53,18 +59,69 @@ const env = (c: number, a: number, b: number, fade = 0.14): number =>
 
 const lerp = (a: number, b: number, k: number): number => a + (b - a) * k;
 
+/* -------- the shared drawing vocabulary --------
+   Every portrait composes from the same marks: a rect test, an edge
+   distance (frames), a rule segment, a text row (word gaps from a
+   stable per-column hash) and a slow blink. Keeping the marks identical
+   across projects is what makes six unlike behaviours read as one
+   authored family. */
+
+const inRect = (
+  nx: number,
+  ny: number,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+): boolean => nx > x && nx < x + w && ny > y && ny < y + h;
+
+/** distance to a rect's nearest edge — frames render where it is small */
+const edgeDist = (
+  nx: number,
+  ny: number,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+): number =>
+  Math.min(
+    Math.abs(nx - x),
+    Math.abs(nx - (x + w)),
+    Math.abs(ny - y),
+    Math.abs(ny - (y + h)),
+  );
+
+/** a horizontal rule segment: y-centred, half-height thick */
+const inSeg = (
+  nx: number,
+  ny: number,
+  x0: number,
+  x1: number,
+  y: number,
+  half: number,
+): boolean => ny > y - half && ny < y + half && nx > x0 && nx < x1;
+
 /** a stable per-column hash → word-gap texture for text rows */
 const columnHash = (nx: number, salt: number): number => {
   const h = Math.sin(Math.floor(nx * 22) * 137.31 + salt * 61.7) * 43758.5453;
   return h - Math.floor(h);
 };
 
+/** a text row's amplitude: word-gap columns drop to a faint residue */
+const textRow = (nx: number, salt: number): number =>
+  columnHash(nx, salt) > 0.24 ? 1 : 0.1;
+
+/** one slow blink, per-element phase */
+const blink = (t: number, rate: number, phase: number): number =>
+  0.5 + 0.5 * Math.sin(t * rate + phase);
+
 /* --------------------------------------------------------------
    01 · DESIGN OR DISASTER — point before you judge.
    A broad, ambiguous field; one region resolves to a crisp
    evidence plate while the rest stays contested, and a clear
    crosshair travels in and settles onto it. The selected region
-   moves between cycles, so no answer becomes permanent.
+   moves between cycles, so no answer becomes permanent. Phase
+   0.30: the freeze lands on a resolved plate, crosshair settled.
    -------------------------------------------------------------- */
 
 const EVIDENCE_REGIONS = [
@@ -79,12 +136,16 @@ const EVIDENCE_STARTS = [
   { x: 0.86, y: 0.9 },
 ] as const;
 
+function evidencePhase(t: number): number {
+  return cyc(t, 30, 0.3);
+}
+
 function evidenceShape(v: number, nx: number, ny: number, t: number): number {
-  const c = cyc(t, 30);
+  const c = evidencePhase(t);
   const slot = Math.min(2, Math.floor(c * 3));
   const u = c * 3 - slot;
   const region = EVIDENCE_REGIONS[slot];
-  const sel = env(u, 0.12, 0.86, 0.12);
+  const sel = env(u, 0.12, 0.9, 0.12);
   const inX = nx > region.x && nx < region.x + region.w;
   const inY = ny > region.y && ny < region.y + region.h;
   const bx = Math.min(Math.abs(nx - region.x), Math.abs(nx - (region.x + region.w)));
@@ -104,7 +165,7 @@ function evidenceShape(v: number, nx: number, ny: number, t: number): number {
   const settle = smooth(Math.min(1, Math.max(0, (u - 0.08) / 0.24)));
   const px = lerp(start.x, region.x + region.w / 2, settle);
   const py = lerp(start.y, region.y + region.h / 2, settle);
-  const marker = env(u, 0.06, 0.88, 0.08);
+  const marker = env(u, 0.06, 0.92, 0.08);
   const dx = Math.abs(nx - px);
   const dy = Math.abs(ny - py);
   /* hairline cross + a small center bloom */
@@ -121,10 +182,10 @@ function evidenceShape(v: number, nx: number, ny: number, t: number): number {
 }
 
 function evidenceGlyphAt(t: number, nx: number, ny: number): number {
-  const c = cyc(t, 30);
+  const c = evidencePhase(t);
   const slot = Math.min(2, Math.floor(c * 3));
   const u = c * 3 - slot;
-  const marker = env(u, 0.06, 0.88, 0.08);
+  const marker = env(u, 0.06, 0.92, 0.08);
   if (marker < 0.3) return -1;
   const region = EVIDENCE_REGIONS[slot];
   const start = EVIDENCE_STARTS[slot];
@@ -139,116 +200,116 @@ function evidenceGlyphAt(t: number, nx: number, ny: number): number {
 }
 
 /* --------------------------------------------------------------
-   02 · PENTIMENTO — machine draft challenged, correction leads.
-   Three sentence-like machine rows stand as the setup; a solid
-   strike bar sweeps across the third line; the struck words drop
-   to a faint ghost; the person's correction writes itself beneath,
-   brighter and more stable, and leads for most of the cycle; the
-   reset restores the fresh draft. Loop: draft → strike → rewrite
-   → hold → reset.
+   02 · PENTIMENTO — the machine drafts, the person rewrites.
+   Three machine rows stand as the fresh draft; a dense strike —
+   rows of x — sweeps across the third; the struck line drops to a
+   faint ghost; the correction writes itself beneath in the
+   heaviest glyph of the set, underlined, and leads for the rest
+   of the cycle. Loop: draft → crossed out → corrected → hold →
+   reset to the fresh draft.
    -------------------------------------------------------------- */
 
 const REVISION_PERIOD = 14;
 
 const REVISION_ROWS = [
-  { y: 0.2, x0: 0.12, x1: 0.8, salt: 3 },
-  { y: 0.31, x0: 0.12, x1: 0.56, salt: 7 },
+  { y: 0.22, x0: 0.1, x1: 0.86, salt: 3 },
+  { y: 0.34, x0: 0.1, x1: 0.62, salt: 7 },
 ] as const;
-const REVISION_STRUCK = { y: 0.42, x0: 0.12, x1: 0.66, salt: 11 };
-const REVISION_NEW = { y: 0.56, x0: 0.12, x1: 0.7, salt: 13 };
+const REVISION_STRUCK = { y: 0.46, x0: 0.1, x1: 0.74, salt: 11 };
+const REVISION_NEW = { y: 0.64, x0: 0.1, x1: 0.82, salt: 13 };
+const REVISION_UNDER = { y: 0.715, x0: 0.1, x1: 0.8 };
 
 function revisionPhase(t: number): number {
   return cyc(t, REVISION_PERIOD, 0.72);
 }
 
-function revisionRowValue(
-  nx: number,
-  row: { x0: number; x1: number; salt: number },
-): number {
-  /* word gaps: columns group into words so rows read as text lines */
-  return columnHash(nx, row.salt) > 0.24 ? 1 : 0.12;
-}
-
 function revisionShape(v: number, nx: number, ny: number, t: number): number {
   const c = revisionPhase(t);
-  let out = v * 0.2;
-  const strike = smooth((c - 0.14) / 0.16);
-  const rewrite = smooth((c - 0.46) / 0.14);
-  const reset = smooth((c - 0.9) / 0.08);
+  const strike = smooth((c - 0.12) / 0.16);
+  const rewrite = smooth((c - 0.44) / 0.14);
+  const reset = smooth((c - 0.9) / 0.06);
+  const ghost = strike * (1 - reset);
+  let out = v * 0.14;
 
-  /* the standing machine lines */
+  /* the standing machine draft */
   for (const row of REVISION_ROWS) {
     if (
-      Math.abs(ny - row.y) < 0.028 &&
-      nx > row.x0 &&
-      nx < row.x1 &&
-      revisionRowValue(nx, row) > 0.5
+      inSeg(nx, ny, row.x0, row.x1, row.y, 0.026) &&
+      textRow(nx, row.salt) > 0.5
     ) {
-      out = Math.max(out, 0.88);
+      out = Math.max(out, 0.82);
     }
   }
 
-  /* the struck line: full before the strike, a ghost once the rewrite
-     leads, restored at the reset */
-  {
-    const amp = lerp(0.8, strike > 0.9 && reset < 0.4 ? 0.2 : 0.8, reset);
-    if (
-      Math.abs(ny - REVISION_STRUCK.y) < 0.026 &&
-      nx > REVISION_STRUCK.x0 &&
-      nx < REVISION_STRUCK.x1
-    ) {
-      out = Math.max(out, amp * revisionRowValue(nx, REVISION_STRUCK));
-    }
-  }
-
-  /* the strike bar: a dense rule sweeping the line, lifting glyphs
-     just behind it */
+  /* the struck line: full before the bar, a ghost once crossed */
   if (
-    strike > 0.06 &&
+    inSeg(nx, ny, REVISION_STRUCK.x0, REVISION_STRUCK.x1, REVISION_STRUCK.y, 0.026) &&
+    textRow(nx, REVISION_STRUCK.salt) > 0.5
+  ) {
+    out = Math.max(out, lerp(0.84, 0.16, ghost));
+  }
+
+  /* the strike bar: a dense rule of x sweeping the line */
+  if (
+    strike > 0.04 &&
     strike < 1 &&
-    Math.abs(ny - REVISION_STRUCK.y) < 0.012 &&
+    Math.abs(ny - REVISION_STRUCK.y) < 0.017 &&
     nx < REVISION_STRUCK.x0 + strike * (REVISION_STRUCK.x1 - REVISION_STRUCK.x0)
   ) {
-    out = Math.max(out, 0.96);
+    out = Math.max(out, 0.98);
   }
 
-  /* the person's correction: brighter, writes beneath the struck line,
-     then leads */
-  if (
-    rewrite > 0.15 &&
-    Math.abs(ny - REVISION_NEW.y) < 0.03 &&
-    nx > REVISION_NEW.x0 &&
-    nx < REVISION_NEW.x0 + rewrite * (REVISION_NEW.x1 - REVISION_NEW.x0)
-  ) {
-    const visible = 1 - reset * 0.9;
-    out = Math.max(
-      out,
-      (0.9 + 0.1 * Math.sin(t * 1.1 + nx * 26)) *
-        revisionRowValue(nx, REVISION_NEW) *
-        visible,
-    );
+  /* the person's correction: the heaviest line in the panel,
+     underlined, writing itself in behind its own leading edge */
+  if (rewrite > 0.1) {
+    const lead =
+      REVISION_NEW.x0 + rewrite * (REVISION_NEW.x1 - REVISION_NEW.x0);
+    const vis = 1 - reset * 0.9;
+    if (
+      inSeg(nx, ny, REVISION_NEW.x0, lead, REVISION_NEW.y, 0.036) &&
+      textRow(nx, REVISION_NEW.salt) > 0.5
+    ) {
+      out = Math.max(out, (0.94 + 0.05 * Math.sin(t * 0.9 + nx * 18)) * vis);
+    }
+    /* its underline: the weight of the corrected sentence */
+    if (inSeg(nx, ny, REVISION_UNDER.x0, lead * 0.98, REVISION_UNDER.y, 0.016)) {
+      out = Math.max(out, 0.9 * vis);
+    }
   }
   return out;
 }
 
 function revisionGlyphAt(t: number, nx: number, ny: number): number {
   const c = revisionPhase(t);
-  const strike = smooth((c - 0.14) / 0.16);
-  /* the strike bar: the densest glyph in the set */
+  const strike = smooth((c - 0.12) / 0.16);
+  /* the strike: x, the hand crossing the line out */
   if (
-    strike > 0.06 &&
+    strike > 0.04 &&
     strike < 1 &&
-    Math.abs(ny - REVISION_STRUCK.y) < 0.014 &&
+    Math.abs(ny - REVISION_STRUCK.y) < 0.018 &&
     nx < REVISION_STRUCK.x0 + strike * (REVISION_STRUCK.x1 - REVISION_STRUCK.x0)
   ) {
-    return 3;
+    return 6;
   }
-  /* the correction: a mid-dense glyph so the leading line reads solid */
-  const rewrite = smooth((c - 0.46) / 0.14);
+  /* the correction: the densest glyph, and its underline */
+  const rewrite = smooth((c - 0.44) / 0.14);
+  if (rewrite > 0.2) {
+    const lead = REVISION_NEW.x0 + rewrite * (REVISION_NEW.x1 - REVISION_NEW.x0);
+    if (Math.abs(ny - REVISION_NEW.y) < 0.038 && nx > REVISION_NEW.x0 && nx < lead) {
+      return 4;
+    }
+    if (Math.abs(ny - REVISION_UNDER.y) < 0.018 && nx > REVISION_UNDER.x0 && nx < lead * 0.98) {
+      return 4;
+    }
+  }
+  /* the machine draft renders as rows of + */
+  for (const row of REVISION_ROWS) {
+    if (Math.abs(ny - row.y) < 0.028 && nx > row.x0 && nx < row.x1) return 2;
+  }
   if (
-    rewrite > 0.3 &&
-    Math.abs(ny - REVISION_NEW.y) < 0.026 &&
-    nx < REVISION_NEW.x0 + rewrite * (REVISION_NEW.x1 - REVISION_NEW.x0)
+    Math.abs(ny - REVISION_STRUCK.y) < 0.028 &&
+    nx > REVISION_STRUCK.x0 &&
+    nx < REVISION_STRUCK.x1
   ) {
     return 2;
   }
@@ -258,142 +319,162 @@ function revisionGlyphAt(t: number, nx: number, ny: number): number {
 function revisionDisplace(t: number, nx: number, ny: number): [number, number] {
   /* struck glyphs lift off their baseline just behind the bar */
   const c = revisionPhase(t);
-  const strike = smooth((c - 0.14) / 0.16);
+  const strike = smooth((c - 0.12) / 0.16);
+  const lead = REVISION_STRUCK.x0 + strike * (REVISION_STRUCK.x1 - REVISION_STRUCK.x0);
   if (
     strike > 0.15 &&
     strike < 0.9 &&
     Math.abs(ny - REVISION_STRUCK.y) < 0.05 &&
-    nx < REVISION_STRUCK.x0 + strike * (REVISION_STRUCK.x1 - REVISION_STRUCK.x0) &&
-    nx >
-      REVISION_STRUCK.x0 + strike * (REVISION_STRUCK.x1 - REVISION_STRUCK.x0) - 0.09
+    nx < lead &&
+    nx > lead - 0.09
   ) {
-    return [0, strike * 2.6 * Math.sin(nx * 60 + t * 4)];
+    return [0, strike * 2.4 * Math.sin(nx * 60 + t * 4)];
   }
   return [0, 0];
 }
 
 /* --------------------------------------------------------------
-   03 · INVISIBLE INTERFACES — leave, continue, return with proof.
-   A content plate (a page of binary rows) empties while a small
-   activity ticker keeps running outside it; the plate then
-   returns with a short over-resolve, and a receipt strip draws
-   itself beneath — four evidence cells, the record of what
-   happened while the page was away. Loop: page → absence →
-   return with proof.
+   03 · INVISIBLE INTERFACES — leave, it keeps working, return
+   with the receipt.
+   A framed work plate carries a title rule and three content
+   rows; a five-cell ticker in its right column keeps blinking
+   while the rows empty out; the rows resolve back, then a
+   separate framed receipt — all 1s, its ticks filling in
+   sequence — draws itself beneath as the record of what happened
+   while the page was away. Two objects: the working system and
+   the returned evidence. Phase 0.80: the freeze lands on plate
+   restored + receipt drawn.
    ---------------------------------------------------------------- */
 
-const ABSENCE_PLATE = { x: 0.12, y: 0.12, w: 0.76, h: 0.46 };
-const ABSENCE_RECEIPT = { y: 0.76, x0: 0.12, x1: 0.88 };
-const ABSENCE_TICKER = { x: 0.62, y: 0.68, w: 0.26 };
+const ABSENCE_PLATE = { x: 0.1, y: 0.1, w: 0.8, h: 0.44 };
+const ABSENCE_TITLE = { x: 0.14, x1: 0.5, y: 0.175 };
+const ABSENCE_ROWS = [
+  { y: 0.26, x0: 0.14, x1: 0.72, salt: 5 },
+  { y: 0.33, x0: 0.14, x1: 0.64, salt: 17 },
+  { y: 0.4, x0: 0.14, x1: 0.68, salt: 29 },
+] as const;
+const ABSENCE_TICKER = { x: 0.845, y0: 0.2, dy: 0.06, n: 5 };
+const ABSENCE_RECEIPT = { x: 0.4, y: 0.62, w: 0.5, h: 0.3 };
+const ABSENCE_TICKS = [0.72, 0.77, 0.82, 0.87];
 
 function absencePhase(t: number): number {
-  return cyc(t, 16, 0.66);
+  return cyc(t, 16, 0.8);
 }
 
 function absenceShape(v: number, nx: number, ny: number, t: number): number {
   const c = absencePhase(t);
-  const r = ABSENCE_PLATE;
-  const inX = nx > r.x && nx < r.x + r.w;
-  const inY = ny > r.y && ny < r.y + r.h;
-  const bx = Math.min(Math.abs(nx - r.x), Math.abs(nx - (r.x + r.w)));
-  const by = Math.min(Math.abs(ny - r.y), Math.abs(ny - (r.y + r.h)));
-  const border = inX && inY ? Math.min(bx, by) : 9;
+  const gone = smooth((c - 0.18) / 0.06) * (1 - smooth((c - 0.5) / 0.06));
+  const flash = env(c, 0.5, 0.6, 0.05);
+  const receipt = smooth((c - 0.58) / 0.14);
+  let out = v * 0.1;
 
-  /* the plate's own rows — the page's content, three text lines */
-  const gone = smooth((c - 0.2) / 0.06) * (1 - smooth((c - 0.52) / 0.06));
-  const flash = env(c, 0.52, 0.62, 0.05);
-
-  let out = v * 0.12;
-  /* the ongoing ticker: one small block that keeps working during the
-     absence, outside the plate */
-  if (
-    nx > ABSENCE_TICKER.x &&
-    nx < ABSENCE_TICKER.x + ABSENCE_TICKER.w &&
-    Math.abs(ny - ABSENCE_TICKER.y) < 0.022
-  ) {
-    const blink = 0.5 + 0.5 * Math.sin(t * 5.2 + nx * 40);
-    out = Math.max(out, (0.3 + 0.4 * gone) * (0.55 + 0.45 * blink));
-  }
-
-  if (inX && inY) {
-    /* the page content, present until the absence takes it */
-    const rows =
-      Math.abs(ny - (r.y + 0.12)) < 0.03 ||
-      Math.abs(ny - (r.y + 0.2)) < 0.03 ||
-      Math.abs(ny - (r.y + 0.28)) < 0.03;
-    out = Math.max(
-      out,
-      (rows ? 0.82 : border < 0.02 ? 0.9 : 0.2) * (1 - gone) +
-        flash * (rows ? 0.3 : border < 0.02 ? 0.35 : 0.12),
-    );
-  }
-
-  /* the receipt: draws beneath the plate after the return — four
-     segments appearing in sequence, then held */
-  const receipt = smooth((c - 0.6) / 0.16) * (1 - smooth((c - 0.94) / 0.06));
-  if (receipt > 0.15) {
-    if (Math.abs(ny - ABSENCE_RECEIPT.y) < 0.018) {
-      out = Math.max(out, 0.95 * receipt);
+  /* the work plate: frame, title rule, content rows */
+  const p = ABSENCE_PLATE;
+  if (inRect(nx, ny, p.x, p.y, p.w, p.h)) {
+    const pe = edgeDist(nx, ny, p.x, p.y, p.w, p.h);
+    if (pe < 0.026) {
+      out = Math.max(out, lerp(0.95, 0.45, gone));
+    } else if (
+      inSeg(nx, ny, ABSENCE_TITLE.x, ABSENCE_TITLE.x1, ABSENCE_TITLE.y, 0.022)
+    ) {
+      out = Math.max(out, lerp(0.72, 0.35, gone));
     }
-    /* four receipt segments: changed / preserved / not inferred / discard */
-    const segs = [0.14, 0.36, 0.52, 0.74];
-    for (let i = 0; i < segs.length; i++) {
-      if (receipt < 0.25 + i * 0.2) break;
-      const seg = { x0: segs[i], x1: segs[i] + (i === 2 ? 0.18 : 0.16) };
+    for (const row of ABSENCE_ROWS) {
       if (
-        Math.abs(ny - (ABSENCE_RECEIPT.y + 0.055)) < 0.022 &&
-        nx > seg.x0 &&
-        nx < seg.x0 + (seg.x1 - seg.x0) * Math.min(1, Math.max(0, (receipt - 0.25 - i * 0.2) / 0.2))
+        inSeg(nx, ny, row.x0, row.x1, row.y, 0.026) &&
+        textRow(nx, row.salt) > 0.5
       ) {
-        out = Math.max(out, 0.8 * receipt);
+        out = Math.max(out, lerp(0.86, 0.05, gone) + flash * 0.25);
       }
     }
-    /* the receipt's own under-rule */
-    if (Math.abs(ny - (ABSENCE_RECEIPT.y + 0.1)) < 0.012) {
-      out = Math.max(out, 0.85 * receipt);
+  }
+
+  /* the ticker: five cells that keep working through the absence —
+     the one thing alive while the page is away */
+  for (let i = 0; i < ABSENCE_TICKER.n; i++) {
+    const ty = ABSENCE_TICKER.y0 + i * ABSENCE_TICKER.dy;
+    if (
+      Math.abs(nx - ABSENCE_TICKER.x) < 0.018 &&
+      Math.abs(ny - ty) < 0.024
+    ) {
+      out = Math.max(
+        out,
+        (0.34 + 0.42 * gone) * (0.4 + 0.6 * blink(t, 3.4, i * 1.7)),
+      );
+    }
+  }
+
+  /* the returned receipt: its own framed artifact beneath the plate,
+     ticks filling left to right in sequence */
+  if (receipt > 0.05) {
+    const r = ABSENCE_RECEIPT;
+    if (inRect(nx, ny, r.x, r.y, r.w, r.h)) {
+      const frameA = smooth((receipt - 0.05) / 0.3);
+      const re = edgeDist(nx, ny, r.x, r.y, r.w, r.h);
+      if (re < 0.026) {
+        out = Math.max(out, 0.95 * frameA);
+      }
+      if (inSeg(nx, ny, r.x + 0.04, r.x + 0.3, r.y + 0.075, 0.022)) {
+        out = Math.max(out, 0.6 * frameA);
+      }
+      for (let i = 0; i < ABSENCE_TICKS.length; i++) {
+        const step = smooth((receipt - (0.3 + i * 0.14)) / 0.14);
+        if (step <= 0) continue;
+        const x1 = r.x + 0.05 + (0.34 + (i % 2) * 0.08) * step;
+        if (inSeg(nx, ny, r.x + 0.05, x1, ABSENCE_TICKS[i], 0.024)) {
+          out = Math.max(out, 0.88);
+        }
+      }
     }
   }
   return out;
 }
 
 function absenceGlyphAt(t: number, nx: number, ny: number): number {
-  /* the receipt strip and ticker render as filled "1" blocks */
-  const c = absencePhase(t);
-  const receipt = smooth((c - 0.6) / 0.16);
-  if (receipt > 0.15 && Math.abs(ny - ABSENCE_RECEIPT.y) < 0.018) return 1;
+  /* the receipt and the ticker are records: every cell a 1 */
   if (
-    nx > ABSENCE_TICKER.x &&
-    nx < ABSENCE_TICKER.x + ABSENCE_TICKER.w &&
-    Math.abs(ny - ABSENCE_TICKER.y) < 0.02
+    Math.abs(nx - ABSENCE_TICKER.x) < 0.016 &&
+    ny > ABSENCE_TICKER.y0 - 0.03 &&
+    ny < ABSENCE_TICKER.y0 + (ABSENCE_TICKER.n - 1) * ABSENCE_TICKER.dy + 0.03
   ) {
     return 1;
   }
+  const r = ABSENCE_RECEIPT;
+  if (inRect(nx, ny, r.x, r.y, r.w, r.h)) return 1;
   return -1;
 }
 
 /* --------------------------------------------------------------
-   04 · INTERACTION ATLAS — rule → pressure cases → revised rule.
-   A clear logic map drawn at full strength: a root rule block up
-   top, three elbow connectors branching into three unlike cases,
-   each case ending in a different outcome terminal (holds = a
-   settled block, refine = the wording extends, fracture = the bar
-   visibly breaks), and the revised rule resolving bright beneath
-   with the test pulse travelling it. Contrast is driven up; the
-   base texture is silenced so the tree is the whole message.
+   04 · INTERACTION ATLAS — a rule, tested, revised.
+   The original rule runs across the top; three elbow connectors
+   drop into three unlike pressure cases, each with its own
+   annotation rule: one holds (a settled terminal), one fractures
+   (the bar, terminal and annotation visibly break), one refines
+   (the bar extends thicker past its old end). Each case then
+   feeds a vertical collector down into the revised rule, which
+   resolves bright and full-width with a solid end node — the
+   lineage settling — while the test pulse travels it and the
+   original rule recedes. Phase 0.86: the freeze lands with the
+   whole tree drawn and the revised rule held.
    ---------------------------------------------------------------- */
 
-const ATLAS_ROOT = { y: 0.11, x0: 0.1, w: 0.44 };
+const ATLAS_ROOT = { y: 0.1, x0: 0.08, x1: 0.8 };
+const ATLAS_ORIGIN = { x0: 0.08, x1: 0.125 };
 const ATLAS_CASES = [
-  { y: 0.36, x0: 0.12, w: 0.32, outcome: "hold" as const, root: 0.16 },
-  { y: 0.53, x0: 0.3, w: 0.34, outcome: "fracture" as const, root: 0.34 },
-  { y: 0.7, x0: 0.48, w: 0.32, outcome: "refine" as const, root: 0.52 },
+  { y: 0.24, x0: 0.1, w: 0.3, drop: 0.16, outcome: "hold" as const, at: 0.1 },
+  { y: 0.4, x0: 0.3, w: 0.32, drop: 0.36, outcome: "fracture" as const, at: 0.16 },
+  { y: 0.56, x0: 0.5, w: 0.24, drop: 0.56, outcome: "refine" as const, at: 0.22 },
 ] as const;
-const ATLAS_RULE = { y: 0.88, x0: 0.1, x1: 0.78 };
+const ATLAS_UNDER = [
+  { y: 0.295, x0: 0.1, x1: 0.32 },
+  { y: 0.455, x0: 0.3, x1: 0.52 },
+  { y: 0.615, x0: 0.5, x1: 0.72 },
+] as const;
+const ATLAS_RULE = { y: 0.8, x0: 0.08, x1: 0.86 };
+const ATLAS_NODE = { x0: 0.86, x1: 0.905 };
 const ATLAS_PERIOD = 18;
 
 function atlasPhase(t: number): number {
-  /* phase 0.86: the reduced-motion freeze lands on the revised rule,
-     held and legible */
   return cyc(t, ATLAS_PERIOD, 0.86);
 }
 
@@ -402,112 +483,214 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
   /* the whole tree releases together at the cycle end — a soft reset,
      never a hard cut */
   const release = 1 - smooth((c - 0.96) / 0.04);
-  let out = v * 0.08 * release;
-  /* the walk compresses into the first third of the cycle so the full
-     tree is on screen and held for most of every cycle */
+  let out = v * 0.06 * release;
   const rootOn = smooth((c - 0.02) / 0.06);
+  const ruleOn = smooth((c - 0.56) / 0.08) * (1 - smooth((c - 0.97) / 0.04));
 
-  /* the root rule: a labelled bar with its own underline */
+  /* the original rule: full strength until the revision takes over,
+     then receding to a remembered line; a solid origin block anchors
+     its start — the mark the end node will answer */
   if (rootOn > 0) {
-    if (Math.abs(ny - ATLAS_ROOT.y) < 0.026 && nx > ATLAS_ROOT.x0 && nx < ATLAS_ROOT.x0 + ATLAS_ROOT.w) {
-      out = Math.max(out, 0.9 * rootOn);
+    const dim = lerp(0.94, 0.55, smooth((c - 0.6) / 0.1));
+    if (
+      inSeg(
+        nx,
+        ny,
+        ATLAS_ROOT.x0,
+        ATLAS_ROOT.x0 + (ATLAS_ROOT.x1 - ATLAS_ROOT.x0) * rootOn,
+        ATLAS_ROOT.y,
+        0.028,
+      )
+    ) {
+      out = Math.max(out, dim * release);
     }
     if (
-      Math.abs(ny - (ATLAS_ROOT.y + 0.05)) < 0.012 &&
-      nx > ATLAS_ROOT.x0 &&
-      nx < ATLAS_ROOT.x0 + ATLAS_ROOT.w
+      nx > ATLAS_ORIGIN.x0 &&
+      nx < ATLAS_ORIGIN.x1 &&
+      Math.abs(ny - ATLAS_ROOT.y) < 0.04 * rootOn
     ) {
-      out = Math.max(out, 0.9 * rootOn);
+      out = Math.max(out, release);
     }
   }
 
-  /* three pressure cases branch off the root, each ending in a
-     different outcome terminal */
   for (let i = 0; i < ATLAS_CASES.length; i++) {
     const k = ATLAS_CASES[i];
-    const appear = smooth((c - (0.12 + i * 0.07)) / 0.07);
+    const appear = smooth((c - k.at) / 0.07);
     if (appear <= 0) continue;
-    /* elbow: drop from the root, then run into the case bar */
-    const dropX = k.root;
-    if (Math.abs(nx - dropX) < 0.012 && ny > ATLAS_ROOT.y + 0.03 && ny < k.y) {
-      out = Math.max(out, appear * release * 0.8);
+
+    /* the elbow: vertical drop from the rule, then into the case bar */
+    if (Math.abs(nx - k.drop) < 0.018 && ny > ATLAS_ROOT.y && ny < k.y) {
+      out = Math.max(out, 0.82 * appear * release);
     }
-    const drawn = k.w * appear;
-    /* the case wording bar */
-    if (Math.abs(ny - k.y) < 0.024 && nx > k.x0 && nx < k.x0 + drawn) {
-      out = Math.max(out, appear * release * (0.66 + 0.24 * v));
+
+    const end = k.x0 + k.w;
+    const drawn = k.x0 + k.w * appear;
+    const gap =
+      k.outcome === "fracture" ? smooth((c - (k.at + 0.1)) / 0.06) : 0;
+
+    /* the case bar — a fractured case renders as two halves with a gap */
+    const broken = gap > 0 && nx > end - 0.12 && nx < end - 0.08;
+    if (!broken && inSeg(nx, ny, k.x0, drawn, k.y, 0.028)) {
+      out = Math.max(out, (0.72 + 0.2 * v) * appear * release);
     }
-    /* the outcome terminal at the case's end */
-    const endX = k.x0 + k.w;
-    if (k.outcome === "hold") {
-      /* a settled block: the rule stands */
-      if (
-        nx > endX - 0.02 &&
-        nx < endX + 0.03 &&
-        Math.abs(ny - k.y) < 0.03
-      ) {
-        out = Math.max(out, appear * release * 0.95);
-      }
-    } else if (k.outcome === "fracture") {
-      /* the bar visibly breaks: two halves, a gap between them */
-      const gap = smooth((c - (0.12 + i * 0.07 + 0.06)) / 0.05);
-      if (nx > k.x0 + k.w * 0.52 && nx < endX - k.w * 0.1) {
-        const shift = gap * 0.02;
-        if (Math.abs(ny - (k.y - shift)) < 0.02) {
-          out = Math.max(out, appear * release * 0.7);
+    if (broken && gap < 0.5) {
+      out = Math.max(out, 0.5 * appear * release);
+    }
+
+    /* the case's outcome terminal */
+    const termOn = smooth((c - (k.at + 0.06)) / 0.05);
+    if (termOn > 0) {
+      if (k.outcome === "hold") {
+        /* settled: a solid end block */
+        if (nx > end - 0.008 && nx < end + 0.045 && Math.abs(ny - k.y) < 0.036) {
+          out = Math.max(out, 0.95 * termOn * release);
+        }
+      } else if (k.outcome === "fracture") {
+        /* the terminal splits with the bar */
+        if (
+          nx > end - 0.045 &&
+          nx < end + 0.01 &&
+          Math.abs(ny - (k.y + gap * 0.02)) < 0.03
+        ) {
+          out = Math.max(out, 0.9 * termOn * release * (1 - gap * 0.35));
+        }
+      } else {
+        /* refined: the bar extends thicker past its old end */
+        const ext = smooth((c - (k.at + 0.12)) / 0.08);
+        if (ext > 0) {
+          if (inSeg(nx, ny, end, end + ext * 0.1, k.y, 0.03)) {
+            out = Math.max(out, 0.9 * ext * release);
+          }
+          if (nx > end + 0.075 && nx < end + 0.125 && Math.abs(ny - k.y) < 0.036) {
+            out = Math.max(out, 0.95 * ext * release);
+          }
         }
       }
-      if (gap > 0 && nx > endX - 0.028 && nx < endX && Math.abs(ny - k.y) < 0.014) {
-        out = Math.max(out, appear * release * 0.95);
-      }
-    } else {
-      /* refined: the wording extends past the original end */
-      const extend = smooth((c - (0.12 + i * 0.07)) / 0.07);
+    }
+
+    /* the case's annotation rule, breaking where its case broke */
+    const annot = smooth((c - (k.at + 0.04)) / 0.06);
+    if (annot > 0) {
+      const u = ATLAS_UNDER[i];
+      const annotBroken = gap > 0 && nx > u.x0 + 0.16 && nx < u.x0 + 0.2;
       if (
-        extend > 0 &&
-        Math.abs(ny - k.y) < 0.024 &&
-        nx > k.x0 + drawn * 0.96 &&
-        nx < k.x0 + k.w + extend * 0.14
+        !annotBroken &&
+        inSeg(nx, ny, u.x0, u.x0 + (u.x1 - u.x0) * annot, u.y, 0.016)
       ) {
-        out = Math.max(out, appear * release * 0.8);
+        out = Math.max(out, 0.6 * annot * release);
       }
-      if (nx > endX + extend * 0.1 - 0.02 && nx < endX + extend * 0.14 && Math.abs(ny - k.y) < 0.03) {
-        out = Math.max(out, appear * release * 0.95);
+    }
+
+    /* the collector: each case feeds the revised rule below */
+    const feed = smooth((c - (0.42 + i * 0.04)) / 0.06);
+    if (feed > 0 && Math.abs(nx - k.drop) < 0.016) {
+      const fy = lerp(ATLAS_UNDER[i].y, ATLAS_RULE.y, feed);
+      if (ny > ATLAS_UNDER[i].y && ny < fy) {
+        out = Math.max(out, 0.68 * release);
       }
     }
   }
 
-  /* the revised rule: resolves bright once the cases have spoken, with
-     the test pulse travelling it */
-  const ruleOn = smooth((c - 0.4) / 0.08) * (1 - smooth((c - 0.97) / 0.04));
+  /* the revised rule: resolves bright and full-width, with the test
+     pulse travelling it and a solid end node — the lineage settled */
   if (ruleOn > 0) {
     if (
-      Math.abs(ny - ATLAS_RULE.y) < 0.03 &&
-      nx > ATLAS_RULE.x0 &&
-      nx < ATLAS_RULE.x0 + (ATLAS_RULE.x1 - ATLAS_RULE.x0) * ruleOn
+      inSeg(
+        nx,
+        ny,
+        ATLAS_RULE.x0,
+        ATLAS_RULE.x0 + (ATLAS_RULE.x1 - ATLAS_RULE.x0) * ruleOn,
+        ATLAS_RULE.y,
+        0.028,
+      )
     ) {
-      out = Math.max(out, 0.96 * ruleOn * release);
+      out = Math.max(out, 0.97 * release);
+    }
+    const nodeOn = smooth((c - 0.66) / 0.06);
+    if (
+      nodeOn > 0 &&
+      nx > ATLAS_NODE.x0 &&
+      nx < ATLAS_NODE.x1 &&
+      Math.abs(ny - ATLAS_RULE.y) < 0.05 * nodeOn
+    ) {
+      out = Math.max(out, release);
     }
     const pulse = cyc(t, 4.5);
     const px = ATLAS_RULE.x0 + pulse * (ATLAS_RULE.x1 - ATLAS_RULE.x0);
-    if (Math.abs(ny - ATLAS_RULE.y) < 0.045 && Math.abs(nx - px) < 0.05) {
-      out = Math.max(out, ruleOn * release * 0.98);
+    if (Math.abs(ny - ATLAS_RULE.y) < 0.042 && Math.abs(nx - px) < 0.045) {
+      out = Math.max(out, 0.98 * release);
     }
   }
   return out;
 }
 
+function atlasGlyphAt(t: number, nx: number, ny: number): number {
+  const c = atlasPhase(t);
+  /* connectors and collectors read as : — thin dotted lines */
+  for (let i = 0; i < ATLAS_CASES.length; i++) {
+    const k = ATLAS_CASES[i];
+    if (
+      smooth((c - k.at) / 0.07) > 0 &&
+      Math.abs(nx - k.drop) < 0.018 &&
+      ny > ATLAS_ROOT.y &&
+      ny < k.y
+    ) {
+      return 1;
+    }
+    const feed = smooth((c - (0.42 + i * 0.04)) / 0.06);
+    if (
+      feed > 0 &&
+      Math.abs(nx - k.drop) < 0.016 &&
+      ny > ATLAS_UNDER[i].y &&
+      ny < ATLAS_RULE.y
+    ) {
+      return 1;
+    }
+    /* a junction mark where each drop leaves the rule */
+    if (Math.abs(nx - k.drop) < 0.02 && Math.abs(ny - ATLAS_ROOT.y) < 0.028) {
+      return 2;
+    }
+  }
+  /* annotation rules read as : rows too */
+  for (const u of ATLAS_UNDER) {
+    if (Math.abs(ny - u.y) < 0.016 && nx > u.x0 && nx < u.x1) return 1;
+  }
+  /* solids: the outcome terminals and the end node */
+  for (const k of ATLAS_CASES) {
+    const end = k.x0 + k.w;
+    if (
+      Math.abs(ny - k.y) < 0.05 &&
+      nx > end - 0.05 &&
+      nx < end + 0.13 &&
+      smooth((c - (k.at + 0.06)) / 0.05) > 0.5
+    ) {
+      return 4;
+    }
+  }
+  if (
+    Math.abs(ny - ATLAS_RULE.y) < 0.052 &&
+    nx > ATLAS_NODE.x0 &&
+    nx < ATLAS_NODE.x1 &&
+    smooth((c - 0.66) / 0.06) > 0.5
+  ) {
+    return 4;
+  }
+  return -1;
+}
+
 /* --------------------------------------------------------------
-   05 · FLUXION STUDIOS — scattered brief, assembled site, shipped.
-   Seven loose pieces wander in the open; they slide into the
-   site's wireframe one at a time (nav, heading, image block,
-   text rows, footer), the frame snaps shut with one assembly
-   flash, and the delivered structure holds before releasing.
-   Loop: scattered brief → assembly → shipped thing → hold →
-   reset.
+   05 · FLUXION STUDIOS — the delivery: a site, and its companion.
+   Loose pieces drift in the open; they slide one at a time into a
+   desktop layout (logo, nav, display heading, sub-rows, image
+   block, caption, footer), the browser frame snaps shut with one
+   flash; a mobile companion then assembles at the right — top
+   bar, screen block, rows — and its own frame snaps; both hold
+   as one delivered system. Phase 0.88: the freeze lands on the
+   shipped pair.
    ---------------------------------------------------------------- */
 
-const FLUX_FRAME = { x: 0.12, y: 0.12, w: 0.76, h: 0.76 };
+const FLUX_DESK = { x: 0.04, y: 0.07, w: 0.54, h: 0.86 };
+const FLUX_MOBILE = { x: 0.68, y: 0.24, w: 0.26, h: 0.6 };
 const FLUX_PERIOD = 16;
 
 type FluxPiece = {
@@ -524,17 +707,24 @@ type FluxPiece = {
   at: number;
 };
 
+/* the wordmark plate is a wide, short strip (~5:1): every piece keeps
+   at least one glyph row of height so nothing aliases out of the grid */
 const FLUX_PIECES: FluxPiece[] = [
-  { x: 0.14, y: 0.17, w: 0.6, h: 0.03, kind: "bar", sx: 0.05, sy: 0.06, at: 0.12 },
-  { x: 0.16, y: 0.3, w: 0.36, h: 0.06, kind: "bar", sx: 0.62, sy: 0.04, at: 0.24 },
-  { x: 0.58, y: 0.36, w: 0.26, h: 0.2, kind: "block", sx: 0.78, sy: 0.62, at: 0.36 },
-  { x: 0.16, y: 0.62, w: 0.3, h: 0.045, kind: "rows", sx: 0.04, sy: 0.72, at: 0.36 },
-  { x: 0.16, y: 0.71, w: 0.26, h: 0.045, kind: "rows", sx: 0.5, sy: 0.92, at: 0.46 },
-  { x: 0.14, y: 0.8, w: 0.72, h: 0.028, kind: "bar", sx: 0.3, sy: 0.3, at: 0.56 },
+  { x: 0.08, y: 0.13, w: 0.035, h: 0.055, kind: "block", sx: 0.42, sy: 0.0, at: 0.08 },
+  { x: 0.135, y: 0.13, w: 0.2, h: 0.055, kind: "bar", sx: 0.72, sy: 0.06, at: 0.11 },
+  { x: 0.08, y: 0.26, w: 0.4, h: 0.075, kind: "bar", sx: 0.06, sy: 0.92, at: 0.17 },
+  { x: 0.08, y: 0.4, w: 0.3, h: 0.06, kind: "rows", sx: 0.66, sy: 0.5, at: 0.22 },
+  { x: 0.08, y: 0.49, w: 0.42, h: 0.24, kind: "block", sx: 0.3, sy: 0.0, at: 0.28 },
+  { x: 0.08, y: 0.78, w: 0.34, h: 0.06, kind: "rows", sx: 0.85, sy: 0.34, at: 0.34 },
+  { x: 0.08, y: 0.865, w: 0.42, h: 0.05, kind: "bar", sx: 0.16, sy: 0.55, at: 0.4 },
+  { x: 0.71, y: 0.31, w: 0.13, h: 0.055, kind: "bar", sx: 0.55, sy: 0.88, at: 0.52 },
+  { x: 0.71, y: 0.4, w: 0.2, h: 0.22, kind: "block", sx: 0.92, sy: 0.06, at: 0.58 },
+  { x: 0.71, y: 0.66, w: 0.17, h: 0.06, kind: "rows", sx: 0.28, sy: 0.1, at: 0.64 },
+  { x: 0.71, y: 0.75, w: 0.14, h: 0.06, kind: "rows", sx: 0.45, sy: 0.3, at: 0.68 },
 ];
 
 function fluxCycle(t: number): number {
-  /* phase 0.88: the reduced-motion freeze lands on the shipped state */
+  /* phase 0.88: the reduced-motion freeze lands on the shipped pair */
   return cyc(t, FLUX_PERIOD, 0.88);
 }
 
@@ -547,9 +737,10 @@ function fluxPiece(p: FluxPiece, t: number, c: number): {
   alpha: number;
 } {
   const f = smooth((c - p.at) / 0.14);
-  const alpha =
-    env(c, p.at - 0.04, 0.93, 0.07) * (1 - smooth((c - 0.93) / 0.06));
-  const wander = (1 - f) * 0.055;
+  /* loose matter reads as a dimmed fragment — visible while it
+     travels, never dimmed to nothing; assembled structure is full */
+  const alpha = 0.8 + 0.2 * f;
+  const wander = (1 - f) * 0.05;
   const wx = Math.sin(t * 0.5 + p.sx * 9) * wander;
   const wy = Math.cos(t * 0.44 + p.sy * 7) * wander;
   return {
@@ -562,51 +753,54 @@ function fluxPiece(p: FluxPiece, t: number, c: number): {
 
 function fluxShape(v: number, nx: number, ny: number, t: number): number {
   const c = fluxCycle(t);
-  const flash = env(c, 0.7, 0.82, 0.06);
-  let out = v * 0.28;
+  const flash = env(c, 0.46, 0.56, 0.05) + env(c, 0.72, 0.8, 0.04) * 0.8;
+  const release = 1 - smooth((c - 0.94) / 0.05);
+  let out = v * 0.16;
 
   /* the loose pieces, each travelling from its scatter to its slot */
   for (const p of FLUX_PIECES) {
     const rect = fluxPiece(p, t, c);
-    if (rect.alpha <= 0) continue;
     const inX = nx > rect.x && nx < rect.x + p.w;
     const inY = ny > rect.y && ny < rect.y + p.h;
     if (!inX || !inY) continue;
-    let amp = rect.f * (p.kind === "bar" ? 0.88 : p.kind === "block" ? 0.6 : 0.72);
+    let amp =
+      (0.42 + 0.58 * rect.f) *
+      (p.kind === "bar" ? 0.95 : p.kind === "block" ? 0.66 : 0.78);
     /* the block's inner texture once it settles */
     if (p.kind === "block" && rect.f > 0.9) {
       amp *= columnHash(nx, 5) > 0.3 ? 0.9 : 0.25;
     }
     /* rows get word-gap texture */
-    if (p.kind === "rows") amp *= columnHash(nx, 9) > 0.24 ? 1 : 0.12;
-    out = Math.max(out, amp * rect.alpha * (0.75 + 0.25 * v));
+    if (p.kind === "rows") amp *= textRow(nx, 9);
+    if (amp <= 0.02) continue;
+    out = Math.max(out, amp * rect.alpha * release * (0.75 + 0.25 * v));
   }
 
-  /* the frame snaps shut at the assembly moment, flashes, then holds */
-  const frameOn = smooth((c - 0.7) / 0.1) * (1 - smooth((c - 0.94) / 0.05));
-  if (frameOn > 0) {
-    const r = FLUX_FRAME;
-    const bx = Math.min(
-      Math.abs(nx - r.x),
-      Math.abs(nx - (r.x + r.w)),
-    );
-    const by = Math.min(
-      Math.abs(ny - r.y),
-      Math.abs(ny - (r.y + r.h)),
-    );
-    const onEdge = bx < 0.016 || by < 0.016;
-    if (onEdge) {
-      out = Math.max(out, (0.9 + flash * 0.1) * (0.75 + 0.25 * v));
-    }
+  /* the two frames snap shut after their own assemblies, flash, hold */
+  const frames: Array<{ r: typeof FLUX_DESK; on: number }> = [
+    { r: FLUX_DESK, on: smooth((c - 0.46) / 0.08) },
+    { r: FLUX_MOBILE, on: smooth((c - 0.72) / 0.08) },
+  ];
+  for (const { r, on } of frames) {
+    if (on <= 0) continue;
+    const bx = Math.min(Math.abs(nx - r.x), Math.abs(nx - (r.x + r.w)));
+    const by = Math.min(Math.abs(ny - r.y), Math.abs(ny - (r.y + r.h)));
+    const inSpan =
+      nx > r.x - 0.02 &&
+      nx < r.x + r.w + 0.02 &&
+      ny > r.y - 0.03 &&
+      ny < r.y + r.h + 0.03;
+    if (!inSpan || (bx >= 0.022 && by >= 0.03)) continue;
+    out = Math.max(out, (0.95 + flash * 0.05) * release * (0.75 + 0.25 * v));
   }
   return out;
 }
 
 function fluxDisplace(t: number, nx: number, ny: number): [number, number] {
-  /* unformed matter wanders gently; the assembled site holds place */
+  /* unformed matter wanders gently; the assembled system holds place */
   const c = fluxCycle(t);
-  const f = smooth((c - 0.1) / 0.58);
-  const amp = (1 - f) * 3.5;
+  const f = smooth((c - 0.08) / 0.55);
+  const amp = (1 - f) * 2.6;
   return [
     Math.sin(t * 0.42 + (nx * 9 + ny * 5) * 4.1) * amp,
     Math.cos(t * 0.35 + (nx * 6 + ny * 9) * 4.3) * amp,
@@ -614,103 +808,149 @@ function fluxDisplace(t: number, nx: number, ny: number): [number, number] {
 }
 
 /* --------------------------------------------------------------
-   06 · DAYNERO — many small spends, one safe daily amount.
-   Transaction fragments stream in from every edge toward a
-   budget card, each one absorbed at the card's edge with a small
-   flash; once enough have landed the amount inside the card
-   ticks to its new value with a bright beat, then holds. The
-   card's rails and label bar give the amount its structure.
+   06 · DAYNERO — many spends, one safe number.
+   A budget card fills the panel: frame, label bar, status pip,
+   and a large three-digit amount on its own line above a
+   baseline rule. Transaction dashes stream in from every edge
+   and are absorbed at the well's edge; when the batch lands the
+   amount ticks to its new value with one bright beat. The amount
+   is the only thing in the panel allowed digits — many pieces of
+   data condensing into one actionable number, calmly.
    ---------------------------------------------------------------- */
 
 /* glyph set: ·:+*# then 0-9 — the ambient field only ever resolves
    into the marks (indices 0-4); digits belong to the amount alone */
 const NUMBER_GLYPHS = "·:+*#0123456789";
 
-const NUMBER_CARD = { x: 0.3, y: 0.28, w: 0.4, h: 0.4 };
-const NUMBER_CORE = { x0: 0.4, x1: 0.6, y0: 0.44, y1: 0.56 };
+const NUMBER_CARD = { x: 0.14, y: 0.16, w: 0.72, h: 0.68 };
+const NUMBER_LABEL = { y: 0.25, x0: 0.19, x1: 0.53 };
+const NUMBER_CHIP = { y: 0.25, x0: 0.72, x1: 0.81 };
+const NUMBER_WELL = { x0: 0.34, y0: 0.38, x1: 0.66, y1: 0.62 };
+const NUMBER_UNDER = { y: 0.59, x0: 0.38, x1: 0.62 };
+const AMOUNT_LINE = 0.5;
+const AMOUNT_XS = [0.42, 0.5, 0.58];
+/** one glyph cell wide — a digit, not a run of digits */
+const AMOUNT_CELL = 0.008;
+/** two glyph rows tall: the amount reads as one bold display number */
+const AMOUNT_ROW = 0.02;
 /* the amount reads as three digit cells; '824' → glyph indices 13,7,9 */
 const AMOUNT_A = [13, 7, 9];
 const AMOUNT_B = [13, 5, 14]; /* '809' — the cycle's other value */
-const TX_SLOTS = [
-  { x: 0.06, y: 0.16, phase: 0.02 },
-  { x: 0.94, y: 0.2, phase: 0.18 },
-  { x: 0.08, y: 0.62, phase: 0.34 },
-  { x: 0.92, y: 0.44, phase: 0.5 },
-  { x: 0.12, y: 0.86, phase: 0.66 },
-  { x: 0.88, y: 0.9, phase: 0.82 },
+/* eight transaction dashes: starts on every edge, doors around the
+   well — they stream in, shrink, and are swallowed by the amount */
+const TX_STARTS = [
+  { x: 0.02, y: 0.2 },
+  { x: 0.98, y: 0.24 },
+  { x: 0.02, y: 0.44 },
+  { x: 0.98, y: 0.48 },
+  { x: 0.04, y: 0.7 },
+  { x: 0.96, y: 0.74 },
+  { x: 0.16, y: 0.95 },
+  { x: 0.86, y: 0.94 },
 ] as const;
-/* where each fragment docks on the card's edge */
 const TX_DOORS = [
-  { x: 0.34, y: 0.36 },
-  { x: 0.66, y: 0.38 },
-  { x: 0.32, y: 0.52 },
-  { x: 0.68, y: 0.54 },
-  { x: 0.38, y: 0.64 },
-  { x: 0.62, y: 0.66 },
+  { x: 0.36, y: 0.42 },
+  { x: 0.64, y: 0.42 },
+  { x: 0.33, y: 0.5 },
+  { x: 0.67, y: 0.5 },
+  { x: 0.36, y: 0.58 },
+  { x: 0.64, y: 0.58 },
+  { x: 0.41, y: 0.63 },
+  { x: 0.59, y: 0.63 },
 ] as const;
+const TX_WINDOW = 0.44;
 
 function numberPhase(t: number): number {
-  return cyc(t, 16, 0.55);
+  return cyc(t, 16, 0.62);
 }
 
 function numberAmountIndex(t: number, nx: number): number {
-  /* which digit column: three cells inside the core, or -1 */
+  /* which digit column: three cells on the amount's line, or -1 */
   const c = numberPhase(t);
   const tick = smooth((c - 0.5) / 0.05);
   const value = tick > 0.5 ? AMOUNT_B : AMOUNT_A;
   for (let i = 0; i < value.length; i++) {
-    const cx = 0.4 + i * 0.1;
-    if (Math.abs(nx - cx) < 0.05) return value[i];
+    if (Math.abs(nx - AMOUNT_XS[i]) < AMOUNT_CELL) return value[i];
   }
   return -1;
 }
 
 function numberShape(v: number, nx: number, ny: number, t: number): number {
   const c = numberPhase(t);
-  let out = v * 0.14;
+  let out = v * 0.12;
   const r = NUMBER_CARD;
-  const inCard =
-    nx > r.x && nx < r.x + r.w && ny > r.y && ny < r.y + r.h;
+  const beat = env(c, 0.46, 0.56, 0.05);
 
-  /* the budget card: frame, label bar, amount well */
-  if (inCard) {
-    const bx = Math.min(Math.abs(nx - r.x), Math.abs(nx - (r.x + r.w)));
-    const by = Math.min(Math.abs(ny - r.y), Math.abs(ny - (r.y + r.h)));
-    if (bx < 0.018 || by < 0.018) {
-      out = Math.max(out, 0.85);
-    } else if (Math.abs(ny - (r.y + 0.09)) < 0.02 && nx > r.x + 0.04 && nx < r.x + r.w - 0.04) {
+  /* the budget card: frame, label bar, status pip, amount well */
+  if (inRect(nx, ny, r.x, r.y, r.w, r.h)) {
+    const re = edgeDist(nx, ny, r.x, r.y, r.w, r.h);
+    if (re < 0.026) {
+      out = Math.max(out, 0.9);
+    } else if (
+      inSeg(nx, ny, NUMBER_LABEL.x0, NUMBER_LABEL.x1, NUMBER_LABEL.y, 0.02)
+    ) {
       out = Math.max(out, 0.55);
-    } else if (nx > NUMBER_CORE.x0 && nx < NUMBER_CORE.x1 && ny > NUMBER_CORE.y0 && ny < NUMBER_CORE.y1) {
+    } else if (
+      inSeg(nx, ny, NUMBER_CHIP.x0, NUMBER_CHIP.x1, NUMBER_CHIP.y, 0.016)
+    ) {
+      out = Math.max(out, 0.45);
+    } else if (
+      inRect(
+        nx,
+        ny,
+        NUMBER_WELL.x0,
+        NUMBER_WELL.y0,
+        NUMBER_WELL.x1 - NUMBER_WELL.x0,
+        NUMBER_WELL.y1 - NUMBER_WELL.y0,
+      )
+    ) {
+      /* the well: a fenced slot holding the decision */
+      const we = edgeDist(
+        nx,
+        ny,
+        NUMBER_WELL.x0,
+        NUMBER_WELL.y0,
+        NUMBER_WELL.x1 - NUMBER_WELL.x0,
+        NUMBER_WELL.y1 - NUMBER_WELL.y0,
+      );
       const digit = numberAmountIndex(t, nx);
-      /* the beat: the amount flashes bright as it ticks */
-      const beat = env(c, 0.48, 0.56, 0.04);
-      if (digit >= 0 && Math.abs(ny - 0.47) < 0.035) {
-        out = Math.max(out, 0.97 + beat * 0.03);
+      if (we < 0.018) {
+        out = Math.max(out, 0.5 + beat * 0.2);
+      } else if (digit >= 0 && Math.abs(ny - AMOUNT_LINE) < AMOUNT_ROW) {
+        /* the amount: the brightest line in the panel */
+        out = Math.max(out, 1);
       } else {
-        out = Math.max(out, 0.3 + 0.05 * Math.sin(t * 0.6) + beat * 0.25);
+        out = Math.max(out, 0.24 + beat * 0.18);
       }
+    }
+    /* the amount's baseline rule */
+    if (
+      inSeg(nx, ny, NUMBER_UNDER.x0, NUMBER_UNDER.x1, NUMBER_UNDER.y, 0.018)
+    ) {
+      out = Math.max(out, 0.9 + beat * 0.08);
     }
   }
 
-  /* the fragments: small value bars streaming from the edges toward
-     the card, shrinking as they travel, absorbed at the door */
-  for (let i = 0; i < TX_SLOTS.length; i++) {
-    const slot = TX_SLOTS[i];
+  /* the transaction dashes: short value rows streaming from the edges
+     toward the well, shrinking as they travel, absorbed at the door */
+  for (let i = 0; i < TX_STARTS.length; i++) {
+    const u = cyc(t, 16, i * 0.125);
+    if (u >= TX_WINDOW) continue;
+    const travel = smooth(u / TX_WINDOW);
+    const start = TX_STARTS[i];
     const door = TX_DOORS[i];
-    const u = (cyc(t, 16, slot.phase) * 1) % 1;
-    const travel = smooth(u / 0.5);
-    if (u >= 0.5) continue;
-    const x = lerp(slot.x, door.x, travel);
-    const y = lerp(slot.y, door.y, travel);
-    const w = 0.05 * (1 - travel * 0.55);
-    const d = Math.abs(nx - x);
-    const dy = Math.abs(ny - y);
-    const arrive = smooth((travel - 0.92) / 0.08);
-    if (dy < 0.022 && d < w / 2) {
-      out = Math.max(out, 0.72 * (0.45 + 0.55 * travel) * (1 - smooth((u - 0.44) / 0.06)));
+    const x = lerp(start.x, door.x, travel);
+    const y = lerp(start.y, door.y, travel);
+    const len = 0.09 * (1 - travel * 0.4);
+    if (Math.abs(ny - y) < 0.022 && Math.abs(nx - x) < len / 2) {
+      out = Math.max(
+        out,
+        (0.62 + 0.3 * travel) * (1 - smooth((travel - 0.9) / 0.1)),
+      );
     }
-    /* the absorption flash on the card's edge */
-    if (arrive > 0 && Math.hypot(nx - door.x, ny - door.y) < 0.035) {
+    /* the absorption: a small bloom where the data enters the number */
+    const arrive = smooth((travel - 0.82) / 0.18);
+    if (arrive > 0 && Math.hypot(nx - door.x, ny - door.y) < 0.03) {
       out = Math.max(out, arrive * 0.9);
     }
   }
@@ -723,30 +963,47 @@ function numberGlyphAt(t: number, nx: number, ny: number): number {
      The engine's default band maps strength across the whole glyph
      string, which would spill digits into the structure. */
   const r = NUMBER_CARD;
-  if (nx > r.x && nx < r.x + r.w && ny > r.y && ny < r.y + r.h) {
-    if (nx > NUMBER_CORE.x0 && nx < NUMBER_CORE.x1 && ny > NUMBER_CORE.y0 && ny < NUMBER_CORE.y1) {
+  if (inRect(nx, ny, r.x, r.y, r.w, r.h)) {
+    if (
+      inRect(
+        nx,
+        ny,
+        NUMBER_WELL.x0,
+        NUMBER_WELL.y0,
+        NUMBER_WELL.x1 - NUMBER_WELL.x0,
+        NUMBER_WELL.y1 - NUMBER_WELL.y0,
+      )
+    ) {
       const digit = numberAmountIndex(t, nx);
-      if (digit >= 0 && Math.abs(ny - 0.47) < 0.032) return digit;
+      if (digit >= 0 && Math.abs(ny - AMOUNT_LINE) < AMOUNT_ROW) return digit;
+      const we = edgeDist(
+        nx,
+        ny,
+        NUMBER_WELL.x0,
+        NUMBER_WELL.y0,
+        NUMBER_WELL.x1 - NUMBER_WELL.x0,
+        NUMBER_WELL.y1 - NUMBER_WELL.y0,
+      );
+      if (we < 0.019) return 4; /* the well's fence */
       return 3; /* '*' fill inside the well, digits on one line over it */
     }
-    const bx = Math.min(Math.abs(nx - r.x), Math.abs(nx - (r.x + r.w)));
-    const by = Math.min(Math.abs(ny - r.y), Math.abs(ny - (r.y + r.h)));
-    if (bx < 0.018 || by < 0.018) return 4; /* the frame: densest mark */
-    if (Math.abs(ny - (r.y + 0.09)) < 0.02) return 4; /* the label bar */
+    const re = edgeDist(nx, ny, r.x, r.y, r.w, r.h);
+    if (re < 0.026) return 4; /* the frame: densest mark */
+    if (Math.abs(ny - NUMBER_LABEL.y) < 0.02) return 4; /* the label bar */
+    if (Math.abs(ny - NUMBER_CHIP.y) < 0.018) return 4; /* the status pip */
+    if (Math.abs(ny - NUMBER_UNDER.y) < 0.018) return 4; /* the baseline rule */
     return 3;
   }
   /* the streaming fragments: marks, never digits */
-  for (let i = 0; i < TX_SLOTS.length; i++) {
-    const slot = TX_SLOTS[i];
-    const door = TX_DOORS[i];
-    const u = cyc(t, 16, slot.phase) % 1;
-    if (u >= 0.5) continue;
-    const travel = smooth(u / 0.5);
-    const x = lerp(slot.x, door.x, travel);
-    const y = lerp(slot.y, door.y, travel);
-    const w = 0.05 * (1 - travel * 0.55);
-    if (Math.abs(ny - y) < 0.022 && Math.abs(nx - x) < w / 2) {
-      return travel > 0.6 ? 2 : 1; /* * : — value marks, not digits */
+  for (let i = 0; i < TX_STARTS.length; i++) {
+    const u = cyc(t, 16, i * 0.125);
+    if (u >= TX_WINDOW) continue;
+    const travel = smooth(u / TX_WINDOW);
+    const x = lerp(TX_STARTS[i].x, TX_DOORS[i].x, travel);
+    const y = lerp(TX_STARTS[i].y, TX_DOORS[i].y, travel);
+    const len = 0.09 * (1 - travel * 0.4);
+    if (Math.abs(ny - y) < 0.022 && Math.abs(nx - x) < len / 2) {
+      return travel > 0.6 ? 2 : 1; /* + : — value marks, not digits */
     }
   }
   /* everything else, ambient included: a stable mark per column —
@@ -782,13 +1039,13 @@ const PORTRAITS: Record<string, PortraitConfig> = {
     color: (t) =>
       t >= 0.9
         ? "rgba(255, 244, 250, 0.95)"
-        : `rgba(247, 236, 245, ${0.1 + 0.4 * t})`,
+        : `rgba(247, 236, 245, ${0.12 + 0.44 * t})`,
   },
   "invisible-interfaces": {
     glyphs: "01",
     cell: 13,
     seed: 23,
-    ambient: 0.2,
+    ambient: 0.18,
     tune: [0.42, 2.0],
     ground: "#0f0e0a",
     shape: absenceShape,
@@ -804,26 +1061,27 @@ const PORTRAITS: Record<string, PortraitConfig> = {
     ambient: 0.12,
     ground: "#dcece8",
     shape: atlasShape,
+    glyphAt: atlasGlyphAt,
     color: (t) =>
       t >= 0.9
         ? "rgba(11, 62, 57, 0.95)"
-        : `rgba(13, 24, 23, ${0.3 + 0.5 * t})`,
+        : `rgba(13, 24, 23, ${0.34 + 0.54 * t})`,
   },
   "fluxion-studios": {
-    cell: 13,
+    cell: 12,
     seed: 61,
-    ambient: 0.2,
+    ambient: 0.22,
     ground: "#f1c9cd",
     shape: fluxShape,
     displace: fluxDisplace,
     color: (t) =>
       t >= 0.92
         ? "rgba(140, 10, 24, 0.95)"
-        : `rgba(176, 16, 32, ${0.18 + 0.42 * t})`,
+        : `rgba(176, 16, 32, ${0.2 + 0.48 * t})`,
   },
   daynero: {
     glyphs: NUMBER_GLYPHS,
-    cell: 13,
+    cell: 12,
     seed: 83,
     ambient: 0.15,
     ground: "#161c0d",
@@ -832,7 +1090,7 @@ const PORTRAITS: Record<string, PortraitConfig> = {
     color: (t) =>
       t >= 0.9
         ? "rgba(201, 242, 78, 0.95)"
-        : `rgba(185, 221, 85, ${0.12 + 0.4 * t})`,
+        : `rgba(185, 221, 85, ${0.14 + 0.44 * t})`,
   },
 };
 
