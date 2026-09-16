@@ -1201,11 +1201,12 @@ a[data-external]:focus-visible .xp-cta-arrow {
 }
 
 /* ---------- the splash ----------
-   The first state transition: the name as compressed notation, the
-   rule that opens the folio, and the cover's own material already
-   settling around it — the same pixel signal and glyph texture, quiet
-   where the name sits, so the handoff into the hero is continuous.
-   Session-scoped, skippable, removed from the DOM when done. */
+   The first state transition: the name holds while the rule opens and
+   the cover's own material settles around it. The lift is a dissolve,
+   not a cut — the plate fades while the splash name grows toward the
+   cover wordmark's rendered size, so the two names read as one object
+   changing state. Session-scoped, skippable, removed from the DOM
+   when done. */
 .splash {
   position: fixed;
   inset: 0;
@@ -1215,6 +1216,14 @@ a[data-external]:focus-visible .xp-cta-arrow {
   justify-items: center;
   gap: 1.1rem;
   background: rgb(var(--atmos, 232 234 228));
+  transition: opacity 640ms var(--ease-out);
+}
+
+/* The dissolve phase: ink and meta hand over to the identical field
+   underneath while the name keeps travelling toward the wordmark. */
+.splash[data-phase="lift"] {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* the material: the same two-layer field the cover carries, framed by
@@ -1239,7 +1248,8 @@ a[data-external]:focus-visible .xp-cta-arrow {
 .splash-name {
   /* The wordmark's own pixel voice — the same face the hero and the
      header identity rest in. Silkscreen has no width axis, so the
-     arrival rests at its authored width. */
+     arrival rests at its authored width, and the lift's growth into
+     the cover wordmark is a whole-object scale, not a type change. */
   color: var(--ink);
   font-family: var(--pixel);
   font-size: clamp(2.7rem, 7.5vw, 7rem);
@@ -1247,6 +1257,11 @@ a[data-external]:focus-visible .xp-cta-arrow {
   letter-spacing: 0;
   line-height: 1;
   text-transform: uppercase;
+  transition: transform 640ms var(--ease-out);
+}
+
+.splash[data-phase="lift"] .splash-name {
+  transform: scale(1.55);
 }
 
 /* The loading bar: the folio's opening rule. The fill is driven by

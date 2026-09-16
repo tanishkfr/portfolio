@@ -10,22 +10,24 @@ import {
 } from "./explore";
 
 /**
- * The first state transition of the portfolio: the name arrives as
- * compressed notation, then resolves into its authored width while the
- * signal rule draws beneath it - the same rule that opens the folio.
+ * The first state transition of the portfolio: the name holds while the
+ * signal rule draws beneath it, then the whole plate dissolves into the
+ * hero — the splash name scaling up into the cover wordmark's own
+ * coordinates while the identical field underneath takes over.
  *
  * The cover's material is already present — literally. Both fields run
  * the cover's exact configs (same seed, cell, ambient, flow, drift,
  * tune, quiet geometry, and the cover's own shape scripts), and the
  * engine's shared clock keeps every field in one noise phase, so this
  * overlay is the hero's opening frames, not a separate composition.
- * When it lifts, the hero field beneath shows the very same matter at
- * the very same phase — no reset, no duplicate field, no jump. Once
- * per session, skippable by any interaction, never blocking the page
- * underneath, removed from the DOM when done.
+ * The lift is a fade, not a cut: because the matter underneath is the
+ * same matter at the same phase, the overlay dissolving into the hero
+ * reads as one scene, never a reset. Once per session, skippable by
+ * any interaction, never blocking the page underneath, removed from
+ * the DOM when done.
  */
 
-type Phase = "hold" | "resolve" | "done";
+type Phase = "hold" | "resolve" | "lift" | "done";
 
 export function SplashGate() {
   const [phase, setPhase] = useState<Phase>("hold");
@@ -41,35 +43,22 @@ export function SplashGate() {
   }, []);
 
   useEffect(() => {
+    /* A session that has already seen the splash, or a reduced-motion
+       reader, skips the hold outright - resolved within one frame, so
+       state is not synchronised inside the effect body. */
     let seen = false;
     try {
       seen = sessionStorage.getItem("splash") === "seen";
     } catch {
       /* private mode: play once per page load */
     }
-
-    const finish = () => {
-      setPhase("done");
-      try {
-        sessionStorage.setItem("splash", "seen");
-      } catch {
-        /* private mode: play once per page load */
-      }
-    };
-
-    /* A session that has already seen the splash, or a reduced-motion
-       reader, skips the hold outright - resolved within one frame, so
-       state is not synchronised inside the effect body. */
-    if (seen) {
-      const id = window.requestAnimationFrame(finish);
-      return () => window.cancelAnimationFrame(id);
-    }
-
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      const id = window.requestAnimationFrame(() => finish());
+    if (seen || reduced) {
+      const id = window.requestAnimationFrame(() => setPhase("done"));
       return () => window.cancelAnimationFrame(id);
     }
+
+    const holdTimer = window.setTimeout(() => setPhase("resolve"), 250);
 
     /* The bar is driven from THIS effect's clock — the same origin as
        the lift timer below — so its completion is guaranteed before
@@ -89,23 +78,43 @@ export function SplashGate() {
       );
     }
 
-    /* dismissible immediately: any interaction lifts the splash at once */
-    const dismiss = () => finish();
+    /* dismissible immediately: any interaction starts the lift early */
+    const dismiss = () => setPhase("lift");
     window.addEventListener("pointerdown", dismiss, { once: true });
     window.addEventListener("keydown", dismiss, { once: true });
     window.addEventListener("wheel", dismiss, { once: true, passive: true });
 
-    const holdTimer = window.setTimeout(() => setPhase("resolve"), 250);
-    const doneTimer = window.setTimeout(finish, 900);
+    /* The lift is its own beat: the plate's ink, rule and meta fade
+       while the cover's field — identical matter underneath — takes
+       over, and the splash name grows into the wordmark's coordinates.
+       The session flag lands with the dissolve, so the splash never
+       replays mid-fade on a refresh. */
+    const liftTimer = window.setTimeout(() => {
+      try {
+        sessionStorage.setItem("splash", "seen");
+      } catch {
+        /* private mode: play once per page load */
+      }
+      setPhase("lift");
+    }, 900);
 
     return () => {
       window.clearTimeout(holdTimer);
-      window.clearTimeout(doneTimer);
+      window.clearTimeout(liftTimer);
       window.removeEventListener("pointerdown", dismiss);
       window.removeEventListener("keydown", dismiss);
       window.removeEventListener("wheel", dismiss);
     };
   }, []);
+
+  /* The dissolve: the lift phase holds the overlay while the opacity
+     transition plays, and the unmount lands after its fade completes —
+     the hero is never revealed by a cut. */
+  useEffect(() => {
+    if (phase !== "lift") return;
+    const t = window.setTimeout(() => setPhase("done"), 680);
+    return () => window.clearTimeout(t);
+  }, [phase]);
 
   if (phase === "done") return null;
 
@@ -130,17 +139,17 @@ export function SplashGate() {
       <SignalField
         className="splash-pixels"
         mode="pixel"
-        cell={20}
+        cell={22}
         seed={29}
-        ambient={0.62}
+        ambient={0.72}
         flow={1.3}
         wavefront={0.1}
         drift={0.4}
-        pointerRadius={0}
+        pointerRadius={14}
         quiet={quiet}
         tune={[0.4, 2.1]}
         shape={coverPixelShape}
-        color={(t) => `rgba(58, 31, 240, ${0.18 + 0.55 * t})`}
+        color={(t) => `rgba(58, 31, 240, ${0.24 + 0.66 * t})`}
       />
       <span className="splash-rule">
         <span className="splash-rule-fill" ref={ruleRef} />
