@@ -36,7 +36,11 @@ test("server-renders the folio at / — one projects reading", async () => {
   assert.match(folio, /xp-cover-name" aria-hidden="true"><span class="xp-cover-letter">T</);
   assert.match(folio, /<span class="sr-only">Tanishk<\/span>/);
   assert.match(folio, /I design what interfaces (<strong>)?do(<\/strong>)?\./);
-  assert.match(folio, /Product \/ Interaction Designer · Bengaluru/);
+  /* the identity block carries the role once, in the header; the
+     folio's registration row states place and edition only */
+  assert.match(folio, /Product &amp; Interaction Designer</);
+  assert.match(folio, /Bengaluru, India/);
+  assert.match(folio, /The folio · 2026/);
   assert.match(folio, /Selected projects/);
   /* the project count is stated once on the folio — the handoff line —
      never again in the cover deck or the field head */
