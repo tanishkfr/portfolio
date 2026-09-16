@@ -302,7 +302,8 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   const contactHtml = await contactResponse.text();
   /* the contact page says plainly what he does, what conversations are
      welcome, and how to reach him — no slogans */
-  assert.match(contactHtml, /Bring me the interface, not just the brief\./);
+  assert.match(contactHtml, /You bring the problem\./);
+  assert.match(contactHtml, /design how it behaves\./);
   assert.match(contactHtml, /Useful conversations/);
   assert.match(contactHtml, /madebytanishk@gmail\.com/);
   assert.match(contactHtml, /linkedin\.com\/in\/tanishksalagame/);
