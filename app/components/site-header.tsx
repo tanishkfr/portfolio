@@ -35,17 +35,14 @@ export function SiteHeader() {
         aria-label="Tanishk, product and interaction designer"
       >
         {/* the state rule carries the name — the favicon's T mark, the
-            same compressed bar-and-stem the splash and footer resolve
-            from, held at carrying size */}
+            wordmark's pixel T, held at carrying size */}
         <svg
           className="identity-mark"
           viewBox="0 0 64 64"
           aria-hidden="true"
           focusable="false"
         >
-          <rect width="64" height="64" rx="14" fill="#3a1ff0" />
-          <rect x="13" y="15" width="38" height="11" fill="#e8eae4" />
-          <rect x="27" y="15" width="10" height="34" fill="#e8eae4" />
+          <path fill="var(--registrar, #3a1ff0)" d="M8 10h48v12H40v32H24V22H8z" />
         </svg>
         <span className="identity-name">Tanishk</span>
         <small>Product &amp; Interaction Designer</small>

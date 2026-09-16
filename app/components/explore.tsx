@@ -110,46 +110,46 @@ export function coverPixelShape(
     Math.exp(
       -Math.pow(
         ((nx - 0.115 - 0.028 * Math.sin(t * 0.093) -
-          0.011 * Math.sin(t * 0.043)) * 4.6) / gatherL,
+          0.011 * Math.sin(t * 0.043)) * 3.7) / gatherL,
         2,
       ),
     ) *
     Math.exp(
-      -Math.pow((ny - 0.44 + 0.05 * Math.sin(t * 0.09)) * 3, 2),
+      -Math.pow((ny - 0.44 + 0.05 * Math.sin(t * 0.09)) * 2.55, 2),
     ) /
     (0.84 + 0.3 * gatherL);
   const clusterR =
     Math.exp(
       -Math.pow(
         ((nx - 0.885 + 0.028 * Math.sin(t * 0.084 + 2) +
-          0.011 * Math.sin(t * 0.047 + 1)) * 4.6) / gatherR,
+          0.011 * Math.sin(t * 0.047 + 1)) * 3.7) / gatherR,
         2,
       ),
     ) *
     Math.exp(
-      -Math.pow((ny - 0.56 - 0.05 * Math.sin(t * 0.08 + 1)) * 3, 2),
+      -Math.pow((ny - 0.56 - 0.05 * Math.sin(t * 0.08 + 1)) * 2.55, 2),
     ) /
     (0.84 + 0.3 * gatherR);
   const edge = Math.exp(
-    -Math.pow((ny - 0.93) * 9, 2) -
-      Math.pow((nx - (nx < 0.5 ? 0.24 : 0.76)) * 4, 2),
+    -Math.pow((ny - 0.93) * 7.5, 2) -
+      Math.pow((nx - (nx < 0.5 ? 0.24 : 0.76)) * 3.4, 2),
   );
-  /* the satellite: a small pocket that forms above the wordmark's
-     left channel, holds briefly, and dissolves back into nothing */
+  /* the satellite: a pocket that forms above the wordmark's left
+     channel, holds briefly, and dissolves back into nothing */
   const satellite =
-    Math.pow(Math.max(0, Math.sin(t * 0.086 + 2.4)), 3) *
+    Math.pow(Math.max(0, Math.sin(t * 0.086 + 2.4)), 2.2) *
     Math.exp(
-      -Math.pow((nx - 0.38) * 5.5, 2) - Math.pow((ny - 0.185) * 7, 2),
+      -Math.pow((nx - 0.38) * 4.8, 2) - Math.pow((ny - 0.185) * 6, 2),
     );
   const settle = (0.9 + 0.2 * Math.pow(ny, 1.25)) * breath;
   const texture = v * 0.8;
   return Math.max(
     texture,
-    clusterL * 0.88 * grain * settle,
-    clusterR * 0.95 * grain * settle,
-    strip * 0.55 * grain * (0.85 + 0.3 * Math.sin(t * 0.113 + 0.4)),
-    edge * 0.6 * grain,
-    satellite * 0.55 * grain,
+    clusterL * 1.05 * grain * settle,
+    clusterR * 1.12 * grain * settle,
+    strip * 0.72 * grain * (0.85 + 0.3 * Math.sin(t * 0.113 + 0.4)),
+    edge * 0.78 * grain,
+    satellite * 0.8 * grain,
   );
 }
 
@@ -196,6 +196,11 @@ function CoverName() {
 
     const widths = letters.map((_, i) => (seen ? REST : FROM - i * 2.5));
     const lifts = letters.map(() => 0);
+    /* the hover kick: each letter is a spring. Entering a letter loads
+       it upward; the spring then lets it drop through rest and bounce
+       back — the wordmark reacting like the field's own matter. */
+    const kicks = letters.map(() => 0);
+    const kickV = letters.map(() => 0);
     const pointer = { x: -9999, y: -9999, inside: false };
     const cover = el.closest<HTMLElement>(".xp-cover");
     let frame = 0;
@@ -249,8 +254,12 @@ function CoverName() {
         }
         widths[i] += (target - widths[i]) * k;
         lifts[i] += (lift - lifts[i]) * k;
+        /* the spring: underdamped, so an entered letter jumps high and
+           swings through rest once before settling */
+        kickV[i] += (-190 * kicks[i] - 9.5 * kickV[i]) * dt;
+        kicks[i] += kickV[i] * dt;
         letter.style.fontVariationSettings = `"wdth" ${widths[i].toFixed(1)}`;
-        letter.style.transform = `translateY(${lifts[i].toFixed(2)}px)`;
+        letter.style.transform = `translateY(${(lifts[i] + kicks[i]).toFixed(2)}px)`;
       });
       frame = requestAnimationFrame(step);
     };
@@ -272,6 +281,18 @@ function CoverName() {
       wake();
     };
 
+    /* loading the spring: entering a letter lifts it by a share of its
+       own height, so the jump scales with the name's rendered size */
+    const enterers = letters.map((letter, i) => {
+      const load = () => {
+        kicks[i] = -0.22 * letter.offsetHeight;
+        kickV[i] = 0;
+        wake();
+      };
+      letter.addEventListener("pointerenter", load);
+      return load;
+    });
+
     wake();
     window.addEventListener("scroll", wake, { passive: true });
     window.addEventListener("pointermove", move, { passive: true });
@@ -281,6 +302,9 @@ function CoverName() {
       window.removeEventListener("scroll", wake);
       window.removeEventListener("pointermove", move);
       document.documentElement.removeEventListener("pointerleave", leave);
+      enterers.forEach((load, i) =>
+        letters[i].removeEventListener("pointerenter", load),
+      );
     };
   }, []);
 
@@ -383,17 +407,17 @@ export function Explore() {
         <SignalField
           className="xp-cover-pixels"
           mode="pixel"
-          cell={20}
+          cell={22}
           seed={29}
-          ambient={0.62}
+          ambient={0.72}
           flow={1.3}
           wavefront={0.1}
           drift={0.4}
-          pointerRadius={12}
+          pointerRadius={14}
           quiet={narrow ? COVER_QUIET_NARROW : COVER_QUIET}
           tune={[0.4, 2.1]}
           shape={coverPixelShape}
-          color={(t) => `rgba(58, 31, 240, ${0.18 + 0.55 * t})`}
+          color={(t) => `rgba(58, 31, 240, ${0.24 + 0.66 * t})`}
         />
         <div className="xp-cover-pin">
           <div className="xp-cover-head">

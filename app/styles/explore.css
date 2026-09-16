@@ -102,23 +102,49 @@
 
 .xp-cover-name {
   display: block;
-  font-family: var(--display);
-  font-size: clamp(2.9rem, 12.4vw, 12.5rem);
-  font-weight: var(--poster-weight);
-  font-stretch: 122%;
+  /* The wordmark's own voice: the banner's pixel face, held in ink.
+     Silkscreen has no width axis, so the name rests at its authored
+     width and only the pointer lift stays live. */
+  color: var(--ink);
+  font-family: var(--pixel);
+  font-size: clamp(2.9rem, 11vw, 11.5rem);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: -0.012em;
-  line-height: 0.8;
+  letter-spacing: 0;
+  line-height: 1;
   white-space: nowrap;
   text-align: center;
 }
 
-/* Each letter is its own width state (driven in CoverName). Without
-   JS — or under reduced motion — the letters simply rest at the name's
-   authored width. */
+/* The hover: a pixel scanline. Hovering the name sweeps the signal
+   blue across it letter by letter — the field's own pigment running
+   through the type — then the letters drain back together on leave.
+   The JS-driven lift lives on transform, so the two never fight. */
 .xp-cover-letter {
   display: inline-block;
-  font-variation-settings: "wdth" 122;
+  transition: color 120ms linear;
+}
+
+.xp-cover-name:hover .xp-cover-letter,
+.xp-cover-name:focus-within .xp-cover-letter {
+  color: var(--registrar, #3a1ff0);
+}
+
+.xp-cover-name:hover .xp-cover-letter:nth-child(2) { transition-delay: 35ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(3) { transition-delay: 70ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(4) { transition-delay: 105ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(5) { transition-delay: 140ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(6) { transition-delay: 175ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(7) { transition-delay: 210ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-cover-letter {
+    transition: none;
+  }
+
+  .xp-cover-name:hover .xp-cover-letter:nth-child(n) {
+    transition-delay: 0ms;
+  }
 }
 
 /* The claim is the wordmark's own voice turned down, centered on the
