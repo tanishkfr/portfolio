@@ -1202,11 +1202,11 @@ a[data-external]:focus-visible .xp-cta-arrow {
 
 /* ---------- the splash ----------
    The first state transition: the name holds while the rule opens and
-   the cover's own material settles around it. The lift is a dissolve,
-   not a cut — the plate fades while the splash name grows toward the
-   cover wordmark's rendered size, so the two names read as one object
-   changing state. Session-scoped, skippable, removed from the DOM
-   when done. */
+   the cover's own material settles around it. The lift is a merge —
+   rule, meta and plate fade while the name rides its transform into
+   the wordmark's exact coordinates, where the overlay and the hero
+   become the same object. Session-scoped, skippable, removed from the
+   DOM when done. */
 .splash {
   position: fixed;
   inset: 0;
@@ -1216,13 +1216,15 @@ a[data-external]:focus-visible .xp-cta-arrow {
   justify-items: center;
   gap: 1.1rem;
   background: rgb(var(--atmos, 232 234 228));
-  transition: opacity 640ms var(--ease-out);
+  transition:
+    background-color 640ms var(--ease-out),
+    opacity 640ms var(--ease-out);
 }
 
-/* The dissolve phase: ink and meta hand over to the identical field
-   underneath while the name keeps travelling toward the wordmark. */
+/* The lift phase: the plate gives way around the name — the name
+   itself never fades, it travels (WAAPI in SplashGate). */
 .splash[data-phase="lift"] {
-  opacity: 0;
+  background: rgb(var(--atmos, 232 234 228) / 0);
   pointer-events: none;
 }
 
@@ -1245,11 +1247,22 @@ a[data-external]:focus-visible .xp-cta-arrow {
   z-index: 1;
 }
 
+.splash-rule,
+.splash-note {
+  transition: opacity 420ms var(--ease-out);
+}
+
+.splash[data-phase="lift"] .splash-rule,
+.splash[data-phase="lift"] .splash-note {
+  opacity: 0;
+}
+
 .splash-name {
   /* The wordmark's own pixel voice — the same face the hero and the
-     header identity rest in. Silkscreen has no width axis, so the
-     arrival rests at its authored width, and the lift's growth into
-     the cover wordmark is a whole-object scale, not a type change. */
+     header identity rest in. No CSS transition here on purpose: at
+     lift time the name's path is measured live against the wordmark
+     and animated with WAAPI, so the merge lands on the real render,
+     not a scale guess. */
   color: var(--ink);
   font-family: var(--pixel);
   font-size: clamp(2.7rem, 7.5vw, 7rem);
@@ -1257,11 +1270,6 @@ a[data-external]:focus-visible .xp-cta-arrow {
   letter-spacing: 0;
   line-height: 1;
   text-transform: uppercase;
-  transition: transform 640ms var(--ease-out);
-}
-
-.splash[data-phase="lift"] .splash-name {
-  transform: scale(1.55);
 }
 
 /* The loading bar: the folio's opening rule. The fill is driven by

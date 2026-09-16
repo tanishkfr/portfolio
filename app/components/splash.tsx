@@ -11,20 +11,21 @@ import {
 
 /**
  * The first state transition of the portfolio: the name holds while the
- * signal rule draws beneath it, then the whole plate dissolves into the
- * hero — the splash name scaling up into the cover wordmark's own
- * coordinates while the identical field underneath takes over.
+ * signal rule draws beneath it, then the plate merges into the hero —
+ * the rule and the meta evaporate, the name rides its greenroom
+ * transform into the wordmark's exact rendered coordinates, and the
+ * identical field underneath takes over.
  *
  * The cover's material is already present — literally. Both fields run
  * the cover's exact configs (same seed, cell, ambient, flow, drift,
  * tune, quiet geometry, and the cover's own shape scripts), and the
  * engine's shared clock keeps every field in one noise phase, so this
  * overlay is the hero's opening frames, not a separate composition.
- * The lift is a fade, not a cut: because the matter underneath is the
- * same matter at the same phase, the overlay dissolving into the hero
- * reads as one scene, never a reset. Once per session, skippable by
- * any interaction, never blocking the page underneath, removed from
- * the DOM when done.
+ * The name is measured live at lift time and lands exactly on the
+ * wordmark it becomes, so the unmount never reads as an event: the
+ * splash is simply done being a separate layer. Once per session,
+ * skippable by any interaction, never blocking the page underneath,
+ * removed from the DOM when done.
  */
 
 type Phase = "hold" | "resolve" | "lift" | "done";
@@ -107,12 +108,51 @@ export function SplashGate() {
     };
   }, []);
 
-  /* The dissolve: the lift phase holds the overlay while the opacity
-     transition plays, and the unmount lands after its fade completes —
-     the hero is never revealed by a cut. */
+  /* The merge: measured live, not choreographed by hand. The splash
+     name glides onto the wordmark's own box — centre to centre, scaled
+     by the two boxes' width ratio — while the plate's furniture fades
+     around it. When the transform lands, the name sits exactly over
+     the hero's wordmark, so removing the plate is invisible: the
+     splash has merged, not left. */
   useEffect(() => {
     if (phase !== "lift") return;
-    const t = window.setTimeout(() => setPhase("done"), 680);
+    try {
+      sessionStorage.setItem("splash", "seen");
+    } catch {
+      /* private mode: play once per page load */
+    }
+
+    const slug = document.querySelector<HTMLElement>(".splash-name");
+    const hero = document.querySelector<HTMLElement>(".xp-cover-name");
+    if (
+      slug &&
+      hero &&
+      typeof slug.animate === "function" &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      const from = slug.getBoundingClientRect();
+      const to = hero.getBoundingClientRect();
+      const scale = to.width / from.width;
+      const dx =
+        to.left + to.width / 2 - (from.left + from.width / 2);
+      const dy =
+        to.top + to.height / 2 - (from.top + from.height / 2);
+      slug.animate(
+        [
+          { transform: "translate(0, 0) scale(1)" },
+          {
+            transform: `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${scale.toFixed(3)})`,
+          },
+        ],
+        {
+          duration: 680,
+          easing: "cubic-bezier(0.22, 0.9, 0.26, 1)",
+          fill: "forwards",
+        },
+      );
+    }
+
+    const t = window.setTimeout(() => setPhase("done"), 700);
     return () => window.clearTimeout(t);
   }, [phase]);
 
