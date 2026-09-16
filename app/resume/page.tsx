@@ -44,7 +44,7 @@ const experience: Entry[] = [
     ],
   },
   {
-    title: "Fluxion Studio",
+    title: "Fluxion Studios",
     titleHref: "https://fluxion-studios.vercel.app/",
     titleExternal: true,
     role: "Co-founder & Product Designer",
@@ -75,7 +75,7 @@ const selectedWork: Entry[] = [
     title: "Athena",
     role: "Product & UX Design",
     lines: [
-          "Understanding something isn&apos;t the same as being able to retrieve it.",
+      "Understanding something isn’t the same as being able to retrieve it.",
       "Qualitative research with students — including a focus group and 1:1 interviews — kept surfacing the same contradiction: digital tools made information easier to understand, but that did not mean learners could recall or apply it later.",
       "Designed and prototyped Athena around a learn → explain/apply → review loop, separating content consumption from evidence that the learner could actually use what they had learned.",
     ],

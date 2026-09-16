@@ -78,7 +78,7 @@ export default function RootLayout({
         />
         <link
           rel="preload"
-          href="/fonts/fraunces-var.woff2"
+          href="/fonts/instrument-serif-400italic-latin.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"

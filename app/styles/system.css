@@ -44,22 +44,41 @@
   font-display: swap;
 }
 
-/* The expressive voice: Fraunces, self-hosted, variable in optical
-   size and weight. Used only where a sentence is making an argument
-   about behaviour, never as the house display face. */
+/* The expressive voice: Instrument Serif, self-hosted, regular and
+   italic. Used only where a sentence is making an argument about
+   behaviour, never as the house display face. Pairs with the house
+   sans by the same foundry. */
 @font-face {
-  font-family: "Fraunces";
-  src: url("/fonts/fraunces-var.woff2") format("woff2");
-  font-weight: 300 700;
+  font-family: "Instrument Serif";
+  src: url("/fonts/instrument-serif-400-latin.woff2") format("woff2");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Fraunces";
-  src: url("/fonts/fraunces-var-italic.woff2") format("woff2");
-  font-weight: 300 700;
+  font-family: "Instrument Serif";
+  src: url("/fonts/instrument-serif-400italic-latin.woff2") format("woff2");
+  font-weight: 400;
   font-style: italic;
+  font-display: swap;
+}
+
+/* The signal voice: Silkscreen, self-hosted, the pixel face the
+   TANISHK wordmark is set in — hero and header identity only. */
+@font-face {
+  font-family: "Silkscreen";
+  src: url("/fonts/silkscreen-400-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Silkscreen";
+  src: url("/fonts/silkscreen-700-latin.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
   font-display: swap;
 }
 
@@ -124,9 +143,12 @@
   --display: "Anybody", "Archivo", "Arial Black", Arial, sans-serif;
   --sans: "Instrument Sans", "Segoe UI Variable Text", "Helvetica Neue", Arial,
     sans-serif;
-  /* The aside voice: Fraunces, kept for the few sentences that argue
-     rather than operate — the cover's claim and a case's turning line. */
-  --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+/* The aside voice: Instrument Serif, kept for the few sentences that argue
+   rather than operate — the cover's claim and a case's turning line. */
+  --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  /* The signal voice: Silkscreen, the pixel face the wordmark is set
+     in — the hero's TANISHK and the header identity, nothing else. */
+  --pixel: "Silkscreen", "Anybody", "Arial Black", Arial, sans-serif;
   /* The lift: the display voice's weight/stretch for poster moments. */
   --poster-weight: 780;
   --poster-stretch: 118%;
@@ -505,38 +527,57 @@ img {
   text-decoration: none;
 }
 
-/* The favicon's T mark, carried at header scale: the one piece of the
-   identity that is already a state (the ultramarine rule holding the
-   name). Crisp because it is the same geometry as the icon, not a
-   raster thumbnail. */
+/* The favicon's T mark, carried at header scale: the wordmark's own
+   pixel T, all ultramarine. Crisp because it is the same geometry as
+   the icon, not a raster thumbnail. */
 .identity-mark {
   width: 1.05rem;
   height: 1.05rem;
   flex: none;
 }
 
-/* The compact state of the hero wordmark: the same Anybody voice, held
-   in its compressed notation — the width the splash arrives from and
-   the footer resolves to. Hovering lets it breathe toward the hero's
-   width: a state, not a loop. */
+/* The compact state of the hero wordmark: the wordmark's own pixel
+    voice — the same face the hero's TANISHK rests in, held at carrying
+    size. Hover keeps the name's quiet lift, a state not a loop. */
 .identity-name {
-  font-family: var(--display);
-  font-size: 1.2rem;
-  font-weight: 650;
-  font-stretch: 78%;
-  letter-spacing: 0.015em;
+  color: var(--registrar);
+  font-family: var(--pixel);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0;
   line-height: 1;
-  transition: font-stretch 300ms var(--ease-out);
 }
 
-.site-identity:hover .identity-name,
-.site-identity:focus-visible .identity-name {
-  font-stretch: 96%;
+/* The small combinatorial tell: resting next to the name, hovered it
+   lights up as a terminal cursor and blinks in steps — the wordmark
+   answering the signal voice, a state not a loop. */
+.identity-name::after {
+  content: "_";
+  color: var(--registrar);
+  opacity: 0;
+  transition: opacity 120ms var(--ease-out);
+}
+
+.site-identity:hover .identity-name::after,
+.site-identity:focus-visible .identity-name::after {
+  opacity: 1;
+  animation: identity-cursor 900ms steps(1, end) infinite;
+}
+
+@keyframes identity-cursor {
+  0%, 60% {
+    opacity: 1;
+  }
+
+  60.1%, 100% {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .identity-name {
-    transition: none;
+  .site-identity:hover .identity-name::after,
+  .site-identity:focus-visible .identity-name::after {
+    animation: none;
   }
 }
 
@@ -1160,11 +1201,12 @@ a[data-external]:focus-visible .xp-cta-arrow {
 }
 
 /* ---------- the splash ----------
-   The first state transition: the name as compressed notation, the
-   rule that opens the folio, and the cover's own material already
-   settling around it — the same pixel signal and glyph texture, quiet
-   where the name sits, so the handoff into the hero is continuous.
-   Session-scoped, skippable, removed from the DOM when done. */
+   The first state transition: the name holds while the rule opens and
+   the cover's own material settles around it. The lift is a merge —
+   rule, meta and plate fade while the name rides its transform into
+   the wordmark's exact coordinates, where the overlay and the hero
+   become the same object. Session-scoped, skippable, removed from the
+   DOM when done. */
 .splash {
   position: fixed;
   inset: 0;
@@ -1174,6 +1216,16 @@ a[data-external]:focus-visible .xp-cta-arrow {
   justify-items: center;
   gap: 1.1rem;
   background: rgb(var(--atmos, 232 234 228));
+  transition:
+    background-color 640ms var(--ease-out),
+    opacity 640ms var(--ease-out);
+}
+
+/* The lift phase: the plate gives way around the name — the name
+   itself never fades, it travels (WAAPI in SplashGate). */
+.splash[data-phase="lift"] {
+  background: rgb(var(--atmos, 232 234 228) / 0);
+  pointer-events: none;
 }
 
 /* the material: the same two-layer field the cover carries, framed by
@@ -1195,20 +1247,29 @@ a[data-external]:focus-visible .xp-cta-arrow {
   z-index: 1;
 }
 
-.splash-name {
-  font-family: var(--display);
-  font-size: clamp(3rem, 9vw, 8.4rem);
-  font-weight: var(--poster-weight);
-  font-stretch: 62%;
-  letter-spacing: 0.01em;
-  line-height: 0.92;
-  text-transform: uppercase;
-  color: var(--ink);
-  transition: font-stretch 650ms var(--ease-swing);
+.splash-rule,
+.splash-note {
+  transition: opacity 420ms var(--ease-out);
 }
 
-.splash[data-phase="resolve"] .splash-name {
-  font-stretch: 125%;
+.splash[data-phase="lift"] .splash-rule,
+.splash[data-phase="lift"] .splash-note {
+  opacity: 0;
+}
+
+.splash-name {
+  /* The wordmark's own pixel voice — the same face the hero and the
+     header identity rest in. No CSS transition here on purpose: at
+     lift time the name's path is measured live against the wordmark
+     and animated with WAAPI, so the merge lands on the real render,
+     not a scale guess. */
+  color: var(--ink);
+  font-family: var(--pixel);
+  font-size: clamp(2.7rem, 7.5vw, 7rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 /* The loading bar: the folio's opening rule. The fill is driven by
