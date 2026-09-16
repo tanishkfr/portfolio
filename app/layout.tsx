@@ -83,6 +83,17 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        {/* the wordmark's pixel face is first paint under the splash:
+            without the preload the name lands in the fallback face and
+            swaps to Silkscreen a beat after the merge — a false
+            post-splash dissolve */}
+        <link
+          rel="preload"
+          href="/fonts/silkscreen-700-latin.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
       </head>
       <body>
       <SplashGate />

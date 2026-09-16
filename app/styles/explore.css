@@ -121,12 +121,13 @@
 }
 
 /* The hover: a pixel scanline. Hovering the name sweeps the signal
-   blue across it letter by letter — the field's own pigment running
-   through the type — then the letters drain back together on leave.
-   The JS-driven lift lives on transform, so the two never fight. */
+   blue across it letter by letter at reading pace — the field's own
+   pigment running through the type — then the letters drain back
+   together on leave. The JS-driven lift lives on transform, so the
+   two never fight. */
 .xp-cover-letter {
   display: inline-block;
-  transition: color 120ms linear;
+  transition: color 260ms linear;
 }
 
 .xp-cover-name:hover .xp-cover-letter,
@@ -134,12 +135,12 @@
   color: var(--registrar, #3a1ff0);
 }
 
-.xp-cover-name:hover .xp-cover-letter:nth-child(2) { transition-delay: 35ms; }
-.xp-cover-name:hover .xp-cover-letter:nth-child(3) { transition-delay: 70ms; }
-.xp-cover-name:hover .xp-cover-letter:nth-child(4) { transition-delay: 105ms; }
-.xp-cover-name:hover .xp-cover-letter:nth-child(5) { transition-delay: 140ms; }
-.xp-cover-name:hover .xp-cover-letter:nth-child(6) { transition-delay: 175ms; }
-.xp-cover-name:hover .xp-cover-letter:nth-child(7) { transition-delay: 210ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(2) { transition-delay: 55ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(3) { transition-delay: 110ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(4) { transition-delay: 165ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(5) { transition-delay: 220ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(6) { transition-delay: 275ms; }
+.xp-cover-name:hover .xp-cover-letter:nth-child(7) { transition-delay: 330ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .xp-cover-letter {
