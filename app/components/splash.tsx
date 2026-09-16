@@ -34,6 +34,8 @@ export function SplashGate() {
   const [phase, setPhase] = useState<Phase>("hold");
   const [narrow, setNarrow] = useState(false);
   const ruleRef = useRef<HTMLSpanElement>(null);
+  /** the merge is single-shot: the gate outlives its own plate */
+  const merged = useRef(false);
 
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 52rem)");
@@ -79,12 +81,6 @@ export function SplashGate() {
       );
     }
 
-    /* dismissible immediately: any interaction starts the lift early */
-    const dismiss = () => setPhase("lift");
-    window.addEventListener("pointerdown", dismiss, { once: true });
-    window.addEventListener("keydown", dismiss, { once: true });
-    window.addEventListener("wheel", dismiss, { once: true, passive: true });
-
     /* The lift is its own beat: the plate's ink, rule and meta fade
        while the cover's field — identical matter underneath — takes
        over, and the splash name grows into the wordmark's coordinates.
@@ -102,11 +98,27 @@ export function SplashGate() {
     return () => {
       window.clearTimeout(holdTimer);
       window.clearTimeout(liftTimer);
+    };
+  }, []);
+
+  /* Dismissible while it is still holding — and only then. The gate
+     never unmounts (it returns null once done), so listeners bound to
+     the mount effect would outlive it: a later wheel or click would
+     drag the phase back to "lift" and replay the whole merge over the
+     hero. Binding them to the holding phases means they are gone the
+     moment the lift starts. */
+  useEffect(() => {
+    if (phase !== "hold" && phase !== "resolve") return;
+    const dismiss = () => setPhase("lift");
+    window.addEventListener("pointerdown", dismiss, { once: true });
+    window.addEventListener("keydown", dismiss, { once: true });
+    window.addEventListener("wheel", dismiss, { once: true, passive: true });
+    return () => {
       window.removeEventListener("pointerdown", dismiss);
       window.removeEventListener("keydown", dismiss);
       window.removeEventListener("wheel", dismiss);
     };
-  }, []);
+  }, [phase]);
 
   /* The merge: measured live, not choreographed by hand. The splash
      name glides onto the wordmark's own box — centre to centre, scaled
@@ -115,7 +127,10 @@ export function SplashGate() {
      the hero's wordmark, so removing the plate is invisible: the
      splash has merged, not left. */
   useEffect(() => {
-    if (phase !== "lift") return;
+    if (phase !== "lift" || merged.current) return;
+    /* once per session, whatever asks: the glide and the unmount are
+       single-shot, so no late event can bring the plate back */
+    merged.current = true;
     try {
       sessionStorage.setItem("splash", "seen");
     } catch {
