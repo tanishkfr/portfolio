@@ -5,6 +5,7 @@ import { SiteFooter } from "./components/site-footer";
 import { SiteHeader } from "./components/site-header";
 import { PointerMark } from "./components/pointer-cursor";
 import { SplashGate } from "./components/splash";
+import { Atmosphere } from "./components/atmosphere";
 import { RouteSettler } from "./components/transition-link";
 import "./styles/system.css";
 import "./styles/explore.css";
@@ -86,6 +87,7 @@ export default function RootLayout({
       </head>
       <body>
       <SplashGate />
+        <Atmosphere />
         <PointerMark />
         <a className="skip-link" href="#main-content">
           Skip to content

@@ -16,6 +16,9 @@ import { HOUSING, ROOM_WORLDS, rgb } from "../data/room-worlds";
  * Each room's influence falls off over its own height plus half a screen, so
  * influences overlap and always resolve back to the housing's bistre in the
  * stretches between rooms.
+ *
+ * Mounted once for the whole site; every `[data-room]` on the page — the
+ * case's own sections and the folio's sheets — is a room it can stand in.
  */
 
 export function Atmosphere() {
@@ -23,6 +26,9 @@ export function Atmosphere() {
     const root = document.documentElement;
     let frame = 0;
     let rooms: HTMLElement[] = [];
+    /* the last mix actually written, so a scroll that changes nothing
+       does not touch the root style on every frame */
+    let written = "";
 
     const collect = () => {
       rooms = Array.from(document.querySelectorAll<HTMLElement>("[data-room]"));
@@ -32,10 +38,17 @@ export function Atmosphere() {
       frame = 0;
       const view = window.innerHeight;
 
+      /* Composited in document order, not averaged. Rooms overlap by
+         design — the folio pins its sheets on top of one another, so two
+         or three of them cover the screen at once — and an average of
+         stacked rooms never reaches any room's own paper: the ground
+         lags behind the reader as a permanent in-between. Painting each
+         room over the last with its own coverage means the topmost room
+         you can see is the ground you are standing on, while a room still
+         handing over fades in exactly as much as it has arrived. */
       let r = HOUSING[0];
       let g = HOUSING[1];
       let b = HOUSING[2];
-      let claimed = 0;
 
       for (const room of rooms) {
         const world = ROOM_WORLDS[room.dataset.room ?? ""];
@@ -56,23 +69,15 @@ export function Atmosphere() {
         // ease the handover so neither room snaps in at the seam
         const weight = near * near * (3 - 2 * near);
         const room_ = world.ground;
-        r += (room_[0] - HOUSING[0]) * weight;
-        g += (room_[1] - HOUSING[1]) * weight;
-        b += (room_[2] - HOUSING[2]) * weight;
-        claimed += weight;
+        r += (room_[0] - r) * weight;
+        g += (room_[1] - g) * weight;
+        b += (room_[2] - b) * weight;
       }
 
-      // two overlapping rooms must not drive the mix past either colour
-      if (claimed > 1) {
-        r = HOUSING[0] + (r - HOUSING[0]) / claimed;
-        g = HOUSING[1] + (g - HOUSING[1]) / claimed;
-        b = HOUSING[2] + (b - HOUSING[2]) / claimed;
-      }
-
-      root.style.setProperty(
-        "--atmos",
-        `${Math.round(r)} ${Math.round(g)} ${Math.round(b)}`,
-      );
+      const mixed = `${Math.round(r)} ${Math.round(g)} ${Math.round(b)}`;
+      if (mixed === written) return;
+      written = mixed;
+      root.style.setProperty("--atmos", mixed);
     };
 
     const onScroll = () => {
@@ -102,7 +107,8 @@ export function Atmosphere() {
     };
   }, []);
 
-  return <div className="xp-atmos" aria-hidden="true" />;
+  /* the engine's whole output is the custom property it writes */
+  return null;
 }
 
 export function RoomPaint({ slug }: { slug: string | null }) {

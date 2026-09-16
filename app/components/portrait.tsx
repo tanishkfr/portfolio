@@ -23,8 +23,6 @@ import { SignalField, type Quiet } from "./signal-field";
  * setup frame.
  */
 
-export type PortraitTone = "full" | "index";
-
 type PortraitConfig = {
   glyphs?: string;
   cell: number;
@@ -37,8 +35,21 @@ type PortraitConfig = {
   /** the portrait panel's own ground — the project's plate colour */
   ground: string;
   color: (t: number) => string | null;
-  shape?: (v: number, nx: number, ny: number, t: number) => number;
-  glyphAt?: (t: number, nx: number, ny: number) => number;
+  shape?: (
+    v: number,
+    nx: number,
+    ny: number,
+    t: number,
+    cellX: number,
+    cellY: number,
+  ) => number;
+  glyphAt?: (
+    t: number,
+    nx: number,
+    ny: number,
+    cellX: number,
+    cellY: number,
+  ) => number;
   displace?: (t: number, nx: number, ny: number) => [number, number];
   quiet?: Quiet[];
   pointerRadius?: number;
@@ -115,6 +126,13 @@ const textRow = (nx: number, salt: number): number =>
 const blink = (t: number, rate: number, phase: number): number =>
   0.5 + 0.5 * Math.sin(t * rate + phase);
 
+/** A mark's minimum size: never thinner than one glyph of the grid it
+    is drawn on. The engine hands each script the pitch in normalised
+    units, so a phone's coarse register gets the same diagram with
+    every line, frame and mark still landing on a cell. */
+const fit = (preferred: number, pitch: number): number =>
+  Math.max(preferred, pitch * 0.55);
+
 /* --------------------------------------------------------------
    01 · DESIGN OR DISASTER — point before you judge.
    A broad, ambiguous field; one region resolves to a crisp
@@ -140,7 +158,14 @@ function evidencePhase(t: number): number {
   return cyc(t, 30, 0.3);
 }
 
-function evidenceShape(v: number, nx: number, ny: number, t: number): number {
+function evidenceShape(
+  v: number,
+  nx: number,
+  ny: number,
+  t: number,
+  cx: number,
+  cy: number,
+): number {
   const c = evidencePhase(t);
   const slot = Math.min(2, Math.floor(c * 3));
   const u = c * 3 - slot;
@@ -151,13 +176,14 @@ function evidenceShape(v: number, nx: number, ny: number, t: number): number {
   const bx = Math.min(Math.abs(nx - region.x), Math.abs(nx - (region.x + region.w)));
   const by = Math.min(Math.abs(ny - region.y), Math.abs(ny - (region.y + region.h)));
   const border = inX && inY ? Math.min(bx, by) : 9;
+  const frameHalf = fit(0.024, Math.max(cx, cy));
   let out = v * 0.85;
   if (inX && inY) {
     /* the plate resolves: near-uniform, flat, slightly breathing */
     out = Math.max(out, sel * 0.92);
-  } else if (border < 0.024) {
+  } else if (border < frameHalf) {
     /* a crisp frame — the mark's own annotation */
-    out = Math.max(out, sel * (0.75 + 0.25 * (1 - border / 0.024)));
+    out = Math.max(out, sel * (0.75 + 0.25 * (1 - border / frameHalf)));
   }
   /* the crosshair: a point that starts displaced and settles while
      the region resolves */
@@ -168,11 +194,13 @@ function evidenceShape(v: number, nx: number, ny: number, t: number): number {
   const marker = env(u, 0.06, 0.92, 0.08);
   const dx = Math.abs(nx - px);
   const dy = Math.abs(ny - py);
-  /* hairline cross + a small center bloom */
-  if (marker > 0.3 && dy < 0.016 && dx < 0.055) {
+  const armX = fit(0.016, cx);
+  const armY = fit(0.016, cy);
+  /* hairline cross + a small center bloom — one glyph thick at worst */
+  if (marker > 0.3 && dy < armY && dx < 0.055) {
     out = Math.max(out, 0.95);
   }
-  if (marker > 0.3 && dx < 0.016 && dy < 0.055) {
+  if (marker > 0.3 && dx < armX && dy < 0.055) {
     out = Math.max(out, marker);
   }
   if (marker > 0.3 && Math.hypot(dx, dy) < 0.024) {
@@ -181,7 +209,13 @@ function evidenceShape(v: number, nx: number, ny: number, t: number): number {
   return out;
 }
 
-function evidenceGlyphAt(t: number, nx: number, ny: number): number {
+function evidenceGlyphAt(
+  t: number,
+  nx: number,
+  ny: number,
+  cx: number,
+  cy: number,
+): number {
   const c = evidencePhase(t);
   const slot = Math.min(2, Math.floor(c * 3));
   const u = c * 3 - slot;
@@ -195,7 +229,7 @@ function evidenceGlyphAt(t: number, nx: number, ny: number): number {
   const dx = Math.abs(nx - px);
   const dy = Math.abs(ny - py);
   /* the crosshair: plus at the intersection */
-  if (dx < 0.016 && dy < 0.016) return 2;
+  if (dx < fit(0.016, cx) && dy < fit(0.016, cy)) return 2;
   return -1;
 }
 
@@ -223,18 +257,27 @@ function revisionPhase(t: number): number {
   return cyc(t, REVISION_PERIOD, 0.72);
 }
 
-function revisionShape(v: number, nx: number, ny: number, t: number): number {
+function revisionShape(
+  v: number,
+  nx: number,
+  ny: number,
+  t: number,
+  _cx: number,
+  cy: number,
+): number {
   const c = revisionPhase(t);
   const strike = smooth((c - 0.12) / 0.16);
   const rewrite = smooth((c - 0.44) / 0.14);
   const reset = smooth((c - 0.9) / 0.06);
   const ghost = strike * (1 - reset);
+  const lineY = fit(0.026, cy);
+  const underY = fit(0.016, cy);
   let out = v * 0.14;
 
   /* the standing machine draft */
   for (const row of REVISION_ROWS) {
     if (
-      inSeg(nx, ny, row.x0, row.x1, row.y, 0.026) &&
+      inSeg(nx, ny, row.x0, row.x1, row.y, lineY) &&
       textRow(nx, row.salt) > 0.5
     ) {
       out = Math.max(out, 0.82);
@@ -243,7 +286,7 @@ function revisionShape(v: number, nx: number, ny: number, t: number): number {
 
   /* the struck line: full before the bar, a ghost once crossed */
   if (
-    inSeg(nx, ny, REVISION_STRUCK.x0, REVISION_STRUCK.x1, REVISION_STRUCK.y, 0.026) &&
+    inSeg(nx, ny, REVISION_STRUCK.x0, REVISION_STRUCK.x1, REVISION_STRUCK.y, lineY) &&
     textRow(nx, REVISION_STRUCK.salt) > 0.5
   ) {
     out = Math.max(out, lerp(0.84, 0.16, ghost));
@@ -253,7 +296,7 @@ function revisionShape(v: number, nx: number, ny: number, t: number): number {
   if (
     strike > 0.04 &&
     strike < 1 &&
-    Math.abs(ny - REVISION_STRUCK.y) < 0.017 &&
+    Math.abs(ny - REVISION_STRUCK.y) < fit(0.017, cy) &&
     nx < REVISION_STRUCK.x0 + strike * (REVISION_STRUCK.x1 - REVISION_STRUCK.x0)
   ) {
     out = Math.max(out, 0.98);
@@ -266,27 +309,33 @@ function revisionShape(v: number, nx: number, ny: number, t: number): number {
       REVISION_NEW.x0 + rewrite * (REVISION_NEW.x1 - REVISION_NEW.x0);
     const vis = 1 - reset * 0.9;
     if (
-      inSeg(nx, ny, REVISION_NEW.x0, lead, REVISION_NEW.y, 0.036) &&
+      inSeg(nx, ny, REVISION_NEW.x0, lead, REVISION_NEW.y, fit(0.036, cy)) &&
       textRow(nx, REVISION_NEW.salt) > 0.5
     ) {
       out = Math.max(out, (0.94 + 0.05 * Math.sin(t * 0.9 + nx * 18)) * vis);
     }
     /* its underline: the weight of the corrected sentence */
-    if (inSeg(nx, ny, REVISION_UNDER.x0, lead * 0.98, REVISION_UNDER.y, 0.016)) {
+    if (inSeg(nx, ny, REVISION_UNDER.x0, lead * 0.98, REVISION_UNDER.y, underY)) {
       out = Math.max(out, 0.9 * vis);
     }
   }
   return out;
 }
 
-function revisionGlyphAt(t: number, nx: number, ny: number): number {
+function revisionGlyphAt(
+  t: number,
+  nx: number,
+  ny: number,
+  _cx: number,
+  cy: number,
+): number {
   const c = revisionPhase(t);
   const strike = smooth((c - 0.12) / 0.16);
   /* the strike: x, the hand crossing the line out */
   if (
     strike > 0.04 &&
     strike < 1 &&
-    Math.abs(ny - REVISION_STRUCK.y) < 0.018 &&
+    Math.abs(ny - REVISION_STRUCK.y) < fit(0.018, cy) &&
     nx < REVISION_STRUCK.x0 + strike * (REVISION_STRUCK.x1 - REVISION_STRUCK.x0)
   ) {
     return 6;
@@ -295,19 +344,29 @@ function revisionGlyphAt(t: number, nx: number, ny: number): number {
   const rewrite = smooth((c - 0.44) / 0.14);
   if (rewrite > 0.2) {
     const lead = REVISION_NEW.x0 + rewrite * (REVISION_NEW.x1 - REVISION_NEW.x0);
-    if (Math.abs(ny - REVISION_NEW.y) < 0.038 && nx > REVISION_NEW.x0 && nx < lead) {
+    if (
+      Math.abs(ny - REVISION_NEW.y) < fit(0.038, cy) &&
+      nx > REVISION_NEW.x0 &&
+      nx < lead
+    ) {
       return 4;
     }
-    if (Math.abs(ny - REVISION_UNDER.y) < 0.018 && nx > REVISION_UNDER.x0 && nx < lead * 0.98) {
+    if (
+      Math.abs(ny - REVISION_UNDER.y) < fit(0.018, cy) &&
+      nx > REVISION_UNDER.x0 &&
+      nx < lead * 0.98
+    ) {
       return 4;
     }
   }
   /* the machine draft renders as rows of + */
   for (const row of REVISION_ROWS) {
-    if (Math.abs(ny - row.y) < 0.028 && nx > row.x0 && nx < row.x1) return 2;
+    if (Math.abs(ny - row.y) < fit(0.028, cy) && nx > row.x0 && nx < row.x1) {
+      return 2;
+    }
   }
   if (
-    Math.abs(ny - REVISION_STRUCK.y) < 0.028 &&
+    Math.abs(ny - REVISION_STRUCK.y) < fit(0.028, cy) &&
     nx > REVISION_STRUCK.x0 &&
     nx < REVISION_STRUCK.x1
   ) {
@@ -361,27 +420,38 @@ function absencePhase(t: number): number {
   return cyc(t, 16, 0.8);
 }
 
-function absenceShape(v: number, nx: number, ny: number, t: number): number {
+function absenceShape(
+  v: number,
+  nx: number,
+  ny: number,
+  t: number,
+  cx: number,
+  cy: number,
+): number {
   const c = absencePhase(t);
   const gone = smooth((c - 0.18) / 0.06) * (1 - smooth((c - 0.5) / 0.06));
   const flash = env(c, 0.5, 0.6, 0.05);
   const receipt = smooth((c - 0.58) / 0.14);
+  const frameHalf = fit(0.026, Math.max(cx, cy));
+  const ruleHalf = fit(0.022, cy);
+  const rowHalf = fit(0.026, cy);
+  const tickHalf = fit(0.024, cy);
   let out = v * 0.1;
 
   /* the work plate: frame, title rule, content rows */
   const p = ABSENCE_PLATE;
   if (inRect(nx, ny, p.x, p.y, p.w, p.h)) {
     const pe = edgeDist(nx, ny, p.x, p.y, p.w, p.h);
-    if (pe < 0.026) {
+    if (pe < frameHalf) {
       out = Math.max(out, lerp(0.95, 0.45, gone));
     } else if (
-      inSeg(nx, ny, ABSENCE_TITLE.x, ABSENCE_TITLE.x1, ABSENCE_TITLE.y, 0.022)
+      inSeg(nx, ny, ABSENCE_TITLE.x, ABSENCE_TITLE.x1, ABSENCE_TITLE.y, ruleHalf)
     ) {
       out = Math.max(out, lerp(0.72, 0.35, gone));
     }
     for (const row of ABSENCE_ROWS) {
       if (
-        inSeg(nx, ny, row.x0, row.x1, row.y, 0.026) &&
+        inSeg(nx, ny, row.x0, row.x1, row.y, rowHalf) &&
         textRow(nx, row.salt) > 0.5
       ) {
         out = Math.max(out, lerp(0.86, 0.05, gone) + flash * 0.25);
@@ -394,8 +464,8 @@ function absenceShape(v: number, nx: number, ny: number, t: number): number {
   for (let i = 0; i < ABSENCE_TICKER.n; i++) {
     const ty = ABSENCE_TICKER.y0 + i * ABSENCE_TICKER.dy;
     if (
-      Math.abs(nx - ABSENCE_TICKER.x) < 0.018 &&
-      Math.abs(ny - ty) < 0.024
+      Math.abs(nx - ABSENCE_TICKER.x) < fit(0.018, cx) &&
+      Math.abs(ny - ty) < fit(0.024, cy)
     ) {
       out = Math.max(
         out,
@@ -411,17 +481,17 @@ function absenceShape(v: number, nx: number, ny: number, t: number): number {
     if (inRect(nx, ny, r.x, r.y, r.w, r.h)) {
       const frameA = smooth((receipt - 0.05) / 0.3);
       const re = edgeDist(nx, ny, r.x, r.y, r.w, r.h);
-      if (re < 0.026) {
+      if (re < frameHalf) {
         out = Math.max(out, 0.95 * frameA);
       }
-      if (inSeg(nx, ny, r.x + 0.04, r.x + 0.3, r.y + 0.075, 0.022)) {
+      if (inSeg(nx, ny, r.x + 0.04, r.x + 0.3, r.y + 0.075, ruleHalf)) {
         out = Math.max(out, 0.6 * frameA);
       }
       for (let i = 0; i < ABSENCE_TICKS.length; i++) {
         const step = smooth((receipt - (0.3 + i * 0.14)) / 0.14);
         if (step <= 0) continue;
         const x1 = r.x + 0.05 + (0.34 + (i % 2) * 0.08) * step;
-        if (inSeg(nx, ny, r.x + 0.05, x1, ABSENCE_TICKS[i], 0.024)) {
+        if (inSeg(nx, ny, r.x + 0.05, x1, ABSENCE_TICKS[i], tickHalf)) {
           out = Math.max(out, 0.88);
         }
       }
@@ -430,10 +500,15 @@ function absenceShape(v: number, nx: number, ny: number, t: number): number {
   return out;
 }
 
-function absenceGlyphAt(t: number, nx: number, ny: number): number {
+function absenceGlyphAt(
+  t: number,
+  nx: number,
+  ny: number,
+  cx: number,
+): number {
   /* the receipt and the ticker are records: every cell a 1 */
   if (
-    Math.abs(nx - ABSENCE_TICKER.x) < 0.016 &&
+    Math.abs(nx - ABSENCE_TICKER.x) < fit(0.016, cx) &&
     ny > ABSENCE_TICKER.y0 - 0.03 &&
     ny < ABSENCE_TICKER.y0 + (ABSENCE_TICKER.n - 1) * ABSENCE_TICKER.dy + 0.03
   ) {
@@ -478,7 +553,14 @@ function atlasPhase(t: number): number {
   return cyc(t, ATLAS_PERIOD, 0.86);
 }
 
-function atlasShape(v: number, nx: number, ny: number, t: number): number {
+function atlasShape(
+  v: number,
+  nx: number,
+  ny: number,
+  t: number,
+  cx: number,
+  cy: number,
+): number {
   const c = atlasPhase(t);
   /* the whole tree releases together at the cycle end — a soft reset,
      never a hard cut */
@@ -486,6 +568,13 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
   let out = v * 0.06 * release;
   const rootOn = smooth((c - 0.02) / 0.06);
   const ruleOn = smooth((c - 0.56) / 0.08) * (1 - smooth((c - 0.97) / 0.04));
+  /* every mark keeps at least one glyph of the grid it is drawn on */
+  const ruleHalf = fit(0.028, cy);
+  const barHalf = fit(0.028, cy);
+  const dropHalf = fit(0.018, cx);
+  const feedHalf = fit(0.016, cx);
+  const annotHalf = fit(0.016, cy);
+  const blockHalf = fit(0.036, cy);
 
   /* the original rule: full strength until the revision takes over,
      then receding to a remembered line; a solid origin block anchors
@@ -499,7 +588,7 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
         ATLAS_ROOT.x0,
         ATLAS_ROOT.x0 + (ATLAS_ROOT.x1 - ATLAS_ROOT.x0) * rootOn,
         ATLAS_ROOT.y,
-        0.028,
+        ruleHalf,
       )
     ) {
       out = Math.max(out, dim * release);
@@ -507,7 +596,7 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
     if (
       nx > ATLAS_ORIGIN.x0 &&
       nx < ATLAS_ORIGIN.x1 &&
-      Math.abs(ny - ATLAS_ROOT.y) < 0.04 * rootOn
+      Math.abs(ny - ATLAS_ROOT.y) < fit(0.04 * rootOn, cy)
     ) {
       out = Math.max(out, release);
     }
@@ -519,7 +608,7 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
     if (appear <= 0) continue;
 
     /* the elbow: vertical drop from the rule, then into the case bar */
-    if (Math.abs(nx - k.drop) < 0.018 && ny > ATLAS_ROOT.y && ny < k.y) {
+    if (Math.abs(nx - k.drop) < dropHalf && ny > ATLAS_ROOT.y && ny < k.y) {
       out = Math.max(out, 0.82 * appear * release);
     }
 
@@ -530,7 +619,7 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
 
     /* the case bar — a fractured case renders as two halves with a gap */
     const broken = gap > 0 && nx > end - 0.12 && nx < end - 0.08;
-    if (!broken && inSeg(nx, ny, k.x0, drawn, k.y, 0.028)) {
+    if (!broken && inSeg(nx, ny, k.x0, drawn, k.y, barHalf)) {
       out = Math.max(out, (0.72 + 0.2 * v) * appear * release);
     }
     if (broken && gap < 0.5) {
@@ -542,7 +631,7 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
     if (termOn > 0) {
       if (k.outcome === "hold") {
         /* settled: a solid end block */
-        if (nx > end - 0.008 && nx < end + 0.045 && Math.abs(ny - k.y) < 0.036) {
+        if (nx > end - 0.008 && nx < end + 0.045 && Math.abs(ny - k.y) < blockHalf) {
           out = Math.max(out, 0.95 * termOn * release);
         }
       } else if (k.outcome === "fracture") {
@@ -550,7 +639,7 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
         if (
           nx > end - 0.045 &&
           nx < end + 0.01 &&
-          Math.abs(ny - (k.y + gap * 0.02)) < 0.03
+          Math.abs(ny - (k.y + gap * 0.02)) < fit(0.03, cy)
         ) {
           out = Math.max(out, 0.9 * termOn * release * (1 - gap * 0.35));
         }
@@ -558,10 +647,10 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
         /* refined: the bar extends thicker past its old end */
         const ext = smooth((c - (k.at + 0.12)) / 0.08);
         if (ext > 0) {
-          if (inSeg(nx, ny, end, end + ext * 0.1, k.y, 0.03)) {
+          if (inSeg(nx, ny, end, end + ext * 0.1, k.y, fit(0.03, cy))) {
             out = Math.max(out, 0.9 * ext * release);
           }
-          if (nx > end + 0.075 && nx < end + 0.125 && Math.abs(ny - k.y) < 0.036) {
+          if (nx > end + 0.075 && nx < end + 0.125 && Math.abs(ny - k.y) < blockHalf) {
             out = Math.max(out, 0.95 * ext * release);
           }
         }
@@ -575,7 +664,7 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
       const annotBroken = gap > 0 && nx > u.x0 + 0.16 && nx < u.x0 + 0.2;
       if (
         !annotBroken &&
-        inSeg(nx, ny, u.x0, u.x0 + (u.x1 - u.x0) * annot, u.y, 0.016)
+        inSeg(nx, ny, u.x0, u.x0 + (u.x1 - u.x0) * annot, u.y, annotHalf)
       ) {
         out = Math.max(out, 0.6 * annot * release);
       }
@@ -583,7 +672,7 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
 
     /* the collector: each case feeds the revised rule below */
     const feed = smooth((c - (0.42 + i * 0.04)) / 0.06);
-    if (feed > 0 && Math.abs(nx - k.drop) < 0.016) {
+    if (feed > 0 && Math.abs(nx - k.drop) < feedHalf) {
       const fy = lerp(ATLAS_UNDER[i].y, ATLAS_RULE.y, feed);
       if (ny > ATLAS_UNDER[i].y && ny < fy) {
         out = Math.max(out, 0.68 * release);
@@ -601,7 +690,7 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
         ATLAS_RULE.x0,
         ATLAS_RULE.x0 + (ATLAS_RULE.x1 - ATLAS_RULE.x0) * ruleOn,
         ATLAS_RULE.y,
-        0.028,
+        ruleHalf,
       )
     ) {
       out = Math.max(out, 0.97 * release);
@@ -611,27 +700,37 @@ function atlasShape(v: number, nx: number, ny: number, t: number): number {
       nodeOn > 0 &&
       nx > ATLAS_NODE.x0 &&
       nx < ATLAS_NODE.x1 &&
-      Math.abs(ny - ATLAS_RULE.y) < 0.05 * nodeOn
+      Math.abs(ny - ATLAS_RULE.y) < fit(0.05 * nodeOn, cy)
     ) {
       out = Math.max(out, release);
     }
     const pulse = cyc(t, 4.5);
     const px = ATLAS_RULE.x0 + pulse * (ATLAS_RULE.x1 - ATLAS_RULE.x0);
-    if (Math.abs(ny - ATLAS_RULE.y) < 0.042 && Math.abs(nx - px) < 0.045) {
+    if (Math.abs(ny - ATLAS_RULE.y) < fit(0.042, cy) && Math.abs(nx - px) < 0.045) {
       out = Math.max(out, 0.98 * release);
     }
   }
   return out;
 }
 
-function atlasGlyphAt(t: number, nx: number, ny: number): number {
+function atlasGlyphAt(
+  t: number,
+  nx: number,
+  ny: number,
+  cx: number,
+  cy: number,
+): number {
   const c = atlasPhase(t);
+  const dropHalf = fit(0.018, cx);
+  const feedHalf = fit(0.016, cx);
+  const annotHalf = fit(0.016, cy);
+  const blockHalf = fit(0.05, cy);
   /* connectors and collectors read as : — thin dotted lines */
   for (let i = 0; i < ATLAS_CASES.length; i++) {
     const k = ATLAS_CASES[i];
     if (
       smooth((c - k.at) / 0.07) > 0 &&
-      Math.abs(nx - k.drop) < 0.018 &&
+      Math.abs(nx - k.drop) < dropHalf &&
       ny > ATLAS_ROOT.y &&
       ny < k.y
     ) {
@@ -640,26 +739,29 @@ function atlasGlyphAt(t: number, nx: number, ny: number): number {
     const feed = smooth((c - (0.42 + i * 0.04)) / 0.06);
     if (
       feed > 0 &&
-      Math.abs(nx - k.drop) < 0.016 &&
+      Math.abs(nx - k.drop) < feedHalf &&
       ny > ATLAS_UNDER[i].y &&
       ny < ATLAS_RULE.y
     ) {
       return 1;
     }
     /* a junction mark where each drop leaves the rule */
-    if (Math.abs(nx - k.drop) < 0.02 && Math.abs(ny - ATLAS_ROOT.y) < 0.028) {
+    if (
+      Math.abs(nx - k.drop) < fit(0.02, cx) &&
+      Math.abs(ny - ATLAS_ROOT.y) < fit(0.028, cy)
+    ) {
       return 2;
     }
   }
   /* annotation rules read as : rows too */
   for (const u of ATLAS_UNDER) {
-    if (Math.abs(ny - u.y) < 0.016 && nx > u.x0 && nx < u.x1) return 1;
+    if (Math.abs(ny - u.y) < annotHalf && nx > u.x0 && nx < u.x1) return 1;
   }
   /* solids: the outcome terminals and the end node */
   for (const k of ATLAS_CASES) {
     const end = k.x0 + k.w;
     if (
-      Math.abs(ny - k.y) < 0.05 &&
+      Math.abs(ny - k.y) < blockHalf &&
       nx > end - 0.05 &&
       nx < end + 0.13 &&
       smooth((c - (k.at + 0.06)) / 0.05) > 0.5
@@ -668,7 +770,7 @@ function atlasGlyphAt(t: number, nx: number, ny: number): number {
     }
   }
   if (
-    Math.abs(ny - ATLAS_RULE.y) < 0.052 &&
+    Math.abs(ny - ATLAS_RULE.y) < fit(0.052, cy) &&
     nx > ATLAS_NODE.x0 &&
     nx < ATLAS_NODE.x1 &&
     smooth((c - 0.66) / 0.06) > 0.5
@@ -751,10 +853,19 @@ function fluxPiece(p: FluxPiece, t: number, c: number): {
   };
 }
 
-function fluxShape(v: number, nx: number, ny: number, t: number): number {
+function fluxShape(
+  v: number,
+  nx: number,
+  ny: number,
+  t: number,
+  cx: number,
+  cy: number,
+): number {
   const c = fluxCycle(t);
   const flash = env(c, 0.46, 0.56, 0.05) + env(c, 0.72, 0.8, 0.04) * 0.8;
   const release = 1 - smooth((c - 0.94) / 0.05);
+  const edgeX = fit(0.022, cx);
+  const edgeY = fit(0.03, cy);
   let out = v * 0.16;
 
   /* the loose pieces, each travelling from its scatter to its slot */
@@ -790,7 +901,7 @@ function fluxShape(v: number, nx: number, ny: number, t: number): number {
       nx < r.x + r.w + 0.02 &&
       ny > r.y - 0.03 &&
       ny < r.y + r.h + 0.03;
-    if (!inSpan || (bx >= 0.022 && by >= 0.03)) continue;
+    if (!inSpan || (bx >= edgeX && by >= edgeY)) continue;
     out = Math.max(out, (0.95 + flash * 0.05) * release * (0.75 + 0.25 * v));
   }
   return out;
@@ -864,34 +975,49 @@ function numberPhase(t: number): number {
   return cyc(t, 16, 0.62);
 }
 
-function numberAmountIndex(t: number, nx: number): number {
+function numberAmountIndex(t: number, nx: number, half: number): number {
   /* which digit column: three cells on the amount's line, or -1 */
   const c = numberPhase(t);
   const tick = smooth((c - 0.5) / 0.05);
   const value = tick > 0.5 ? AMOUNT_B : AMOUNT_A;
   for (let i = 0; i < value.length; i++) {
-    if (Math.abs(nx - AMOUNT_XS[i]) < AMOUNT_CELL) return value[i];
+    if (Math.abs(nx - AMOUNT_XS[i]) < half) return value[i];
   }
   return -1;
 }
 
-function numberShape(v: number, nx: number, ny: number, t: number): number {
+function numberShape(
+  v: number,
+  nx: number,
+  ny: number,
+  t: number,
+  cx: number,
+  cy: number,
+): number {
   const c = numberPhase(t);
   let out = v * 0.12;
   const r = NUMBER_CARD;
   const beat = env(c, 0.46, 0.56, 0.05);
+  const frameHalf = fit(0.026, Math.max(cx, cy));
+  const labelHalf = fit(0.02, cy);
+  const chipHalf = fit(0.016, cy);
+  const fenceHalf = fit(0.018, Math.max(cx, cy));
+  const amountHalf = fit(AMOUNT_ROW, cy);
+  const digitHalf = fit(AMOUNT_CELL, cx);
+  const dashHalf = fit(0.022, cy);
+  const dashLen = fit(0.09, cx);
 
   /* the budget card: frame, label bar, status pip, amount well */
   if (inRect(nx, ny, r.x, r.y, r.w, r.h)) {
     const re = edgeDist(nx, ny, r.x, r.y, r.w, r.h);
-    if (re < 0.026) {
+    if (re < frameHalf) {
       out = Math.max(out, 0.9);
     } else if (
-      inSeg(nx, ny, NUMBER_LABEL.x0, NUMBER_LABEL.x1, NUMBER_LABEL.y, 0.02)
+      inSeg(nx, ny, NUMBER_LABEL.x0, NUMBER_LABEL.x1, NUMBER_LABEL.y, labelHalf)
     ) {
       out = Math.max(out, 0.55);
     } else if (
-      inSeg(nx, ny, NUMBER_CHIP.x0, NUMBER_CHIP.x1, NUMBER_CHIP.y, 0.016)
+      inSeg(nx, ny, NUMBER_CHIP.x0, NUMBER_CHIP.x1, NUMBER_CHIP.y, chipHalf)
     ) {
       out = Math.max(out, 0.45);
     } else if (
@@ -913,10 +1039,10 @@ function numberShape(v: number, nx: number, ny: number, t: number): number {
         NUMBER_WELL.x1 - NUMBER_WELL.x0,
         NUMBER_WELL.y1 - NUMBER_WELL.y0,
       );
-      const digit = numberAmountIndex(t, nx);
-      if (we < 0.018) {
+      const digit = numberAmountIndex(t, nx, digitHalf);
+      if (we < fenceHalf) {
         out = Math.max(out, 0.5 + beat * 0.2);
-      } else if (digit >= 0 && Math.abs(ny - AMOUNT_LINE) < AMOUNT_ROW) {
+      } else if (digit >= 0 && Math.abs(ny - AMOUNT_LINE) < amountHalf) {
         /* the amount: the brightest line in the panel */
         out = Math.max(out, 1);
       } else {
@@ -925,7 +1051,7 @@ function numberShape(v: number, nx: number, ny: number, t: number): number {
     }
     /* the amount's baseline rule */
     if (
-      inSeg(nx, ny, NUMBER_UNDER.x0, NUMBER_UNDER.x1, NUMBER_UNDER.y, 0.018)
+      inSeg(nx, ny, NUMBER_UNDER.x0, NUMBER_UNDER.x1, NUMBER_UNDER.y, fit(0.018, cy))
     ) {
       out = Math.max(out, 0.9 + beat * 0.08);
     }
@@ -941,8 +1067,8 @@ function numberShape(v: number, nx: number, ny: number, t: number): number {
     const door = TX_DOORS[i];
     const x = lerp(start.x, door.x, travel);
     const y = lerp(start.y, door.y, travel);
-    const len = 0.09 * (1 - travel * 0.4);
-    if (Math.abs(ny - y) < 0.022 && Math.abs(nx - x) < len / 2) {
+    const len = dashLen * (1 - travel * 0.4);
+    if (Math.abs(ny - y) < dashHalf && Math.abs(nx - x) < len / 2) {
       out = Math.max(
         out,
         (0.62 + 0.3 * travel) * (1 - smooth((travel - 0.9) / 0.1)),
@@ -957,12 +1083,24 @@ function numberShape(v: number, nx: number, ny: number, t: number): number {
   return out;
 }
 
-function numberGlyphAt(t: number, nx: number, ny: number): number {
+function numberGlyphAt(
+  t: number,
+  nx: number,
+  ny: number,
+  cx: number,
+  cy: number,
+): number {
   /* digits live only on the amount's single line; EVERY other cell —
      card frame, label bar, fragments, ambient — resolves to a mark.
      The engine's default band maps strength across the whole glyph
      string, which would spill digits into the structure. */
   const r = NUMBER_CARD;
+  const frameHalf = fit(0.026, Math.max(cx, cy));
+  const fenceHalf = fit(0.018, Math.max(cx, cy));
+  const amountHalf = fit(AMOUNT_ROW, cy);
+  const digitHalf = fit(AMOUNT_CELL, cx);
+  const dashHalf = fit(0.022, cy);
+  const dashLen = fit(0.09, cx);
   if (inRect(nx, ny, r.x, r.y, r.w, r.h)) {
     if (
       inRect(
@@ -974,8 +1112,8 @@ function numberGlyphAt(t: number, nx: number, ny: number): number {
         NUMBER_WELL.y1 - NUMBER_WELL.y0,
       )
     ) {
-      const digit = numberAmountIndex(t, nx);
-      if (digit >= 0 && Math.abs(ny - AMOUNT_LINE) < AMOUNT_ROW) return digit;
+      const digit = numberAmountIndex(t, nx, digitHalf);
+      if (digit >= 0 && Math.abs(ny - AMOUNT_LINE) < amountHalf) return digit;
       const we = edgeDist(
         nx,
         ny,
@@ -984,14 +1122,14 @@ function numberGlyphAt(t: number, nx: number, ny: number): number {
         NUMBER_WELL.x1 - NUMBER_WELL.x0,
         NUMBER_WELL.y1 - NUMBER_WELL.y0,
       );
-      if (we < 0.019) return 4; /* the well's fence */
+      if (we < fenceHalf) return 4; /* the well's fence */
       return 3; /* '*' fill inside the well, digits on one line over it */
     }
     const re = edgeDist(nx, ny, r.x, r.y, r.w, r.h);
-    if (re < 0.026) return 4; /* the frame: densest mark */
-    if (Math.abs(ny - NUMBER_LABEL.y) < 0.02) return 4; /* the label bar */
-    if (Math.abs(ny - NUMBER_CHIP.y) < 0.018) return 4; /* the status pip */
-    if (Math.abs(ny - NUMBER_UNDER.y) < 0.018) return 4; /* the baseline rule */
+    if (re < frameHalf) return 4; /* the frame: densest mark */
+    if (Math.abs(ny - NUMBER_LABEL.y) < fit(0.02, cy)) return 4; /* the label bar */
+    if (Math.abs(ny - NUMBER_CHIP.y) < fit(0.018, cy)) return 4; /* the status pip */
+    if (Math.abs(ny - NUMBER_UNDER.y) < fit(0.018, cy)) return 4; /* the baseline rule */
     return 3;
   }
   /* the streaming fragments: marks, never digits */
@@ -1001,8 +1139,8 @@ function numberGlyphAt(t: number, nx: number, ny: number): number {
     const travel = smooth(u / TX_WINDOW);
     const x = lerp(TX_STARTS[i].x, TX_DOORS[i].x, travel);
     const y = lerp(TX_STARTS[i].y, TX_DOORS[i].y, travel);
-    const len = 0.09 * (1 - travel * 0.4);
-    if (Math.abs(ny - y) < 0.022 && Math.abs(nx - x) < len / 2) {
+    const len = dashLen * (1 - travel * 0.4);
+    if (Math.abs(ny - y) < dashHalf && Math.abs(nx - x) < len / 2) {
       return travel > 0.6 ? 2 : 1; /* + : — value marks, not digits */
     }
   }
@@ -1096,20 +1234,21 @@ const PORTRAITS: Record<string, PortraitConfig> = {
 
 /** The project portrait: a compact moving diagram of one project's
     core behaviour — the same engine, six readable behaviours.
-    `index` renders the compact, quieter register. */
+    `live` is the folio's rule that only the sheet being read stays
+    awake: every other portrait holds its last frame, asleep, at no
+    cost, and wakes exactly where its cycle left off. */
 export function ProjectPortrait({
   slug,
-  tone = "full",
+  live = true,
 }: {
   slug: string;
-  tone?: PortraitTone;
+  live?: boolean;
 }) {
   const config = PORTRAITS[slug];
   if (!config) return null;
-  const index = tone === "index";
   return (
     <figure
-      className={`xp-portrait${index ? " xp-portrait--index" : ""}`}
+      className="xp-portrait"
       data-portrait={slug}
       style={
         {
@@ -1121,9 +1260,10 @@ export function ProjectPortrait({
       <SignalField
         className="xp-portrait-field"
         glyphs={config.glyphs ?? "·:+*#"}
-        cell={config.cell + (index ? 2 : 0)}
+        cell={config.cell}
+        paused={!live}
         seed={config.seed}
-        ambient={config.ambient * (index ? 0.9 : 1)}
+        ambient={config.ambient}
         flow={config.flow}
         wavefront={config.wavefront}
         drift={config.drift}
