@@ -89,14 +89,16 @@
   margin: 0;
 }
 
-/* The mast is the composition's centre: the name, the claim and the
-   deck stack centered on the page axis, held by the signal on both
-   flanks. One axis, one object — not stacked strips. */
+/* The mast is the composition's centre: the name, the statement and
+   the descriptor stack centered on the page axis, held by the
+   signal on both flanks. The gap is one beat; the wordmark carries an
+   extra margin between it and the statement group, so the claim and
+   the descriptor read as one sentence. */
 .xp-cover-mast {
   display: grid;
   justify-items: center;
   align-content: center;
-  gap: clamp(1.2rem, 3vh, 2.2rem);
+  gap: clamp(1rem, 2.4vh, 1.8rem);
   padding-block: clamp(1.4rem, 4vh, 3rem) clamp(1.2rem, 3vh, 2.4rem);
 }
 
@@ -114,6 +116,8 @@
   line-height: 1;
   white-space: nowrap;
   text-align: center;
+  /* one extra beat before the statement group */
+  margin-bottom: clamp(0.5rem, 1.4vh, 1.1rem);
 }
 
 /* The hover: a pixel scanline. Hovering the name sweeps the signal
@@ -147,29 +151,29 @@
   }
 }
 
-/* The claim is the wordmark's own voice turned down, centered on the
-   same axis: Anybody, compressed at rest, with the one word the folio
-   is about — behaviour — opening to the wordmark's width. */
+/* The statement is the page's second focal point: the wordmark's
+   voice, opened a step — bigger and heavier than before, still
+   clearly under the name. */
 .xp-cover-claim {
   max-width: 30ch;
   font-family: var(--display);
-  font-size: clamp(1.3rem, 2.3vw, 2.1rem);
-  font-weight: 540;
+  font-size: clamp(1.5rem, 3vw, 2.7rem);
+  font-weight: 600;
   font-stretch: 80%;
-  line-height: 1.12;
-  letter-spacing: 0.004em;
+  line-height: 1.08;
+  letter-spacing: -0.002em;
   text-wrap: balance;
   text-align: center;
 }
 
 .xp-cover-claim strong {
-  font-weight: 660;
+  font-weight: 720;
   font-stretch: 122%;
   letter-spacing: -0.005em;
 }
 
 .xp-cover-deck {
-  max-width: 46ch;
+  max-width: 44ch;
   color: var(--ink-soft);
   font-family: var(--sans);
   font-size: var(--step-0);
@@ -178,24 +182,52 @@
   text-align: center;
 }
 
+/* The handoff is a working control wearing meta clothing: the same
+   registration line and mono voice, with the arrow falling a step on
+   hover — the cue behaving like the travel it offers. Global
+   :focus-visible outlines carry keyboard focus. */
 .xp-cover-handoff {
   display: flex;
   align-items: baseline;
   justify-content: center;
   gap: 1.1rem;
-  padding-block: clamp(1rem, 2.4vh, 1.6rem) clamp(0.9rem, 2vh, 1.4rem);
+  padding-block: clamp(1.1rem, 2.6vh, 1.7rem) clamp(1.2rem, 3vh, 2rem);
   border-top: 1px solid var(--line);
   color: var(--muted);
+  text-decoration: none;
 }
 
 .xp-cover-handoff p {
   font-family: var(--mono);
   font-size: var(--meta-size);
   letter-spacing: 0.05em;
+  transition: color var(--beat) var(--ease-out);
 }
 
 .xp-cover-handoff span {
+  display: inline-block;
   color: var(--registrar);
+  transition: transform var(--beat) var(--ease-out);
+}
+
+.xp-cover-handoff:hover p,
+.xp-cover-handoff:focus-visible p {
+  color: var(--ink);
+}
+
+.xp-cover-handoff:hover span {
+  transform: translateY(0.28em);
+}
+
+.xp-cover-handoff:active span {
+  transform: translateY(0.44em);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-cover-handoff p,
+  .xp-cover-handoff span {
+    transition: none;
+  }
 }
 
 @media (max-width: 52rem) {
@@ -318,6 +350,9 @@
 .xp-field {
   position: relative;
   background: var(--paper);
+  /* the handoff anchor lands under the sticky header with its own
+     breathing room, the same offset the sheets take */
+  scroll-margin-top: calc(var(--header-h) + 1rem);
 }
 
 .xp-field-head {
@@ -955,7 +990,7 @@
 
   .xp-cover-claim {
     padding-left: 0;
-    font-size: clamp(1.35rem, 5.4vw, 1.9rem);
+    font-size: clamp(1.4rem, 5.6vw, 2.05rem);
   }
 
   /* On narrow screens the reveal control used to land on top of the

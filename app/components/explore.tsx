@@ -434,15 +434,19 @@ export function Explore() {
               I design what interfaces <strong>do</strong>.
             </p>
             <p className="xp-cover-deck">
-              Product and interaction design — I design the behaviour and
-              build the front end.
+              From research to interaction to working code.
             </p>
           </div>
 
-          <div className="xp-cover-handoff">
-            <p>Six projects · all live online</p>
+          {/* The handoff is a real control, not furniture: an anchor into
+              the field, so keyboard and no-JS readers reach the same
+              destination. Smooth travel and the sticky header's offset
+              come from the platform (html scroll-behaviour and
+              scroll-padding), with the reduced-motion override. */}
+          <a className="xp-cover-handoff" href="#work">
+            <p>Explore selected work</p>
             <span aria-hidden="true">↓</span>
-          </div>
+          </a>
         </div>
       </section>
 

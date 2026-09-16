@@ -42,10 +42,10 @@ test("server-renders the folio at / — one projects reading", async () => {
   assert.match(folio, /Bengaluru, India/);
   assert.match(folio, /The folio · 2026/);
   assert.match(folio, /Selected projects/);
-  /* the project count is stated once on the folio — the handoff line —
-     never again in the cover deck or the field head */
-  assert.equal((folio.match(/[Ss]ix/g) ?? []).length, 1);
-  assert.match(folio, /Six projects · all live online/);
+  /* the route into the work is stated once on the folio — the handoff
+     cue — and it is a real control into the field, not furniture */
+  assert.match(folio, /Explore selected work/);
+  assert.match(folio, /class="xp-cover-handoff" href="#work"/);
   assert.equal((folio.match(/data-explore-piece/g) ?? []).length, 6);
   /* The folio ends once: the last sheet hands over to one quiet closing
      note — the folio's argument and one small Contact link — and then the
