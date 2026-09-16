@@ -397,7 +397,7 @@ export function Explore() {
         />
         <div className="xp-cover-pin">
           <div className="xp-cover-head">
-            <p>Product / Interaction Designer · Bengaluru</p>
+            <p>Bengaluru, India</p>
             <p>The folio · 2026</p>
           </div>
 
