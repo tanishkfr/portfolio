@@ -81,31 +81,26 @@ export function SplashGate() {
       bar.animate(
         [{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }],
         {
-          duration: 2000,
-          delay: 100,
+          duration: 620,
+          delay: 40,
           easing: "cubic-bezier(0.32, 0.6, 0.28, 1)",
           fill: "forwards",
         },
       );
     }
 
-    const holdTimer = window.setTimeout(() => setPhase("resolve"), 1200);
-    const doneTimer = window.setTimeout(finish, 2800);
-
-    /* Skipping arms once the hold completes: the loading bar gets its
-       moment before a stray trackpad scroll can cut the intro, while
-       real intent (click, key, scroll) still dismisses at once. */
+    /* dismissible immediately: any interaction lifts the splash at once */
     const dismiss = () => finish();
-    const armTimer = window.setTimeout(() => {
-      window.addEventListener("pointerdown", dismiss, { once: true });
-      window.addEventListener("keydown", dismiss, { once: true });
-      window.addEventListener("wheel", dismiss, { once: true, passive: true });
-    }, 1200);
+    window.addEventListener("pointerdown", dismiss, { once: true });
+    window.addEventListener("keydown", dismiss, { once: true });
+    window.addEventListener("wheel", dismiss, { once: true, passive: true });
+
+    const holdTimer = window.setTimeout(() => setPhase("resolve"), 250);
+    const doneTimer = window.setTimeout(finish, 900);
 
     return () => {
       window.clearTimeout(holdTimer);
       window.clearTimeout(doneTimer);
-      window.clearTimeout(armTimer);
       window.removeEventListener("pointerdown", dismiss);
       window.removeEventListener("keydown", dismiss);
       window.removeEventListener("wheel", dismiss);

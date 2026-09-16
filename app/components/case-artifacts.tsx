@@ -513,7 +513,7 @@ function AtlasArtifact() {
             </p>
           ) : (
             <>
-              <h3>{currentCase.title}</h3>
+              <h2>{currentCase.title}</h2>
               <p>{currentCase.body}</p>
             </>
           )}

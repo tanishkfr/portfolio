@@ -245,6 +245,35 @@
   pointer-events: none;
 }
 
+/* About and Résumé: the signal is a bounded strip in the intro's open
+   upper-right corner, absolutely positioned like the contact page's —
+   never in flow (a static canvas sizes itself by its own bitmap ratio
+   and collides with the heading at narrow widths). Below 56rem there
+   is no genuinely open region beside the copy, so the signal yields. */
+.about-intro > .page-signal,
+.resume-intro > .page-signal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* the old base rule below sets inset: 0 — neutralise the left and
+     bottom edges it adds, or the canvas pins to the copy's side */
+  left: auto;
+  bottom: auto;
+  width: 30%;
+  /* the canvas never outgrows the intro's own copy: a taller canvas
+     would trail into the body sections below */
+  height: clamp(14rem, 32vh, 21rem);
+  z-index: -1;
+  pointer-events: none;
+}
+
+@media (max-width: 56rem) {
+  .about-intro > .page-signal,
+  .resume-intro > .page-signal {
+    display: none;
+  }
+}
+
 @media (min-width: 90rem) {
   .contact-shell > .page-signal {
     /* the letter's column caps at ~65rem, so past 90rem the canvas

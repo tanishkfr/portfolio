@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Project } from "../data/portfolio";
 import { RoomPaint } from "./atmosphere";
 import { CaseSignal } from "./case-signal";
+import { CaseFigure } from "./case-media";
 import { ROOM_WORLDS } from "../data/room-worlds";
 import { TransitionLink } from "./transition-link";
 
@@ -33,7 +34,7 @@ export function DayneroPreview({
       <RoomPaint slug="daynero" />
       <div className="daynero-return">
         <TransitionLink href={returnHref}>{"← Projects / " + project.title}</TransitionLink>
-        <span>Commercial product · case in preparation</span>
+        <span>Pre-MVP product preview · public site live</span>
       </div>
 
       <header className="daynero-hero" data-reveal>
@@ -60,6 +61,24 @@ export function DayneroPreview({
           </p>
         </div>
       </header>
+
+      {/* The one real product-design surface that is public: the live
+          marketing site. Presented as what it is — the shipped public
+          website, not proof that the app has shipped. */}
+      <section className="case-evidence" aria-label="The live public site" data-reveal>
+        <header className="record-head">
+          <p className="case-label">What is live</p>
+          <h2>The public product site, as shipped.</h2>
+        </header>
+        <CaseFigure
+          src="/projects/daynero/site-home-desktop.png"
+          alt="Daynero's live public website: the behavioural personal-finance proposition with its daily-budget, goals, score and insights sections, and the waitlist entry."
+          width={1440}
+          height={900}
+          label="The public website"
+          caption="Daynero's public site, live at daynero.com — designed and built by Tanishk. It presents the product proposition and collects waitlist sign-ups; the app itself remains pre-MVP, and no private product surface is shown here."
+        />
+      </section>
 
       {/* An honest record in miniature: the situation, the turn, what
           exists now, what is not yet proven. Same grammar as the

@@ -55,7 +55,7 @@ const experience: Entry[] = [
       "Stay involved beyond design — working through implementation constraints, client revisions and deployment rather than handing off at Figma.",
       "Designed and shipped Taamboolam's live hospitality website, taking it from client requirements through interface design, enquiry flows, production QA and deployment.",
     ],
-    links: [{ label: "Taamboolam ↗", href: "https://taamboolam2.vercel.app/" }],
+    links: [{ label: "Taamboolam ↗", href: "https://taamboolam.com" }],
   },
 ];
 

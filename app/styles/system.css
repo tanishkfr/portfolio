@@ -675,6 +675,26 @@ a[data-external]:focus-visible .xp-cta-arrow {
   transform: translate(2px, -2px);
 }
 
+/* Touch targets: the small editorial links grow an invisible hit area
+   — padding in, margin out — so the tappable surface clears ~40px
+   while every visual stays exactly as authored. */
+.site-identity,
+.case-end-flow a,
+.relation-secondary,
+.contact-social,
+.daynero-actions a,
+.daynero-return a,
+.record-client-link,
+.record-sources a,
+.contact-label + * a,
+.xp-piece-actions a,
+.xp-field-index a,
+.case-return .case-crumb a,
+.site-header nav a {
+  padding-block: 0.45rem;
+  margin-block: -0.45rem;
+}
+
 @media (max-width: 44rem) {
   .site-identity small {
     display: none;
@@ -1184,7 +1204,7 @@ a[data-external]:focus-visible .xp-cta-arrow {
   line-height: 0.92;
   text-transform: uppercase;
   color: var(--ink);
-  transition: font-stretch 1300ms var(--ease-swing);
+  transition: font-stretch 650ms var(--ease-swing);
 }
 
 .splash[data-phase="resolve"] .splash-name {
@@ -1218,7 +1238,7 @@ a[data-external]:focus-visible .xp-cta-arrow {
   font-size: var(--step--1);
   letter-spacing: 0.06em;
   opacity: 0;
-  transition: opacity 420ms var(--ease-out) 700ms;
+  transition: opacity 240ms var(--ease-out) 180ms;
 }
 
 .splash[data-phase="resolve"] .splash-note {

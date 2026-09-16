@@ -3280,3 +3280,96 @@
 .shell.case {
   padding-bottom: clamp(1.8rem, 4vh, 2.8rem);
 }
+
+/* ---------- case evidence ----------
+   Real interface captures from the deployed artifacts and shipped
+   sites. Editorial figures in the case's own frame language: the
+   panel carries the capture, the caption carries the proof, and the
+   reading stays quiet. */
+.case-evidence-wrap {
+  padding-inline: clamp(0.4rem, 1.5vw, 1rem);
+  margin-top: clamp(1.2rem, 3vh, 2rem);
+}
+
+.case-media {
+  margin: clamp(1.6rem, 4vh, 2.6rem) 0 0;
+}
+
+.case-media-frame {
+  border: 1px solid var(--line);
+  background: var(--paper-high, #f3f4ee);
+  overflow: hidden;
+}
+
+.case-media-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.case-media-caption {
+  margin-top: 0.8rem;
+  max-width: 62ch;
+  font-size: var(--meta-size);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.case-media-caption strong {
+  display: block;
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.case-media--pair .case-media-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(9rem, 18vw, 13rem);
+  gap: clamp(0.8rem, 2vw, 1.4rem);
+  align-items: end;
+}
+
+.case-media--step .case-media-frame {
+  position: relative;
+}
+
+.case-media-step {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.7rem;
+  z-index: 1;
+  color: #f3f4ee;
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.06em;
+  background: rgba(27, 33, 38, 0.78);
+  padding: 0.2rem 0.45rem;
+}
+
+.case-evidence-sequence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.2rem, 3vw, 2.2rem);
+}
+
+@media (min-width: 64rem) {
+  .case-evidence-sequence {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.case-evidence-note {
+  margin-top: clamp(0.9rem, 2vh, 1.3rem);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 56rem) {
+  .case-evidence-sequence {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -225,7 +225,7 @@ export const projects: Project[] = [
       "Place a mark on the exact coordinate—or choose a named region when precision input is unavailable.",
       "Describe what that place makes visible and write the sentence the evidence supports.",
       "File a ruling and state your own confidence. The interface does not infer confidence from behavior.",
-      "Open the juror maps. Your mark stays in place while five incompatible readings appear on the same screen.",
+      "Open the juror maps. Five authored interpretations — written for the archive, not research participants — appear beside your mark on the same screen.",
       "Reach the sealed case, where every outside interpretation is withheld and your evidence is the only record.",
     ],
     systemLayers: [
@@ -638,7 +638,7 @@ export const projects: Project[] = [
     title: "Atlas",
     form: "Reasoning instrument",
     plain:
-      "A tool for stress-testing interface rules against cases very unlike the one they were written for. I turned each rule change into a visible lineage, so a rule shows what shaped it.",
+      "A tool for stress-testing interface rules — short statements of how an interface should behave — against cases very unlike the one they were written for. I turned each rule change into a visible lineage, so a rule shows what shaped it.",
     oneLine:
       "Write a provisional rule, test it against three unlike cases, and keep every hold, refinement, and fracture.",
     status: "Working instrument · evidence audit open",
@@ -711,7 +711,7 @@ export const projects: Project[] = [
       "One familiar question—when should tapping outside a dialog close it?—moves through three cases chosen for increasing distance, not difficulty.",
     interactionSteps: [
       "Edit a suggested starting rule until it states what you currently believe.",
-      "Apply it to a low-consequence lightbox and choose whether it holds, needs refinement, or fractures.",
+      "Apply it to a low-consequence lightbox and choose whether the rule holds (it works as written), needs refinement (same idea, sharper wording), or fractures (the case breaks it and the rule must be rewritten).",
       "Carry the current wording into a high-consequence financial transfer and rewrite it if the stakes expose a missing condition.",
       "Pressure it with switch access, where an outside tap does not exist as an input event.",
       "Compare the first and final language, inspect every branch, and see exactly which case caused each change.",
@@ -966,14 +966,14 @@ export const projects: Project[] = [
         },
         {
           term: "Shipped",
-          value: "taamboolam2.vercel.app — live, with its enquiry flow deployed.",
+          value: "Live at taamboolam.com, with its enquiry flow deployed.",
         },
         {
           term: "Consequence",
           value: "The client has a working site that can receive enquiries.",
         },
       ],
-      href: "https://taamboolam2.vercel.app/",
+      href: "https://taamboolam.com",
       hrefLabel: "Taamboolam",
     },
     contribution:
@@ -987,10 +987,10 @@ export const projects: Project[] = [
     title: "Daynero",
     form: "AI-native financial product",
     plain:
-      "A personal-finance product that turns a month of spending into one safe daily amount. I designed and built it around first-paycheck earners — the number is the interface.",
+      "A personal-finance product that turns a month of spending into one safe daily amount. I designed it around first-paycheck earners — the number is the interface.",
     oneLine:
       "A personal-finance app for first-paycheck earners, centred on what is safe to spend today and why. The full case study is coming soon.",
-    status: "Preview · pre-MVP",
+    status: "Pre-MVP product preview",
     availability: "coming-soon",
     year: "2026",
     context: "Startup product work",
@@ -1046,8 +1046,8 @@ export const projects: Project[] = [
     systemLayers: [],
     decisions: [],
     demonstrated: [
-      "A live public website describing the current product position.",
-      "Tanishk designed and built the app experience and public website.",
+      "A live public website describing the current product position, designed and built by Tanishk.",
+      "The app's product experience designed by Tanishk — interaction and visual system across the daily-budget surface.",
     ],
     limits: [
       "The full team, timeline, constraints, process, and outcomes are not yet published.",
@@ -1059,7 +1059,7 @@ export const projects: Project[] = [
       success: "The final case must make Tanishk's contribution precise without erasing collaborators or inventing outcomes.",
     },
     contribution:
-      "I designed and built the app experience and public website. The detailed team and contribution record is still being prepared.",
+      "I designed the app experience and designed and built the public website. The detailed team and contribution record is still being prepared.",
     disclosure:
       "This preview uses Daynero's public product language and Tanishk's stated contribution. The full evidence record is pending.",
   },
