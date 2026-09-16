@@ -540,15 +540,10 @@
 .xp-piece-title a {
   color: inherit;
   text-decoration: none;
-  /* the width answers the pointer: the title breathes one step wider,
-     the same state grammar the header identity uses */
+  /* a static width: the hover affordance is the underbar, not a
+     stretch — a hover-driven font-stretch would rewrap titles that
+     sit near the line limit and bounce the sheet */
   font-stretch: var(--poster-stretch, 118%);
-  transition: font-stretch 240ms var(--ease-out);
-}
-
-.xp-piece-title a:hover,
-.xp-piece-title a:focus-visible {
-  font-stretch: calc(var(--poster-stretch, 118%) + 4%);
 }
 
 .xp-piece-title a::after {
