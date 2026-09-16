@@ -72,7 +72,7 @@ export default function AboutPage() {
       <header className="about-intro">
         <PageSignal variant="about" />
         <p className="eyebrow">About · Bengaluru · Available for work</p>
-        <h1>I design interactions, then build the working version.</h1>
+        <h1>I design interfaces. Then I build them.</h1>
         <div className="about-lede">
           <p>
             I&apos;m Tanishk — a product and interaction designer in Bengaluru.
@@ -83,9 +83,9 @@ export default function AboutPage() {
           </p>
           <p>
             What I care about underneath: what interfaces do — how they
-            respond, decide, remember, and explain themselves. Each of my own
-            projects started with one behaviour I couldn&apos;t leave alone; I
-            build the interaction to find out whether the idea survives.
+            respond, decide, remember, and explain themselves. Every project
+            here started with one interface behaviour I wanted to get right;
+            I build the interaction to find out whether the idea survives.
           </p>
         </div>
         <dl className="about-facts" aria-label="Tanishk at a glance">

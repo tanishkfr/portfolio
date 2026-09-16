@@ -38,6 +38,7 @@ export function Cinema() {
     let running = false;
     let armed = false;
     let lastFrameAt = 0;
+    let lastMovedAt = 0;
 
     // our own scrollTo calls must not be smoothed a second time by CSS
     const previousBehavior = root.style.scrollBehavior;
@@ -57,7 +58,39 @@ export function Cinema() {
 
     const frame = () => {
       lastFrameAt = performance.now();
+      /* honesty first: if the browser moved or clamped the real scroll
+         since our last write — a focus jump, an anchor, a layout change
+         that shrank the document — adopt it instead of fighting back.
+         Without this, a stale `current` can dead-zone the wheel until
+         something else scrolls the page. */
+      const realLimit = limit();
+      if (Math.abs(window.scrollY - current) > 2) {
+        current = window.scrollY;
+      }
+      if (current > realLimit) current = realLimit;
+      if (target > realLimit) target = realLimit;
       const distance = target - current;
+
+      /* a movement watchdog: frames may arrive on schedule while the
+         real scroll position has stopped obeying (browser clamps,
+         overlay scrollbars, extensions). If the page has not actually
+         moved for 900ms while the loop believes it has somewhere to
+         go, hand the gesture back. */
+      const now = performance.now();
+      if (Math.abs(target - current) > 12) {
+        if (!lastMovedAt) lastMovedAt = now;
+        else if (now - lastMovedAt > 900) {
+          current = window.scrollY;
+          target = window.scrollY;
+          lastMovedAt = now;
+        }
+      } else {
+        lastMovedAt = now;
+      }
+      if (window.scrollY !== Math.round(current)) {
+        window.scrollTo(0, current);
+        lastMovedAt = now;
+      }
 
       if (Math.abs(distance) < 0.08) {
         current = target;
@@ -65,6 +98,7 @@ export function Cinema() {
         root.style.setProperty("--vel", "0");
         running = false;
         raf = 0;
+        lastMovedAt = 0;
         return;
       }
 
@@ -122,7 +156,14 @@ export function Cinema() {
       }
 
       event.preventDefault();
-      target = Math.max(0, Math.min(limit(), target + event.deltaY));
+      /* the wheel is always anchored to the REAL scroll position, never
+         to a remembered target — a stale one would swallow gestures
+         until something else scrolled the page */
+      target = Math.max(
+        0,
+        Math.min(limit(), window.scrollY + event.deltaY),
+      );
+      current = window.scrollY;
       run();
     };
 

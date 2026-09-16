@@ -26,7 +26,7 @@ export default function ContactPage() {
           every word of the letter sits in its quiet zone. */}
       <PageSignal variant="contact" />
       <header className="contact-intro" data-reveal>
-        <h1>Bring me the interface, not just the brief.</h1>
+        <h1>You bring the problem. I&apos;ll design how it behaves.</h1>
         <p className="contact-body">
           I&apos;m a product and interaction designer in Bengaluru. I design
           and build interfaces — product work, working prototypes, and

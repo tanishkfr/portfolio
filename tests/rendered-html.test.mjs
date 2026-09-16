@@ -282,7 +282,7 @@ test("publishes accurate identity, commercial context, and contact", async () =>
 
   assert.equal(aboutResponse.status, 200);
   const aboutHtml = await aboutResponse.text();
-  assert.match(aboutHtml, /I design interactions, then build the working version/);
+  assert.match(aboutHtml, /I design interfaces\. Then I build them\./);
   /* the page reads person-first: who, where, what he is doing now */
   assert.match(aboutHtml, /product and interaction designer in Bengaluru/);
   assert.match(aboutHtml, /Human Center(ed)? Design at Srishti Manipal/);
@@ -302,7 +302,8 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   const contactHtml = await contactResponse.text();
   /* the contact page says plainly what he does, what conversations are
      welcome, and how to reach him — no slogans */
-  assert.match(contactHtml, /Bring me the interface, not just the brief\./);
+  assert.match(contactHtml, /You bring the problem\./);
+  assert.match(contactHtml, /design how it behaves\./);
   assert.match(contactHtml, /Useful conversations/);
   assert.match(contactHtml, /madebytanishk@gmail\.com/);
   assert.match(contactHtml, /linkedin\.com\/in\/tanishksalagame/);
@@ -393,7 +394,7 @@ test("keeps motion, image, and single-deployment contracts explicit", async () =
     "evidenceShape",
     "revisionShape",
     "absenceShape",
-    "lineageShape",
+    "atlasShape",
     "fluxShape",
     "numberShape",
   ]) {
