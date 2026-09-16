@@ -37,7 +37,7 @@ const experience: Entry[] = [
     role: "UI/UX Designer",
     dates: "2026 – Present",
     lines: [
-      "Designing a personal finance product for first-paycheck earners in India, currently pre-MVP with a waitlist of roughly 200–300 people.",
+      "Designing a personal finance product for first-paycheck earners in India, currently pre-MVP; the public product site is live and collecting waitlist interest.",
       "Shaped the core experience around one question: \u201CHow much can I safely spend today?\u201D — turning account and spending data into a daily budget and contextual guidance.",
       "Own product design across the five-person team, working directly with product and engineering from product logic through interface behaviour.",
       "Designed the product around transaction understanding, manual spending, financial context and AI guidance rather than treating AI as a standalone chat feature.",
@@ -55,7 +55,7 @@ const experience: Entry[] = [
       "Stay involved beyond design — working through implementation constraints, client revisions and deployment rather than handing off at Figma.",
       "Designed and shipped Taamboolam's live hospitality website, taking it from client requirements through interface design, enquiry flows, production QA and deployment.",
     ],
-    links: [{ label: "Taamboolam ↗", href: "https://taamboolam2.vercel.app/" }],
+    links: [{ label: "Taamboolam ↗", href: "https://taamboolam.com" }],
   },
 ];
 

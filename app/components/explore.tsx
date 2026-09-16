@@ -186,9 +186,9 @@ function CoverName() {
 
     const REST = 122; // the resting width, the CSS font-stretch value
     const FROM = 60; // the splash's compressed notation
-    const SETTLE_AT = seen ? 0 : 1180; // begin as the splash resolves
+    const SETTLE_AT = seen ? 0 : 230; // begin as the splash resolves
     const SETTLE_STEP = 70;
-    const SETTLE_DUR = 1400;
+    const SETTLE_DUR = 640;
     const REACH = 190; // gaussian sigma: one letter strong, two faint
     const LIFT = 15; // widest pointer response, in wdth points
     const RISE = 2; // nearest letter's positional lift, in px

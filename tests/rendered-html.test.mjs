@@ -146,10 +146,12 @@ test("renders an honest Daynero preview and names its case boundary", async () =
 
   for (const phrase of [
     "Full case in preparation",
-    "Commercial product · case in preparation",
+    "Pre-MVP product preview · public site live",
     "What you can spend today, and why.",
     "first-paycheck",
     "Visit daynero.com",
+    // the one real public surface: the live marketing site, as shipped
+    "The public product site, as shipped.",
     // orientation: the preview is part of Projects too
     "← Projects / Daynero",
     "Back to projects",

@@ -13,12 +13,13 @@ import { SignalField, type Quiet } from "./signal-field";
  */
 
 const ABOUT_QUIET: Quiet[] = [
-  /* the intro's text column: the heading block, both lede columns and
-     the at-a-glance facts stay completely quiet; the signal holds the
-     open upper-right area beside the heading only */
-  { x: 0, y: 0.04, w: 0.62, h: 0.93, falloff: 0.96, feather: 0.04 },
-  { x: 0.56, y: 0.4, w: 0.44, h: 0.57, falloff: 0.97, feather: 0.04 },
-  { x: 0, y: 0.76, w: 1, h: 0.24, falloff: 1, feather: 0.02 },
+  /* the canvas is bounded to the intro's open upper-right strip; the
+     left edge, the metadata row's band and the whole lower quarter
+     never paint — any text box that reaches the strip meets only
+     dissolved space */
+  { x: 0, y: 0, w: 0.22, h: 1, falloff: 1, feather: 0.06 },
+  { x: 0, y: 0, w: 1, h: 0.32, falloff: 1, feather: 0.04 },
+  { x: 0, y: 0.8, w: 1, h: 0.2, falloff: 1, feather: 0.05 },
 ];
 
 const CONTACT_QUIET: Quiet[] = [
@@ -33,9 +34,9 @@ const CONTACT_QUIET: Quiet[] = [
 ];
 
 const RESUME_QUIET: Quiet[] = [
-  /* the document column: kicker, name, lede, actions stay crisp */
-  { x: 0, y: 0.04, w: 0.78, h: 0.82, falloff: 0.96, feather: 0.04 },
-  { x: 0, y: 0.9, w: 1, h: 0.1, falloff: 1, feather: 0.02 },
+  { x: 0, y: 0, w: 0.22, h: 1, falloff: 1, feather: 0.06 },
+  { x: 0, y: 0, w: 1, h: 0.32, falloff: 1, feather: 0.04 },
+  { x: 0, y: 0.8, w: 1, h: 0.2, falloff: 1, feather: 0.05 },
 ];
 
 /* per-cell grain: the same hole-punching the cover clusters use */
@@ -50,13 +51,14 @@ const CONFIGS = {
     ambient: 0.5,
     quiet: ABOUT_QUIET,
     shape: (v: number, nx: number, ny: number, t: number) => {
-      /* the signal holds the open upper-right area beside the heading.
-         The structured element max-blends over the ambient texture;
-         the old bottom-left echo is gone — it sat behind the facts. */
+      /* one breathing cluster in the strip's middle, clear of every
+         word: the canvas itself is bounded to the open upper-right
+         corner, so the field holds the corner without ever touching
+         the copy */
       const grain = grainAt(nx, ny);
       const cluster = Math.exp(
-        -Math.pow((nx - 0.87 - 0.02 * Math.sin(t * 0.12)) * 5.5, 2) -
-          Math.pow((ny - 0.18 + 0.05 * Math.sin(t * 0.09 + 2)) * 3.2, 2),
+        -Math.pow((nx - 0.62 - 0.02 * Math.sin(t * 0.12)) * 5, 2) -
+          Math.pow((ny - 0.52 + 0.05 * Math.sin(t * 0.09 + 2)) * 2.8, 2),
       );
       return Math.max(v * 0.8, cluster * 0.85 * grain);
     },
@@ -82,10 +84,10 @@ const CONFIGS = {
     ambient: 0.46,
     quiet: RESUME_QUIET,
     shape: (v: number, nx: number, ny: number, t: number) => {
-      /* a narrow signal rail down the document's right edge, with a
-         slow density wave travelling down it */
+      /* a slow density wave travelling down the strip's middle — the
+         signal never reaches the document column */
       const rail = Math.exp(
-        -Math.pow((nx - 0.9 - 0.02 * Math.sin(t * 0.1)) * 6, 2),
+        -Math.pow((nx - 0.72 - 0.02 * Math.sin(t * 0.1)) * 5, 2),
       );
       const wave = 0.55 + 0.45 * Math.sin(ny * 7 - t * 0.35);
       return Math.max(v * 0.8, rail * 0.8 * wave);

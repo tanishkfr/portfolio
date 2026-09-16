@@ -5,6 +5,12 @@ import { notFound, redirect } from "next/navigation";
 import { AwayLedger } from "../../components/away-ledger";
 import { RoomPaint } from "../../components/atmosphere";
 import { CaseArtifact } from "../../components/case-artifacts";
+import {
+  CaseEvidenceSequence,
+  CaseFigure,
+  CaseMediaPair,
+  EvidenceWrap,
+} from "../../components/case-media";
 import { CaseSignal } from "../../components/case-signal";
 import { DayneroPreview } from "../../components/daynero-preview";
 import { TransitionLink } from "../../components/transition-link";
@@ -57,16 +63,13 @@ export async function generateMetadata({
 /** Where a case sends you back, resolved from the origin it was opened from.
     Both readings land on Projects — the anchor picks the sheet or the row. */
 function resolveReturn(slug: string, fromValue?: string) {
-  if (fromValue === "explore") {
+  if (fromValue === "explore" || fromValue === "work") {
     return { href: `/#piece-${slug}` };
-  }
-  if (fromValue === "work") {
-    return { href: `/?mode=review#project-${slug}` };
   }
   if (isLensId(fromValue)) {
     return { href: `/?lens=${fromValue}#work` };
   }
-  return { href: "/?mode=review#work" };
+  return { href: "/#work" };
 }
 
 /* The reasoning layer: each case composes a different argument from the
@@ -305,6 +308,40 @@ export default async function ProjectPage({
 
         <CaseArtifact project={project} />
 
+        {/* Real interface evidence, captured from the deployed artifact
+            or shipped site — placed where the case talks about it. */}
+        {project.slug === "fluxion-studios" ? (
+          <EvidenceWrap>
+            <CaseMediaPair
+              desktop={{
+                src: "/projects/fluxion/site-home-desktop.png",
+                alt: "The Fluxion Studios homepage as shipped: the studio's opening section with its navigation, process and founders.",
+              }}
+              mobile={{
+                src: "/projects/fluxion/site-home-mobile.png",
+                alt: "The same homepage on a phone: the sections stack with the enquiry entry remaining reachable.",
+              }}
+              label="The shipped site"
+              caption="Fluxion's public site, live at fluxion-studios.vercel.app — designed, written and implemented in-house. Desktop and mobile from the same build."
+              priority
+            />
+          </EvidenceWrap>
+        ) : null}
+
+        {project.slug === "design-or-disaster" ? (
+          <EvidenceWrap>
+            <CaseFigure
+              src="/projects/design-or-disaster/case-001-marked.png"
+              alt="Case 001 on the live archive: a Hierarchy lens chosen, four markers placed on the interface, and the evidence sentence attached before any verdict."
+              width={1440}
+              height={900}
+              label="A marked screen, live"
+              caption="Case 001 on the working archive — the Hierarchy lens chosen, four markers placed, each one carrying an evidence sentence. Only after the evidence exists can a verdict be submitted."
+            />
+          </EvidenceWrap>
+        ) : null}
+
+
         {project.artifact === "invisible" ? <AwayLedger /> : null}
 
         <p className="case-tools record-line">
@@ -389,6 +426,14 @@ export default async function ProjectPage({
               <p className="case-label">{project.clientWork.label}</p>
               <h3>{project.clientWork.title}</h3>
             </header>
+            <CaseFigure
+              src="/projects/fluxion/taamboolam-home.png"
+              alt="The Taamboolam homestay website as shipped: the opening with the house description, room enquiry and floor navigation."
+              width={1440}
+              height={900}
+              label="Shipped client build"
+              caption="The public site as delivered — interface design, enquiry flow, production QA and deployment."
+            />
             <dl className="case-facts">
               {project.clientWork.rows.map((row) => (
                 <div key={row.term}>
@@ -498,6 +543,75 @@ export default async function ProjectPage({
             <TransitionLink href={returnTo.href}>← Back to projects</TransitionLink>
           </p>
         </section>
+      ) : null}
+
+      {/* Evidence sequences: the real correction / revision runs, captured
+          from the live artifacts so the visitor can see the actual output
+          beside the argument it demonstrates. */}
+      {project.slug === "pentimento" ? (
+        <CaseEvidenceSequence
+          label="The correction, live"
+          intro="One machine-written claim through its full reply."
+          steps={[
+            {
+              src: "/projects/pentimento/draft-overview.png",
+              alt: "Maya's first draft: three machine-written sentences remain as claims, each underlined for reply.",
+              width: 1440,
+              height: 900,
+              step: "The contested draft",
+              caption: "Maya's first draft, written from her public film diary — three sentences remain as claims the subject can answer.",
+            },
+            {
+              src: "/projects/pentimento/claim-evidence.png",
+              alt: "A claim opened: the evidence behind the machine's reading, with the reply options visible.",
+              width: 1440,
+              height: 900,
+              step: "Evidence shown",
+              caption: "Opening a claim shows what the software drew on. Maya is fictional, staged from authored material — no participant data exists.",
+            },
+            {
+              src: "/projects/pentimento/struck.png",
+              alt: "The machine's sentence struck through; the person's correction now leads the passage.",
+              width: 1440,
+              height: 900,
+              step: "Struck",
+              caption: "The machine's sentence struck: its account recedes and Maya's correction takes the reading.",
+            },
+            {
+              src: "/projects/pentimento/second-draft.png",
+              alt: "The settled second draft, with the person's version leading the document.",
+              width: 1440,
+              height: 900,
+              step: "The final page",
+              caption: "The settled second draft: the person's account leads, the machine's reading is visibly overruled.",
+            },
+          ]}
+        />
+      ) : null}
+
+      {project.slug === "atlas" ? (
+        <CaseEvidenceSequence
+          label="One real run"
+          intro="A rule carried through three unlike cases, in the live tool."
+          steps={[
+            {
+              src: "/projects/atlas/rule-test.png",
+              alt: "The Atlas rule test: the starting rule editable in place, with the lightbox case ready below.",
+              width: 1440,
+              height: 900,
+              step: "The starting rule",
+              caption: "The test opens with a suggested rule — editable before any pressure, so the assumption being carried is explicit.",
+            },
+            {
+              src: "/projects/atlas/trace-lineage.png",
+              alt: "The completed trace: the starting rule, a refinement after the lightbox, a rewrite after the financial transfer, and the final wording after switch access.",
+              width: 1440,
+              height: 900,
+              step: "The lineage",
+              caption: "A completed run: hold, refine and fracture each demanded rewording, and the trace keeps which case caused every change.",
+            },
+          ]}
+        />
       ) : null}
     </main>
   );
