@@ -66,8 +66,18 @@ export type SignalFieldProps = {
   /** Compositional shaping over the clamped field, in normalised
       coordinates — e.g. a vertical resolve ramp toward one edge. The
       fourth argument is seconds since mount (frozen at 0 under
-      reduced motion), so scripts can evolve over a period. */
-  shape?: (v: number, nx: number, ny: number, t: number) => number;
+      reduced motion), so scripts can evolve over a period. The last
+      two are one cell's width and height in the same normalised
+      units, so a script can keep a feature at least one glyph wide
+      whatever the grid resolution happens to be. */
+  shape?: (
+    v: number,
+    nx: number,
+    ny: number,
+    t: number,
+    cellX: number,
+    cellY: number,
+  ) => number;
   /** Domain advection: how far the noise field bends its own sampling
       coordinates — streamlines and interference, felt not seen. */
   flow?: number;
@@ -87,8 +97,15 @@ export type SignalFieldProps = {
   /** Per-cell glyph override: the index into `glyphs` to draw at this
       coordinate this frame, or a negative value to keep the field's
       own choice. Lets a portrait mark structure (a crosshair, a
-      strike, a connector) without leaving the engine. */
-  glyphAt?: (t: number, nx: number, ny: number) => number;
+      strike, a connector) without leaving the engine. The trailing
+      numbers are the grid pitch, as on `shape`. */
+  glyphAt?: (
+    t: number,
+    nx: number,
+    ny: number,
+    cellX: number,
+    cellY: number,
+  ) => number;
   /** Per-cell draw offset in pixels — slow wander for formation and
       displacement behaviours. Quantised to whole pixels for the
       repaint cache. */
@@ -99,6 +116,16 @@ export type SignalFieldProps = {
   pulseDirection?: "resolve" | "disperse";
   /** Disperse the field as its container scrolls out (the hero). */
   collapse?: boolean;
+  /** Sleep: the canvas keeps its last frame and the loop stops until
+      the host says otherwise. The folio keeps exactly one portrait
+      awake — the sheet being read — so five panels cost nothing while
+      the reader is somewhere else. Resuming continues the cycle from
+      where it slept, so nothing ever visibly restarts. */
+  paused?: boolean;
+  /** A miniature: keep the requested cell on narrow panels instead of
+      coarsening to the legibility floor. Used by small fields that are
+      meant to read as texture rather than as a diagram. */
+  dense?: boolean;
   className?: string;
 };
 
@@ -165,17 +192,24 @@ export function SignalField({
   pulseMs = 1100,
   pulseDirection = "resolve",
   collapse = false,
+  paused = false,
+  dense = false,
   className,
 }: SignalFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   /* inline functions and tuples would rebind the effect every render;
       the engine reads them through this ref, refreshed before each paint */
-  const lookRef = useRef({ color, quiet, shape, tune, glyphAt, displace });
+  const lookRef = useRef({ color, quiet, shape, tune, glyphAt, displace, paused });
+  /* waking a slept field: the mount effect publishes its scheduler here,
+     so a `paused` change resumes painting without rebinding anything */
+  const wakeRef = useRef<(() => void) | null>(null);
 
   /* keep the ref fresh between renders without rebinding listeners —
-     the engine reads colour, quiet zones and scripts per paint */
+     the engine reads colour, quiet zones, scripts and sleep state per
+     paint, and a field that just woke is scheduled immediately */
   useEffect(() => {
-    lookRef.current = { color, quiet, shape, tune, glyphAt, displace };
+    lookRef.current = { color, quiet, shape, tune, glyphAt, displace, paused };
+    if (!paused) wakeRef.current?.();
   });
 
   useEffect(() => {
@@ -185,7 +219,7 @@ export function SignalField({
     if (!ctx0) return;
     const canvas = el;
     const ctx = ctx0;
-    lookRef.current = { color, quiet, shape, tune, glyphAt, displace };
+    lookRef.current = { color, quiet, shape, tune, glyphAt, displace, paused };
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const coarse = window.matchMedia("(pointer: coarse)");
@@ -207,6 +241,11 @@ export function SignalField({
     let raf = 0;
     const clockStart = SHARED_EPOCH || (SHARED_EPOCH = performance.now());
     const arriveStart = performance.now();
+    /* Portrait time: accumulated only while actually painting, so a
+       slept field resumes its cycle where it left off instead of
+       jumping ahead by however long the reader was elsewhere. */
+    let scriptMs = 0;
+    let lastPaintMs = clockStart;
     let pulseStart = -1;
     let lastPulseKey: number | string | null = null;
     let pulseOpen = false;
@@ -256,7 +295,7 @@ export function SignalField({
       width = Math.max(1, Math.round(box.width));
       height = Math.max(1, Math.round(box.height));
       dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      step = width < 760 ? Math.max(cell, 16) : cell;
+      step = width < 760 && !dense ? Math.max(cell, 16) : cell;
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       canvas.style.width = `${width}px`;
@@ -345,7 +384,13 @@ export function SignalField({
       v = v < 0 ? 0 : v > 1 ? 1 : v;
       const shapeFn = lookRef.current.shape;
       if (shapeFn) {
-        v = Math.max(0, Math.min(1, shapeFn(v, x / width, y / height, tNow)));
+        v = Math.max(
+          0,
+          Math.min(
+            1,
+            shapeFn(v, x / width, y / height, tNow, step / width, step / height),
+          ),
+        );
       }
       /* quiet zones are re-applied after the shape, so they win over
          every liveliness source — including max-blended structure, which
@@ -385,15 +430,20 @@ export function SignalField({
       const clock = reduced.matches
         ? Math.floor(seed * 13)
         : (now - clockStart) / 24000 + Math.floor(seed * 13);
-      /* script time for portraits: seconds since mount, quantised to
+      /* script time for portraits: seconds of painting, quantised to
          eighth-seconds so shape, glyph and displacement scripts repaint
          in visible steps — the repaint cache absorbs the frames in
          between. Frozen at 0 under reduced motion so the single static
-         frame is a composed state. */
+         frame is a composed state, and clamped on wake so a long sleep
+         never skips a beat of the cycle. */
+      scriptMs += Math.min(Math.max(0, now - lastPaintMs), 120);
+      lastPaintMs = now;
       const tNow = reduced.matches
         ? 0
-        : Math.floor(((now - clockStart) * 8) / 1000) / 8;
-      const arrive = reduced.matches
+        : Math.floor((scriptMs * 8) / 1000) / 8;
+      const cellX = step / width;
+      const cellY = step / height;
+      const arrive = reduced.matches || lookRef.current.paused
         ? 1
         : smooth(Math.min(1, (now - arriveStart) / 1500));
       const collapseP = smooth(collapseProgress());
@@ -511,7 +561,7 @@ export function SignalField({
           }
           const glyphFn = lookRef.current.glyphAt;
           const override = glyphFn
-            ? glyphFn(tNow, x / width, y / height)
+            ? glyphFn(tNow, x / width, y / height, cellX, cellY)
             : -1;
           const glyph =
             override >= 0
@@ -554,14 +604,27 @@ export function SignalField({
 
     const tick = (now: number): void => {
       raf = 0;
+      /* asleep: the last frame stands, the cycle remembers where it was,
+         and the loop stops rescheduling itself. The sleep is not a
+         freeze-frame event — a sleeping panel is one the reader is not
+         looking at, and waking it continues the same cycle. */
+      if (lookRef.current.paused) {
+        lastPaintMs = now;
+        return;
+      }
       paint(now);
       if (active()) raf = window.requestAnimationFrame(tick);
     };
 
     const schedule = (): void => {
       if (raf || !inView || document.hidden || reduced.matches) return;
+      if (lookRef.current.paused) return;
       raf = window.requestAnimationFrame(tick);
     };
+
+    /* the mount effect owns the scheduler; `paused` changes reach it
+       through wakeRef so a waking field repaints on the next frame */
+    wakeRef.current = schedule;
 
     const stop = (): void => {
       if (raf) {
@@ -637,6 +700,7 @@ export function SignalField({
 
     return () => {
       stop();
+      wakeRef.current = null;
       io.disconnect();
       if (ro) ro.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
@@ -650,7 +714,7 @@ export function SignalField({
     /* colour/quiet reach the engine through lookRef, refreshed above, so
        inline prop functions never rebind the field mid-paint */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [glyphs, cell, seed, ambient, pointerRadius, collapse, pulseKey, pulseMs, pulseDirection, flow, wavefront, drift, mode]);
+  }, [glyphs, cell, seed, ambient, pointerRadius, collapse, pulseKey, pulseMs, pulseDirection, flow, wavefront, drift, mode, dense]);
 
   return (
     <canvas

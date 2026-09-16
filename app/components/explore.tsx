@@ -11,6 +11,7 @@ import { caseCtaLabels, projects, type Project } from "../data/portfolio";
 import { ROOM_WORLDS, rgb } from "../data/room-worlds";
 import { SignalField, hexToRgba, type Quiet } from "./signal-field";
 import { ProjectPortrait } from "./portrait";
+import { backdropFor } from "./backdrop";
 import { TransitionLink } from "./transition-link";
 
 const order = [
@@ -481,6 +482,7 @@ export function Explore() {
         <div className="xp-piece-stack">
           {ordered.map((project, index) => {
             const world = ROOM_WORLDS[project.slug];
+            const backdrop = backdropFor(project.slug);
 
             return (
               <Fragment key={project.slug}>
@@ -493,6 +495,7 @@ export function Explore() {
                   className="xp-piece"
                   data-explore-piece
                   data-project={project.slug}
+                  data-room={project.slug}
                   data-layout={layouts[project.slug as keyof typeof layouts]}
                   style={
                     {
@@ -533,6 +536,29 @@ export function Explore() {
                   ) : null}
 
                   <div className="xp-piece-copy">
+                    {/* The room's paper: one quiet glyph composition in
+                        the project's own pigment, printed behind the
+                        column the sheet speaks in — the paper you can
+                        actually see. It sleeps with the sheet, so only
+                        the room being read is alive. */}
+                    {backdrop ? (
+                      <SignalField
+                        className="xp-piece-backdrop"
+                        glyphs={backdrop.glyphs}
+                        cell={backdrop.cell}
+                        dense
+                        paused={active !== index}
+                        seed={backdrop.seed}
+                        ambient={backdrop.ambient}
+                        flow={backdrop.flow}
+                        drift={backdrop.drift}
+                        tune={backdrop.tune}
+                        pointerRadius={0}
+                        shape={backdrop.shape}
+                        glyphAt={backdrop.glyphAt}
+                        color={(t) => hexToRgba(world.accentInk, 0.09 + 0.17 * t)}
+                      />
+                    ) : null}
                     <p className="xp-piece-meta">
                       {project.form} · {project.year}
                     </p>
@@ -566,7 +592,7 @@ export function Explore() {
                       same computational material. The real interface
                       lives in the case study. */}
                   <div className="xp-piece-stage">
-                    <ProjectPortrait slug={project.slug} />
+                    <ProjectPortrait slug={project.slug} live={active === index} />
                   </div>
 
                   <p className="xp-piece-status">{project.status}</p>

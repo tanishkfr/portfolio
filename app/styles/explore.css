@@ -241,104 +241,6 @@
   }
 }
 
-/* The manual reveal grammar (finished surface / underlying rule), shared
-   with the case pages' look-under instrument. */
-.xp-under {
-  --reveal: 0.16;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-
-.xp-under-back,
-.xp-under-front {
-  position: absolute;
-  inset: 0;
-}
-
-/* The under layer is the index field: deep ultramarine, the housing's
-   own signal colour, so pulling the seam exposes the site's ink. */
-.xp-under-back {
-  background: #1a1454;
-  color: var(--paper-high);
-}
-
-.xp-under-front {
-  z-index: 2;
-  overflow: hidden;
-  background: #f6f7f2;
-  color: var(--ink);
-  clip-path: inset(0 0 0 calc(var(--reveal) * 100%));
-  transition: clip-path 110ms linear;
-}
-
-.xp-under[data-dragging="true"] .xp-under-front {
-  transition-duration: 0ms;
-}
-
-.xp-under-read {
-  position: absolute;
-  z-index: 4;
-  top: 0;
-  bottom: 0;
-  left: calc(var(--reveal) * 100%);
-  width: 2.5rem;
-  transform: translateX(-50%);
-  cursor: ew-resize;
-  touch-action: none;
-}
-
-.xp-under-read::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-  background: currentColor;
-  box-shadow: -3px 0 0 color-mix(in srgb, currentColor 18%, transparent);
-}
-
-.xp-under-read::after {
-  content: "↔";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid currentColor;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  transform: translate(-50%, -50%);
-}
-
-.xp-under-toggle {
-  position: absolute;
-  z-index: 5;
-  right: 0.75rem;
-  bottom: 0.75rem;
-  min-height: 2.75rem;
-  border: 1px solid currentColor;
-  border-radius: 0;
-  background: var(--paper);
-  color: var(--ink);
-  padding: 0.55rem 0.9rem;
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: var(--meta-size);
-  letter-spacing: 0.02em;
-}
-
-.xp-under-toggle:hover,
-.xp-under-toggle:focus-visible {
-  background: var(--ink);
-  color: var(--paper);
-}
-
 /* The sheets share one composition: copy on one side, the project's
    portrait on the other. A pinned sheet's on-screen box is fixed, so
    anything the sheet grows downward lands behind the next sheet — the
@@ -491,6 +393,22 @@
   background: var(--accent-ink);
 }
 
+/* The room's paper: the sheet's own glyph composition, printed behind the
+   column the sheet speaks in — inside the copy's stacking context, so it
+   sits on the room's ground and under every word of the reading. Bled past
+   the column so it reaches the sheet's margins too. */
+.xp-piece-backdrop {
+  position: absolute;
+  top: -2rem;
+  left: -1.5rem;
+  /* a canvas is a replaced element: it takes its intrinsic 300×150 unless
+     it is given a size, so the box is stated rather than implied by insets */
+  width: calc(100% + 3rem);
+  height: calc(100% + 4rem);
+  z-index: -1;
+  pointer-events: none;
+}
+
 .xp-piece-title {
   width: fit-content;
   max-width: 100%;
@@ -541,6 +459,8 @@
   position: relative;
   z-index: 2;
   align-self: center;
+  /* the backdrop behind this column must not escape into the sheet */
+  isolation: isolate;
   max-width: 32rem;
   /* the inline-size container lets the title cap itself against the
      column it actually occupies, at every viewport, for any title */
@@ -993,15 +913,6 @@
     font-size: clamp(1.4rem, 5.6vw, 2.05rem);
   }
 
-  /* On narrow screens the reveal control used to land on top of the
-     cover deck. It moves to the quiet top-right corner; the mechanic,
-     the labels and the seam are unchanged. */
-  .xp-under-toggle {
-    top: 0.6rem;
-    right: 0.6rem;
-    bottom: auto;
-  }
-
   .xp-field-head {
     padding-top: 5rem;
   }
@@ -1105,22 +1016,7 @@
 
 }
 
-/* The cover rests fully concealed on a phone, so the seam handle is
-   what tells you a second layer exists. Keep it inside the frame
-   instead of half-cut at the clip edge. */
-@media (max-width: 48rem) {
-  .xp-under-read {
-    left: clamp(1.25rem, calc(var(--reveal) * 100%), calc(100% - 1.25rem));
-  }
-}
-
 @media (max-width: 28rem) {
-  /* Keep the reveal control clear of the under-layer label. */
-  .xp-under-toggle {
-    font-size: 0.72rem;
-    padding: 0.45rem 0.6rem;
-  }
-
   .xp-piece-title {
     --title-size: clamp(2rem, 10.5vw, 3.4rem);
   }
@@ -1176,7 +1072,6 @@
     clip-path: none !important;
   }
 
-  .xp-under-front,
   .xp-field-index strong,
   .xp-piece-title a::after,
   .xp-piece-actions a::after {
@@ -1195,12 +1090,6 @@
   .xp-cover,
   .xp-piece,
   .xp-portrait {
-    background: Canvas;
-    color: CanvasText;
-  }
-
-  .xp-under-front,
-  .xp-under-back {
     background: Canvas;
     color: CanvasText;
   }

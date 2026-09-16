@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- the wordmark's T, pixel-cut from the banner's letterforms, all blue -->
-  <path fill="#0021dd" d="M8 10h48v12H40v32H24V22H8z"/>
+  <!-- the wordmark's T, pixel-cut from the banner's letterforms, in the
+       accent the whole interface runs on -->
+  <path fill="#3a1ff0" d="M8 10h48v12H40v32H24V22H8z"/>
 </svg>

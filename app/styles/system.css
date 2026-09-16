@@ -528,8 +528,8 @@ img {
 }
 
 /* The favicon's T mark, carried at header scale: the wordmark's own
-   pixel T, all ultramarine. Crisp because it is the same geometry as
-   the icon, not a raster thumbnail. */
+   pixel T in the interface's accent. Crisp because it is the same
+   geometry as the icon, not a raster thumbnail. */
 .identity-mark {
   width: 1.05rem;
   height: 1.05rem;
@@ -538,11 +538,12 @@ img {
 
 /* The compact state of the hero wordmark: the wordmark's own pixel
     voice — the same face the hero's TANISHK rests in, held at carrying
-    size. Hover keeps the name's quiet lift, a state not a loop. */
+    size. It leads the header; everything beside it is annotation.
+    Hover keeps the name's quiet tell, a state not a loop. */
 .identity-name {
   color: var(--registrar);
   font-family: var(--pixel);
-  font-size: 1.05rem;
+  font-size: 1.12rem;
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1;
@@ -581,16 +582,18 @@ img {
   }
 }
 
-/* The role label: secondary, but part of the same block — a hairline
-   registration divider ties it to the name instead of floating. */
+/* The role label: annotation, not a peer. It sits under the wordmark's
+   weight — smaller, wider-tracked and never bold — behind a hairline
+   so it reads as a caption tied to the name, not a second title. */
 .site-identity small {
   color: var(--muted);
   font-family: var(--mono);
-  font-size: var(--meta-size);
-  font-weight: 500;
-  letter-spacing: 0.03em;
+  font-size: 0.64rem;
+  font-weight: 400;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
   line-height: 1;
-  padding-left: 0.6rem;
+  padding-left: 0.55rem;
   margin-left: 0.1rem;
   border-left: 1px solid var(--line);
   white-space: nowrap;
@@ -1339,12 +1342,6 @@ a[data-external]:focus-visible .xp-cta-arrow {
 html[data-cursor="custom"],
 html[data-cursor="custom"] * {
   cursor: none !important;
-}
-
-/* The reveal seam keeps its native directional vocabulary: ew-resize
-   says something the diamond cannot, and the two share that strip. */
-html[data-cursor="custom"] :is(.xp-under-read) {
-  cursor: ew-resize !important;
 }
 
 .pointer-mark {
