@@ -35,7 +35,10 @@ test("server-renders the folio at / — one projects reading", async () => {
      Tanishk without JavaScript. */
   assert.match(folio, /xp-cover-name" aria-hidden="true"><span class="xp-cover-letter">T</);
   assert.match(folio, /<span class="sr-only">Tanishk<\/span>/);
-  assert.match(folio, /I design what interfaces (<strong>)?do(<\/strong>)?\./);
+  assert.match(
+    folio,
+    /Designing (<strong>)?behavior(<\/strong>)?, not just screens\./,
+  );
   /* the identity block carries the role once, in the header; the
      folio's registration row states place and edition only */
   assert.match(folio, /Product &amp; Interaction Designer</);
