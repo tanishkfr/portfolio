@@ -58,7 +58,7 @@ const currentWork = [
   },
   {
     lead: "Independent interaction research.",
-    body: "Design or Disaster, Pentimento, Invisible Interfaces, and Atlas are mine from question through code — each started with an interface behaviour I couldn't resolve and ends as a working artifact, not a write-up.",
+    body: "Design or Disaster, Pentimento, Invisible Interfaces, and Atlas are mine from question through code. Each one began with an interface behaviour I kept thinking about, and each ends as a working artifact rather than a write-up.",
   },
   {
     lead: "The tooling under my own practice.",
@@ -82,10 +82,10 @@ export default function AboutPage() {
             studio, and I&apos;m the product designer at Daynero.
           </p>
           <p>
-            What I care about underneath: what interfaces do — how they
-            respond, decide, remember, and explain themselves. Every project
-            here started with one interface behaviour I wanted to get right;
-            I build the interaction to find out whether the idea survives.
+            What I keep coming back to: what interfaces do — how they respond,
+            decide, remember, and explain themselves. Most projects here began
+            with a behaviour I wanted to understand better, so I built the
+            interaction and found out.
           </p>
         </div>
         <dl className="about-facts" aria-label="Tanishk at a glance">
@@ -145,21 +145,20 @@ export default function AboutPage() {
       </section>
 
       <section className="about-authorship" aria-labelledby="authorship-title">
-        <p className="eyebrow">Making with AI</p>
+        <p className="eyebrow">Working with AI</p>
         <h2 id="authorship-title">Where it sits in my process.</h2>
         <div>
           <p>
-            I work with AI deliberately. It helps me open up directions,
+            I use AI deliberately. It helps me open up directions,
             pressure-test behaviour, and get from a rough prototype to working
             frontend code faster. I choose what is worth making, direct the
             visual and interaction decisions, edit the writing, and own what
             ships.
           </p>
           <p>
-            As a collaborator I stay close to the build: scope, pricing, and
-            constraints are stated before a project starts, and I&apos;d rather
-            settle a question in the browser than argue it from a static
-            mockup.
+            I stay close to the build: scope, pricing, and constraints are
+            agreed before a project starts, and I&apos;d rather settle a
+            question in the browser than argue it from a static mockup.
           </p>
           <p>
             Ownership is stated on every case: the four independent projects in

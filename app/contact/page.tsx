@@ -26,16 +26,16 @@ export default function ContactPage() {
           every word of the letter sits in its quiet zone. */}
       <PageSignal variant="contact" />
       <header className="contact-intro" data-reveal>
-        <h1>You bring the problem. I&apos;ll design how it behaves.</h1>
+        <h1>You bring the problem. I&apos;ll design the experience.</h1>
         <p className="contact-body">
-          I&apos;m a product and interaction designer in Bengaluru. I design
-          and build interfaces — product work, working prototypes, and
-          research-through-making.
+          I&apos;m a product and interaction designer based in Bengaluru,
+          focused on creating thoughtful interfaces through product design,
+          prototyping, and hands-on exploration.
         </p>
         <p className="contact-body">
-          Useful conversations: confusing states, software that decides things
-          on its own, flows nobody can explain, or a question worth building an
-          answer for.
+          Good things to bring: a confusing state, software that decides on its
+          own, a flow nobody can explain, or a question worth building an answer
+          for.
         </p>
         <p className="contact-sign">
           <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com</a>

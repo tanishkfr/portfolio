@@ -183,7 +183,7 @@
      Exits are subtler than entrances or instant. */
   --beat: 150ms;
   --move: 280ms;
-  --settle: 440ms;
+  --settle: 330ms;
   --ease-out: cubic-bezier(0.2, 0.75, 0.15, 1);
   --ease-swing: cubic-bezier(0.65, 0, 0.3, 1);
   /* tactile pop for small glyphs only (arrows, thumb) — never text blocks */
@@ -632,14 +632,15 @@ img {
 }
 
 /* The signal pip: the page you are on is marked the way the field marks
-   matter — one small pixel square seated at the left terminus of the
-   label's own underbar, so the active state reads as a single
-   registration mark: rule + terminal pixel + ultramarine label. */
+   matter — one small pixel square seated at the centre of the label's own
+   underbar, so the active state reads as a single registration mark:
+   rule + terminal pixel + ultramarine label. */
 .site-header nav a::before {
   content: "";
   position: absolute;
   bottom: -1.5px;
-  left: -1px;
+  left: 50%;
+  translate: -50% 0;
   width: 4px;
   height: 4px;
   background: var(--registrar);
@@ -703,6 +704,99 @@ img {
 .site-header nav a:focus-visible::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+/* ---------- the travelling registration mark ----------
+   Once the header is live, the per-link pip and underline give way to a
+   single mark that carries the state — filled where you are (held,
+   breathing), hollow where you are pointing (offered, walking), seated
+   at the centre of its label. Two fading pixels of motion residue stay
+   where the mark has been. The per-link pip and rule above are the whole
+   system without JavaScript, so nothing is lost where scripts never run. */
+.site-header nav {
+  position: relative;
+}
+
+.site-header nav[data-nav="live"] a::before,
+.site-header nav[data-nav="live"] a::after {
+  content: none;
+}
+
+.nav-mark {
+  position: absolute;
+  top: calc(var(--nav-y, 100%) - 2.5px);
+  left: 0;
+  width: 4px;
+  height: 4px;
+  opacity: 0;
+  /* the mark rides the rail-less rail: its seat plus half its own label */
+  transform: translateX(
+    calc(var(--nav-x, 0px) + var(--nav-w, 0px) / 2 - 2px)
+  );
+  transition:
+    transform 220ms var(--ease-out),
+    opacity 160ms linear;
+  view-transition-name: nav-mark;
+}
+
+.nav-mark[data-live="true"] {
+  opacity: 1;
+}
+
+.nav-mark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--registrar);
+  transition:
+    background-color var(--beat) linear,
+    box-shadow var(--beat) linear;
+}
+
+.nav-mark[data-hold="true"]::after {
+  animation: nav-pip-breathe 2.8s var(--ease-swing) 1.2s infinite;
+}
+
+.nav-mark[data-hollow="true"]::after {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--registrar);
+}
+
+.nav-residue {
+  position: absolute;
+  top: calc(var(--nav-y, 100%) - 2px);
+  left: 0;
+  width: 2px;
+  height: 2px;
+  background: var(--registrar);
+  pointer-events: none;
+  transform: translateX(
+    calc(var(--nav-x, 0px) + var(--nav-w, 0px) / 2 - 1px)
+  );
+  animation: nav-residue 520ms var(--ease-out) both;
+}
+
+@keyframes nav-residue {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-mark {
+    transition: none;
+  }
+
+  .nav-mark[data-hold="true"]::after {
+    animation: none;
+  }
+
+  .nav-residue {
+    display: none;
+  }
 }
 
 /* The shared arrow acknowledgement: an external action's arrow lifts
@@ -814,12 +908,6 @@ a[data-external]:focus-visible .xp-cta-arrow {
     padding-block: 0.55rem;
     text-align: center;
   }
-
-  /* the pip centres on the centred mobile label's own underbar */
-  .site-header nav a::before {
-    left: 50%;
-    translate: -50% 0;
-  }
 }
 
 /* ---------- footer ----------
@@ -928,7 +1016,7 @@ a[data-external]:focus-visible .xp-cta-arrow {
 }
 
 .motion-ready[data-motion="full"] [data-reveal="name"].is-revealed {
-  transition-duration: 640ms;
+  transition-duration: 460ms;
   transition-timing-function: var(--ease-swing);
 }
 
@@ -942,8 +1030,8 @@ a[data-external]:focus-visible .xp-cta-arrow {
 .motion-ready[data-motion="full"] [data-reveal="quiet"].is-revealed {
   opacity: 1;
   transition:
-    opacity 780ms var(--ease-out),
-    clip-path 780ms var(--ease-out);
+    opacity 560ms var(--ease-out),
+    clip-path 560ms var(--ease-out);
 }
 
 /* An object settles into its own size, the way something set down does. */
@@ -952,7 +1040,7 @@ a[data-external]:focus-visible .xp-cta-arrow {
 }
 
 .motion-ready[data-motion="full"] [data-reveal="figure"].is-revealed {
-  transition-duration: 560ms;
+  transition-duration: 400ms;
 }
 
 /* ---------- shared shells ---------- */
@@ -1022,7 +1110,9 @@ a[data-external]:focus-visible .xp-cta-arrow {
    Transitions API simply navigate. */
 
 /* One handoff: the selected title travels; the rest of the page crossfades
-   quietly underneath. No full-page lateral wipe. */
+   quietly underneath. No full-page lateral wipe. Tight by default — the
+   leaving page clears in a beat, the arriving page follows immediately,
+   and the route is readable again inside a fifth of a second. */
 @keyframes route-fade-out {
   to {
     opacity: 0;
@@ -1039,16 +1129,16 @@ a[data-external]:focus-visible .xp-cta-arrow {
    up only after it is gone. The two snapshots are never on screen at
    once, so unrelated text cannot double-expose. */
 ::view-transition-old(root) {
-  animation: route-fade-out 70ms var(--ease-out) both;
+  animation: route-fade-out 55ms linear both;
 }
 
 ::view-transition-new(root) {
-  animation: route-fade-in 160ms var(--ease-out) 70ms both;
+  animation: route-fade-in 125ms var(--ease-out) 45ms both;
 }
 
 ::view-transition-group(*) {
-  animation-duration: 340ms;
-  animation-timing-function: var(--ease-swing);
+  animation-duration: 220ms;
+  animation-timing-function: var(--ease-out);
 }
 
 /* Explore keeps six named sheet titles in the document at once. Only the
@@ -1057,38 +1147,46 @@ a[data-external]:focus-visible .xp-cta-arrow {
    page as ghost text. Any departing snapshot clears fast; the carried
    title's travel is carried by its group, not by this fade. */
 ::view-transition-old(*) {
-  animation-duration: 90ms;
+  animation-duration: 60ms;
 }
 
 /* The title is the carried object. Its pace follows the project's own
-   temperament while the route itself stays comfortably under half a second. */
+   temperament, all of them crisp: nothing in the set travels longer than
+   a quarter of a second. */
 ::view-transition-group(project-fluxion-studios) {
-  animation-duration: 360ms;
+  animation-duration: 230ms;
   animation-timing-function: var(--ease-out);
 }
 
 ::view-transition-group(project-design-or-disaster) {
-  animation-duration: 260ms;
+  animation-duration: 180ms;
   animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 ::view-transition-group(project-pentimento) {
-  animation-duration: 440ms;
-  animation-timing-function: var(--ease-swing);
+  animation-duration: 260ms;
+  animation-timing-function: var(--ease-out);
 }
 
 ::view-transition-group(project-invisible-interfaces) {
-  animation-duration: 320ms;
+  animation-duration: 200ms;
   animation-timing-function: var(--ease-out);
 }
 
 ::view-transition-group(project-atlas) {
-  animation-duration: 400ms;
-  animation-timing-function: var(--ease-swing);
+  animation-duration: 240ms;
+  animation-timing-function: var(--ease-out);
 }
 
 ::view-transition-group(project-daynero) {
-  animation-duration: 300ms;
+  animation-duration: 190ms;
+  animation-timing-function: var(--ease-out);
+}
+
+/* The header's registration mark rides the same handoff it walks every
+   day: one short, decisive move between destinations. */
+::view-transition-group(nav-mark) {
+  animation-duration: 200ms;
   animation-timing-function: var(--ease-out);
 }
 
@@ -1098,8 +1196,9 @@ a[data-external]:focus-visible .xp-cta-arrow {
   ::view-transition-group(project-pentimento),
   ::view-transition-group(project-invisible-interfaces),
   ::view-transition-group(project-atlas),
-  ::view-transition-group(project-daynero) {
-    animation-duration: 220ms;
+  ::view-transition-group(project-daynero),
+  ::view-transition-group(nav-mark) {
+    animation-duration: 170ms;
   }
 }
 
@@ -1107,11 +1206,11 @@ a[data-external]:focus-visible .xp-cta-arrow {
    full-screen spatial travel. */
 @media (max-width: 48rem) and (prefers-reduced-motion: no-preference) {
   ::view-transition-old(root) {
-    animation: route-fade-out 60ms var(--ease-out) both;
+    animation: route-fade-out 45ms linear both;
   }
 
   ::view-transition-new(root) {
-    animation: route-fade-in 140ms var(--ease-out) 60ms both;
+    animation: route-fade-in 110ms var(--ease-out) 40ms both;
   }
 }
 

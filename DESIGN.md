@@ -73,7 +73,24 @@ Test every decision: *if another portfolio could reuse it unchanged, remove it.*
 - **Distinct behaviour.** Fluxion launches; Design or Disaster points; Pentimento
   strikes; Invisible Interfaces asks the visitor to leave and return; Atlas revises;
   Daynero recalculates one live number.
+- **Portraits.** Every sheet carries one legible mini-demonstration of its project's
+  behaviour, composed in the DOM so its states read before any interaction: evidence
+  marked on a screen beside three readings, a machine sentence struck and rewritten,
+  an absence that returns a receipt, a rule revised with its lineage, fragments
+  assembled into a shipped site, one safe number recalculated by spending. One shared
+  shell (mono rack, framed stage, registration ticks, one plain caption) keeps the
+  series a family; the ASCII field behind each stage is supporting material —
+  scaffolding, residue, signal — never the message. Each portrait runs one passive
+  loop and one pointer/touch interaction that deepens it; nothing depends on hover,
+  and reduced motion resolves every demo to its resting state.
 - **Case handoff.** The chosen title and project stage carry through the View
   Transitions API. Ordinary links remain the fallback.
+- **Header rail.** The four destinations sit on one continuous track carrying a
+  single registration mark in two registers — filled and breathing where you are,
+  hollow while it walks to what you point at or tab to, leaving two fading pixels
+  of residue behind it. The mark is a named shared element, so a click hands it
+  through the View Transition to the new destination. Hover carries nothing:
+  `aria-current`, the filled mark, and the CSS-only pip underneath all state where
+  you are without JavaScript, and reduced motion makes every change instant.
 - **Close.** One concise invitation and real contact routes. No hidden rewards,
   decorative manifesto, or interaction added only to lengthen the page.
