@@ -149,7 +149,7 @@ test("renders an honest Daynero preview and names its case boundary", async () =
 
   for (const phrase of [
     "Full case in preparation",
-    "Pre-MVP product preview · public site live",
+    "Early product preview · public site live",
     "What you can spend today, and why.",
     "first-paycheck",
     "Visit daynero.com",
@@ -285,12 +285,14 @@ test("publishes accurate identity, commercial context, and contact", async () =>
 
   assert.equal(aboutResponse.status, 200);
   const aboutHtml = await aboutResponse.text();
-  assert.match(aboutHtml, /I design interfaces\. Then I build them\./);
+  assert.match(aboutHtml, /From Pixels to Products\./);
   /* the page reads person-first: who, where, what he is doing now */
   assert.match(aboutHtml, /product and interaction designer in Bengaluru/);
   assert.match(aboutHtml, /Human Center(ed)? Design at Srishti Manipal/);
   assert.match(aboutHtml, /Tanishk at a glance/);
-  assert.match(aboutHtml, /Four things running at once\./);
+  assert.match(aboutHtml, /Four things running right now\./);
+  assert.match(aboutHtml, /Currently making/);
+  assert.match(aboutHtml, /~\/tanishk/);
   assert.match(aboutHtml, /five-person team/);
   assert.match(aboutHtml, /Taamboolam/);
   assert.match(aboutHtml, /Ariadne/);
@@ -377,7 +379,21 @@ test("keeps motion, image, and single-deployment contracts explicit", async () =
   assert.match(data, /availability\?: "published" \| "preview" \| "coming-soon"/);
   assert.match(data, /id: "daynero"/);
   assert.doesNotMatch(data, /remainder|command-center/i);
-  assert.match(data, /form: "Spatial critique archive"/);
+  assert.match(data, /form: "Interface critique tool"/);
+  /* the folio's sequence is the data file's own order: 01 Fluxion,
+     02 Daynero, then the rest in their established relative order */
+  assert.ok(
+    data.indexOf('slug: "fluxion-studios"') < data.indexOf('slug: "daynero"'),
+    "Fluxion leads the sequence",
+  );
+  assert.ok(
+    data.indexOf('slug: "daynero"') < data.indexOf('slug: "design-or-disaster"'),
+    "Daynero follows Fluxion",
+  );
+  assert.ok(
+    data.indexOf('slug: "design-or-disaster"') < data.indexOf('slug: "pentimento"'),
+    "the remaining projects keep their relative order",
+  );
 
   // One reading: work-index mounts the folio and the footer, nothing else.
   assert.match(index, /Explore/);

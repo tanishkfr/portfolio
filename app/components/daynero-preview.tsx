@@ -34,7 +34,7 @@ export function DayneroPreview({
       <RoomPaint slug="daynero" />
       <div className="daynero-return">
         <TransitionLink href={returnHref}>{"← Projects / " + project.title}</TransitionLink>
-        <span>Pre-MVP product preview · public site live</span>
+        <span>Early product preview · public site live</span>
       </div>
 
       <header className="daynero-hero" data-reveal>

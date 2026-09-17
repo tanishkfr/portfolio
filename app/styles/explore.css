@@ -1780,6 +1780,141 @@
   animation: xpp-spark 660ms var(--ease-out) both;
 }
 
+/* ---------- the wordmark's dock ----------
+   The hero wordmark is the identity while the cover holds it, and it is
+   the only thing that moves: the header's dock effect drives its transform,
+   scale and ink straight from the scroll (see site-header.tsx), so there is
+   no second wordmark, no crossfade and no keyframe that can fall out of
+   step with the hand. These rules only settle the resting states for
+   readers who never get the script. */
+.xp-cover-name {
+  transform-origin: center;
+}
+
+/* ---------- the proof window ----------
+   The ASCII demo stays the preview language. On hover — or when the sheet
+   takes keyboard focus — the demo yields a little and one real fragment of
+   the project's own interface is uncovered over it, filed under its actual
+   filename with one line saying what it shows. Pointer passes don't flash
+   it: the reveal waits for intent. It carries no meaning that isn't also in
+   the demo, the caption and the copy beside it, so it never has to be
+   reachable by touch or by hover alone. */
+.xpp-reveal {
+  position: absolute;
+  right: clamp(0.5rem, 2cqw, 1rem);
+  bottom: clamp(0.5rem, 2cqw, 1rem);
+  z-index: 6;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: auto;
+  height: var(--reveal-h, min(88%, 16rem));
+  aspect-ratio: var(--reveal-ratio, 16 / 10);
+  max-width: calc(100% - 1rem);
+  border: 1px solid color-mix(in srgb, var(--pp-ink) 34%, transparent);
+  background: color-mix(in srgb, var(--pp-ground, #150f0c) 92%, transparent);
+  box-shadow: 0 0.7rem 1.8rem color-mix(in srgb, var(--pp-ground, #150f0c) 55%, transparent);
+  opacity: 0;
+  transform: translateY(0.5rem) scale(0.985);
+  transition:
+    opacity 240ms var(--ease-out) 0ms,
+    transform 320ms var(--ease-out) 0ms;
+  pointer-events: none;
+}
+
+/* The window opens from whichever corner the demo is not using, so the
+   demo's own readouts and controls stay legible around it. */
+.xpp-reveal[data-anchor="top-right"] {
+  top: clamp(0.5rem, 2cqw, 1rem);
+  bottom: auto;
+}
+
+.xpp-reveal[data-anchor="bottom-left"] {
+  left: clamp(0.5rem, 2cqw, 1rem);
+  right: auto;
+}
+
+.xpp-reveal-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.45rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--pp-ink) 22%, transparent);
+  color: var(--pp-muted);
+  font-size: clamp(0.5rem, 1.05cqw, 0.6rem);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.xpp-reveal-pip {
+  width: 4px;
+  height: 4px;
+  flex: 0 0 auto;
+  background: var(--pp-accent);
+}
+
+.xpp-reveal-file {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.xpp-reveal-frame {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.xpp-reveal-shot {
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.94;
+}
+
+.xpp-reveal-note {
+  padding: 0.32rem 0.45rem 0.38rem;
+  border-top: 1px solid color-mix(in srgb, var(--pp-ink) 22%, transparent);
+  color: var(--pp-ink);
+  font-size: clamp(0.5rem, 1.05cqw, 0.6rem);
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+}
+
+/* the demo yields so the fragment reads as the top layer for a moment */
+@media (hover: hover) {
+  .xp-portrait:hover .xpp-reveal {
+    opacity: 1;
+    transform: none;
+    transition-delay: 140ms;
+  }
+
+  .xp-portrait:hover .xpp-demo {
+    opacity: 0.42;
+  }
+
+  .xp-portrait:hover .xp-portrait-field {
+    opacity: 0.4;
+  }
+
+  .xp-portrait:hover .xpp-hint {
+    opacity: 0;
+  }
+}
+
+/* keyboard reaches the same fragment, by focusing the sheet it belongs to */
+.xp-piece:focus-within .xpp-reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.xp-piece:focus-within .xpp-demo {
+  opacity: 0.42;
+}
+
+.xpp-demo,
+.xp-portrait-field {
+  transition: opacity 320ms var(--ease-out);
+}
+
 /* ---------- portrait motion ---------- */
 @keyframes xpp-ping {
   0% { opacity: 0; transform: scale(1.9); }
