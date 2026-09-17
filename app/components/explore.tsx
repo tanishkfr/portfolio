@@ -432,7 +432,7 @@ export function Explore() {
               <span className="sr-only">Tanishk</span>
             </h1>
             <p className="xp-cover-claim">
-              I design what interfaces <strong>do</strong>.
+              Designing <strong>behavior</strong>, not just screens.
             </p>
             <p className="xp-cover-deck">
               From research to interaction to working code.
