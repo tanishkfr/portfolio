@@ -1524,7 +1524,7 @@
   height: 2px;
   background: var(--accent-ink);
   transform-origin: left;
-  transition: transform 560ms var(--ease-swing) 180ms;
+  transition: transform 360ms var(--ease-out) 110ms;
 }
 
 .motion-ready[data-motion="full"] .case-index[data-reveal]:not(.is-revealed)::after {

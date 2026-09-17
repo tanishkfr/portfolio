@@ -294,7 +294,9 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   assert.match(aboutHtml, /Fluxion Studios/);
   assert.match(aboutHtml, /its full case is still being documented/);
   assert.match(aboutHtml, /four independent projects/);
-  assert.match(aboutHtml, /I work with AI deliberately/);
+  assert.match(aboutHtml, /I use AI deliberately/);
+  assert.match(aboutHtml, /Working with AI/);
+  assert.match(aboutHtml, /an interface behaviour I kept thinking about/);
   assert.match(aboutHtml, /href="\/work\/pentimento\?from=work"/);
   assert.match(aboutHtml, /rel="canonical" href="https:\/\/portfolio\.test\/about"/);
 
@@ -303,8 +305,9 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   /* the contact page says plainly what he does, what conversations are
      welcome, and how to reach him — no slogans */
   assert.match(contactHtml, /You bring the problem\./);
-  assert.match(contactHtml, /design how it behaves\./);
-  assert.match(contactHtml, /Useful conversations/);
+  assert.match(contactHtml, /design the experience\./);
+  assert.match(contactHtml, /product and interaction designer based in Bengaluru/);
+  assert.match(contactHtml, /Good things to bring/);
   assert.match(contactHtml, /madebytanishk@gmail\.com/);
   assert.match(contactHtml, /linkedin\.com\/in\/tanishksalagame/);
   assert.match(contactHtml, /github\.com\/tanishkfr/);
@@ -478,9 +481,10 @@ test("keeps motion, image, and single-deployment contracts explicit", async () =
   assert.match(exploreCss, /prefers-reduced-motion:\s*reduce/);
 
   /* THE STAGE OVERLAY RULE IS GONE WITH THE INLINE INSTRUMENTS: Explore's
-     sheets now carry abstract portraits, and the real evidence lives in
-     the case study only. What must survive here is the sticky-sheet
-     architecture and the arrival material. */
+     sheets now carry interaction-led portraits (one legible demo of each
+     project's behaviour, ASCII as supporting material), and the real
+     evidence lives in the case study only. What must survive here is the
+     sticky-sheet architecture and the arrival material. */
   assert.match(exploreCss, /\.xp-piece-field\s*\{[^}]*position:\s*absolute/);
   assert.doesNotMatch(exploreCss, /\.xp-away-field|\.xp-away-example|\.xp-pent-field|\.xp-atlas-field/);
   assert.match(projectPage, /DayneroPreview/);
