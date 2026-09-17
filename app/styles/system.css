@@ -537,9 +537,10 @@ img {
 }
 
 /* The compact state of the hero wordmark: the wordmark's own pixel
-    voice — the same face the hero's TANISHK rests in, held at carrying
-    size. It leads the header; everything beside it is annotation.
-    Hover keeps the name's quiet tell, a state not a loop. */
+    voice — the same face, the same caps, the same box the hero's TANISHK
+    lands on — held at carrying size. It leads the header; everything
+    beside it is annotation. Hover keeps the name's quiet tell, a state
+    not a loop. */
 .identity-name {
   color: var(--registrar);
   font-family: var(--pixel);
@@ -547,6 +548,40 @@ img {
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1;
+  text-transform: uppercase;
+}
+
+/* While the cover holds the wordmark, the header carries none of it: the
+   hero's own TANISHK is the identity. The name appears the instant the
+   wordmark lands on its box — no fade, so the handoff cannot read as a
+   swap — while the mark and the role fade in around it. The hidden state
+   leaves the tab order rather than sitting invisible but focusable. */
+.site-header .site-identity {
+  transition: visibility 0s linear;
+}
+
+.site-header[data-dock="hero"] .site-identity {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.site-header[data-dock="nav"] .site-identity {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.site-header .identity-mark,
+.site-header .site-identity small {
+  opacity: 1;
+  transition: opacity 200ms linear 80ms;
+}
+
+.site-header[data-dock="hero"] .identity-mark,
+.site-header[data-dock="hero"] .site-identity small {
+  opacity: 0;
+  transition: none;
 }
 
 /* The small combinatorial tell: resting next to the name, hovered it

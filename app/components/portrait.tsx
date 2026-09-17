@@ -9,6 +9,7 @@ import {
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import Image from "next/image";
 import { ROOM_WORLDS } from "../data/room-worlds";
 import { SignalField } from "./signal-field";
 
@@ -297,6 +298,22 @@ type PortraitMeta = {
   hint: string;
   /** the figure's text alternative */
   a11y: string;
+  /**
+   * The proof window: on hover (or when the sheet takes focus) the ASCII
+   * demo yields and one real fragment of the project's own interface is
+   * uncovered, filed under its actual filename, then it returns to ASCII.
+   */
+  reveal: {
+    src: string;
+    label: string;
+    note: string;
+    ratio: number;
+    height: string;
+    /** the corner the window opens from, chosen per project so it never
+        lands on the demo's own readouts or controls */
+    anchor: "top-right" | "bottom-right" | "bottom-left";
+    position?: string;
+  };
   glyphs: string;
   cell: number;
   seed: number;
@@ -377,6 +394,38 @@ function PortraitShell({
         <span className="xpp-reg xpp-reg--br" />
         <span className="xpp-hint">{meta.hint}</span>
         {children}
+        {/* the proof window: a real fragment of the project, framed and
+            filed under its own filename rather than a captioned thumbnail */}
+        <span
+          className="xpp-reveal"
+          data-anchor={meta.reveal.anchor}
+          style={
+            {
+              "--reveal-ratio": meta.reveal.ratio,
+              "--reveal-h": meta.reveal.height,
+            } as CSSProperties
+          }
+        >
+          <span className="xpp-reveal-bar">
+            <span className="xpp-reveal-pip" />
+            <span className="xpp-reveal-file">{meta.reveal.label}</span>
+          </span>
+          <span className="xpp-reveal-frame">
+            <Image
+              className="xpp-reveal-shot"
+              src={meta.reveal.src}
+              alt=""
+              fill
+              sizes="(max-width: 52rem) 46vw, 22rem"
+              style={
+                meta.reveal.position
+                  ? { objectPosition: meta.reveal.position }
+                  : undefined
+              }
+            />
+          </span>
+          <span className="xpp-reveal-note">{meta.reveal.note}</span>
+        </span>
       </div>
       <p className="xpp-caption" aria-hidden="true">
         {meta.caption}
@@ -497,7 +546,7 @@ function EvidenceDemo({ live }: { live: boolean }) {
       live={live}
       read={`marks ${String(total).padStart(2, "0")}`}
     >
-      <div className="xpp-dod">
+      <div className="xpp-dod xpp-demo">
         <div
           className="xpp-dod-screen"
           ref={screenRef}
@@ -625,7 +674,7 @@ function PentimentoDemo({ live }: { live: boolean }) {
   return (
     <PortraitShell slug="pentimento" live={live} read={read}>
       <div
-        className="xpp-pent"
+        className="xpp-pent xpp-demo"
         data-striking={striking ? "true" : undefined}
         data-struck={struck ? "true" : undefined}
         data-rewritten={rewritten ? "true" : undefined}
@@ -718,7 +767,7 @@ function AbsenceDemo({ live }: { live: boolean }) {
   return (
     <PortraitShell slug="invisible-interfaces" live={live} read={read}>
       <div
-        className="xpp-abs"
+        className="xpp-abs xpp-demo"
         data-away={away ? "true" : undefined}
         data-done={done ? "true" : undefined}
         data-receipt={receipt ? "true" : undefined}
@@ -838,7 +887,7 @@ function AtlasDemo({ live }: { live: boolean }) {
 
   return (
     <PortraitShell slug="atlas" live={live} read={read}>
-      <div className="xpp-atl">
+      <div className="xpp-atl xpp-demo">
         <div className="xpp-atl-flow">
           <div className="xpp-atl-block xpp-atl-block--rule" {...ruleTap}>
             <p className="xpp-atl-label">provisional rule</p>
@@ -941,7 +990,7 @@ function FluxionDemo({ live }: { live: boolean }) {
       read={read}
     >
       <div
-        className="xpp-flx"
+        className="xpp-flx xpp-demo"
         data-built={built ? "true" : undefined}
         data-shipped={shipped ? "true" : undefined}
         onPointerEnter={enter}
@@ -1064,7 +1113,7 @@ function DayneroDemo({ live }: { live: boolean }) {
 
   return (
     <PortraitShell slug="daynero" live={live} read={read}>
-      <div className="xpp-day">
+      <div className="xpp-day xpp-demo">
         <div className="xpp-day-card" {...cardTap}>
           <div className="xpp-day-head">
             <span>safe to spend · today</span>
@@ -1108,6 +1157,14 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "01 · evidence map",
     caption: "Point at the evidence. The readings follow your mark.",
     hint: "place a mark",
+    reveal: {
+      src: "/projects/design-or-disaster/case-001-marked.png",
+      label: "case-001-marked.png",
+      note: "The evidence, marked — five readings beside it",
+      ratio: 16 / 10,
+      height: "min(88%, 16rem)",
+      anchor: "top-right",
+    },
     a11y:
       "Diagram: a mark is placed on an interface and three juror readings light up beside it.",
     glyphs: "·:+*#",
@@ -1131,6 +1188,14 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "02 · right of reply",
     caption: "The software gets a draft. You get the final word.",
     hint: "strike it",
+    reveal: {
+      src: "/projects/pentimento/second-draft.png",
+      label: "second-draft.png",
+      note: "The rewrite outranks the sentence",
+      ratio: 16 / 10,
+      height: "min(86%, 15.5rem)",
+      anchor: "bottom-right",
+    },
     a11y:
       "Diagram: a machine-written sentence is struck through and a person's rewrite rises into its place.",
     glyphs: "·:+x",
@@ -1153,6 +1218,14 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "03 · absence & receipt",
     caption: "Leave the tab and it keeps working. Return to a receipt.",
     hint: "look away",
+    reveal: {
+      src: "/projects/invisible-interfaces/return.png",
+      label: "return.png",
+      note: "Back from the tab, holding the receipt",
+      ratio: 1.44,
+      height: "min(84%, 15rem)",
+      anchor: "top-right",
+    },
     a11y:
       "Diagram: a restoration panel dims while work continues, then returns with a receipt of what changed.",
     glyphs: "01",
@@ -1175,6 +1248,14 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "04 · rule pressure",
     caption: "Every hold, refinement, and fracture stays in the lineage.",
     hint: "press a case",
+    reveal: {
+      src: "/projects/atlas/trace-lineage.png",
+      label: "trace-lineage.png",
+      note: "Every case that changed the rule",
+      ratio: 1440 / 1830,
+      height: "min(92%, 17rem)",
+      anchor: "bottom-left",
+    },
     a11y:
       "Diagram: a provisional rule is tested against three cases and rewritten, with every change kept in a lineage.",
     glyphs: "·:+|",
@@ -1197,6 +1278,14 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "05 · studio build",
     caption: "Loose pieces, one system — the studio site ships from it.",
     hint: "build it",
+    reveal: {
+      src: "/projects/fluxion/site-home-desktop.png",
+      label: "site-home-desktop.png",
+      note: "The shipped site, one system end to end",
+      ratio: 16 / 10,
+      height: "min(88%, 16rem)",
+      anchor: "bottom-left",
+    },
     a11y:
       "Diagram: loose layout pieces assemble into a studio website and a companion phone frame.",
     glyphs: "·:+*#",
@@ -1219,6 +1308,14 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "06 · safe to spend",
     caption: "A month of spending, compressed into one safe number.",
     hint: "log a spend",
+    reveal: {
+      src: "/projects/daynero/site-home-mobile.png",
+      label: "site-home-mobile.png",
+      note: "One safe daily number, in the product",
+      ratio: 390 / 844,
+      height: "min(90%, 17rem)",
+      anchor: "bottom-right",
+    },
     a11y:
       "Diagram: spending events land one by one and a single safe-to-spend number recalculates.",
     glyphs: "·:+*#",

@@ -144,12 +144,245 @@ export type LensDefinition = {
 
 export const projects: Project[] = [
   {
+    id: "fluxion-studios",
+    slug: "fluxion-studios",
+    title: "Fluxion Studios",
+    form: "Studio website",
+    plain:
+      "The website for the two-person studio I co-founded. I designed and built it in-house, so every page comes from one set of components we reuse for client work.",
+    oneLine:
+      "Fluxion is the two-person web studio I co-founded. I designed and built the public site, including its motion and enquiry flow.",
+    status: "Live site",
+    year: "2026",
+    context: "Co-founded two-person studio",
+    ownership: "Co-founder · design and frontend with a partner",
+    role: "Co-founder · design, copy, and frontend",
+    responsibilities: [
+      "Co-founded the studio and shaped how it talks about the work",
+      "Designed and built the public studio website",
+      "Wrote interface, motion, and form behaviour for the live site",
+    ],
+    tools: ["Visual design", "UI/UX", "Frontend", "Copy"],
+    scale: "Public studio site · enquiry form · two-person practice",
+    liveUrl: "https://fluxion-studios.vercel.app/",
+    liveLabel: "Visit studio site",
+    accent: "#c8102e",
+    artifact: "fluxion",
+    lensRelations: {
+      "evidence-judgment":
+        "The site has to prove craft in how it is built, not by listing awards it does not have.",
+      "agency-authority":
+        "A studio pitch that leaves room for the client’s voice instead of overwriting it.",
+      "memory-lineage":
+        "A two-person practice that grew out of years of making things together.",
+      "visibility-accountability":
+        "Scope, timing, and whether we are the right studio are stated before a project starts.",
+    },
+    relatedSlugs: ["design-or-disaster", "daynero"],
+    chapterTitles: {
+      context: "A studio needed a site that could take real enquiries.",
+      pivot: "We built it the way we would build a client’s.",
+      interaction: "Type, timing, and a form that actually goes somewhere.",
+      system: "Interface, data, and the boring parts that keep a site upright.",
+      proof: "The site is live and taking work.",
+    },
+    story: {
+      intro: [
+        "Fluxion is a two-person web studio I co-founded with a partner. We make sites for businesses that already have a voice and do not want to sound like everyone else online.",
+        "Our site had to explain what we build and take real enquiries. It also had to show the level of detail we would bring to client work.",
+      ],
+      contribution: [
+        "I worked on the structure, visual design, copy, motion, frontend, and enquiry form, working directly with my co-founder.",
+        "The finished site is live and client-facing. It introduces both founders, explains our process, and gives prospective clients a direct way to start a project.",
+      ],
+      turn:
+        "Our first piece of client-facing work was our own site.",
+      reflection: [
+        "Shipping it meant making practical calls about order, type, motion, form behaviour, and what we could maintain as a two-person studio.",
+      ],
+    },
+    problem: {
+      title: "Most studio sites describe craft and then look assembled.",
+      paragraphs: [
+        "We needed a site that could take a real project enquiry without sounding like every other two-person studio in a dark theme.",
+      ],
+    },
+    pivot: {
+      title: "Build the studio site the way we would build a client’s.",
+      before: "A holding page would have been faster.",
+      realization: "The first thing a client sees is how we treat our own work.",
+      after: "The live site is designed, written, and implemented in-house.",
+    },
+    rejectedPaths: [],
+    interactionIntro:
+      "The public site covers how we think, what we build, how we work, and a form that starts a project.",
+    interactionSteps: [],
+    systemLayers: [],
+    decisions: [
+      {
+        title: "Build it in-house",
+        choice: "Design and implement the studio site ourselves instead of parking a template.",
+        consequence: "Prospective clients can judge the work through the site itself.",
+      },
+      {
+        title: "Say the constraints out loud",
+        choice: "Publish reply time, typical duration, and that pricing is on enquiry.",
+        consequence: "People can check the fit before writing.",
+      },
+    ],
+    demonstrated: [
+      "A live studio website with navigation, process, founders, and an enquiry form.",
+      "Co-founded practice, based in Bengaluru.",
+      "Design and frontend implementation of the public site.",
+      "One shipped client build: Taamboolam's live hospitality website.",
+    ],
+    limits: [
+      "This record covers the studio site and one named client build, not a library of client case studies.",
+      "No client results beyond the shipped site — traffic, enquiries received, or revenue — are claimed here.",
+    ],
+    nextTest: {
+      title: "Publish the next client build the same way.",
+      body: "Add each client project as a receipt: the brief, the constraint, the contribution, and what shipped.",
+      success:
+        "A visitor can tell what the studio has shipped, who did what, and what the client actually got.",
+    },
+    clientWork: {
+      label: "Client work",
+      title: "Taamboolam — hospitality website",
+      rows: [
+        {
+          term: "Client need",
+          value:
+            "A small hospitality business needed a site that could explain the offer and take enquiries.",
+        },
+        {
+          term: "Constraint",
+          value:
+            "Requirements, scope, and price were agreed with the client first, then the build had to hold up against real implementation limits.",
+        },
+        {
+          term: "My role",
+          value:
+            "Designed and shipped the site: interface design, the enquiry flow, production QA, and deployment.",
+        },
+        {
+          term: "Collaboration",
+          value:
+            "Fluxion is a two-person practice; this receipt states my own contribution rather than a split.",
+        },
+        {
+          term: "Revision",
+          value:
+            "Client revisions were worked through in the build rather than handed off at the design file.",
+        },
+        {
+          term: "Shipped",
+          value: "Live at taamboolam.com, with its enquiry flow deployed.",
+        },
+        {
+          term: "Consequence",
+          value: "The client has a working site that can receive enquiries.",
+        },
+      ],
+      href: "https://taamboolam.com",
+      hrefLabel: "Taamboolam",
+    },
+    contribution:
+      "Co-founded the studio; designed and built the public website, and shipped a client build for Taamboolam.",
+    disclosure:
+      "Fluxion Studios is a two-person practice. This portfolio page describes the live studio site, one named client build, and my role. It does not invent client results.",
+  },
+
+  {
+    id: "daynero",
+    slug: "daynero",
+    title: "Daynero",
+    form: "Personal finance app",
+    plain:
+      "An app that turns a month of spending into one safe amount to spend each day. I designed it for people on their first salary, where the daily number is the main screen.",
+    oneLine:
+      "A personal-finance app for first-paycheck earners, centred on what is safe to spend today and why. The full case study is coming soon.",
+    status: "Early product preview",
+    availability: "coming-soon",
+    year: "2026",
+    context: "Startup product work",
+    ownership: "App and public website · commercial team context",
+    role: "Product design and implementation across the app and public website",
+    responsibilities: [
+      "Designed the app's product experience",
+      "Designed and built the public website",
+      "Developed the interaction and visual systems across both surfaces",
+      "Writing the case study when it can be told properly",
+    ],
+    tools: ["Product design", "Interaction design", "Web design", "Implementation"],
+    scale: "Financial app · public website · active startup",
+    liveUrl: "https://daynero.com/",
+    liveLabel: "Visit daynero.com",
+    accent: "#4f6612",
+    artifact: "daynero",
+    lensRelations: {
+      "evidence-judgment":
+        "Turns spending patterns into timely guidance without presenting a static monthly budget as the whole picture.",
+      "agency-authority":
+        "Uses personal goals and behavior to shape guidance while keeping the person's priorities central.",
+      "memory-lineage":
+        "Connects current behavior with longer-term financial direction through an evolving daily view.",
+      "visibility-accountability":
+        "Makes overlooked patterns and the relationship between present behavior and future wealth more legible.",
+    },
+    relatedSlugs: ["fluxion-studios", "atlas"],
+    chapterTitles: {
+      context: "The commercial context is still being documented.",
+      pivot: "The product evolution will be published with its constraints.",
+      interaction: "Daily guidance responds to behavior and goals.",
+      system: "The public model connects daily action to longer-term direction.",
+      proof: "The product surface is live; the case evidence is not yet published.",
+    },
+    problem: {
+      title: "Traditional monthly budgets can feel detached from the decisions happening today.",
+      paragraphs: [
+        "Daynero's public position is that financial guidance should respond to daily behavior and spending patterns rather than only report against a monthly plan.",
+        "The full project context, constraints, and evidence will be added when they can be documented responsibly.",
+      ],
+    },
+    pivot: {
+      title: "Case-study documentation in progress.",
+      before: "The earlier product direction is not being published as a placeholder claim.",
+      realization: "The case needs the real team context and constraints before it can explain the product evolution honestly.",
+      after: "The current portfolio shows only the public product model and Tanishk's stated contribution.",
+    },
+    rejectedPaths: [],
+    interactionIntro:
+      "The public product centers an adaptive daily budget, goals, a Meridian Score, and personalized insights.",
+    interactionSteps: [],
+    systemLayers: [],
+    decisions: [],
+    demonstrated: [
+      "A live public website describing the current product position, designed and built by Tanishk.",
+      "The app's product experience designed by Tanishk — interaction and visual system across the daily-budget surface.",
+    ],
+    limits: [
+      "The full team, timeline, constraints, process, and outcomes are not yet published.",
+      "No private product detail or unverified outcome is presented in this preview.",
+    ],
+    nextTest: {
+      title: "Publish the commercial case with the correct context.",
+      body: "Document the team, timeline, product evolution, interaction decisions, implementation trade-offs, and publishable evidence.",
+      success: "The final case must make Tanishk's contribution precise without erasing collaborators or inventing outcomes.",
+    },
+    contribution:
+      "I designed the app experience and designed and built the public website. The detailed team and contribution record is still being prepared.",
+    disclosure:
+      "This preview uses Daynero's public product language and Tanishk's stated contribution. The full evidence record is pending.",
+  },
+
+{
     id: "design-or-disaster",
     slug: "design-or-disaster",
     title: "Design or Disaster",
-    form: "Spatial critique archive",
+    form: "Interface critique tool",
     plain:
-      "A critique tool where you mark the evidence on a real screen before you judge it. Your marks sit next to five written readings, so pointing comes before opinions.",
+      "A tool for judging an interface on evidence instead of opinion. You mark the part of a screen that shaped your judgment, explain why, and then see five other people's readings beside yours.",
     oneLine:
       "Mark the part of an interface that shaped your judgment, explain it, then compare your reading with five others.",
     status: "Working archive",
@@ -305,16 +538,17 @@ export const projects: Project[] = [
     disclosure:
       "AI assisted ideation, critique, writing iteration, and code iteration. Final concept selection, case construction, design decisions, editing, implementation, and authorship are Tanishk's.",
   },
+
   {
     id: "pentimento",
     slug: "pentimento",
     title: "Pentimento",
-    form: "Algorithmic autobiography",
+    form: "Interactive essay",
     plain:
-      "An interactive piece about what software writes about people — and who gets the last word. The person's correction outranks the machine's sentence: strike it, rewrite it, or let it stand.",
+      "An interactive piece about what software writes about people, and who gets the last word. A machine writes a short claim about you; you can rewrite it or strike it out, and your version leads the page.",
     oneLine:
       "Each machine-written claim shows its evidence. The person can accept it, rewrite it, or strike it, and their version leads the final page.",
-    status: "Working artifact · participant study pending",
+    status: "Working piece · study pending",
     year: "2026",
     context: "Self-directed research-through-design",
     ownership: "Independent · concept to production",
@@ -468,17 +702,18 @@ export const projects: Project[] = [
     disclosure:
       "AI assisted ideation, critique, source discovery, and code iteration. Final concept selection, research framing, design decisions, editing, implementation, and authorship are Tanishk's.",
   },
+
   {
     id: "invisible-interfaces",
     slug: "invisible-interfaces",
     legacySlugs: ["invisible-interactions"],
     title: "Invisible Interfaces",
-    form: "Interactive essay",
+    form: "Interface research",
     plain:
-      "A research project about the work interfaces keep doing when nobody is watching. Leave the tab and it keeps working; come back and it hands you a receipt.",
+      "A research project about the work software does when nobody is watching. Leave the tab and it carries on; come back and it hands you a receipt of what changed.",
     oneLine:
       "A staged restoration runs only while the tab is hidden, then shows what changed, what did not, and how to discard the result.",
-    status: "Complete v1.0 exhibition",
+    status: "Complete · v1.0",
     year: "2026",
     context: "Self-directed research-through-design exhibition",
     ownership: "Independent · concept to production",
@@ -632,16 +867,17 @@ export const projects: Project[] = [
     disclosure:
       "AI assisted ideation, critique, and code iteration. Final concept selection, design decisions, writing, visual direction, implementation, and authorship are Tanishk's.",
   },
+
   {
     id: "atlas",
     slug: "atlas",
     title: "Atlas",
-    form: "Reasoning instrument",
+    form: "Rule testing tool",
     plain:
-      "A tool for stress-testing interface rules — short statements of how an interface should behave — against cases very unlike the one they were written for. I turned each rule change into a visible lineage, so a rule shows what shaped it.",
+      "Atlas tests an interface rule against cases it was not written for. You put the rule through three awkward cases, choose hold, refine or fracture, and the rule is rewritten with the change kept in its history.",
     oneLine:
       "Write a provisional rule, test it against three unlike cases, and keep every hold, refinement, and fracture.",
-    status: "Working instrument · evidence audit open",
+    status: "Working tool · audit open",
     year: "2026",
     context: "Self-directed research-through-design",
     ownership: "Independent · concept to production",
@@ -831,237 +1067,6 @@ export const projects: Project[] = [
       "I reframed a 33-answer library as a three-case rule test, then built its revision trace, persistence, export, and evidence audit.",
     disclosure:
       "AI assisted ideation, critique, source discovery, and code iteration. Final concept selection, scenario design, design decisions, editing, implementation, and authorship are Tanishk's.",
-  },
-  {
-    id: "fluxion-studios",
-    slug: "fluxion-studios",
-    title: "Fluxion Studios",
-    form: "Studio website · freelance practice",
-    plain:
-      "The website for the two-person studio I co-founded, designed and built in-house. It had to meet the standard we sell clients — every section ships from one system.",
-    oneLine:
-      "Fluxion is the two-person web studio I co-founded. I designed and built the public site, including its motion and enquiry flow.",
-    status: "Live studio site",
-    year: "2026",
-    context: "Co-founded two-person studio",
-    ownership: "Co-founder · design and frontend with a partner",
-    role: "Co-founder · design, copy, and frontend",
-    responsibilities: [
-      "Co-founded the studio and shaped how it talks about the work",
-      "Designed and built the public studio website",
-      "Wrote interface, motion, and form behaviour for the live site",
-    ],
-    tools: ["Visual design", "UI/UX", "Frontend", "Copy"],
-    scale: "Public studio site · enquiry form · two-person practice",
-    liveUrl: "https://fluxion-studios.vercel.app/",
-    liveLabel: "Visit studio site",
-    accent: "#c8102e",
-    artifact: "fluxion",
-    lensRelations: {
-      "evidence-judgment":
-        "The site has to prove craft in how it is built, not by listing awards it does not have.",
-      "agency-authority":
-        "A studio pitch that leaves room for the client’s voice instead of overwriting it.",
-      "memory-lineage":
-        "A two-person practice that grew out of years of making things together.",
-      "visibility-accountability":
-        "Scope, timing, and whether we are the right studio are stated before a project starts.",
-    },
-    relatedSlugs: ["design-or-disaster", "daynero"],
-    chapterTitles: {
-      context: "A studio needed a site that could take real enquiries.",
-      pivot: "We built it the way we would build a client’s.",
-      interaction: "Type, timing, and a form that actually goes somewhere.",
-      system: "Interface, data, and the boring parts that keep a site upright.",
-      proof: "The site is live and taking work.",
-    },
-    story: {
-      intro: [
-        "Fluxion is a two-person web studio I co-founded with a partner. We make sites for businesses that already have a voice and do not want to sound like everyone else online.",
-        "Our site had to explain what we build and take real enquiries. It also had to show the level of detail we would bring to client work.",
-      ],
-      contribution: [
-        "I worked on the structure, visual design, copy, motion, frontend, and enquiry form, working directly with my co-founder.",
-        "The finished site is live and client-facing. It introduces both founders, explains our process, and gives prospective clients a direct way to start a project.",
-      ],
-      turn:
-        "Our first piece of client-facing work was our own site.",
-      reflection: [
-        "Shipping it meant making practical calls about order, type, motion, form behaviour, and what we could maintain as a two-person studio.",
-      ],
-    },
-    problem: {
-      title: "Most studio sites describe craft and then look assembled.",
-      paragraphs: [
-        "We needed a site that could take a real project enquiry without sounding like every other two-person studio in a dark theme.",
-      ],
-    },
-    pivot: {
-      title: "Build the studio site the way we would build a client’s.",
-      before: "A holding page would have been faster.",
-      realization: "The first thing a client sees is how we treat our own work.",
-      after: "The live site is designed, written, and implemented in-house.",
-    },
-    rejectedPaths: [],
-    interactionIntro:
-      "The public site covers how we think, what we build, how we work, and a form that starts a project.",
-    interactionSteps: [],
-    systemLayers: [],
-    decisions: [
-      {
-        title: "Build it in-house",
-        choice: "Design and implement the studio site ourselves instead of parking a template.",
-        consequence: "Prospective clients can judge the work through the site itself.",
-      },
-      {
-        title: "Say the constraints out loud",
-        choice: "Publish reply time, typical duration, and that pricing is on enquiry.",
-        consequence: "People can check the fit before writing.",
-      },
-    ],
-    demonstrated: [
-      "A live studio website with navigation, process, founders, and an enquiry form.",
-      "Co-founded practice, based in Bengaluru.",
-      "Design and frontend implementation of the public site.",
-      "One shipped client build: Taamboolam's live hospitality website.",
-    ],
-    limits: [
-      "This record covers the studio site and one named client build, not a library of client case studies.",
-      "No client results beyond the shipped site — traffic, enquiries received, or revenue — are claimed here.",
-    ],
-    nextTest: {
-      title: "Publish the next client build the same way.",
-      body: "Add each client project as a receipt: the brief, the constraint, the contribution, and what shipped.",
-      success:
-        "A visitor can tell what the studio has shipped, who did what, and what the client actually got.",
-    },
-    clientWork: {
-      label: "Client work",
-      title: "Taamboolam — hospitality website",
-      rows: [
-        {
-          term: "Client need",
-          value:
-            "A small hospitality business needed a site that could explain the offer and take enquiries.",
-        },
-        {
-          term: "Constraint",
-          value:
-            "Requirements, scope, and price were agreed with the client first, then the build had to hold up against real implementation limits.",
-        },
-        {
-          term: "My role",
-          value:
-            "Designed and shipped the site: interface design, the enquiry flow, production QA, and deployment.",
-        },
-        {
-          term: "Collaboration",
-          value:
-            "Fluxion is a two-person practice; this receipt states my own contribution rather than a split.",
-        },
-        {
-          term: "Revision",
-          value:
-            "Client revisions were worked through in the build rather than handed off at the design file.",
-        },
-        {
-          term: "Shipped",
-          value: "Live at taamboolam.com, with its enquiry flow deployed.",
-        },
-        {
-          term: "Consequence",
-          value: "The client has a working site that can receive enquiries.",
-        },
-      ],
-      href: "https://taamboolam.com",
-      hrefLabel: "Taamboolam",
-    },
-    contribution:
-      "Co-founded the studio; designed and built the public website, and shipped a client build for Taamboolam.",
-    disclosure:
-      "Fluxion Studios is a two-person practice. This portfolio page describes the live studio site, one named client build, and my role. It does not invent client results.",
-  },
-  {
-    id: "daynero",
-    slug: "daynero",
-    title: "Daynero",
-    form: "AI-native financial product",
-    plain:
-      "A personal-finance product that turns a month of spending into one safe daily amount. I designed it around first-paycheck earners — the number is the interface.",
-    oneLine:
-      "A personal-finance app for first-paycheck earners, centred on what is safe to spend today and why. The full case study is coming soon.",
-    status: "Pre-MVP product preview",
-    availability: "coming-soon",
-    year: "2026",
-    context: "Startup product work",
-    ownership: "App and public website · commercial team context",
-    role: "Product design and implementation across the app and public website",
-    responsibilities: [
-      "Designed the app's product experience",
-      "Designed and built the public website",
-      "Developed the interaction and visual systems across both surfaces",
-      "Writing the case study when it can be told properly",
-    ],
-    tools: ["Product design", "Interaction design", "Web design", "Implementation"],
-    scale: "Financial app · public website · active startup",
-    liveUrl: "https://daynero.com/",
-    liveLabel: "Visit daynero.com",
-    accent: "#4f6612",
-    artifact: "daynero",
-    lensRelations: {
-      "evidence-judgment":
-        "Turns spending patterns into timely guidance without presenting a static monthly budget as the whole picture.",
-      "agency-authority":
-        "Uses personal goals and behavior to shape guidance while keeping the person's priorities central.",
-      "memory-lineage":
-        "Connects current behavior with longer-term financial direction through an evolving daily view.",
-      "visibility-accountability":
-        "Makes overlooked patterns and the relationship between present behavior and future wealth more legible.",
-    },
-    relatedSlugs: ["fluxion-studios", "atlas"],
-    chapterTitles: {
-      context: "The commercial context is still being documented.",
-      pivot: "The product evolution will be published with its constraints.",
-      interaction: "Daily guidance responds to behavior and goals.",
-      system: "The public model connects daily action to longer-term direction.",
-      proof: "The product surface is live; the case evidence is not yet published.",
-    },
-    problem: {
-      title: "Traditional monthly budgets can feel detached from the decisions happening today.",
-      paragraphs: [
-        "Daynero's public position is that financial guidance should respond to daily behavior and spending patterns rather than only report against a monthly plan.",
-        "The full project context, constraints, and evidence will be added when they can be documented responsibly.",
-      ],
-    },
-    pivot: {
-      title: "Case-study documentation in progress.",
-      before: "The earlier product direction is not being published as a placeholder claim.",
-      realization: "The case needs the real team context and constraints before it can explain the product evolution honestly.",
-      after: "The current portfolio shows only the public product model and Tanishk's stated contribution.",
-    },
-    rejectedPaths: [],
-    interactionIntro:
-      "The public product centers an adaptive daily budget, goals, a Meridian Score, and personalized insights.",
-    interactionSteps: [],
-    systemLayers: [],
-    decisions: [],
-    demonstrated: [
-      "A live public website describing the current product position, designed and built by Tanishk.",
-      "The app's product experience designed by Tanishk — interaction and visual system across the daily-budget surface.",
-    ],
-    limits: [
-      "The full team, timeline, constraints, process, and outcomes are not yet published.",
-      "No private product detail or unverified outcome is presented in this preview.",
-    ],
-    nextTest: {
-      title: "Publish the commercial case with the correct context.",
-      body: "Document the team, timeline, product evolution, interaction decisions, implementation trade-offs, and publishable evidence.",
-      success: "The final case must make Tanishk's contribution precise without erasing collaborators or inventing outcomes.",
-    },
-    contribution:
-      "I designed the app experience and designed and built the public website. The detailed team and contribution record is still being prepared.",
-    disclosure:
-      "This preview uses Daynero's public product language and Tanishk's stated contribution. The full evidence record is pending.",
   },
 ];
 

@@ -150,6 +150,13 @@ export function SiteFooter({
         >
           LinkedIn <span aria-hidden="true">↗</span>
         </a>
+        <a
+          href="https://github.com/tanishkfr/ariadne"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Ariadne <span aria-hidden="true">↗</span>
+        </a>
         <a href="https://github.com/tanishkfr" target="_blank" rel="noreferrer">
           GitHub <span aria-hidden="true">↗</span>
         </a>

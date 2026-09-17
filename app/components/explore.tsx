@@ -14,13 +14,17 @@ import { ProjectPortrait } from "./portrait";
 import { backdropFor } from "./backdrop";
 import { TransitionLink } from "./transition-link";
 
+/* The folio's order and the case pages' numbering come from one place:
+   `projects` in the data file is the sequence (01–06), and this array
+   simply re-states it for the folio's index and sheet stack. The two must
+   agree — the index number and the "Case NN" label are the same fact. */
 const order = [
+  "fluxion-studios",
+  "daynero",
   "design-or-disaster",
   "pentimento",
   "invisible-interfaces",
   "atlas",
-  "fluxion-studios",
-  "daynero",
 ];
 const layouts = {
   "fluxion-studios": "wordmark",

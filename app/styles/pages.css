@@ -48,13 +48,51 @@
   line-height: 1.55;
 }
 
+/* The facts as workspace state: a small desk panel with a path bar and a
+   status, so biography arrives as the surface a designer would actually
+   keep open rather than a résumé table. Same facts, in mono. */
+.about-console {
+  margin: 1.4rem 0 0;
+  max-width: 72rem;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--plate) 62%, transparent);
+}
+
+.about-console-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 0.5rem 0.8rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.03em;
+}
+
+.about-console-pip {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  background: var(--registrar);
+}
+
+.about-console-path {
+  color: var(--ink);
+}
+
+.about-console-status {
+  margin-left: auto;
+  color: var(--registrar-deep);
+}
+
 .about-facts {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.5rem 2rem;
-  margin: 1rem 0 0;
-  border-top: 1px solid var(--line);
-  padding-top: 1.5rem;
+  margin: 0;
+  padding: 1.1rem 0.8rem 1.25rem;
 }
 
 .about-facts dt {
@@ -188,12 +226,56 @@
   line-height: 1.25;
 }
 
+/* the row's own state: a pixel block and a lowercase word, the way the
+   rest of the site labels what is running */
+.current-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.9rem;
+}
+
+.current-list .current-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.04em;
+}
+
+.current-status::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  background: var(--registrar);
+}
+
 .current-list p {
   margin: 0;
   max-width: 56ch;
   color: var(--ink-soft);
   font-size: var(--step-0);
   line-height: 1.6;
+}
+
+.about-tools {
+  margin: 1.5rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.03em;
+  line-height: 1.7;
+  max-width: 68ch;
+}
+
+.about-tools-key {
+  color: var(--registrar-deep);
 }
 
 .about-contact > div {
@@ -596,6 +678,16 @@
     grid-template-columns: 1fr;
   }
 
+  .about-console-bar {
+    flex-wrap: wrap;
+    gap: 0.35rem 0.55rem;
+  }
+
+  .about-console-status {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+
   /* The poster headline's longest word must fit a 320px column. */
   .about-intro h1,
   .contact-intro h1,
@@ -604,7 +696,7 @@
   }
 
   .resume-intro h1 {
-    font-size: clamp(1.7rem, 9vw, 2.6rem);
+    font-size: clamp(1.9rem, 10.5vw, 3rem);
   }
 }
 
@@ -630,17 +722,32 @@
   color: var(--muted);
 }
 
+/* The name is the page's hierarchy, as it is on the PDF: the full name in
+   caps at poster scale, the role line under it, then the sections — with
+   the project entries deliberately left in their own regular case. */
 .resume-intro h1 {
-  margin: 0 0 0.8rem;
+  margin: 0;
   font-family: var(--display);
-  font-size: clamp(2.4rem, 5.4vw, 3.9rem);
+  font-size: clamp(2.6rem, 6.6vw, 4.6rem);
   font-weight: var(--poster-weight);
-  font-stretch: 110%;
+  font-stretch: 104%;
+  letter-spacing: -0.01em;
+  line-height: 0.98;
+  text-wrap: balance;
+  text-transform: uppercase;
+}
+
+.resume-role {
+  margin: 0.8rem 0 0;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: var(--step-0);
+  letter-spacing: 0.04em;
 }
 
 .resume-lede {
-  margin: 0;
-  max-width: 46ch;
+  margin: 0.9rem 0 0;
+  max-width: 52ch;
   color: var(--ink-soft);
   font-size: var(--step-1);
   line-height: 1.5;

@@ -21,11 +21,7 @@ const CLOSE_TEXTURE_QUIET: Quiet[] = [
 
 export function CloseBridge() {
   return (
-    <section
-      className="xp-close"
-      aria-labelledby="close-note"
-      data-close-note
-    >
+    <section className="xp-close" aria-labelledby="close-note" data-close-note>
       <SignalField
         className="xp-close-texture"
         cell={14}
@@ -43,9 +39,9 @@ export function CloseBridge() {
       <p className="xp-close-note">
         {"If that sounds like the kind of problem you're working on, I'd like to hear about it."}
       </p>
-      <TransitionLink className="xp-close-link" href="/contact">
-        Contact <span aria-hidden="true">↗</span>
-      </TransitionLink>
+        <TransitionLink className="xp-close-link" href="/contact">
+          Contact <span aria-hidden="true">↗</span>
+        </TransitionLink>
     </section>
   );
 }

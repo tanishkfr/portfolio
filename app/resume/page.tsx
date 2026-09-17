@@ -197,11 +197,14 @@ export default function ResumePage() {
     <main id="main-content" className="resume-shell">
       <header className="resume-intro">
         <PageSignal variant="resume" />
-        <p className="resume-kicker">Résumé · Bengaluru · Available for work</p>
-        <h1>Tanishk</h1>
+        <p className="resume-kicker">Tanishk · Bengaluru · Available for work</p>
+        <h1>Tanishk Salagame</h1>
+        <p className="resume-role">Product Designer / Interaction Designer</p>
         <p className="resume-lede">
-          Product Designer / Interaction Designer. I&apos;m interested in what
-          interfaces do, not just how they look.
+          Designing behaviour, not just screens. I move between research,
+          interface behaviour, prototypes and working code — as the product
+          designer at Daynero, co-founder of Fluxion Studios, and the author of
+          four independent interaction projects.
         </p>
         <p className="resume-actions">
           <a
