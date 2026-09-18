@@ -39,15 +39,18 @@ export function DayneroPreview({
 
       <header className="daynero-hero" data-reveal>
         <div className="daynero-hero-copy">
-          <p className="eyebrow">Product design · implementation</p>
+          <p className="eyebrow">Main UI/UX designer · app and website</p>
           <h1>Daynero</h1>
           <p className="daynero-tagline">
             What you can spend today, and why.
           </p>
           <p className="daynero-summary">
-            Daynero is an AI-native personal finance app for first-paycheck
-            earners. Its central number answers what is safe to spend today.
-            I designed the app experience and the public website.
+            Daynero is an early-stage personal-finance product for people
+            earning their first salary. Its central number answers what is
+            safe to spend today. I am its main UI/UX designer: the public
+            website was designed by me with feedback from the founder, and
+            the app&apos;s design system has been through three iterations. The
+            website is live; the app is still pre-MVP.
           </p>
           <div className="daynero-actions">
             <a href={project.liveUrl} target="_blank" rel="noreferrer">
@@ -78,6 +81,45 @@ export function DayneroPreview({
           label="The public website"
           caption="Daynero's public site, live at daynero.com — designed and built by Tanishk. It presents the product proposition and collects waitlist sign-ups; the app itself remains pre-MVP, and no private product surface is shown here."
         />
+      </section>
+
+      {/* The app's design work, stated without exposing internal artifacts:
+          the three design-system iterations are real and counted, the
+          tension they answer is stated as a design goal, and no app flow
+          is shown or implied. */}
+      <section className="case-reasoning" aria-label="The design work" data-reveal>
+        <header className="record-head">
+          <p className="case-label">The design work</p>
+          <h2>Approachable for a first salary, credible for money.</h2>
+        </header>
+        <div className="reason-block">
+          <p className="case-label">The design tension</p>
+          <div className="story-prose">
+            <p>
+              How do you make a finance app feel approachable to someone
+              earning their first salary, without making it look simplistic
+              or financially unreliable? That balance — clarity,
+              approachability, and a credible financial-product identity at
+              the same time — is what the app&apos;s design has been working
+              against from the start.
+            </p>
+          </div>
+        </div>
+        <div className="reason-block">
+          <p className="case-label">The iterations</p>
+          <div className="story-prose">
+            <p>
+              The app&apos;s design system has gone through three iterations. Each
+              pass reworked the interface&apos;s visual foundation: layout,
+              colour, hierarchy, and how the daily budget and recent activity
+              are presented. The most recent version moves the app to a
+              lighter, more editorial home screen, with clearer category
+              colour and the day summarised in one line. The iterations are
+              evidence of a design process in progress, not user validation —
+              the artifacts stay internal while the product is pre-MVP.
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* An honest record in miniature: the situation, the turn, what

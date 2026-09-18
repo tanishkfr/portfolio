@@ -969,15 +969,28 @@ a[data-external]:focus-visible .xp-cta-arrow {
    Content is never hidden without JS: the hiding class arrives
    only after the script marks the document motion-ready, and a
    revealed element returns fully. Reveals acknowledge arrival;
-   they never withhold information. */
+   they never withhold information.
+
+   The entrance is a fade with a short rise. An earlier version
+   wiped sections in with a clip-path mask; halfway through, real
+   headings and body copy showed as fragments — missing first
+   letters, half a title — which reads as breakage, not motion.
+   Letterforms are never partially disclosed now: an element is
+   either present or arriving whole. Media-only gestures (the spec
+   figures below) keep a clip, because a half-shown image reads as
+   an image, never as damaged text. */
 
 .motion-ready[data-motion="full"] [data-reveal]:not(.is-revealed) {
-  clip-path: inset(0 0 0 100%);
+  opacity: 0;
+  transform: translateY(0.55rem);
 }
 
 .motion-ready[data-motion="full"] [data-reveal].is-revealed {
-  clip-path: inset(0);
-  transition: clip-path var(--settle) var(--ease-out);
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--settle) var(--ease-out),
+    transform var(--settle) var(--ease-out);
 }
 
 /* ---------- typed entrances ----------
@@ -987,10 +1000,10 @@ a[data-external]:focus-visible .xp-cta-arrow {
    carries meaning. Ordered after the base rule, which they tie with on
    specificity, so source order decides. */
 
-/* A name sets. It travels further and lands without haze, because a name
-   should arrive with weight rather than resolve out of a fog. */
+/* A name sets. It keeps the weighted, longer arrival, but as whole
+   letterforms — a name caught mid-wipe reads as a typo. */
 .motion-ready[data-motion="full"] [data-reveal="name"]:not(.is-revealed) {
-  clip-path: inset(0 0 0 72%);
+  transform: translateY(0.9rem);
 }
 
 .motion-ready[data-motion="full"] [data-reveal="name"].is-revealed {
@@ -1001,24 +1014,27 @@ a[data-external]:focus-visible .xp-cta-arrow {
 /* A question holds. It does not travel at all — it simply becomes present,
    slower than anything else on the page. */
 .motion-ready[data-motion="full"] [data-reveal="quiet"]:not(.is-revealed) {
-  clip-path: none;
   opacity: 0.18;
 }
 
 .motion-ready[data-motion="full"] [data-reveal="quiet"].is-revealed {
   opacity: 1;
-  transition:
-    opacity 560ms var(--ease-out),
-    clip-path 560ms var(--ease-out);
+  transition: opacity 560ms var(--ease-out);
 }
 
-/* An object settles into its own size, the way something set down does. */
+/* An object settles into its own size, the way something set down does.
+   This is the one remaining clip: the figures are drawings, so a
+   partially disclosed frame is an image arriving, never text torn open. */
 .motion-ready[data-motion="full"] [data-reveal="figure"]:not(.is-revealed) {
   clip-path: inset(8% 0 0 0);
 }
 
 .motion-ready[data-motion="full"] [data-reveal="figure"].is-revealed {
-  transition-duration: 400ms;
+  clip-path: inset(0);
+  transition:
+    clip-path 400ms var(--ease-out),
+    opacity var(--settle) var(--ease-out),
+    transform var(--settle) var(--ease-out);
 }
 
 /* ---------- shared shells ---------- */
