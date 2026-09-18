@@ -511,9 +511,9 @@ export const projects: Project[] = [
     title: "Daynero",
     form: "Personal finance app",
     plain:
-      "An app that turns a month of spending into one safe amount to spend each day. I designed it for people on their first salary, where the daily number is the main screen.",
+      "A personal finance app designed to make managing your first salary feel simple. It turns monthly income and expenses into one clear, safe-to-spend amount for each day, making the daily spending limit the primary focus of the experience.",
     oneLine:
-      "A personal-finance app for first-paycheck earners, centred on what is safe to spend today and why. The full case study is coming soon.",
+      "A personal finance app designed to make managing your first salary feel simple. It turns monthly income and expenses into one clear, safe-to-spend amount for each day, making the daily spending limit the primary focus of the experience.",
     status: "Early product preview",
     availability: "coming-soon",
     year: "2026",
@@ -932,7 +932,7 @@ export const projects: Project[] = [
     title: "Invisible Interfaces",
     form: "Interface research",
     plain:
-      "A research project about the work software does when nobody is watching. Leave the tab and it carries on; come back and it hands you a receipt of what changed.",
+      "A research project exploring the invisible work software does in the background without explicit human approval. Users can step away while the system continues working, then return to a clear record of everything that happened in their absence.",
     oneLine:
       "A staged restoration runs only while the tab is hidden, then shows what changed, what did not, and how to discard the result.",
     status: "Complete · v1.0",

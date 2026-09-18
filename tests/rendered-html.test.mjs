@@ -109,11 +109,15 @@ test("server-renders the folio at / — one projects reading", async () => {
   assert.doesNotMatch(folio, /more-work-visual--repo|more-work-repo/);
   assert.match(folio, /8BIT Boxer/);
   assert.match(folio, /https:\/\/bag-bop\.vercel\.app\//);
-  assert.ok(
-    folio.includes("8bit-boxer%2Fplaying-hit.png") ||
-      folio.includes("8bit-boxer/playing-hit.png"),
-    "8BIT Boxer shows its real gameplay capture",
-  );
+  /* each More Work card uses its own real capture, framed at the card's
+     own ratio so nothing is cropped away */
+  for (const asset of [
+    "8bit-boxer%2Fplay.jpg",
+    "pentimento%2Fcorrection.jpg",
+    "atlas%2Flineage.jpg",
+  ]) {
+    assert.ok(folio.includes(asset) || folio.includes(asset.replace("%2F", "/")), asset);
+  }
   assert.ok(
     folio.indexOf('class="more-work"') > folio.lastIndexOf("data-explore-piece"),
     "More work follows the five sheets",

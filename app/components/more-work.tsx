@@ -17,7 +17,8 @@ const ariadneStages = [
   { id: "S2", name: "Research", role: "Strategist" },
   { id: "S3", name: "Direct", role: "Design director" },
   { id: "S4", name: "Build", role: "Architect → Implementer" },
-  { id: "S5", name: "Verify", role: "Implementer → Reviewer" },
+  /* the stage whose role includes the independent Reviewer */
+  { id: "S5", name: "Verify", role: "Implementer → Reviewer", verify: true },
   { id: "S6", name: "Ship & Learn", role: "Implementer + Strategist" },
 ] as const;
 
@@ -49,10 +50,10 @@ const shelf: ShelfItem[] = [
     href: "https://bag-bop.vercel.app/",
     linkLabel: "Play it",
     image: {
-      src: "/projects/8bit-boxer/playing-hit.png",
-      alt: "8BIT Boxer gameplay: pixel-art gloves against a heavy bag with a lit target and the round clock running.",
-      width: 1280,
-      height: 720,
+      src: "/projects/8bit-boxer/play.jpg",
+      alt: "A round in progress in 8BIT Boxer's demo mode: the heavy bag, the gloves and the round HUD, captured in the game itself.",
+      width: 1600,
+      height: 1000,
     },
   },
   {
@@ -63,10 +64,10 @@ const shelf: ShelfItem[] = [
     href: "/work/pentimento?from=work",
     linkLabel: "Read case study",
     image: {
-      src: "/projects/pentimento/second-draft.png",
-      alt: "The settled second draft in Pentimento: the person's version leads while the machine's reading is visibly overruled.",
-      width: 1440,
-      height: 900,
+      src: "/projects/pentimento/correction.jpg",
+      alt: "The correction in progress: the machine's sentence struck through, with the person's own account leading the passage.",
+      width: 1600,
+      height: 1000,
     },
   },
   {
@@ -77,10 +78,10 @@ const shelf: ShelfItem[] = [
     href: "/work/atlas?from=work",
     linkLabel: "Read case study",
     image: {
-      src: "/projects/atlas/trace-lineage.png",
-      alt: "The Atlas trace: the starting rule, a refinement, a rewrite, and the final wording, with the case that caused each change.",
+      src: "/projects/atlas/lineage.jpg",
+      alt: "The start of an Atlas trace: the written rule and the first recorded rewording, with the case that caused it.",
       width: 1440,
-      height: 1830,
+      height: 900,
     },
   },
 ];
@@ -134,7 +135,7 @@ export function MoreWork() {
           </p>
           <ol className="mw-stages">
             {ariadneStages.map((stage) => (
-              <li key={stage.id}>
+              <li key={stage.id} data-verify={"verify" in stage && stage.verify ? "true" : undefined}>
                 <span className="mw-stage-id">{stage.id}</span>
                 <span className="mw-stage-name">{stage.name}</span>
                 <span className="mw-stage-role">{stage.role}</span>
@@ -142,7 +143,7 @@ export function MoreWork() {
             ))}
           </ol>
           <p className="mw-gates">
-            <span className="mw-gates-label">Gates</span>
+            <span className="mw-gates-label">Human approval gates</span>
             {ariadneGates.map((gate) => (
               <span className="mw-gate" key={gate}>
                 {gate}
@@ -150,8 +151,8 @@ export function MoreWork() {
             ))}
           </p>
           <p className="mw-doc-note">
-            Every stage ends by naming the next entry point, and no role can
-            approve its own work — each gate is a human stop.
+            Only Verify is checked by someone other than its author, and no
+            gate can be passed without a person.
           </p>
         </div>
       </article>
