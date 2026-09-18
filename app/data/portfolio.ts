@@ -157,7 +157,7 @@ export const projects: Project[] = [
     title: "Fluxion Studios",
     form: "Studio website",
     plain:
-      "The website for the two-person studio I co-founded. I designed and built it in-house, so every page comes from one set of components we reuse for client work.",
+      "The website for the two-person design studio I co-founded. I designed and built it to show our work, explain what we offer, and help potential clients get in touch.",
     oneLine:
       "Fluxion is the two-person web studio I co-founded. I designed and built the public site, including its motion and enquiry flow.",
     status: "Live site",
@@ -200,7 +200,7 @@ export const projects: Project[] = [
         "Our site had to explain what we build and take real enquiries. It also had to show the level of detail we would bring to client work.",
       ],
       contribution: [
-        "I worked on the structure, visual design, copy, motion, frontend, and enquiry form, working directly with my co-founder.",
+        "My co-founder and I split the work: I took the structure, visual design, copy, motion, and the frontend, including the enquiry form.",
         "The finished site is live and client-facing. It introduces both founders, explains our process, and gives prospective clients a direct way to start a project.",
       ],
       turn:
@@ -229,7 +229,7 @@ export const projects: Project[] = [
     mainDecision: {
       title: "Say the constraints out loud",
       choice:
-        "Publish the reply time, the typical project duration, and that pricing is on enquiry — so a visitor can check the fit before writing.",
+        "Publish the reply time, the typical project duration, and the fact that pricing is on enquiry, so a visitor can check the fit before writing.",
     },
     decisions: [
       {
@@ -251,7 +251,7 @@ export const projects: Project[] = [
     ],
     limits: [
       "This record covers the studio site and one named client build, not a library of client case studies.",
-      "No client results beyond the shipped site — traffic, enquiries received, or revenue — are claimed here.",
+      "No client results beyond the shipped site are claimed: no traffic figures, no enquiry counts, no revenue.",
     ],
     nextTest: {
       title: "Publish the next client build the same way.",
@@ -312,15 +312,15 @@ export const projects: Project[] = [
     title: "Athena",
     form: "Learning product",
     plain:
-      "A learning workspace that helps people practise what they learn and check what they actually remember. Built with three teammates as a working prototype.",
+      "A learning workspace where people practise by explaining what they've learned and see what needs another look. Built as a working prototype with three teammates.",
     oneLine:
-      "A learning workspace that helps people practise what they learn and check what they actually remember — a four-person team project, built as a working prototype.",
+      "Close the source, explain the idea in your own words — the prototype's Explain Back reports what the explanation demonstrated and what it missed. A four-person team project, built as a working prototype.",
     /* A live demo build exists, so an external CTA is offered; the case is
        explicit that the deployed build is disconnected and seeded. The
        verification numbers belong in the case, not in this status line. */
     status: "Working prototype · demo available",
     year: "2026",
-    context: "Team project · four designers",
+    context: "Team project",
     ownership: "Team Folio · with Nishtha, Anushrutha and Trisha",
     role: "Product & interaction design · research synthesis · prototype",
     responsibilities: [
@@ -342,7 +342,7 @@ export const projects: Project[] = [
       "Playwright",
     ],
     scale:
-      "Working P0 prototype · 18/18 P0 acceptance checks · 11 core tests · 10 API checks · 3 review modes",
+      "Working prototype · 18/18 acceptance checks · 11 core tests · 10 API checks · 3 review modes",
     liveUrl: "https://athena-learning-platform-seven.vercel.app/",
     liveLabel: "Open the demo",
     accent: "#d95f32",
@@ -370,7 +370,7 @@ export const projects: Project[] = [
         "Understanding something while consuming it does not prove a learner can recall, explain or apply it later.",
       paragraphs: [
         "The project started as a broad look at digital learning and narrowed onto one contradiction. Learners assemble their own systems from tools that each solve one part: video for explanation, AI for simplification, search and forums for other views, PDFs for depth, courses for structure, notes for memory.",
-        "The team ran 1-on-1 interviews, structured responses across disciplines, a focus group of six, and affinity mapping. Five findings kept returning — understanding is not retention; AI is an access layer learners still verify; resource abundance creates continuity problems; autonomy matters; active use is what reveals learning.",
+        "The team ran 1-on-1 interviews, structured responses across disciplines, a focus group of six, and affinity mapping. Five findings kept coming back: understanding is not the same as retention; learners used AI for quick explanations and still checked them; having more resources made continuity harder; autonomy mattered; and active use was what revealed learning.",
         "We treated recurring patterns as design evidence, not as population-level claims. The sample was small and was never asked to prove that Athena works.",
       ],
     },
@@ -463,8 +463,8 @@ export const projects: Project[] = [
       },
     ],
     demonstrated: [
-      "A working P0 prototype: React 19 front end, Express 5 and SQLite server, local Ollama models, Zod-validated source and citation checks.",
-      "18 of 18 P0 acceptance criteria verified, with 11 core tests and 10 API integration checks passing.",
+      "A working prototype: React 19 front end, Express 5 and SQLite server, local Ollama models, Zod-validated source and citation checks.",
+      "All 18 acceptance criteria verified, with 11 core tests and 10 API integration checks passing.",
       "Three review modes implemented — Explain Back, Cue Cards and Apply It — with concept-level spaced review.",
       "Ingestion for text, article, PDF, DOCX and video sources; grounded answers with exact source navigation; context-linked notes.",
       "Activity-versus-knowledge reporting, Focus Mode, keyboard accessibility, and recovery from model outages and malformed output.",
@@ -472,8 +472,8 @@ export const projects: Project[] = [
     ],
     limits: [
       "No learning-outcome study has been run: no effect size, retention gain or delayed-recall result is claimed.",
-      "The research sample was small — a focus group of six plus interviews — and was treated as design evidence, not as a measured population.",
-      "The public demo is intentionally disconnected and uses seeded browser-local data; the local build is where the real Express, SQLite and Ollama path runs.",
+      "The research sample was small: a focus group of six plus interviews. It was treated as design evidence, not as a measured population.",
+      "The public demo is intentionally disconnected and uses seeded browser-local data. The local build is where the real Express, SQLite and Ollama path runs.",
       "The feedback shown in the interface and on this page is an illustrative scenario, not a participant quotation or a measured learning outcome.",
     ],
     nextTest: {
@@ -481,7 +481,7 @@ export const projects: Project[] = [
       body:
         "Run the prototype with learners over several weeks and measure whether reviewed weak concepts are still retrievable later, and whether learners act on the gaps the report names.",
       success:
-        "Worth reporting: delayed recall improves on concepts that came back through review. Also useful, and equally reportable: learners ignore the weak concepts, or review feels like a burden — either would say the loop needs changing.",
+        "Good news would be delayed recall improving on concepts that came back through review. The opposite result is also worth reporting: if learners ignore the weak concepts, or review feels like a burden, the loop needs changing.",
     },
     story: {
       intro: [
@@ -490,12 +490,12 @@ export const projects: Project[] = [
       ],
       contribution: [
         "This was a four-person team project with Nishtha, Anushrutha and Trisha. My part was research synthesis, product and interaction design, and the prototype build.",
-        "We designed one workspace where a project holds its resources, notes, review and feedback. Review offers three modes, and the signature moment is feedback that names what was demonstrated, what is missing and the exact supporting passage.",
-        "The prototype was built as a working P0 — not a click-through — and checked against all eighteen of its own acceptance criteria.",
+        "We designed one workspace where a project holds its resources, notes, review and feedback, with three review modes. The feedback names what was demonstrated and what is missing, down to the exact source passage.",
+        "The prototype is a real working build, not a click-through, and it was checked against all eighteen of its own acceptance criteria.",
       ],
       turn: "'It makes sense' is not the same as 'I know it.'",
       reflection: [
-        "The strongest decision was not a feature. It was changing what progress meant: away from watched, saved and completed, toward evidence the learner can produce without the source.",
+        "Deciding that review lived inside the project, instead of in a separate quiz app, shaped everything else: feedback can point back to the exact passage it came from, and help arrives after an attempt instead of before it.",
         "Building it also forced the honest boundary. The prototype works and its criteria passed, but nobody has shown that learners retain more because of it. That test is designed and not yet run.",
       ],
     },
@@ -511,7 +511,7 @@ export const projects: Project[] = [
     title: "Daynero",
     form: "Personal finance app",
     plain:
-      "A personal finance app designed to make managing your first salary feel simple. It turns monthly income and expenses into one clear, safe-to-spend amount for each day, making the daily spending limit the primary focus of the experience.",
+      "A personal finance app for people earning their first salary. It brings income and expenses together to answer one question: How much can I safely spend today? Currently in development.",
     oneLine:
       "A personal finance app designed to make managing your first salary feel simple. It turns monthly income and expenses into one clear, safe-to-spend amount for each day, making the daily spending limit the primary focus of the experience.",
     status: "Early product preview",
@@ -558,10 +558,13 @@ export const projects: Project[] = [
       ],
     },
     pivot: {
-      title: "Case-study documentation in progress.",
-      before: "The earlier product direction is not being published as a placeholder claim.",
-      realization: "The case needs the real team context and constraints before it can explain the product evolution honestly.",
-      after: "The current portfolio shows only the public product model and Tanishk's stated contribution.",
+      title: "Why this case is still a preview.",
+      before:
+        "Daynero has a live public website and an app in active development, but its full design story is not yet publishable.",
+      realization:
+        "Writing the case honestly needs the real team context and constraints, and those are not ready to publish.",
+      after:
+        "So this page shows the shipped public site and my design contribution, and stops there.",
     },
     rejectedPaths: [],
     interactionIntro:
@@ -594,9 +597,9 @@ export const projects: Project[] = [
     title: "Design or Disaster",
     form: "Interface critique tool",
     plain:
-      "A tool for judging an interface on evidence instead of opinion. You mark the part of a screen that shaped your judgment, explain why, and then see five other people's readings beside yours.",
+      "A tool for critiquing interfaces with evidence. Mark a part of a screen, explain how it affects your judgment, then compare your verdict with five authored perspectives.",
     oneLine:
-      "Mark the part of an interface that shaped your judgment, explain it, then compare your reading with five others.",
+      "A verdict needs evidence first: pick a lens, mark the screen, and write your reasoning. Only then do the five juror readings appear beside yours.",
     status: "Working archive",
     year: "2026",
     context: "Self-directed research-through-design",
@@ -641,11 +644,11 @@ export const projects: Project[] = [
       ],
     },
     pivot: {
-      title: "The project stopped asking who was right and started showing how people looked.",
+      title: "The project stopped asking who was right and started showing how each reading was made.",
       before:
         "The obvious versions were a design quiz, an expert score, or a crowd percentage. Each would end by telling the visitor how their judgment compared with authority.",
       realization:
-        "The useful object was not the score. It was the evidence map created before the score: a record of what entered one person's attention and what never did.",
+        "The useful object was the evidence map created before any score: a record of what entered one person's attention, and what never did.",
       after:
         "I built five coherent but fallible jurors on one shared coordinate system. Their annotations can agree, collide, or miss one another without any perspective becoming the official answer.",
     },
@@ -671,7 +674,7 @@ export const projects: Project[] = [
       "Describe what that place makes visible and write the sentence the evidence supports.",
       "File a ruling and state your own confidence. The interface does not infer confidence from behavior.",
       "Open the juror maps. Five authored interpretations — written for the archive, not research participants — appear beside your mark on the same screen.",
-      "Reach the sealed case, where every outside interpretation is withheld and your evidence is the only record.",
+      "Reach the sealed case, where every other interpretation is withheld and your evidence is the only record.",
     ],
     systemLayers: [
       {
@@ -687,7 +690,7 @@ export const projects: Project[] = [
       {
         label: "Output",
         title: "A trace, not a grade",
-        body: "The Design Eye record reflects selected lenses, preserves ties, and never claims diagnostic or population validity.",
+        body: "The Design Eye record shows which lenses you used and preserves ties. It never claims to diagnose you or to represent anyone else.",
       },
     ],
     mainDecision: {
@@ -724,8 +727,7 @@ export const projects: Project[] = [
       "Validation for annotation bounds, evidence alternatives, content invariants, assets, encoding, and production build.",
     ],
     limits: [
-      "The jurors, cases, annotations, and several interface images are authored or reconstructed critique objects.",
-      "This is not expert research, a usability study, a live survey, or a population-level result.",
+      "The jurors, cases, annotations, and several interface images are authored or reconstructed critique objects. This is not expert research, a usability study, or a population-level result.",
       "The browser-local Design Eye record is a trace of selection, not a diagnosis of the visitor.",
     ],
     nextTest: {
@@ -733,15 +735,15 @@ export const projects: Project[] = [
       body:
         "Give design teams the same interface and compare an ordinary verbal critique with an evidence-map critique. Study whether claims become more specific, whether overlooked lenses enter the conversation, and whether disagreement becomes easier to inspect.",
       success:
-        "The success measure is better-supported critique—not higher agreement between reviewers.",
+        "The success measure is better-supported critique, not higher agreement between reviewers.",
     },
     story: {
       intro: [
         "Design critique is full of verdicts. I built Design or Disaster to keep the evidence behind them on the screen.",
       ],
       contribution: [
-        "You mark a coordinate, explain what it shows, and file a verdict. Only then do five other readings appear on the same screen.",
-        "I wrote those jurors as fallible positions, not experts, and kept every mark on one coordinate system so disagreement stays visible instead of becoming a score.",
+        "Every case ends with five other readings on the same screen. They can agree with your mark, contradict it, or miss what you saw. I wrote them as fallible critics, not experts.",
+        "Every mark lives on one coordinate system, so disagreement stays visible instead of collapsing into a score.",
       ],
       turn:
         "Two people can disagree more usefully when both marks are still on the screen.",
@@ -762,7 +764,7 @@ export const projects: Project[] = [
     title: "Pentimento",
     form: "Interactive essay",
     plain:
-      "An interactive piece about what software writes about people, and who gets the last word. A machine writes a short claim about you; you can rewrite it or strike it out, and your version leads the page.",
+      "An interactive essay about who gets to tell someone's story. Software writes a sentence about a person; they can keep it, rewrite it, or cross it out. Their words take priority.",
     oneLine:
       "Each machine-written claim shows its evidence. The person can accept it, rewrite it, or strike it, and their version leads the final page.",
     status: "Working piece · study pending",
@@ -802,20 +804,20 @@ export const projects: Project[] = [
       proof: "The artifact works; the human finding does not exist yet.",
     },
     problem: {
-      title: "Personal archives are increasingly turned into confident stories about the people inside them.",
+      title: "Software is increasingly turning personal archives into confident stories about the people inside them.",
       paragraphs: [
         "Year-in-review products and generated memory systems select patterns, name chapters, and imply causes. They usually show little evidence, communicate little uncertainty, and offer no consequential way for the person described to say: that happened, but it does not mean what you think it means.",
         "Pentimento proposes three obligations for software that narrates a person: show the evidence, admit uncertainty, and give the subject a right of reply that changes the final artifact.",
       ],
     },
     pivot: {
-      title: "A film-taste explorer became a document about authorship and power.",
+      title: "A film-taste explorer became an argument about who tells the story.",
       before:
         "The project began by detecting changes in film taste. That direction risked becoming a polished movie application with timelines, recommendations, and attractive cultural data.",
       realization:
         "The original moment was the strike: the system could make a defensible interpretation, the person could reject its meaning, and the page could visibly transfer authority.",
       after:
-        "I rebuilt the project around algorithmic autobiography. Film history remains the first archive because it is portable and legible, but the contribution is a grammar for sovereign correction—not an analysis of taste.",
+        "I rebuilt the project around one question: when software writes about a person, who controls the final text? Film history remains the first archive because it is portable and easy to read, but the contribution is a grammar for correction, not an analysis of taste.",
     },
     rejectedPaths: [
       {
@@ -839,7 +841,7 @@ export const projects: Project[] = [
       "When struck, watch the machine sentence recede while the person's correction rises into the leading typographic voice.",
       "Reopen any reply and revise it. No consequential decision becomes irreversible because of one click.",
       "Settle the second draft only after every claim has received a reply.",
-      "Print or download a record that preserves evidence, withdrawn language, authorship, and correction lineage without exporting the raw archive.",
+      "Print or download a record that keeps the evidence, the withdrawn language, and who wrote what, without exporting the raw archive.",
     ],
     systemLayers: [
       {
@@ -855,18 +857,18 @@ export const projects: Project[] = [
       {
         label: "Record",
         title: "The dispute survives settlement",
-        body: "The second draft, print output, and session record preserve the machine underpainting and the person's sovereign correction.",
+        body: "The second draft, print output, and session record keep the machine's underpainting visible beside the person's correction.",
       },
     ],
     mainDecision: {
       title: "Sovereign ink",
       choice:
-        "Make the person's correction the leading text — not an annotation beside the system's sentence.",
+        "Make the person's correction the leading text, not an annotation beside the system's sentence.",
     },
     decisions: [
       {
         title: "Sovereign ink",
-        choice: "Make the person's correction the leading text—not an annotation beside it.",
+        choice: "Make the person's correction the leading text, not an annotation beside it.",
         consequence: "The interface shows that the represented person outranks the system's account of them.",
       },
       {
@@ -892,15 +894,15 @@ export const projects: Project[] = [
       "A fictional demonstration edition plus a client-side real-archive mode with explicit refusal thresholds.",
     ],
     limits: [
-      "Maya's edition is authored fictional research material—not participant evidence.",
+      "Maya's edition is authored fictional research material, not participant evidence.",
       "The written participant protocol has not been run, so no comprehension, trust, or correction-outcome result is claimed.",
-      "The Let it stand / Read it differently / Strike it wording was stress-tested against synthetic adversarial scenarios before any human session; those scenarios are preparation, not evidence, and no participant data exists yet.",
+      "The Let it stand / Read it differently / Strike it wording was stress-tested against synthetic scenarios before any human session. Those scenarios are preparation, not evidence, and no participant data exists yet.",
       "The corrections corpus is intentionally empty until consented sessions produce real corrections.",
     ],
     nextTest: {
       title: "Run the right-of-reply study with 8–12 Letterboxd users.",
       body:
-        "Participants will work with their own local archive, think aloud through computed chapters, reply to readings, review the second draft, and choose what to share. The study records what each reply meant to the person and what, if anything, they changed—not whether the archive's reading was right.",
+        "Participants will work with their own local archive, think aloud through computed chapters, reply to readings, review the second draft, and choose what to share. The study records what each reply meant to the person and what, if anything, they changed, not whether the archive's reading was right.",
       success:
         "A high strike rate is not failure. The important signal is whether refusal feels possible, consequential, and trustworthy a week later.",
     },
@@ -932,7 +934,7 @@ export const projects: Project[] = [
     title: "Invisible Interfaces",
     form: "Interface research",
     plain:
-      "A research project exploring the invisible work software does in the background without explicit human approval. Users can step away while the system continues working, then return to a clear record of everything that happened in their absence.",
+      "A research project about software that keeps working while you're away. It explores how you could return to a clear record of what changed, what stayed untouched, and what remains uncertain.",
     oneLine:
       "A staged restoration runs only while the tab is hidden, then shows what changed, what did not, and how to discard the result.",
     status: "Complete · v1.0",
@@ -974,7 +976,7 @@ export const projects: Project[] = [
     problem: {
       title: "Interfaces require less visible effort, but invisible work is not automatically trustworthy.",
       paragraphs: [
-        "Software moved from syntax to pointing, touching, asking, prediction, memory, and delegation. That change can feel like relief. It can also relocate judgment into systems that act while nobody is watching.",
+        "Software moved from syntax to pointing, touching, asking, prediction, memory, and delegation. That change can feel like relief. It can also move decisions into systems that act while nobody is watching.",
         "I wanted to test what should replace continuous supervision. The project argues for a clear authority boundary before work begins and an accountable receipt when attention returns.",
       ],
     },
@@ -1008,7 +1010,7 @@ export const projects: Project[] = [
       "Move through pointing, touching, asking, and prediction as visible friction falls.",
       "See the system begin to remember and anticipate before receiving an explicit request.",
       "Entrust a bounded restoration with stated limits and an available demonstration path.",
-      "Leave the tab. Hidden time advances one bounded movement; returning early pauses what remains.",
+      "Leave the tab. Hidden time advances one bounded movement. Returning early pauses what remains.",
       "Inspect the original and restored image, the work receipt, the authority boundary, the discard path, and the local attention receipt.",
     ],
     systemLayers: [
@@ -1031,7 +1033,7 @@ export const projects: Project[] = [
     mainDecision: {
       title: "Accountable return",
       choice:
-        "When work leaves the screen, the return describes the changes, the untouched material, the transmission, the limits of inference, and how to discard it.",
+        "When work leaves the screen, the return says what changed, what stayed untouched, whether anything left the device, what the system could not know, and how to discard the result.",
     },
     decisions: [
       {
@@ -1041,12 +1043,12 @@ export const projects: Project[] = [
       },
       {
         title: "Accountable return",
-        choice: "Describe changes, untouched material, transmission, inference limits, and disposal.",
+        choice: "Describe what changed, what stayed untouched, whether anything left the device, what could not be known, and how to discard it.",
         consequence: "Completion communicates responsibility instead of merely announcing success.",
       },
       {
         title: "Returned gaze",
-        choice: "Expose the essay's own opening patience, terminal effort, reverse scrubs, and navigation use.",
+        choice: "Report the essay's own usage: time spent on the opening, terminal effort, reverse scrubs, and navigation.",
         consequence: "The work applies its transparency demand to itself.",
       },
       {
@@ -1063,13 +1065,13 @@ export const projects: Project[] = [
     ],
     limits: [
       "The browser stages authored work; it does not repair a real archive or run a deployed autonomous agent.",
-      "The artifact investigates an experiential relationship—not operational safety or participant outcomes.",
+      "The project investigates an experience, not operational safety or participant outcomes.",
       "The local attention receipt is an interaction argument, not a general analytics model.",
     ],
     nextTest: {
       title: "Move the grammar into a real delegated workflow.",
       body:
-        "Apply authority-before and receipt-after to a task where changes have real consequence: bulk editing, financial categorization, archive repair, or document transformation. Test whether people can predict scope before leaving and audit the result on return.",
+        "Apply the same boundary to a task where changes have real consequences, such as bulk editing, financial categorization, archive repair, or document transformation. Test whether people can predict what the work will touch before leaving, and audit the result when they return.",
       success:
         "A trustworthy return should reduce the need for continuous supervision without reducing the person's ability to inspect, reverse, or contest the work.",
     },
@@ -1101,9 +1103,9 @@ export const projects: Project[] = [
     title: "Atlas",
     form: "Rule testing tool",
     plain:
-      "Atlas tests an interface rule against cases it was not written for. You put the rule through three awkward cases, choose hold, refine or fracture, and the rule is rewritten with the change kept in its history.",
+      "A tool for testing a design rule against three very different examples. Keep the rule, change it, or challenge it and see a record of how your thinking evolves.",
     oneLine:
-      "Write a provisional rule, test it against three unlike cases, and keep every hold, refinement, and fracture.",
+      "Write a provisional rule, test it against three very different cases, and keep a record of every change and the case that caused it.",
     status: "Working tool · audit open",
     year: "2026",
     context: "Self-directed research-through-design",
@@ -1144,7 +1146,7 @@ export const projects: Project[] = [
       title: "Design guidance often arrives as a finished sentence with its pressure history removed.",
       paragraphs: [
         "A principle can sound universal when the cases it fails, the assumptions it carries, and the revisions it survived remain invisible. Applying that sentence elsewhere then becomes recall rather than judgment.",
-        "Atlas asks whether design reasoning can become inspectable without turning into an answer generator. The unit of value is not the rule alone; it is the visible trace of the rule changing under pressure.",
+        "Atlas asks whether design reasoning can become inspectable without turning into an answer generator. What matters is not the final rule alone but the visible record of the rule changing under pressure.",
       ],
     },
     pivot: {
@@ -1176,7 +1178,7 @@ export const projects: Project[] = [
       "Edit a suggested starting rule until it states what you currently believe.",
       "Apply it to a low-consequence lightbox and choose whether the rule holds (it works as written), needs refinement (same idea, sharper wording), or fractures (the case breaks it and the rule must be rewritten).",
       "Carry the current wording into a high-consequence financial transfer and rewrite it if the stakes expose a missing condition.",
-      "Pressure it with switch access, where an outside tap does not exist as an input event.",
+      "Carry it to switch access, where tapping outside a dialog does not exist as an input at all.",
       "Compare the first and final language, inspect every branch, and see exactly which case caused each change.",
       "Copy or download the stress trace; restarting rotates the suggested rule without changing the question or evidence sequence.",
     ],
@@ -1189,7 +1191,7 @@ export const projects: Project[] = [
       {
         label: "Pressure",
         title: "Increase adversarial distance",
-        body: "The sequence moves from similar, to consequential, to orthogonal so one early success cannot masquerade as transfer.",
+        body: "The sequence moves from a similar case, to a consequential one, to one where the input itself is different, so an early success cannot pass for transfer.",
       },
       {
         label: "Trace",
@@ -1225,21 +1227,21 @@ export const projects: Project[] = [
       },
     ],
     demonstrated: [
-      "A complete claim, pressure, hold/refine/fracture, lineage, copy, and download loop.",
+      "A complete rule test: edit the claim, carry it through the three cases, and export a record with every wording change.",
       "Persistent browser state and addressable routes with explicit focus movement.",
       "W3C and Microsoft accessibility guidance anchoring the three cases without deciding the verdict.",
     ],
     limits: [
-      "The three pressure cases are authored and intentionally adversarial—not sampled from practice.",
+      "The three pressure cases are authored and intentionally adversarial, not sampled from practice.",
       "The mechanism has not been tested with learners, so it does not prove that transferable judgment occurred.",
-      "Three priority examples were audited against authoritative sources; the broader 33-example corpus audit remains ongoing.",
+      "Three priority examples were audited against authoritative sources. The audit of the broader 33-example corpus is still open.",
     ],
     nextTest: {
       title: "Extend the audit to the corpus, then study actual revision behavior.",
       body:
         "Extend the source audit from the three priority examples to the 33-example corpus and fix any reversed or drifting examples it finds, then compare designers who read a principle with designers who carry one through the stress trace.",
       success:
-        "Look for more conditional final rules, accurate recall of why wording changed, and transfer to a fourth case—not agreement with Atlas's authored examples.",
+        "Look for more conditional final rules, accurate recall of why wording changed, and transfer to a fourth case, not agreement with Atlas's authored examples.",
     },
     sources: [
       {

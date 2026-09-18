@@ -293,8 +293,8 @@ test("renders Athena as a team case with verified evidence and an honest boundar
 
   for (const phrase of [
     "Athena",
-    "Working P0 prototype",
-    "18 of 18 P0 acceptance criteria verified",
+    "Working prototype · 18/18 acceptance checks",
+    "All 18 acceptance criteria verified",
     "Explain Back, Cue Cards and Apply It",
     "Activity and knowledge evidence are reported apart",
     "focus group of six",
@@ -341,7 +341,7 @@ test("server-renders four interactive, evidence-bounded published cases", async 
     {
       slug: "design-or-disaster",
       summary:
-        "Mark the part of an interface that shaped your judgment, explain it, then compare your reading with five others.",
+        "A verdict needs evidence first: pick a lens, mark the screen, and write your reasoning. Only then do the five juror readings appear beside yours.",
       proof: "Or name a region",
       external: "Open interactive project",
       pressed: true,
@@ -365,7 +365,7 @@ test("server-renders four interactive, evidence-bounded published cases", async 
     {
       slug: "atlas",
       summary:
-        "Write a provisional rule, test it against three unlike cases, and keep every hold, refinement, and fracture.",
+        "Write a provisional rule, test it against three very different cases, and keep a record of every change and the case that caused it.",
       proof: "Your current wording",
       external: "Open interactive tool",
       pressed: false,

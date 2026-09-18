@@ -130,6 +130,7 @@ type ReasoningSection = "problem" | "decision" | "method" | "system" | "rejected
 
 const reasoningPlans: Record<string, ReasoningSection[]> = {
   "fluxion-studios": ["decision"],
+  athena: ["decision"],
   "design-or-disaster": ["decision", "method", "system", "rejected"],
   pentimento: ["decision", "method", "system", "rejected"],
   "invisible-interfaces": ["decision", "method", "rejected"],
@@ -228,14 +229,17 @@ function ReasoningSections({ project }: { project: Project }) {
    per case instead of a repeated "read this next" line. */
 const relationReasons: Record<string, string> = {
   "fluxion-studios":
-    "The studio site shows what we ship; this shows the judgment we argue about before shipping.",
+    "The studio site shows shipped commercial work. Athena is where the research-led product design begins.",
+  athena:
+    "Athena replaces watched-and-completed with evidence. Daynero replaces the monthly budget with today's number.",
   "design-or-disaster":
-    "A mark records one judgment. This asks how a rule should answer to it.",
+    "A critique needs evidence before a verdict. Pentimento gives the person being described the final word.",
   pentimento:
-    "A correction fixes one claim. This keeps the lineage of every rule a case changed.",
+    "A correction fixes one claim. Atlas keeps the record of every change a rule went through.",
   "invisible-interfaces":
-    "Once work returns, someone has to judge it. This makes that judgment contestable.",
-  atlas: "Rules should answer to evidence. This is where the evidence gets marked.",
+    "Once work returns, someone has to judge it. Design or Disaster makes that judgment show its evidence.",
+  atlas:
+    "A rule should answer to evidence. Design or Disaster is where that evidence gets marked.",
 };
 
 function ProjectActions({ project }: { project: Project }) {
@@ -435,7 +439,7 @@ export default async function ProjectPage({
               width={1440}
               height={900}
               label="The workspace, working"
-              caption="Athena's home in the working P0 prototype. One project holds its resources, notes, review and insights, so context is never rebuilt across tools."
+              caption="Athena's home in the working prototype. One project holds its resources, notes, review and insights, so context is never rebuilt across tools."
               priority
             />
           </EvidenceWrap>
@@ -448,6 +452,43 @@ export default async function ProjectPage({
           <span>Built with · {project.tools.join(" · ")}</span>
         </p>
       </header>
+
+      {/* Athena's decisive evidence leads the case: the review loop and its
+          Explain Back report are the product's proof, so they open the case
+          before the written story and the reasoning explain them. */}
+      {project.slug === "athena" ? (
+        <CaseEvidenceSequence
+          label="The review loop, in the working prototype"
+          intro="Find and organise a resource, learn it with notes beside it, then review — where an attempt turns into evidence."
+          note="Captured from the working prototype. The linked demo is intentionally disconnected and runs on seeded browser-local data. The local build runs the real Express, SQLite and model path."
+          steps={[
+            {
+              src: "/projects/athena/learn.png",
+              alt: "Athena's reader: a source open with contextual notes and source-grounded help beside it.",
+              width: 1425,
+              height: 1495,
+              step: "Learn & capture",
+              caption: "The resource, the learner's notes and the source-grounded help stay in one place, so nothing has to be reassembled later.",
+            },
+            {
+              src: "/projects/athena/explain-report.png",
+              alt: "Athena's Explain Back report: the learner's response, what it demonstrated, the gap, and the supporting passage.",
+              width: 1265,
+              height: 1613,
+              step: "Explain Back",
+              caption: "An attempt made without the source. The report records what was demonstrated, what is missing, and the exact passage that would fix it.",
+            },
+            {
+              src: "/projects/athena/dashboard-finished.png",
+              alt: "Athena's project dashboard: learning activity and knowledge evidence reported as separate records.",
+              width: 2538,
+              height: 1605,
+              step: "Insight report",
+              caption: "Activity and knowledge evidence are reported apart, and concepts that were not demonstrated come back earlier.",
+            },
+          ]}
+        />
+      ) : null}
 
       {story ? (
         <article className="case-story" id="case-writing">
@@ -549,7 +590,7 @@ export default async function ProjectPage({
       {project.slug === "atlas" ? (
         <CaseEvidenceSequence
           label="One real run"
-          intro="A rule carried through three unlike cases, in the live tool."
+          intro="A rule carried through three very different cases, in the live tool."
           steps={[
             {
               src: "/projects/atlas/rule-test.png",
@@ -566,40 +607,6 @@ export default async function ProjectPage({
               height: 1830,
               step: "The lineage",
               caption: "A completed run: hold, refine and fracture each demanded rewording, and the trace keeps which case caused every change.",
-            },
-          ]}
-        />
-      ) : null}
-
-      {project.slug === "athena" ? (
-        <CaseEvidenceSequence
-          label="The review loop, in the working prototype"
-          intro="Find and organise a resource, learn it with notes beside it, then review — where an attempt turns into evidence."
-          note="Captured from the working P0 prototype. The linked demo is intentionally disconnected and runs on seeded browser-local data; the local build runs the real Express, SQLite and model path."
-          steps={[
-            {
-              src: "/projects/athena/learn.png",
-              alt: "Athena's reader: a source open with contextual notes and source-grounded help beside it.",
-              width: 1425,
-              height: 1495,
-              step: "Learn & capture",
-              caption: "The resource, the learner's notes and the source-grounded help stay in one place, so nothing has to be reassembled later.",
-            },
-            {
-              src: "/projects/athena/explain-report.png",
-              alt: "Athena's Explain Back report: the learner's response, what it demonstrated, the gap, and the supporting passage.",
-              width: 1265,
-              height: 1613,
-              step: "Explain Back",
-              caption: "An attempt made without the source. The report records what was demonstrated, what is missing, and the exact passage that would fix it.",
-            },
-            {
-              src: "/projects/athena/dashboard-finished.png",
-              alt: "Athena's project dashboard: learning activity and knowledge evidence reported as separate records.",
-              width: 2538,
-              height: 1605,
-              step: "Insight report",
-              caption: "Activity and knowledge evidence are reported apart, and concepts that were not demonstrated come back earlier.",
             },
           ]}
         />

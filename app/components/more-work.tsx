@@ -18,7 +18,7 @@ const ariadneStages = [
   { id: "S3", name: "Direct", role: "Design director" },
   { id: "S4", name: "Build", role: "Architect → Implementer" },
   /* the stage whose role includes the independent Reviewer */
-  { id: "S5", name: "Verify", role: "Implementer → Reviewer", verify: true },
+  { id: "S5", name: "Verify", role: "Implementer → Reviewer" },
   { id: "S6", name: "Ship & Learn", role: "Implementer + Strategist" },
 ] as const;
 
@@ -45,7 +45,7 @@ const shelf: ShelfItem[] = [
   {
     name: "8BIT Boxer",
     form: "Webcam game · playable",
-    note: "A tiny first-person pixel-art boxing game played with a laptop webcam: two gloves mirror your hands and a heavy bag lights up targets for sixty seconds.",
+    note: "A tiny pixel-art boxing game played with your laptop's webcam. Two on-screen gloves follow your hands as you punch targets on a heavy bag for 60 seconds.",
     meta: "Playable in the browser · camera processed on-device",
     href: "https://bag-bop.vercel.app/",
     linkLabel: "Play it",
@@ -59,7 +59,7 @@ const shelf: ShelfItem[] = [
   {
     name: "Pentimento",
     form: "Interactive essay",
-    note: "Software writes a claim about a person; the person can accept, rewrite, or strike it, and their version leads the page.",
+    note: "An interactive essay about who gets to tell someone's story. Software writes a sentence about a person; they can keep it, rewrite it, or cross it out. Their words take priority.",
     meta: "Working piece · study pending",
     href: "/work/pentimento?from=work",
     linkLabel: "Read case study",
@@ -73,7 +73,7 @@ const shelf: ShelfItem[] = [
   {
     name: "Atlas",
     form: "Rule testing tool",
-    note: "A provisional rule is carried through three unlike cases, and hold, refine, or fracture is kept in its lineage.",
+    note: "A tool for testing a design rule against three very different examples. Keep the rule, change it, or challenge it and see a record of how your thinking evolves.",
     meta: "Working tool · audit open",
     href: "/work/atlas?from=work",
     linkLabel: "Read case study",
@@ -107,8 +107,9 @@ export function MoreWork() {
             Ariadne
           </h3>
           <p className="mw-feature-line">
-            A human-gated workflow for AI-assisted creative production:
-            evidence, validation, independent review, and safe release.
+            A workflow for creating with AI without handing over every
+            decision. It tracks evidence, checks work through independent
+            review, and requires human approval before key steps.
           </p>
           <p className="mw-feature-meta">
             v1.6.7 · latest release, September 2026
@@ -135,7 +136,7 @@ export function MoreWork() {
           </p>
           <ol className="mw-stages">
             {ariadneStages.map((stage) => (
-              <li key={stage.id} data-verify={"verify" in stage && stage.verify ? "true" : undefined}>
+              <li key={stage.id}>
                 <span className="mw-stage-id">{stage.id}</span>
                 <span className="mw-stage-name">{stage.name}</span>
                 <span className="mw-stage-role">{stage.role}</span>

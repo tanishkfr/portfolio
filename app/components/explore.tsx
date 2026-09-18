@@ -489,7 +489,7 @@ export function Explore() {
               Designing <strong>behavior</strong>, not just screens.
             </p>
             <p className="xp-cover-deck">
-              From research to interaction to working code.
+              Product &amp; interaction designer. From research to working code.
             </p>
           </div>
 
