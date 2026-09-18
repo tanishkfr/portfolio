@@ -86,8 +86,9 @@ export type Project = {
       first-time visitor. Sits under the title; the thesis argues above it. */
   plain: string;
   oneLine: string;
-  /** The external CTA label — names what opens before the click. */
-  liveLabel: string;
+  /** The external CTA label — names what opens before the click. Absent
+      on a project with no public surface to send anyone to. */
+  liveLabel?: string;
   status: string;
   availability?: "published" | "preview" | "coming-soon";
   year: string;
@@ -97,10 +98,11 @@ export type Project = {
   responsibilities: string[];
   tools: string[];
   scale: string;
-  liveUrl: string;
+  /** Absent where no public product surface exists yet. */
+  liveUrl?: string;
   sourceUrl?: string;
   accent: string;
-  artifact: "daynero" | "disaster" | "pentimento" | "invisible" | "atlas" | "fluxion";
+  artifact: "daynero" | "disaster" | "pentimento" | "invisible" | "atlas" | "fluxion" | "athena";
   lensRelations: Record<InterpretiveLens, string>;
   relatedSlugs: string[];
   chapterTitles: {
@@ -178,7 +180,7 @@ export const projects: Project[] = [
       "visibility-accountability":
         "Scope, timing, and whether we are the right studio are stated before a project starts.",
     },
-    relatedSlugs: ["design-or-disaster", "daynero"],
+    relatedSlugs: ["athena", "daynero"],
     chapterTitles: {
       context: "A studio needed a site that could take real enquiries.",
       pivot: "We built it the way we would build a client’s.",
@@ -294,6 +296,199 @@ export const projects: Project[] = [
   },
 
   {
+    id: "athena",
+    slug: "athena",
+    title: "Athena",
+    form: "Learning product",
+    plain:
+      "A connected learning workspace for one project's resources, notes and review. Its whole point is that what you consumed is not evidence you can use it. A four-person team project.",
+    oneLine:
+      "A connected learning workspace built around one distinction: what you consumed is not evidence you can recall, explain or apply it. Team project, working prototype.",
+    /* A live demo build exists, so an external CTA is offered; the case is
+       explicit that the deployed build is disconnected and seeded. */
+    status: "Working P0 prototype · 18/18 acceptance checks · live demo",
+    year: "2026",
+    context: "Team project · four designers",
+    ownership: "Team Folio · with Nishtha, Anushrutha and Trisha",
+    role: "Product & interaction design · research synthesis · prototype",
+    responsibilities: [
+      "Interviewed learners and ran the focus group with the team",
+      "Turned recurring patterns into five findings and the project's frame",
+      "Designed the project-to-review loop and the Explain Back / Cue Cards / Apply It review modes",
+      "Designed and built the working P0 prototype with the team",
+    ],
+    tools: [
+      "React 19",
+      "React Router",
+      "Vite",
+      "Express 5",
+      "Node 22",
+      "SQLite",
+      "PDF.js",
+      "Ollama",
+      "Zod",
+      "Playwright",
+    ],
+    scale:
+      "Working P0 prototype · 18/18 P0 acceptance checks · 11 core tests · 10 API checks · 3 review modes",
+    liveUrl: "https://athena-learning-platform-seven.vercel.app/",
+    liveLabel: "Open the demo",
+    accent: "#d95f32",
+    artifact: "athena",
+    lensRelations: {
+      "evidence-judgment":
+        "Counts an explanation, a recall or an application as the evidence that learning happened — never time spent, completion or confidence.",
+      "agency-authority":
+        "Keeps the learner in control: no streaks, no ranks, no punitive reminders, and review only where a gap was shown.",
+      "memory-lineage":
+        "Separates learning activity from knowledge evidence, and keeps each attempt tied to the exact source passage behind it.",
+      "visibility-accountability":
+        "Names what was demonstrated, what is missing, and the one source that would fix the gap.",
+    },
+    relatedSlugs: ["daynero", "invisible-interfaces"],
+    chapterTitles: {
+      context: "Learners could find material easily and still not be able to use it later.",
+      pivot: "Progress stopped meaning watched, saved or completed.",
+      interaction: "Explain Back, Cue Cards, Apply It — attempts produce the evidence.",
+      system: "Activity is reported separately from knowledge evidence.",
+      proof: "A working P0 prototype verified against its own acceptance criteria — no outcome study yet.",
+    },
+    problem: {
+      title:
+        "Understanding something while consuming it does not prove a learner can recall, explain or apply it later.",
+      paragraphs: [
+        "The project started as a broad look at digital learning and narrowed onto one contradiction. Learners assemble their own systems from tools that each solve one part: video for explanation, AI for simplification, search and forums for other views, PDFs for depth, courses for structure, notes for memory.",
+        "The team ran 1-on-1 interviews, structured responses across disciplines, a focus group of six, and affinity mapping. Five findings kept returning — understanding is not retention; AI is an access layer learners still verify; resource abundance creates continuity problems; autonomy matters; active use is what reveals learning.",
+        "We treated recurring patterns as design evidence, not as population-level claims. The sample was small and was never asked to prove that Athena works.",
+      ],
+    },
+    pivot: {
+      title: "Progress should not stop at watched, saved, or completed.",
+      before:
+        "Learning products measure progress by what the learner has consumed: lessons finished, resources saved, streaks kept.",
+      realization:
+        "Completion and familiarity produce a convincing feeling of progress. Two learners put it plainly: watching courses can feel productive without much learning, and practice beats watching or reading.",
+      after:
+        "Athena adds a moment where the learner produces evidence without looking at the answer, and reports activity and knowledge as two different things.",
+    },
+    rejectedPaths: [
+      {
+        title: "Resource discovery first",
+        reason:
+          "Better search reduces friction, but the team concluded that better resources alone do not create retention.",
+      },
+      {
+        title: "AI tutor first",
+        reason:
+          "Fast answers help, but they can encourage more passive explanation-seeking instead of the learner's own attempt.",
+      },
+      {
+        title: "A separate quiz product",
+        reason:
+          "Review was made part of the project lifecycle, so resources, notes, attempts and feedback stay tied to one context.",
+      },
+      {
+        title: "Gamification, streaks or leaderboards",
+        reason:
+          "The research did not support pressure-based engagement, so none were built.",
+      },
+    ],
+    interactionIntro:
+      "Learning happens in one project workspace; review is where the workspace finds out what actually stuck.",
+    interactionSteps: [
+      "Find and organise: search or upload a resource and save it to a project.",
+      "Learn and capture: read or watch it with notes and source-grounded help beside it.",
+      "Review: choose a mode — Explain Back, Cue Cards or Apply It — and respond without the source.",
+      "Feedback: Athena names what was demonstrated, what is missing, and the exact source passage that would fix the gap.",
+      "Weak concepts return earlier; strong independent evidence returns later.",
+    ],
+    systemLayers: [
+      {
+        label: "Evidence",
+        title: "Activity and knowledge stay separate",
+        body:
+          "Activity is what the learner did — resources explored, notes captured, attempts made. Knowledge evidence is what they demonstrated: recall, explanation, application. Weak concepts come back earlier; concepts with strong independent evidence come back later.",
+      },
+      {
+        label: "Grounding",
+        title: "The assistant answers from the learner's own material",
+        body:
+          "By default Athena retrieves only from the project's resources and notes, keeps the source location with every passage, returns clickable references, rejects unknown citation IDs, and says when the evidence is insufficient. Outside knowledge is opt-in and labelled.",
+      },
+      {
+        label: "Progressive support",
+        title: "Help arrives after an attempt, and stays on the record",
+        body:
+          "Attempt → hint → example → explanation → answer. The highest help level the learner needed is preserved as context for the evidence that follows.",
+      },
+    ],
+    decisions: [
+      {
+        title: "Make review part of the project, not a separate quiz",
+        choice:
+          "Attach resources, notes, attempts and feedback to one project context instead of building a standalone test product.",
+        consequence:
+          "The learner never rebuilds context across tools, and feedback can point back to the exact passage it came from.",
+      },
+      {
+        title: "Report activity and mastery separately",
+        choice:
+          "Never convert completion, confidence or a self-rating into a mastery percentage; show the evidence state as Solid, Developing, Review or Not Tested.",
+        consequence:
+          "The workspace can say what is actually known — including 'not tested yet' — instead of implying progress from use.",
+      },
+      {
+        title: "Ground the assistant by default",
+        choice:
+          "Answer from project material with source locations, reject unknown citations, and make outside knowledge an explicit opt-in.",
+        consequence:
+          "The first step gets easier without the learner's thinking being replaced, and nothing is presented as unquestioned authority.",
+      },
+    ],
+    demonstrated: [
+      "A working P0 prototype: React 19 front end, Express 5 and SQLite server, local Ollama models, Zod-validated source and citation checks.",
+      "18 of 18 P0 acceptance criteria verified, with 11 core tests and 10 API integration checks passing.",
+      "Three review modes implemented — Explain Back, Cue Cards and Apply It — with concept-level spaced review.",
+      "Ingestion for text, article, PDF, DOCX and video sources; grounded answers with exact source navigation; context-linked notes.",
+      "Activity-versus-knowledge reporting, Focus Mode, keyboard accessibility, and recovery from model outages and malformed output.",
+      "A disconnected public demo build for inspection.",
+    ],
+    limits: [
+      "No learning-outcome study has been run: no effect size, retention gain or delayed-recall result is claimed.",
+      "The research sample was small — a focus group of six plus interviews — and was treated as design evidence, not as a measured population.",
+      "The public demo is intentionally disconnected and uses seeded browser-local data; the local build is where the real Express, SQLite and Ollama path runs.",
+      "The feedback shown in the interface and on this page is an illustrative scenario, not a participant quotation or a measured learning outcome.",
+    ],
+    nextTest: {
+      title: "Test delayed recall, not the demo.",
+      body:
+        "Run the prototype with learners over several weeks and measure whether reviewed weak concepts are still retrievable later, and whether learners act on the gaps the report names.",
+      success:
+        "Worth reporting: delayed recall improves on concepts that came back through review. Also useful, and equally reportable: learners ignore the weak concepts, or review feels like a burden — either would say the loop needs changing.",
+    },
+    story: {
+      intro: [
+        "Athena started from a plain observation: learners have more access to explanations than ever, and still lose what they learn. The team kept meeting the same contradiction — understanding something in the moment is not the same as being able to use it later.",
+        "The project narrowed from 'digital learning friction' to one gap between consuming and usable knowledge.",
+      ],
+      contribution: [
+        "This was a four-person team project with Nishtha, Anushrutha and Trisha. My part was research synthesis, product and interaction design, and the prototype build.",
+        "We designed one workspace where a project holds its resources, notes, review and feedback. Review offers three modes, and the signature moment is feedback that names what was demonstrated, what is missing and the exact supporting passage.",
+        "The prototype was built as a working P0 — not a click-through — and checked against all eighteen of its own acceptance criteria.",
+      ],
+      turn: "'It makes sense' is not the same as 'I know it.'",
+      reflection: [
+        "The strongest decision was not a feature. It was changing what progress meant: away from watched, saved and completed, toward evidence the learner can produce without the source.",
+        "Building it also forced the honest boundary. The prototype works and its criteria passed, but nobody has shown that learners retain more because of it. That test is designed and not yet run.",
+      ],
+    },
+    contribution:
+      "Team project with Nishtha, Anushrutha and Trisha. My contribution: research synthesis, product and interaction design, and the working prototype.",
+    disclosure:
+      "Athena is a four-person team project (Team Folio: Tanishk, Nishtha, Anushrutha, Trisha). This case reports the team's research and design decisions. The linked demo is an intentionally disconnected build on seeded browser-local data. No learning outcome, usage data or adoption is claimed, and the interface feedback shown is an illustrative scenario.",
+  },
+
+  {
     id: "daynero",
     slug: "daynero",
     title: "Daynero",
@@ -330,7 +525,7 @@ export const projects: Project[] = [
       "visibility-accountability":
         "Makes overlooked patterns and the relationship between present behavior and future wealth more legible.",
     },
-    relatedSlugs: ["fluxion-studios", "atlas"],
+    relatedSlugs: ["invisible-interfaces", "design-or-disaster"],
     chapterTitles: {
       context: "The commercial context is still being documented.",
       pivot: "The product evolution will be published with its constraints.",
@@ -413,7 +608,7 @@ export const projects: Project[] = [
       "visibility-accountability":
         "Pins every claim to a precise interface coordinate so criticism remains inspectable.",
     },
-    relatedSlugs: ["atlas", "pentimento"],
+    relatedSlugs: ["pentimento", "atlas"],
     chapterTitles: {
       context: "Opinions arrive after the evidence has disappeared.",
       pivot: "I removed the answer key.",
@@ -741,7 +936,7 @@ export const projects: Project[] = [
       "visibility-accountability":
         "Makes background behavior accountable through a legible record on return.",
     },
-    relatedSlugs: ["design-or-disaster", "daynero"],
+    relatedSlugs: ["design-or-disaster", "pentimento"],
     chapterTitles: {
       context: "Convenience moved judgment out of sight.",
       pivot: "Watching the progress bar was the wrong interaction.",
@@ -1070,6 +1265,38 @@ export const projects: Project[] = [
   },
 ];
 
+/**
+ * SELECTED WORK — the five projects the portfolio leads with, in order.
+ * This is the one place the primary sequence is defined. Case numbers,
+ * the homepage folio and Quick Review all read from it, so a project
+ * outside it (Pentimento, Atlas) keeps its route and its case without
+ * being numbered as if it were in the main five.
+ */
+export const selectedSlugs = [
+  "fluxion-studios",
+  "athena",
+  "daynero",
+  "invisible-interfaces",
+  "design-or-disaster",
+] as const;
+
+/** The label a selected project carries: 01–05. Null when unselected. */
+export function selectedNumber(slug: string): string | null {
+  const index = (selectedSlugs as readonly string[]).indexOf(slug);
+  return index === -1 ? null : String(index + 1).padStart(2, "0");
+}
+
+export function isSelected(slug: string): boolean {
+  return (selectedSlugs as readonly string[]).includes(slug);
+}
+
+/** Selected work first, then everything else that still has a case. */
+export const allWorkOrder = [
+  ...selectedSlugs,
+  "pentimento",
+  "atlas",
+] as const;
+
 /** The pair of case CTAs every surface links to a project with: the
     internal label is literal about what opens (a full case, or the
     deliberately limited preview), and the external one is the project's
@@ -1082,7 +1309,7 @@ export function caseCtaLabels(project: Project) {
       project.availability && project.availability !== "published"
         ? "See the preview"
         : "Read case study",
-    external: project.liveLabel,
+    external: project.liveLabel ?? "",
   } as const;
 }
 
@@ -1093,7 +1320,7 @@ export const lenses: LensDefinition[] = [
     label: "All work",
     prompt:
       "Shipped studio work and independent investigations into what interfaces decide, explain, and let people change.",
-    order: projects.map((project) => project.slug),
+    order: [...allWorkOrder],
   },
   {
     id: "evidence-judgment",

@@ -74,7 +74,12 @@ export function Atmosphere() {
         b += (room_[2] - b) * weight;
       }
 
-      const mixed = `${Math.round(r)} ${Math.round(g)} ${Math.round(b)}`;
+      /* Quantise before comparing and writing: a custom property on the
+         root restyles the whole document, so a scroll through a gradient
+         of near-identical mixes must not produce a write per frame.
+         3/255 per channel is far below what the eye can separate. */
+      const quantise = (n: number) => Math.round(n / 3) * 3;
+      const mixed = `${quantise(r)} ${quantise(g)} ${quantise(b)}`;
       if (mixed === written) return;
       written = mixed;
       root.style.setProperty("--atmos", mixed);

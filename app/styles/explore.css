@@ -185,16 +185,50 @@
 /* The handoff is a working control wearing meta clothing: the same
    registration line and mono voice, with the arrow falling a step on
    hover — the cue behaving like the travel it offers. Global
-   :focus-visible outlines carry keyboard focus. */
+   :focus-visible outlines carry keyboard focus. Explore is the loud
+   one; Quick review is the quiet second reading beside it. */
+.xp-cover-handoff-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem clamp(1.4rem, 4vw, 3.2rem);
+  padding-block: clamp(1.1rem, 2.6vh, 1.7rem) clamp(1.2rem, 3vh, 2rem);
+  border-top: 1px solid var(--line);
+}
+
 .xp-cover-handoff {
   display: flex;
   align-items: baseline;
   justify-content: center;
   gap: 1.1rem;
-  padding-block: clamp(1.1rem, 2.6vh, 1.7rem) clamp(1.2rem, 3vh, 2rem);
-  border-top: 1px solid var(--line);
   color: var(--muted);
   text-decoration: none;
+}
+
+.xp-cover-quick {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: color var(--beat) var(--ease-out);
+}
+
+.xp-cover-quick span {
+  display: inline-block;
+  color: var(--registrar);
+  transition: transform var(--beat) var(--ease-out);
+}
+
+.xp-cover-quick:hover,
+.xp-cover-quick:focus-visible {
+  color: var(--ink);
+}
+
+.xp-cover-quick:hover span,
+.xp-cover-quick:focus-visible span {
+  transform: translateX(0.28em);
 }
 
 .xp-cover-handoff p {
@@ -225,7 +259,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .xp-cover-handoff p,
-  .xp-cover-handoff span {
+  .xp-cover-handoff span,
+  .xp-cover-quick,
+  .xp-cover-quick span {
     transition: none;
   }
 }
@@ -625,6 +661,13 @@
 }
 
 /* the instrument rack: the same registration band on every portrait */
+.xpp-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
 .xpp-rack {
   position: relative;
   z-index: 2;
@@ -1243,6 +1286,282 @@
 .xpp-abs-receipt i {
   color: rgba(26, 22, 8, 0.66);
   font-style: normal;
+}
+
+/* ---------- 02 · athena — evidence, not activity ----------
+   Left: the review setup (a mode chosen, the source closed) and the
+   learner's own attempt. Right: feedback that names what was
+   demonstrated, what is missing and the passage to fix it. Below: the
+   split the product is built on — activity and knowledge evidence are
+   different records. The margin queue answers the last beat. */
+.xpp-ath {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  column-gap: clamp(0.7rem, 2.2cqw, 1.6rem);
+  align-items: center;
+  height: 100%;
+  padding-right: clamp(0rem, 4cqw, 2.4rem);
+}
+
+.xpp-ath-main,
+.xpp-ath-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(0.4rem, 1.3cqw, 0.75rem);
+  min-width: 0;
+  min-height: 0;
+}
+
+.xpp-ath-plate {
+  padding: clamp(0.55rem, 1.7cqw, 0.9rem);
+  border: 1px solid var(--pp-rule);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.xpp-ath-head {
+  margin: 0;
+  color: var(--pp-muted);
+  font-size: clamp(0.46rem, 1.1cqw, 0.6rem);
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+}
+
+/* the three review modes, one selected */
+.xpp-ath-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: clamp(0.42rem, 1.2cqw, 0.65rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.xpp-ath-modes li {
+  padding: 0.16rem 0.5rem;
+  border: 1px solid var(--pp-rule);
+  color: var(--pp-muted);
+  font-size: clamp(0.46rem, 1.1cqw, 0.6rem);
+  letter-spacing: 0.02em;
+  border-radius: 999px;
+  transition:
+    color 380ms var(--ease-out),
+    border-color 380ms var(--ease-out),
+    background 380ms var(--ease-out),
+    opacity 380ms var(--ease-out);
+}
+
+.xpp-ath-modes li[data-on] {
+  border-color: var(--pp-accent);
+  color: var(--pp-accent);
+}
+
+.xpp-ath-modes li[data-dim] {
+  opacity: 0.4;
+}
+
+.xpp-ath-scope {
+  margin: clamp(0.42rem, 1.2cqw, 0.65rem) 0 0;
+  color: var(--pp-muted);
+  font-size: clamp(0.46rem, 1.05cqw, 0.58rem);
+  letter-spacing: 0.03em;
+}
+
+/* the attempt — the learner's words, and their confidence */
+.xpp-ath-response {
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--pp-accent);
+  opacity: 0;
+  transform: translateY(3px);
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 420ms var(--ease-out);
+}
+
+.xpp-ath-response[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+.xpp-ath-quote {
+  margin: 0;
+  color: var(--pp-ink);
+  font-size: clamp(0.56rem, 1.35cqw, 0.78rem);
+  line-height: 1.4;
+}
+
+.xpp-ath-conf {
+  margin: 0.2rem 0 0;
+  color: var(--pp-muted);
+  font-size: clamp(0.44rem, 1cqw, 0.56rem);
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+}
+
+/* the product's core distinction, at its smallest: two records */
+.xpp-ath-split {
+  display: grid;
+  gap: 0.3rem;
+  opacity: 0;
+  transform: translateY(3px);
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 420ms var(--ease-out);
+}
+
+.xpp-ath-split[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+.xpp-ath-meter {
+  display: grid;
+  grid-template-columns: 4.6rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  font-size: clamp(0.44rem, 1cqw, 0.56rem);
+  letter-spacing: 0.03em;
+}
+
+.xpp-ath-meter-k {
+  color: var(--pp-muted);
+  text-transform: lowercase;
+}
+
+.xpp-ath-meter-bar {
+  position: relative;
+  height: 3px;
+  background: var(--pp-rule);
+}
+
+.xpp-ath-meter-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  background: var(--pp-muted);
+  transform: scaleX(1);
+}
+
+.xpp-ath-meter-bar[data-part]::after {
+  background: var(--pp-accent);
+  transform: scaleX(0.42);
+}
+
+.xpp-ath-meter-v {
+  color: var(--pp-ink);
+}
+
+/* feedback rows */
+.xpp-ath-flow {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.3rem, 1cqw, 0.5rem);
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  list-style: none;
+}
+
+.xpp-ath-flow li {
+  display: grid;
+  gap: 0.1rem;
+  padding-left: 0.7rem;
+  border-left: 2px solid transparent;
+  opacity: 0.2;
+  transform: translateY(2px);
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 420ms var(--ease-out),
+    border-color 420ms var(--ease-out);
+}
+
+.xpp-ath-flow li[data-on] {
+  opacity: 1;
+  transform: none;
+  border-left-color: var(--pp-accent);
+}
+
+.xpp-ath-flow li.xpp-ath-gap[data-on] {
+  border-left-color: #b0431c;
+}
+
+.xpp-ath-flow li.xpp-ath-gap[data-on] .xpp-ath-k {
+  color: #b0431c;
+}
+
+.xpp-ath-flow li.xpp-ath-sourcerow[data-on] {
+  border-left-color: var(--pp-muted);
+}
+
+.xpp-ath-k {
+  color: var(--pp-muted);
+  font-size: clamp(0.44rem, 1cqw, 0.56rem);
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+}
+
+.xpp-ath-v {
+  color: var(--pp-ink);
+  font-size: clamp(0.54rem, 1.3cqw, 0.74rem);
+  line-height: 1.35;
+}
+
+/* the next action */
+.xpp-ath-review {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0;
+  padding: clamp(0.32rem, 1cqw, 0.5rem) clamp(0.45rem, 1.3cqw, 0.7rem);
+  border: 1px solid var(--pp-rule);
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  transform: translateY(3px);
+  transition:
+    opacity 420ms var(--ease-out),
+    transform 420ms var(--ease-out);
+}
+
+.xpp-ath-review[data-on] {
+  opacity: 1;
+  transform: none;
+  border-color: var(--pp-accent);
+}
+
+.xpp-ath-review-k {
+  color: var(--pp-muted);
+  font-size: clamp(0.44rem, 1cqw, 0.56rem);
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+}
+
+.xpp-ath-review-v {
+  color: var(--pp-accent);
+  font-size: clamp(0.5rem, 1.15cqw, 0.64rem);
+}
+
+.xpp-ath-note {
+  grid-column: 1 / -1;
+  align-self: end;
+  margin: 0;
+  color: var(--pp-muted);
+  font-size: clamp(0.42rem, 0.95cqw, 0.54rem);
+  letter-spacing: 0.03em;
+  opacity: 0.72;
+}
+
+@media (max-width: 30rem) {
+  .xpp-ath {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    padding-right: 0;
+    row-gap: 0.6rem;
+  }
 }
 
 /* ---------- 04 · atlas — pressure, judgment, lineage ---------- */
@@ -1908,6 +2227,50 @@
 
 .xp-piece:focus-within .xpp-demo {
   opacity: 0.42;
+}
+
+/* touch reaches it through a real control: toggling pins the fragment,
+   with the same yielding of the demo as hover and focus */
+.xp-portrait[data-pinned="true"] .xpp-reveal {
+  opacity: 1;
+  transform: none;
+}
+
+.xp-portrait[data-pinned="true"] .xpp-demo {
+  opacity: 0.42;
+}
+
+.xp-portrait[data-pinned="true"] .xp-portrait-field {
+  opacity: 0.4;
+}
+
+.xpp-view {
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.7rem;
+  z-index: 3;
+  display: none;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--pp-rule);
+  background: var(--pp-ground);
+  color: var(--pp-ink);
+  font-family: var(--mono);
+  font-size: clamp(0.5rem, 1.1cqw, 0.62rem);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+@media (pointer: coarse) {
+  .xpp-view {
+    display: inline-flex;
+  }
+}
+
+/* keyboard always reaches the control, on any pointer */
+.xpp-view:focus-visible {
+  display: inline-flex;
+  outline: 2px solid var(--pp-accent);
+  outline-offset: 2px;
 }
 
 .xpp-demo,
@@ -2586,5 +2949,312 @@
     height: clamp(6rem, 20vw, 9rem);
     margin-top: clamp(0.8rem, 2.5vh, 1.4rem);
     z-index: 0;
+  }
+}
+
+/* ---------- more work ----------
+   Ariadne leads as a real maintained tool: its evidence is its own
+   documented workflow and verified release, set as text — not a mock
+   dashboard. The three screenshot projects follow at a readable size.
+   One link per item, one real frame, one plain line. */
+
+.more-work {
+  position: relative;
+  width: min(100%, 105rem);
+  margin-inline: auto;
+  padding: clamp(3.5rem, 9vh, 7rem) var(--page-gutter) clamp(3.2rem, 8vh, 6rem);
+  /* the appendix reads as its own zone: a hair darker than the reading,
+     ruled top and bottom, so the closing statement after it sits in a
+     visibly different register */
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ink) 7%, var(--paper)),
+    color-mix(in srgb, var(--ink) 4%, var(--paper))
+  );
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.more-work-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem 2rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.more-work-kicker {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.05em;
+}
+
+.more-work-note {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+/* ---------- featured: Ariadne ---------- */
+
+.mw-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: clamp(1.6rem, 4vw, 4rem);
+  margin-top: clamp(1.8rem, 4vh, 2.8rem);
+  padding-bottom: clamp(2.2rem, 5vh, 3.4rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.mw-feature-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.mw-feature-name {
+  margin: 0.2rem 0 0;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: clamp(2.2rem, 4.2vw, 3.4rem);
+  /* the folio's poster voice, shared with the sheet titles: same face,
+     weight and stretch, so the tool reads as part of the family */
+  font-weight: var(--poster-weight, 780);
+  font-stretch: var(--poster-stretch, 118%);
+  letter-spacing: -0.008em;
+  line-height: 0.94;
+}
+
+.mw-feature-line {
+  max-width: 42ch;
+  margin: 0.5rem 0 0;
+  color: var(--ink-soft, var(--ink));
+  font-size: var(--step-0);
+  line-height: 1.55;
+}
+
+.mw-feature-meta {
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.03em;
+}
+
+.mw-feature-link {
+  margin-top: 1.1rem;
+  color: var(--registrar);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 2px;
+}
+
+.mw-feature-link:hover,
+.mw-feature-link:focus-visible {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+/* The documentation panel: typeset, not a device. One rule, no chrome. */
+.mw-feature-doc {
+  align-self: start;
+  padding-top: 1rem;
+  border-top: 2px solid var(--registrar);
+}
+
+.mw-doc-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.3rem 1rem;
+  margin: 0 0 0.9rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.04em;
+}
+
+.mw-stages {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.mw-stages li {
+  display: grid;
+  grid-template-columns: 4.2rem minmax(0, 1fr) minmax(0, 1.1fr);
+  align-items: baseline;
+  gap: 0.9rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.mw-stage-id {
+  color: var(--registrar);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+}
+
+.mw-stage-name {
+  color: var(--ink);
+  font-size: var(--step--1);
+}
+
+.mw-stage-role {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+}
+
+.mw-gates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 0.55rem;
+  margin: 1rem 0 0;
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+}
+
+.mw-gates-label {
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  margin-right: 0.2rem;
+}
+
+.mw-gate {
+  padding: 0.15rem 0.5rem;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+}
+
+.mw-doc-note {
+  max-width: 52ch;
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: var(--step--1);
+  line-height: 1.55;
+}
+
+/* ---------- the three projects ---------- */
+
+.more-work-shelf {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.6rem, 3vw, 3rem);
+  margin: clamp(2rem, 5vh, 3.4rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 56rem) {
+  .more-work-shelf {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+
+.more-work-item {
+  min-width: 0;
+}
+
+.more-work-link {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  padding-top: 1.1rem;
+  border-top: 2px solid var(--registrar);
+  color: inherit;
+  text-decoration: none;
+}
+
+.more-work-visual {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: color-mix(in srgb, var(--line) 55%, var(--paper));
+}
+
+.more-work-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.more-work-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.more-work-form {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.04em;
+}
+
+.more-work-name {
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.05;
+}
+
+.more-work-line {
+  max-width: 44ch;
+  color: var(--ink-soft, var(--ink));
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+
+.more-work-meta {
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+}
+
+.more-work-open {
+  margin-top: auto;
+  padding-top: 0.4rem;
+  color: var(--registrar);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.03em;
+}
+
+.more-work-link:hover .more-work-name,
+.more-work-link:focus-visible .more-work-name {
+  color: var(--registrar);
+}
+
+@media (max-width: 56rem) {
+  .mw-feature {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.8rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .mw-stages li {
+    grid-template-columns: 3.6rem minmax(0, 1fr);
+  }
+
+  .mw-stage-role {
+    grid-column: 2;
   }
 }

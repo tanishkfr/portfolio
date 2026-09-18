@@ -7,27 +7,20 @@ import {
   useState,
   type CSSProperties,
 } from "react";
-import { caseCtaLabels, projects, type Project } from "../data/portfolio";
+import { caseCtaLabels, projects, selectedSlugs, type Project } from "../data/portfolio";
 import { ROOM_WORLDS, rgb } from "../data/room-worlds";
 import { SignalField, hexToRgba, type Quiet } from "./signal-field";
 import { ProjectPortrait } from "./portrait";
 import { backdropFor } from "./backdrop";
 import { TransitionLink } from "./transition-link";
 
-/* The folio's order and the case pages' numbering come from one place:
-   `projects` in the data file is the sequence (01–06), and this array
-   simply re-states it for the folio's index and sheet stack. The two must
-   agree — the index number and the "Case NN" label are the same fact. */
-const order = [
-  "fluxion-studios",
-  "daynero",
-  "design-or-disaster",
-  "pentimento",
-  "invisible-interfaces",
-  "atlas",
-];
+/* The folio's primary sequence is SELECTED WORK, defined once in the data
+   file and re-stated here. Five sheets, numbered 01–05. Pentimento and
+   Atlas keep their cases and routes but are no longer in this sequence. */
+const order = [...selectedSlugs];
 const layouts = {
   "fluxion-studios": "wordmark",
+  athena: "learn",
   "design-or-disaster": "evidence",
   pentimento: "revision",
   "invisible-interfaces": "absence",
@@ -206,11 +199,35 @@ function CoverName() {
        back — the wordmark reacting like the field's own matter. */
     const kicks = letters.map(() => 0);
     const kickV = letters.map(() => 0);
+    const lastW = letters.map(() => Number.NaN);
+    const lastY = letters.map(() => Number.NaN);
     const pointer = { x: -9999, y: -9999, inside: false };
+    /* Cached geometry: letter centres and the cover's resting box. The
+       loop writes `font-variation-settings`, which re-shapes the glyphs —
+       so reading any layout box inside the loop would force a synchronous
+       layout of work it just invalidated, every frame, for as long as the
+       pointer is over the hero. Measuring on entry/resize instead keeps
+       the loop pure: math and style writes, nothing else. */
     const cover = el.closest<HTMLElement>(".xp-cover");
+    let centers: { x: number; y: number }[] = [];
+    let coverTop = 0;
+    let coverHeight = 0;
+    const measureGeometry = () => {
+      centers = letters.map((l) => {
+        const r = l.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+      });
+      if (cover) {
+        const box = cover.getBoundingClientRect();
+        coverTop = box.top + window.scrollY;
+        coverHeight = box.height;
+      }
+    };
     let frame = 0;
     let start = 0;
     let last = 0;
+    let lastTravel = Number.NaN;
+    let quiet = 0;
 
     const easeOut = (t: number) => 1 - (1 - t) ** 3;
 
@@ -220,22 +237,23 @@ function CoverName() {
       last = now;
       /* Below the cover there is nothing for the name to answer to:
          go idle and wait for an event that could matter again. */
-      const coverBottom = cover
-        ? cover.offsetTop + cover.offsetHeight - window.scrollY
-        : 0;
+      const coverBottom = cover ? coverTop + coverHeight - window.scrollY : 0;
       if (coverBottom <= 0 && !pointer.inside) {
         frame = 0;
         last = 0;
         return;
       }
-      const rects = pointer.inside
-        ? letters.map((l) => l.getBoundingClientRect())
-        : null;
-      const travel = cover
-        ? Math.min(1, Math.max(0, window.scrollY / (cover.offsetHeight * 0.55)))
-        : 0;
+      const travel =
+        cover && coverHeight
+          ? Math.min(1, Math.max(0, window.scrollY / (coverHeight * 0.55)))
+          : 0;
       /* one smoothing factor per frame, applied to every letter */
       const k = 1 - Math.exp(-dt * DAMP);
+      /* Track whether anything is still actually moving. Once the spring
+         has settled and the scroll offset has stopped changing, the loop
+         halts and waits for scroll/pointer input again — otherwise it
+         rewrites every letter's variable-font axis forever at rest. */
+      let moving = pointer.inside || Math.abs(travel - lastTravel) > 0.0002;
       letters.forEach((letter, i) => {
         const from = FROM - i * 2.5;
         const t =
@@ -244,10 +262,10 @@ function CoverName() {
         let target = from + (REST - from) * settled;
         target -= travel * 24;
         let lift = 0;
-        if (rects) {
-          const r = rects[i];
-          const dx = pointer.x - (r.left + r.width / 2);
-          const dy = pointer.y - (r.top + r.height / 2);
+        const c = centers[i];
+        if (pointer.inside && c) {
+          const dx = pointer.x - c.x;
+          const dy = pointer.y - c.y;
           /* gaussian falloff: continuous in distance, no threshold —
              the nearest letter reads strongest, neighbours inherit
              exactly the remainder of the same curve */
@@ -263,22 +281,54 @@ function CoverName() {
            swings through rest once before settling */
         kickV[i] += (-190 * kicks[i] - 9.5 * kickV[i]) * dt;
         kicks[i] += kickV[i] * dt;
-        letter.style.fontVariationSettings = `"wdth" ${widths[i].toFixed(1)}`;
-        letter.style.transform = `translateY(${(lifts[i] + kicks[i]).toFixed(2)}px)`;
+        /* Only write when the value has moved enough to see. Skipping the
+           no-op write avoids re-shaping the variable-width glyph every
+           frame while the name is effectively still. */
+        const w = widths[i];
+        if (!(Math.abs(w - lastW[i]) < 0.05)) {
+          letter.style.fontVariationSettings = `"wdth" ${w.toFixed(1)}`;
+          lastW[i] = w;
+        }
+        const y = lifts[i] + kicks[i];
+        if (!(Math.abs(y - lastY[i]) < 0.05)) {
+          letter.style.transform = `translateY(${y.toFixed(2)}px)`;
+          lastY[i] = y;
+        }
+        if (
+          Math.abs(target - w) > 0.02 ||
+          Math.abs(lift - lifts[i]) > 0.02 ||
+          Math.abs(kickV[i]) > 0.05 ||
+          Math.abs(kicks[i]) > 0.05
+        ) {
+          moving = true;
+        }
       });
+      lastTravel = travel;
+      quiet = moving ? 0 : quiet + 1;
+      if (!pointer.inside && quiet > 3) {
+        frame = 0;
+        last = 0;
+        return;
+      }
       frame = requestAnimationFrame(step);
     };
 
     const wake = () => {
       if (!frame) {
         last = 0;
+        quiet = 0;
         frame = requestAnimationFrame(step);
       }
     };
     const move = (event: PointerEvent) => {
       pointer.x = event.clientX;
       pointer.y = event.clientY;
-      pointer.inside = true;
+      if (!pointer.inside) {
+        /* entering the cover is the one moment that needs fresh geometry;
+           the loop itself never measures */
+        pointer.inside = true;
+        measureGeometry();
+      }
       wake();
     };
     const leave = () => {
@@ -298,15 +348,19 @@ function CoverName() {
       return load;
     });
 
+    measureGeometry();
     wake();
     window.addEventListener("scroll", wake, { passive: true });
     window.addEventListener("pointermove", move, { passive: true });
     document.documentElement.addEventListener("pointerleave", leave);
+    window.addEventListener("resize", measureGeometry);
+    document.fonts?.ready.then(measureGeometry).catch(() => {});
     return () => {
       if (frame) cancelAnimationFrame(frame);
       window.removeEventListener("scroll", wake);
       window.removeEventListener("pointermove", move);
       document.documentElement.removeEventListener("pointerleave", leave);
+      window.removeEventListener("resize", measureGeometry);
       enterers.forEach((load, i) =>
         letters[i].removeEventListener("pointerenter", load),
       );
@@ -326,9 +380,6 @@ function CoverName() {
 
 export function Explore() {
   const mainRef = useRef<HTMLElement>(null);
-  /* No sheet is "current" until one has actually crossed the reading
-     line: a first-index default would paint Design or Disaster as
-     selected while the visitor is still on the cover. */
   const [active, setActive] = useState(-1);
   /* Below the pinned-sheet breakpoint the cover's quiet geometry
      follows its own, content-height composition. */
@@ -447,11 +498,18 @@ export function Explore() {
               the field, so keyboard and no-JS readers reach the same
               destination. Smooth travel and the sticky header's offset
               come from the platform (html scroll-behaviour and
-              scroll-padding), with the reduced-motion override. */}
-          <a className="xp-cover-handoff" href="#work">
-            <p>Explore selected work</p>
-            <span aria-hidden="true">↓</span>
-          </a>
+              scroll-padding), with the reduced-motion override.
+              Explore stays primary; Quick review is the quiet second
+              reading for anyone who needs proof fast. */}
+          <div className="xp-cover-handoff-row">
+            <a className="xp-cover-handoff" href="#work">
+              <p>Explore selected work</p>
+              <span aria-hidden="true">↓</span>
+            </a>
+            <TransitionLink className="xp-cover-quick" href="/quick-review">
+              Quick review <span aria-hidden="true">→</span>
+            </TransitionLink>
+          </div>
         </div>
       </section>
 
@@ -577,24 +635,27 @@ export function Explore() {
                         {caseCtaLabels(project).internal}
                         <span className="xp-cta-arrow" aria-hidden="true"> →</span>
                       </TransitionLink>
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        data-external="true"
-                      >
-                        {caseCtaLabels(project).external}
-                        <span className="xp-cta-arrow" aria-hidden="true"> ↗</span>
-                        <span className="sr-only"> (opens in a new tab)</span>
-                      </a>
+                      {project.liveUrl ? (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          data-external="true"
+                        >
+                          {caseCtaLabels(project).external}
+                          <span className="xp-cta-arrow" aria-hidden="true"> ↗</span>
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
+                      ) : null}
                     </div>
                   </div>
 
-                  {/* The project portrait: an abstract, living
-                      representation of the project's behaviour — the
-                      folio's own interpretation of the work, from the
-                      same computational material. The real interface
-                      lives in the case study. */}
+                  {/* The stage now leads with real project evidence: the
+                      portrait's ASCII demo and field are the frame/residue
+                      (dimmed beneath), while the project's own interface
+                      capture is always present — never hover-only. Athena
+                      has no shipped screens, so its stage states the loop
+                      and the boundary in words instead. */}
                   <div className="xp-piece-stage">
                     <ProjectPortrait slug={project.slug} live={active === index} />
                   </div>

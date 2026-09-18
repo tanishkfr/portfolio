@@ -99,6 +99,7 @@ export function CaseEvidenceSequence({
   label,
   intro,
   steps,
+  note,
 }: {
   label: string;
   intro: string;
@@ -110,6 +111,7 @@ export function CaseEvidenceSequence({
     step: string;
     caption: string;
   }[];
+  note?: string;
 }) {
   return (
     <section className="case-evidence" aria-label={label}>
@@ -141,8 +143,8 @@ export function CaseEvidenceSequence({
         ))}
       </div>
       <p className="case-evidence-note">
-        Captured from the live artifact, {new Date().getFullYear()}. The
-        embedded demonstration above remains the primary way to inspect it.
+        {note ??
+          `Captured from the live artifact, ${new Date().getFullYear()}. The embedded demonstration above remains the primary way to inspect it.`}
       </p>
     </section>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { SignalField } from "./signal-field";
 import {
   COVER_QUIET,
@@ -31,6 +32,7 @@ import {
 type Phase = "hold" | "resolve" | "lift" | "done";
 
 export function SplashGate() {
+  const pathname = usePathname();
   const [phase, setPhase] = useState<Phase>("hold");
   const [narrow, setNarrow] = useState(false);
   const ruleRef = useRef<HTMLSpanElement>(null);
@@ -46,6 +48,16 @@ export function SplashGate() {
   }, []);
 
   useEffect(() => {
+    /* The splash is the hero's opening frames — it merges into the cover
+       wordmark, which only exists on the folio. On any other route there
+       is nothing to merge into, and a full-screen overlay over a page a
+       reviewer opened directly (Quick review especially) would read as a
+       blank screen until its timers ran. So off the folio it resolves
+       immediately, before any timer is scheduled. */
+    if (pathname !== "/") {
+      const id = window.requestAnimationFrame(() => setPhase("done"));
+      return () => window.cancelAnimationFrame(id);
+    }
     /* A session that has already seen the splash, or a reduced-motion
        reader, skips the hold outright - resolved within one frame, so
        state is not synchronised inside the effect body. */
@@ -99,7 +111,7 @@ export function SplashGate() {
       window.clearTimeout(holdTimer);
       window.clearTimeout(liftTimer);
     };
-  }, []);
+  }, [pathname]);
 
   /* Dismissible while it is still holding — and only then. The gate
      never unmounts (it returns null once done), so listeners bound to
@@ -171,7 +183,9 @@ export function SplashGate() {
     return () => window.clearTimeout(t);
   }, [phase]);
 
-  if (phase === "done") return null;
+  /* Never paint the overlay off the folio, even for the single frame
+     before the effect above resolves. */
+  if (phase === "done" || pathname !== "/") return null;
 
   const quiet = narrow ? COVER_QUIET_NARROW : COVER_QUIET;
 

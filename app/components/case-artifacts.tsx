@@ -630,6 +630,10 @@ export function CaseArtifact({ project }: { project: Project }) {
       return <FluxionArtifact />;
     case "daynero":
       return null;
+    case "athena":
+      /* Athena's evidence is its real interface captures (the workspace,
+         the reader, the report), not a live instrument panel. */
+      return null;
     case "disaster":
       return <DisasterArtifact />;
     case "pentimento":

@@ -2,7 +2,13 @@ import { projects } from "../data/portfolio";
 
 export async function GET(request: Request) {
   const origin = new URL(request.url).origin;
-  const paths = ["/", "/about", "/contact", ...projects.map((project) => `/work/${project.slug}`)];
+  const paths = [
+    "/",
+    "/about",
+    "/contact",
+    "/quick-review",
+    ...projects.map((project) => `/work/${project.slug}`),
+  ];
   const urls = paths
     .map(
       (path) =>

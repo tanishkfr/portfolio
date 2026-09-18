@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local visual-QA scratch: one-off Playwright/measurement scripts and
+    // captured screenshots, not application source.
+    ".vqa/**",
   ]),
 ]);
 

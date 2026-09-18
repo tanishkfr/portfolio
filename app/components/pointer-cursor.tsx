@@ -62,9 +62,21 @@ export function PointerMark() {
     let lastState: State = "rest";
     let pressed = false;
     let engaged = false;
+    /* High-polling mice report hundreds of moves per second, and a scroll
+       fires its own event per frame. Everything below is coalesced into
+       one frame: the per-event work is storing a coordinate and a target;
+       the state walks (closest selectors) and the elementFromPoint hit
+       test run at most once per frame, and only when the element under
+       the pointer has actually changed. */
+    let pendingTarget: Element | null = null;
+    let resolvedTarget: Element | null = null;
+    let frame = 0;
+    let frameAt = 0;
 
     const resolveState = (target: Element | null): State => {
-      if (!target) return "rest";
+      /* real pointer targets are elements, but an edge (a scrollbar, a
+         detached node, a text node) must not be able to throw here */
+      if (!target || typeof target.closest !== "function") return "rest";
       if (target.closest(TEXT_FIELD)) return "text";
       if (target.closest(ACTIONABLE)) return "active";
       if (target.closest(READABLE)) return "text";
@@ -88,16 +100,50 @@ export function PointerMark() {
       el.style.transform = parts.join(" ");
     };
 
-    /* Engagement is idempotent and re-runs on every move: the mark is
-       placed first, revealed second, and only then does the native
-       cursor step aside. Whatever hid the mark — the document edge,
-       browser chrome, a window switch — the next move repairs. */
+    const sync = () => {
+      frame = 0;
+      frameAt = 0;
+      try {
+        if (pendingTarget !== resolvedTarget) {
+          resolvedTarget = pendingTarget;
+          lastState = resolveState(resolvedTarget);
+        }
+        place();
+      } catch {
+        /* A failure here must never become a frozen diamond with the
+           native cursor hidden: hand the cursor back, and the next move
+           rebuilds from scratch. */
+        disengage();
+      }
+    };
+
+    const schedule = () => {
+      /* A stuck frame id (a throw before the callback ran, a dropped
+         frame on a backgrounded tab) would otherwise stop the mark
+         updating forever. Anything older than a few frames is replaced. */
+      if (frame) {
+        if (performance.now() - frameAt < 300) return;
+        window.cancelAnimationFrame(frame);
+      }
+      frameAt = performance.now();
+      frame = window.requestAnimationFrame(sync);
+    };
+
+    /* Engagement is idempotent. The first move places the mark at the true
+       hotspot synchronously — before the native cursor steps aside, so
+       there is never a frame with the mark somewhere else — and every
+       later move only schedules the next frame. */
     const engage = () => {
-      place();
-      if (engaged) return;
-      engaged = true;
-      el.dataset.visible = "true";
-      root.dataset.cursor = "custom";
+      if (!engaged) {
+        engaged = true;
+        resolvedTarget = pendingTarget;
+        lastState = resolveState(resolvedTarget);
+        place();
+        el.dataset.visible = "true";
+        root.dataset.cursor = "custom";
+        return;
+      }
+      schedule();
     };
 
     /* Disengagement returns the native cursor at once: the attribute
@@ -110,27 +156,36 @@ export function PointerMark() {
       delete root.dataset.cursor;
     };
 
-    /* Direct per-event writes: no rAF queue, no trailing offset, no
-       easing — the diamond moves with the pointer's own report. */
+    /* Per-event work: store and schedule. Nothing else. */
     const move = (event: PointerEvent) => {
       lastX = event.clientX;
       lastY = event.clientY;
-      lastState = resolveState(event.target as Element | null);
+      pendingTarget = event.target as Element | null;
       engage();
     };
 
     /* Scrolling changes what sits under a still pointer; the state
-       follows without waiting for the next move. */
+       follows without waiting for the next move — coalesced like the
+       moves, so a fast wheel never queues hit tests. */
     const scroll = () => {
       if (!engaged) return;
-      const under = document.elementFromPoint(lastX, lastY);
-      lastState = resolveState(under);
-      place();
+      pendingTarget = document.elementFromPoint(lastX, lastY);
+      schedule();
     };
 
-    const down = () => {
+    const down = (event: PointerEvent) => {
       pressed = true;
-      if (engaged) place();
+      if (!engaged) {
+        /* a press is a fresh, reliable signal that a fine pointer is
+           present: re-engage rather than leaving the diamond off until
+           the next move reparks it */
+        lastX = event.clientX;
+        lastY = event.clientY;
+        pendingTarget = event.target as Element | null;
+        engage();
+        return;
+      }
+      place();
     };
     const up = () => {
       pressed = false;
@@ -142,12 +197,11 @@ export function PointerMark() {
       if (document.hidden) disengage();
     };
     const kindChanged = () => {
-      /* The device switched pointer kinds (rare, e.g. detachable
-         keyboards): a coarse pointer must never carry the mark. */
-      if (!fine.matches) {
-        disengage();
-        el.remove();
-      }
+      /* The device switched pointer kinds (rare: detachable keyboards, a
+         touch laptop reporting coarse for a moment). Hand the cursor
+         back — but never remove the node, so a flip back to fine can
+         re-engage without a reload. */
+      if (!fine.matches) disengage();
     };
 
     window.addEventListener("pointermove", move, { passive: true });
@@ -169,6 +223,7 @@ export function PointerMark() {
       document.removeEventListener("visibilitychange", visibility);
       document.documentElement.removeEventListener("pointerleave", leave);
       fine.removeEventListener("change", kindChanged);
+      if (frame) window.cancelAnimationFrame(frame);
       /* Unmount or teardown always hands the cursor back. */
       delete root.dataset.cursor;
     };

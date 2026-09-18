@@ -14,7 +14,7 @@ import { ROOM_WORLDS } from "../data/room-worlds";
 import { SignalField } from "./signal-field";
 
 /* ================================================================
-   PROJECT PORTRAITS — six interaction demos, one family.
+   PROJECT PORTRAITS — one family of interaction demos.
 
    Every portrait is a legible, large-scale mini-demonstration of its
    project's own behaviour, composed in the DOM so its states stay
@@ -285,8 +285,28 @@ function numberShape(v: number, nx: number, ny: number, t: number): number {
   return out;
 }
 
+/** 02 · Athena — the review queue along the right margin, over a progress
+    spine. The field is wired to the demo through one live phase ref: when
+    a weak concept is scheduled, the queue brightens — what was not
+    retrieved comes back. */
+const athenaPhase = { current: 0 };
+function athenaShape(v: number, nx: number, ny: number, t: number): number {
+  let out = v * 0.24;
+  if (nx > 0.94) {
+    const tick = Math.abs(((ny * 18) % 1) - 0.5);
+    if (tick > 0.3) {
+      const base = 0.34 + 0.22 * blink(t, 0.95, ny * 26);
+      const calledBack =
+        athenaPhase.current >= 4 ? 0.3 + 0.28 * Math.sin(t * 2.6 + ny * 9) : 0;
+      out = Math.max(out, Math.min(1, base + calledBack));
+    }
+  }
+  if (ny > 0.95 && columnHash(nx, 9) > 0.4) out = Math.max(out, 0.55);
+  return out;
+}
+
 /* ================================================================
-   THE SHELL — one frame for six behaviours.
+   THE SHELL — one frame for every behaviour.
    ================================================================ */
 
 type PortraitMeta = {
@@ -349,25 +369,31 @@ function PortraitShell({
   children: ReactNode;
 }) {
   const meta = PORTRAITS[slug];
+  /* Touch has no hover, so a coarse-pointer reader needs a real control to
+     reach the interface fragment. The button only appears on touch, and
+     keyboard reaches it too (focus already reveals the fragment). */
+  const [pinned, setPinned] = useState(false);
   return (
-    <figure
-      className="xp-portrait"
-      data-portrait={slug}
-      data-live={live ? "true" : "false"}
-      role="img"
-      aria-label={meta.a11y}
-      style={
-        {
-          background: meta.ground,
-          "--accent-ink": ROOM_WORLDS[slug]?.accentInk,
-          "--pp-ink": meta.ink,
-          "--pp-muted": meta.muted,
-          "--pp-accent": meta.accent,
-          "--pp-ground": meta.ground,
-          "--pp-rule": `color-mix(in srgb, ${meta.ink} 20%, transparent)`,
-        } as CSSProperties
-      }
-    >
+    <div className="xpp-wrap">
+      <figure
+        className="xp-portrait"
+        data-portrait={slug}
+        data-live={live ? "true" : "false"}
+        data-pinned={pinned ? "true" : undefined}
+        role="img"
+        aria-label={meta.a11y}
+        style={
+          {
+            background: meta.ground,
+            "--accent-ink": ROOM_WORLDS[slug]?.accentInk,
+            "--pp-ink": meta.ink,
+            "--pp-muted": meta.muted,
+            "--pp-accent": meta.accent,
+            "--pp-ground": meta.ground,
+            "--pp-rule": `color-mix(in srgb, ${meta.ink} 20%, transparent)`,
+          } as CSSProperties
+        }
+      >
       <SignalField
         className="xp-portrait-field"
         glyphs={meta.glyphs}
@@ -430,7 +456,16 @@ function PortraitShell({
       <p className="xpp-caption" aria-hidden="true">
         {meta.caption}
       </p>
-    </figure>
+      </figure>
+      <button
+        type="button"
+        className="xpp-view"
+        aria-pressed={pinned}
+        onClick={() => setPinned((value) => !value)}
+      >
+        {pinned ? "hide interface" : "view interface"}
+      </button>
+    </div>
   );
 }
 
@@ -1149,12 +1184,151 @@ function DayneroDemo({ live }: { live: boolean }) {
 }
 
 /* ================================================================
-   THE SIX — material config per project portrait.
+   02 · ATHENA — reading is not knowing.
+   A source is read; instead of being marked complete it asks the
+   learner to explain the idea. The explanation becomes evidence
+   linked to its source, and a concept that was not retrieved is
+   scheduled for review. One moment, not the whole product. The
+   answer shown is a staged demonstration, labelled as such.
+   ================================================================ */
+
+const ATH_DURATIONS = [2300, 2700, 3000, 2400, 3000, 700] as const;
+const ATH_RESOLVED = 4;
+
+/** Athena's three review modes, as built. */
+const ATH_MODES = ["Explain Back", "Cue Cards", "Apply It"] as const;
+
+function AthenaDemo({ live }: { live: boolean }) {
+  const [phase, jump] = useCycle(ATH_DURATIONS, live, ATH_RESOLVED);
+  const reduced = useReducedMotion();
+  /* the field reads the demo's phase, so the review queue in the margin
+     answers the story beat for beat */
+  useEffect(() => {
+    athenaPhase.current = phase;
+  }, [phase]);
+  const read = [
+    "review · setup",
+    "attempt",
+    "feedback",
+    "activity ≠ knowledge",
+    "review · earlier",
+    "reset",
+  ][phase];
+
+  const tap = () => {
+    if (!live) return;
+    /* reduced motion has no sequence to watch, so the tap lands on the
+       outcome — the weak concept coming back — or returns to the start */
+    jump(
+      phase === ATH_RESOLVED ? 0 : reduced ? ATH_RESOLVED : Math.min(phase + 1, 4),
+    );
+  };
+  const tapGuard = useTapAction<HTMLDivElement>(tap);
+
+  return (
+    <PortraitShell slug="athena" live={live} read={read}>
+      <div className="xpp-ath xpp-demo" data-phase={phase} {...tapGuard}>
+        <div className="xpp-ath-main">
+          {/* the review setup: a mode is chosen, the source is closed */}
+          <div className="xpp-ath-plate">
+            <p className="xpp-ath-head">
+              <span>review · attention</span>
+            </p>
+            <ul className="xpp-ath-modes">
+              {ATH_MODES.map((mode, index) => (
+                <li
+                  key={mode}
+                  data-on={index === 0 ? "true" : undefined}
+                  data-dim={phase >= 1 && index !== 0 ? "true" : undefined}
+                >
+                  {mode}
+                </li>
+              ))}
+            </ul>
+            <p className="xpp-ath-scope">
+              paragraph 2 · respond without the source
+            </p>
+          </div>
+
+          {/* the attempt: the learner's own words, and how sure they felt */}
+          <div className="xpp-ath-response" data-on={phase >= 1 ? "true" : undefined}>
+            <p className="xpp-ath-quote">
+              “Attention is not only about removing distractions; the structure
+              of a task changes what gets noticed.”
+            </p>
+            <p className="xpp-ath-conf">confident</p>
+          </div>
+
+          {/* the product's core distinction, made structural */}
+          <div className="xpp-ath-split" data-on={phase >= 3 ? "true" : undefined}>
+            <p className="xpp-ath-meter">
+              <span className="xpp-ath-meter-k">activity</span>
+              <span className="xpp-ath-meter-bar" data-full="true" />
+              <span className="xpp-ath-meter-v">explored · noted</span>
+            </p>
+            <p className="xpp-ath-meter">
+              <span className="xpp-ath-meter-k">knowledge</span>
+              <span className="xpp-ath-meter-bar" data-part="true" />
+              <span className="xpp-ath-meter-v">developing</span>
+            </p>
+          </div>
+        </div>
+
+        <div className="xpp-ath-side">
+          {/* feedback: what was demonstrated, what is missing, and where to fix it */}
+          <ol className="xpp-ath-flow">
+            <li data-on={phase >= 2 ? "true" : undefined}>
+              <span className="xpp-ath-k">demonstrated</span>
+              <span className="xpp-ath-v">
+                you connected attention to task structure
+              </span>
+            </li>
+            <li
+              className="xpp-ath-gap"
+              data-on={phase >= 2 ? "true" : undefined}
+            >
+              <span className="xpp-ath-k">gap</span>
+              <span className="xpp-ath-v">
+                how salience competes for attention
+              </span>
+            </li>
+            <li
+              className="xpp-ath-sourcerow"
+              data-on={phase >= 2 ? "true" : undefined}
+            >
+              <span className="xpp-ath-k">source</span>
+              <span className="xpp-ath-v">
+                paragraph 2 · open passage <span aria-hidden="true">→</span>
+              </span>
+            </li>
+          </ol>
+          <p
+            className="xpp-ath-review"
+            data-on={phase >= 4 ? "true" : undefined}
+          >
+            <span className="xpp-ath-review-k">next</span>
+            <span className="xpp-ath-review-v">
+              weak concept · retry later
+            </span>
+          </p>
+        </div>
+
+        <p className="xpp-ath-note">
+          illustrative scenario · not a participant quotation or a measured
+          outcome
+        </p>
+      </div>
+    </PortraitShell>
+  );
+}
+
+/* ================================================================
+   THE MATERIALS — one config per project portrait, keyed by artifact.
    ================================================================ */
 
 const PORTRAITS: Record<string, PortraitMeta> = {
   "design-or-disaster": {
-    tag: "01 · evidence map",
+    tag: "05 · evidence map",
     caption: "Point at the evidence. The readings follow your mark.",
     hint: "place a mark",
     reveal: {
@@ -1185,7 +1359,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     shape: evidenceShape,
   },
   pentimento: {
-    tag: "02 · right of reply",
+    tag: "right of reply",
     caption: "The software gets a draft. You get the final word.",
     hint: "strike it",
     reveal: {
@@ -1215,7 +1389,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     shape: revisionShape,
   },
   "invisible-interfaces": {
-    tag: "03 · absence & receipt",
+    tag: "04 · absence & receipt",
     caption: "Leave the tab and it keeps working. Return to a receipt.",
     hint: "look away",
     reveal: {
@@ -1245,7 +1419,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     shape: absenceShape,
   },
   atlas: {
-    tag: "04 · rule pressure",
+    tag: "rule pressure",
     caption: "Every hold, refinement, and fracture stays in the lineage.",
     hint: "press a case",
     reveal: {
@@ -1275,7 +1449,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     shape: atlasShape,
   },
   "fluxion-studios": {
-    tag: "05 · studio build",
+    tag: "01 · studio build",
     caption: "Loose pieces, one system — the studio site ships from it.",
     hint: "build it",
     reveal: {
@@ -1304,14 +1478,45 @@ const PORTRAITS: Record<string, PortraitMeta> = {
         : `rgba(176, 16, 32, ${0.06 + 0.26 * t})`,
     shape: fluxShape,
   },
+  athena: {
+    tag: "02 · evidence, not activity",
+    caption: "Reading something is not the same as knowing it.",
+    hint: "attempt, then look",
+    reveal: {
+      src: "/projects/athena/dashboard-finished.png",
+      label: "dashboard-finished.png",
+      note: "Activity and knowledge evidence, reported apart",
+      ratio: 2538 / 1605,
+      height: "min(88%, 16rem)",
+      anchor: "bottom-right",
+    },
+    a11y:
+      "Diagram: a learner answers a review question from memory, then feedback names what was demonstrated, what is missing and the source passage that would fix it. Activity and knowledge evidence are shown as separate records.",
+    glyphs: "·:+*#",
+    cell: 12,
+    seed: 97,
+    ambient: 0.16,
+    flow: 0.35,
+    drift: 0.08,
+    tune: [0.5, 1.9],
+    ground: "#fffaf0",
+    ink: "#173461",
+    muted: "rgba(23, 52, 97, 0.6)",
+    accent: "#d95f32",
+    color: (t) =>
+      t >= 0.9
+        ? "rgba(217, 95, 50, 0.7)"
+        : `rgba(23, 52, 97, ${0.05 + 0.2 * t})`,
+    shape: athenaShape,
+  },
   daynero: {
-    tag: "06 · safe to spend",
+    tag: "03 · safe to spend",
     caption: "A month of spending, compressed into one safe number.",
     hint: "log a spend",
     reveal: {
       src: "/projects/daynero/site-home-mobile.png",
       label: "site-home-mobile.png",
-      note: "One safe daily number, in the product",
+      note: "One safe daily number, as the public site describes it",
       ratio: 390 / 844,
       height: "min(90%, 17rem)",
       anchor: "bottom-right",
@@ -1360,6 +1565,8 @@ export function ProjectPortrait({
       return <AtlasDemo live={live} />;
     case "fluxion-studios":
       return <FluxionDemo live={live} />;
+    case "athena":
+      return <AthenaDemo live={live} />;
     case "daynero":
       return <DayneroDemo live={live} />;
     default:

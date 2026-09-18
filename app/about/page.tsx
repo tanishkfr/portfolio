@@ -92,39 +92,30 @@ export default function AboutPage() {
             for small businesses.
           </p>
         </div>
-        {/* The facts, kept whole but read as workspace state rather than a
-            résumé table: a small desk panel with a path, a status and the
-            four things a reader would otherwise have to hunt for. */}
-        <div className="about-console">
-          <p className="about-console-bar">
-            <span className="about-console-pip" aria-hidden="true" />
-            <span className="about-console-path">~/tanishk</span>{" "}
-            <span className="about-console-status">
-              status: open to work
-            </span>
-          </p>
-          <dl className="about-facts" aria-label="Tanishk at a glance">
-            <div>
-              <dt>based</dt>
-              <dd>Bengaluru, India · 12.9716° N, 77.5946° E</dd>
-            </div>
-            <div>
-              <dt>studying</dt>
-              <dd>B.Des, Human Centered Design — Srishti Manipal (2024–2028)</dd>
-            </div>
-            <div>
-              <dt>working</dt>
-              <dd>
-                product design at Daynero · Fluxion Studios (co-founder) ·
-                independent interaction research
-              </dd>
-            </div>
-            <div>
-              <dt>open to</dt>
-              <dd>product, UI/UX, and interaction design roles</dd>
-            </div>
-          </dl>
-        </div>
+        {/* The facts, kept whole but read as a simple editorial panel
+            rather than a console: four things a reader would otherwise
+            have to hunt for. No coordinates, no system status. */}
+        <dl className="about-facts" aria-label="Tanishk at a glance">
+          <div>
+            <dt>Based</dt>
+            <dd>Bengaluru, India</dd>
+          </div>
+          <div>
+            <dt>Studying</dt>
+            <dd>B.Des, Human Centered Design — Srishti Manipal (2024–2028)</dd>
+          </div>
+          <div>
+            <dt>Working</dt>
+            <dd>
+              product design at Daynero · Fluxion Studios (co-founder) ·
+              independent interaction research
+            </dd>
+          </div>
+          <div>
+            <dt>Open to</dt>
+            <dd>product, UI/UX, and interaction design roles</dd>
+          </div>
+        </dl>
       </header>
 
       <section className="about-current" aria-labelledby="current-title">
@@ -168,36 +159,33 @@ export default function AboutPage() {
         <h2 id="authorship-title">Where it sits in my process.</h2>
         <div>
           <p>
-            I use AI deliberately. It helps me open up directions,
-            pressure-test behaviour, and get from a rough prototype to working
-            frontend code faster. I choose what is worth making, direct the
-            visual and interaction decisions, edit the writing, and own what
-            ships. For me that sits inside the practice rather than beside it:
-            I design interfaces, products and research tools, and AI changes
-            how those get designed and built.
+            I use AI for exploration, critique, and implementation, but I own
+            the decisions and what ships. The concepts, research, design
+            decisions, editing, and every line that ships are mine. I built
+            Ariadne because faster output is only useful if the work can still
+            be checked.
           </p>
           <p>
-            I stay close to the build: scope, pricing, and constraints are
-            agreed before a project starts, and I&apos;d rather settle a
-            question in the browser than argue it from a static mockup.
+            Ariadne splits a job into roles, checks each step with tests and
+            evidence before accepting it, retries what fails, and keeps a
+            record so a release can be validated or rolled back. It is public
+            on GitHub, released through v1.6.7.
           </p>
-          <p>
-            Ownership is stated on every case: the four independent projects in
-            Projects are mine end to end; Fluxion is a two-person practice;
-            Daynero is commercial team work, and its full case is still being
-            documented.
-          </p>
-          <p>
-            Buildings, films, and games keep the references from getting
-            narrow.
+          <p className="about-ai-link">
+            <a
+              href="https://github.com/tanishkfr/ariadne"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Ariadne · v1.6.7 on GitHub <span aria-hidden="true">↗</span>
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
           </p>
         </div>
-        {/* The desk itself, named once, outside the prose column so the
-            four paragraphs keep their 2 x 2 rhythm. */}
-        <p className="about-tools">
-          <span className="about-tools-key">tools/</span>
-          figma · framer · react · next.js · javascript · html/css · git ·
-          ai-assisted development
+        {/* One line outside the prose column, so the two paragraphs keep
+            their rhythm. */}
+        <p className="about-interests">
+          Buildings, films, and games keep the references from getting narrow.
         </p>
       </section>
 
