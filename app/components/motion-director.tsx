@@ -14,17 +14,15 @@ export function MotionDirector() {
 
     /* Elements waiting for their entrance.
        ------------------------------------------------------------------
-       Geometry decides, not IntersectionObserver. The entrance's hidden
-       state is `clip-path: inset(0 0 0 100%)`, which clips the element's
-       own box to zero area — and Chromium folds that clip into the
-       observer's intersection rect, so a hidden target reports ratio 0
-       for as long as it is hidden and can never be observed as arriving.
-       The observer could therefore never reveal a default [data-reveal];
-       only a bulk fallback did, and once that fallback had run, anything
-       that mounted later stayed clipped for good — a section could sit in
-       the middle of the viewport, or be scrolled past, and never become
-       readable. getBoundingClientRect ignores clip-path, so the sweep
-       measures the box the reader will actually see. */
+       Geometry decides, not IntersectionObserver. The historical reason:
+       the old hidden state was a clip-path that clipped the element's
+       own box to zero area, and Chromium folded that clip into the
+       observer's intersection rect, so a hidden target reported ratio 0
+       for as long as it was hidden and could never be observed as
+       arriving. The entrance is an opacity fade now, which an observer
+       could see — but the sweep stays, because it is simpler than an
+       observer, fails open by construction, and measures the box the
+       reader will actually see. */
     const pending = new Set<HTMLElement>();
 
     root.classList.add("motion-ready");
