@@ -195,6 +195,13 @@ function Section({
 export default function ResumePage() {
   return (
     <main id="main-content" className="resume-shell">
+      <link
+        rel="preload"
+        href="/fonts/instrument-serif-400italic-latin.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />
       <header className="resume-intro">
         <PageSignal variant="resume" />
         <p className="resume-kicker">Tanishk · Bengaluru · Available for work</p>

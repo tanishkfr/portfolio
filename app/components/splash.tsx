@@ -8,7 +8,7 @@ import {
   COVER_QUIET_NARROW,
   coverPixelShape,
   coverTextureShape,
-} from "./explore";
+} from "./cover-material";
 
 /**
  * The first state transition of the portfolio: the name holds while the
