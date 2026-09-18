@@ -28,16 +28,14 @@ export default function ContactPage() {
       <header className="contact-intro" data-reveal>
         <h1>Have something worth building?</h1>
         <p className="contact-body">
-          I&apos;m a product and interaction designer in Bengaluru. I work
-          across product design, interaction design, prototypes, and design
-          that gets built.
+          I&apos;m a product and interaction designer in Bengaluru. Tell me
+          what you are trying to make.
         </p>
       </header>
 
       <div className="contact-paths" data-reveal>
         <section>
           <h2>For roles and collaboration</h2>
-          <p>Product design · interaction design · prototypes · design + implementation</p>
           <a className="contact-primary" href="mailto:madebytanishk@gmail.com">
             madebytanishk@gmail.com
           </a>
@@ -62,7 +60,7 @@ export default function ContactPage() {
       </div>
 
       <p className="contact-availability">
-        Bengaluru, India · open to product, UI/UX, and interaction design roles.
+        Bengaluru, India · open to new work.
       </p>
 
       <p className="contact-links">

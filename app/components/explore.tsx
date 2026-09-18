@@ -19,7 +19,6 @@ import { TransitionLink } from "./transition-link";
    Atlas keep their cases and routes but are no longer in this sequence. */
 const order = [...selectedSlugs];
 const layouts = {
-  "fluxion-studios": "wordmark",
   athena: "learn",
   "design-or-disaster": "evidence",
   pentimento: "revision",
@@ -498,18 +497,12 @@ export function Explore() {
               the field, so keyboard and no-JS readers reach the same
               destination. Smooth travel and the sticky header's offset
               come from the platform (html scroll-behaviour and
-              scroll-padding), with the reduced-motion override.
-              Explore stays primary; Quick review is the quiet second
-              reading for anyone who needs proof fast. */}
-          <div className="xp-cover-handoff-row">
-            <a className="xp-cover-handoff" href="#work">
-              <p>Explore selected work</p>
-              <span aria-hidden="true">↓</span>
-            </a>
-            <TransitionLink className="xp-cover-quick" href="/quick-review">
-              Quick review <span aria-hidden="true">→</span>
-            </TransitionLink>
-          </div>
+              scroll-padding), with the reduced-motion override. One clear
+              action: explore the work. */}
+          <a className="xp-cover-handoff" href="#work">
+            <p>Explore selected work</p>
+            <span aria-hidden="true">↓</span>
+          </a>
         </div>
       </section>
 
@@ -535,6 +528,7 @@ export function Explore() {
                 >
                   <span>{String(index + 1).padStart(2, "0")}</span>
                   <strong>{project.title}</strong>
+                  <small>{project.form}</small>
                 </a>
               </li>
             ))}
@@ -657,7 +651,14 @@ export function Explore() {
                       has no shipped screens, so its stage states the loop
                       and the boundary in words instead. */}
                   <div className="xp-piece-stage">
-                    <ProjectPortrait slug={project.slug} live={active === index} />
+                    {/* keyed by live state: when a sheet sleeps, its portrait
+                        remounts to the authored demo with the recording
+                        stopped, so no preview survives off-sheet */}
+                    <ProjectPortrait
+                      key={`${project.slug}-${active === index ? "live" : "idle"}`}
+                      slug={project.slug}
+                      live={active === index}
+                    />
                   </div>
 
                   <p className="xp-piece-status">{project.status}</p>

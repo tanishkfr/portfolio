@@ -157,7 +157,6 @@ export function SiteFooter({
           GitHub <span aria-hidden="true">↗</span>
         </a>
         <Link href="/#work">Projects</Link>
-        <Link href="/quick-review">Quick review</Link>
         <Link href="/about">About</Link>
       </nav>
 

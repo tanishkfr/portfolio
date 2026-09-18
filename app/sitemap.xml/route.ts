@@ -6,7 +6,6 @@ export async function GET(request: Request) {
     "/",
     "/about",
     "/contact",
-    "/quick-review",
     ...projects.map((project) => `/work/${project.slug}`),
   ];
   const urls = paths

@@ -9,7 +9,6 @@ import {
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import Image from "next/image";
 import { ROOM_WORLDS } from "../data/room-worlds";
 import { SignalField } from "./signal-field";
 
@@ -316,22 +315,25 @@ type PortraitMeta = {
   caption: string;
   /** the pointer affordance, shown on hover only (never the meaning) */
   hint: string;
-  /** the figure's text alternative */
+  /** the figure's text alternative (the authored demo) */
   a11y: string;
   /**
-   * The proof window: on hover (or when the sheet takes focus) the ASCII
-   * demo yields and one real fragment of the project's own interface is
-   * uncovered, filed under its actual filename, then it returns to ASCII.
+   * The real project, shown full-frame in the same stage as the demo:
+   * a verified recording where one exists, otherwise a real capture.
+   * One frame, two states — authored representation, real evidence.
    */
-  reveal: {
-    src: string;
+  real: {
+    /** what the evidence actually is, stated plainly under the frame */
     label: string;
-    note: string;
-    ratio: number;
-    height: string;
-    /** the corner the window opens from, chosen per project so it never
-        lands on the demo's own readouts or controls */
-    anchor: "top-right" | "bottom-right" | "bottom-left";
+    kind: "video" | "image";
+    /** video file, or the static capture */
+    src: string;
+    /** poster / fallback frame — always a real capture */
+    poster: string;
+    /** the text alternative for the real evidence */
+    alt: string;
+    /** per-project framing: how the capture meets the stage */
+    fit?: "cover" | "contain";
     position?: string;
   };
   glyphs: string;
@@ -369,19 +371,125 @@ function PortraitShell({
   children: ReactNode;
 }) {
   const meta = PORTRAITS[slug];
-  /* Touch has no hover, so a coarse-pointer reader needs a real control to
-     reach the interface fragment. The button only appears on touch, and
-     keyboard reaches it too (focus already reveals the fragment). */
-  const [pinned, setPinned] = useState(false);
+  /* One frame, two states: the authored demo, and the real project.
+     There is no button. A resting fine pointer previews the real project
+     after a short intent delay; keyboard focus does the same; a tap on a
+     touch screen toggles it. Pressing the demo takes priority, so an
+     interactive portrait is never taken over mid-interaction. */
+  const [showing, setShowing] = useState(false);
+  const [hovering, setHovering] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const reduced = useReducedMotion();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const hoverTimer = useRef<number | null>(null);
+  /* an interaction with the demo wins over the preview until the pointer
+     leaves the frame */
+  const hoverSuppressed = useRef(false);
+  const isVideo = meta.real.kind === "video";
+  /* The preview is only live while its sheet is the one being read. This is
+     derived, not stored: the parent keys this portrait by its live state, so
+     a sleeping sheet remounts back to its demo with the recording stopped. */
+  const active = showing && live;
+  /* Hover, focus and touch all reach the real project. Reduced motion is
+     not excluded here — it removes autoplay instead, so the still frame and
+     its controls are still reachable without any motion. */
+  const visible = active || ((hovering || focused) && live);
+
+  const clearHoverTimer = () => {
+    if (hoverTimer.current) {
+      window.clearTimeout(hoverTimer.current);
+      hoverTimer.current = null;
+    }
+  };
+
+  useEffect(() => clearHoverTimer, []);
+
+  /* A short intent delay: a pointer passing through never flashes the
+     recording, and a pointer that lands on the demo to interact with it
+     cancels the preview before it opens. */
+  const onEnter = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType !== "mouse" || hoverSuppressed.current) return;
+    clearHoverTimer();
+    hoverTimer.current = window.setTimeout(() => {
+      hoverTimer.current = null;
+      setHovering(true);
+    }, 260);
+  };
+
+  const onLeave = () => {
+    clearHoverTimer();
+    hoverSuppressed.current = false;
+    setHovering(false);
+  };
+
+  /* A touch screen has no hover, so a tap toggles the preview — the same
+     reach the button used to give, without the button. A mouse press keeps
+     its old meaning: the demo wins, and the preview waits for the pointer
+     to leave. */
+  const onDown = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType === "touch") {
+      setShowing((value) => !value);
+      return;
+    }
+    clearHoverTimer();
+    hoverSuppressed.current = true;
+    setHovering(false);
+  };
+
+  /* keyboard reaches the same preview the pointer does */
+  const onFocus = () => setFocused(true);
+  const onBlur = () => setFocused(false);
+
+  /* the recording plays only while its preview is visible, its sheet is the
+     one being read, the tab is visible, and motion is allowed */
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const allowed = visible && !document.hidden && !reduced;
+    if (allowed) {
+      const playing = video.play();
+      if (playing && typeof playing.catch === "function") playing.catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [visible, reduced]);
+
+  /* a hidden tab stops the recording; returning resumes it */
+  useEffect(() => {
+    if (!isVideo) return;
+    const onVisibility = () => {
+      const video = videoRef.current;
+      if (!video) return;
+      if (document.hidden) {
+        video.pause();
+        return;
+      }
+      if (visible && !reduced) {
+        const playing = video.play();
+        if (playing && typeof playing.catch === "function") playing.catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [isVideo, visible, reduced]);
+
+  const mediaStyle = meta.real.position
+    ? { objectPosition: meta.real.position }
+    : undefined;
+
   return (
     <div className="xpp-wrap">
       <figure
         className="xp-portrait"
         data-portrait={slug}
         data-live={live ? "true" : "false"}
-        data-pinned={pinned ? "true" : undefined}
-        role="img"
-        aria-label={meta.a11y}
+        data-view={visible ? "real" : "demo"}
+        tabIndex={0}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onPointerEnter={onEnter}
+        onPointerLeave={onLeave}
+        onPointerDown={onDown}
         style={
           {
             background: meta.ground,
@@ -394,77 +502,79 @@ function PortraitShell({
           } as CSSProperties
         }
       >
-      <SignalField
-        className="xp-portrait-field"
-        glyphs={meta.glyphs}
-        cell={meta.cell}
-        paused={!live}
-        seed={meta.seed}
-        ambient={meta.ambient}
-        flow={meta.flow}
-        wavefront={meta.wavefront}
-        drift={meta.drift}
-        tune={meta.tune}
-        pointerRadius={0}
-        color={meta.color}
-        shape={meta.shape}
-      />
-      <div className="xpp-rack" aria-hidden="true">
-        <span className="xpp-tag">{meta.tag}</span>
-        <span className="xpp-read">{read}</span>
-      </div>
-      <div className="xpp-stage" aria-hidden="true">
-        <span className="xpp-reg xpp-reg--tl" />
-        <span className="xpp-reg xpp-reg--tr" />
-        <span className="xpp-reg xpp-reg--bl" />
-        <span className="xpp-reg xpp-reg--br" />
-        <span className="xpp-hint">{meta.hint}</span>
-        {children}
-        {/* the proof window: a real fragment of the project, framed and
-            filed under its own filename rather than a captioned thumbnail */}
-        <span
-          className="xpp-reveal"
-          data-anchor={meta.reveal.anchor}
-          style={
-            {
-              "--reveal-ratio": meta.reveal.ratio,
-              "--reveal-h": meta.reveal.height,
-            } as CSSProperties
-          }
-        >
-          <span className="xpp-reveal-bar">
-            <span className="xpp-reveal-pip" />
-            <span className="xpp-reveal-file">{meta.reveal.label}</span>
+        <SignalField
+          className="xp-portrait-field"
+          glyphs={meta.glyphs}
+          cell={meta.cell}
+          paused={!live || visible}
+          seed={meta.seed}
+          ambient={meta.ambient}
+          flow={meta.flow}
+          wavefront={meta.wavefront}
+          drift={meta.drift}
+          tune={meta.tune}
+          pointerRadius={0}
+          color={meta.color}
+          shape={meta.shape}
+        />
+        <div className="xpp-rack">
+          <span className="xpp-tag" aria-hidden="true">
+            {meta.tag}
           </span>
-          <span className="xpp-reveal-frame">
-            <Image
-              className="xpp-reveal-shot"
-              src={meta.reveal.src}
-              alt=""
-              fill
-              sizes="(max-width: 52rem) 46vw, 22rem"
-              style={
-                meta.reveal.position
-                  ? { objectPosition: meta.reveal.position }
-                  : undefined
-              }
-            />
+          <span className="xpp-read" aria-hidden="true">
+            {visible ? "real project" : read}
           </span>
-          <span className="xpp-reveal-note">{meta.reveal.note}</span>
-        </span>
-      </div>
-      <p className="xpp-caption" aria-hidden="true">
-        {meta.caption}
-      </p>
+        </div>
+
+        <div className="xpp-stage">
+          {/* STATE A — the authored demonstration, with a text alternative */}
+          <div
+            className="xpp-demo-layer"
+            role="img"
+            aria-label={meta.a11y}
+            aria-hidden={visible ? "true" : undefined}
+          >
+            <span className="xpp-reg xpp-reg--tl" />
+            <span className="xpp-reg xpp-reg--tr" />
+            <span className="xpp-reg xpp-reg--bl" />
+            <span className="xpp-reg xpp-reg--br" />
+            <span className="xpp-hint">{meta.hint}</span>
+            {children}
+          </div>
+
+          {/* STATE B — the real project, filling the same frame */}
+          <div className="xpp-real" aria-hidden={visible ? undefined : "true"}>
+            {isVideo ? (
+              <video
+                ref={videoRef}
+                className="xpp-real-media"
+                data-fit={meta.real.fit ?? "cover"}
+                poster={meta.real.poster}
+                src={meta.real.src}
+                preload="none"
+                muted
+                playsInline
+                controls={reduced}
+                aria-label={meta.real.alt}
+                style={mediaStyle}
+              />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="xpp-real-media"
+                data-fit={meta.real.fit ?? "cover"}
+                src={meta.real.src}
+                alt={visible ? meta.real.alt : ""}
+                style={mediaStyle}
+              />
+            )}
+          </div>
+        </div>
+
+        <figcaption className="xpp-caption">
+          {visible ? meta.real.label : meta.caption}
+        </figcaption>
       </figure>
-      <button
-        type="button"
-        className="xpp-view"
-        aria-pressed={pinned}
-        onClick={() => setPinned((value) => !value)}
-      >
-        {pinned ? "hide interface" : "view interface"}
-      </button>
     </div>
   );
 }
@@ -1331,13 +1441,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "05 · evidence map",
     caption: "Point at the evidence. The readings follow your mark.",
     hint: "place a mark",
-    reveal: {
-      src: "/projects/design-or-disaster/case-001-marked.png",
-      label: "case-001-marked.png",
-      note: "The evidence, marked — five readings beside it",
-      ratio: 16 / 10,
-      height: "min(88%, 16rem)",
-      anchor: "top-right",
+    real: {
+      kind: "video",
+      src: "/projects/design-or-disaster/preview.mp4",
+      poster: "/projects/design-or-disaster/poster.jpg",
+      alt: "The live Design or Disaster tool: a lens is chosen, a mark is placed on the interface, evidence is written, a verdict is committed, and the five juror readings appear beside it.",
+      label: "Design or Disaster · live tool: mark, evidence, then the panel's ruling (authored jurors)",
+      fit: "cover",
     },
     a11y:
       "Diagram: a mark is placed on an interface and three juror readings light up beside it.",
@@ -1362,13 +1472,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "right of reply",
     caption: "The software gets a draft. You get the final word.",
     hint: "strike it",
-    reveal: {
+    real: {
+      kind: "image",
       src: "/projects/pentimento/second-draft.png",
-      label: "second-draft.png",
-      note: "The rewrite outranks the sentence",
-      ratio: 16 / 10,
-      height: "min(86%, 15.5rem)",
-      anchor: "bottom-right",
+      poster: "/projects/pentimento/second-draft.png",
+      alt: "Pentimento's settled second draft, with the person's version leading.",
+      label: "Pentimento · settled second draft",
+      fit: "cover",
     },
     a11y:
       "Diagram: a machine-written sentence is struck through and a person's rewrite rises into its place.",
@@ -1392,13 +1502,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "04 · absence & receipt",
     caption: "Leave the tab and it keeps working. Return to a receipt.",
     hint: "look away",
-    reveal: {
+    real: {
+      kind: "image",
       src: "/projects/invisible-interfaces/return.png",
-      label: "return.png",
-      note: "Back from the tab, holding the receipt",
-      ratio: 1.44,
-      height: "min(84%, 15rem)",
-      anchor: "top-right",
+      poster: "/projects/invisible-interfaces/return.png",
+      alt: "The Invisible Interfaces return receipt: what changed during absence, what was left untouched, and how to discard the work.",
+      label: "Invisible Interfaces · return receipt (staged artifact — absence not reproducible in capture)",
+      fit: "cover",
     },
     a11y:
       "Diagram: a restoration panel dims while work continues, then returns with a receipt of what changed.",
@@ -1422,13 +1532,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "rule pressure",
     caption: "Every hold, refinement, and fracture stays in the lineage.",
     hint: "press a case",
-    reveal: {
+    real: {
+      kind: "image",
       src: "/projects/atlas/trace-lineage.png",
-      label: "trace-lineage.png",
-      note: "Every case that changed the rule",
-      ratio: 1440 / 1830,
-      height: "min(92%, 17rem)",
-      anchor: "bottom-left",
+      poster: "/projects/atlas/trace-lineage.png",
+      alt: "The Atlas trace: the starting rule, each rewrite, and the case that caused it.",
+      label: "Atlas · one rule's lineage",
+      fit: "contain",
     },
     a11y:
       "Diagram: a provisional rule is tested against three cases and rewritten, with every change kept in a lineage.",
@@ -1452,13 +1562,14 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "01 · studio build",
     caption: "Loose pieces, one system — the studio site ships from it.",
     hint: "build it",
-    reveal: {
-      src: "/projects/fluxion/site-home-desktop.png",
-      label: "site-home-desktop.png",
-      note: "The shipped site, one system end to end",
-      ratio: 16 / 10,
-      height: "min(88%, 16rem)",
-      anchor: "bottom-left",
+    real: {
+      kind: "video",
+      src: "/projects/fluxion/preview.mp4",
+      poster: "/projects/fluxion/poster.jpg",
+      alt: "The shipped Fluxion Studios site: the homepage, then the studio's own call to action to the enquiry form, where a project type is chosen and an illustrative brief is written.",
+      label: "Fluxion Studios · live site: homepage → enquiry form, with a project type and brief",
+      fit: "cover",
+      position: "center top",
     },
     a11y:
       "Diagram: loose layout pieces assemble into a studio website and a companion phone frame.",
@@ -1482,13 +1593,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "02 · evidence, not activity",
     caption: "Reading something is not the same as knowing it.",
     hint: "attempt, then look",
-    reveal: {
-      src: "/projects/athena/dashboard-finished.png",
-      label: "dashboard-finished.png",
-      note: "Activity and knowledge evidence, reported apart",
-      ratio: 2538 / 1605,
-      height: "min(88%, 16rem)",
-      anchor: "bottom-right",
+    real: {
+      kind: "video",
+      src: "/projects/athena/preview.mp4",
+      poster: "/projects/athena/poster.jpg",
+      alt: "The Athena prototype: an Explain Back attempt is written from memory, then feedback names what was demonstrated, what was not yet demonstrated, and the source passage to check.",
+      label: "Athena · Explain Back on the local prototype (feedback is the app's scripted sample)",
+      fit: "cover",
     },
     a11y:
       "Diagram: a learner answers a review question from memory, then feedback names what was demonstrated, what is missing and the source passage that would fix it. Activity and knowledge evidence are shown as separate records.",
@@ -1513,13 +1624,14 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tag: "03 · safe to spend",
     caption: "A month of spending, compressed into one safe number.",
     hint: "log a spend",
-    reveal: {
-      src: "/projects/daynero/site-home-mobile.png",
-      label: "site-home-mobile.png",
-      note: "One safe daily number, as the public site describes it",
-      ratio: 390 / 844,
-      height: "min(90%, 17rem)",
-      anchor: "bottom-right",
+    real: {
+      kind: "image",
+      src: "/projects/daynero/budget.jpg",
+      poster: "/projects/daynero/budget.jpg",
+      alt: "The Daynero public website: the daily-budget proposition, stating that the budget adapts in real time to spending patterns.",
+      label: "Daynero · public website: the daily-budget proposition (the app is pre-MVP)",
+      fit: "cover",
+      position: "center top",
     },
     a11y:
       "Diagram: spending events land one by one and a single safe-to-spend number recalculates.",
@@ -1573,3 +1685,4 @@ export function ProjectPortrait({
       return null;
   }
 }
+

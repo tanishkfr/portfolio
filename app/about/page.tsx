@@ -35,9 +35,9 @@ const practices = [
   },
   {
     principle: "Make decisions inspectable",
-    body: "A judgment should name the evidence it used, and a rule should show every case that changed it.",
+    body: "A judgment should name the evidence it used — that is Design or Disaster — and a rule should show every case that changed it, which is Atlas.",
     href: "/work/design-or-disaster?from=work",
-    label: "Design or Disaster and Atlas",
+    label: "Design or Disaster",
   },
   {
     principle: "Make the return accountable",
@@ -159,11 +159,10 @@ export default function AboutPage() {
         <h2 id="authorship-title">Where it sits in my process.</h2>
         <div>
           <p>
-            I use AI for exploration, critique, and implementation, but I own
-            the decisions and what ships. The concepts, research, design
-            decisions, editing, and every line that ships are mine. I built
-            Ariadne because faster output is only useful if the work can still
-            be checked.
+            I use AI to explore, critique and build, but I remain responsible
+            for the decisions and the work I contribute. Each project states
+            what I made and who I worked with. I built Ariadne because faster
+            output is only useful if the work can still be checked.
           </p>
           <p>
             Ariadne splits a job into roles, checks each step with tests and

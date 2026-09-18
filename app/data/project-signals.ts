@@ -23,7 +23,7 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     },
   },
   athena: {
-    status: "Working P0 prototype · live demo",
+    status: "Working prototype · demo available",
     focus: "Learning · evidence after the attempt",
     proof:
       "A working prototype verified against 18 of 18 P0 acceptance criteria, with three review modes and activity reported separately from knowledge evidence.",

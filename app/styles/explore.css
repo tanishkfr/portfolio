@@ -185,50 +185,17 @@
 /* The handoff is a working control wearing meta clothing: the same
    registration line and mono voice, with the arrow falling a step on
    hover — the cue behaving like the travel it offers. Global
-   :focus-visible outlines carry keyboard focus. Explore is the loud
-   one; Quick review is the quiet second reading beside it. */
-.xp-cover-handoff-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.5rem clamp(1.4rem, 4vw, 3.2rem);
-  padding-block: clamp(1.1rem, 2.6vh, 1.7rem) clamp(1.2rem, 3vh, 2rem);
-  border-top: 1px solid var(--line);
-}
-
+   :focus-visible outlines carry keyboard focus. One clear action:
+   explore the work. */
 .xp-cover-handoff {
   display: flex;
   align-items: baseline;
   justify-content: center;
   gap: 1.1rem;
+  padding-block: clamp(1.1rem, 2.6vh, 1.7rem) clamp(1.2rem, 3vh, 2rem);
+  border-top: 1px solid var(--line);
   color: var(--muted);
   text-decoration: none;
-}
-
-.xp-cover-quick {
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: var(--meta-size);
-  letter-spacing: 0.05em;
-  text-decoration: none;
-  transition: color var(--beat) var(--ease-out);
-}
-
-.xp-cover-quick span {
-  display: inline-block;
-  color: var(--registrar);
-  transition: transform var(--beat) var(--ease-out);
-}
-
-.xp-cover-quick:hover,
-.xp-cover-quick:focus-visible {
-  color: var(--ink);
-}
-
-.xp-cover-quick:hover span,
-.xp-cover-quick:focus-visible span {
-  transform: translateX(0.28em);
 }
 
 .xp-cover-handoff p {
@@ -259,9 +226,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .xp-cover-handoff p,
-  .xp-cover-handoff span,
-  .xp-cover-quick,
-  .xp-cover-quick span {
+  .xp-cover-handoff span {
     transition: none;
   }
 }
@@ -670,16 +635,16 @@
 
 .xpp-rack {
   position: relative;
-  z-index: 2;
+  z-index: 4;
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
-  align-items: baseline;
-  padding: 0.5rem 0.7rem 0.45rem;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 0.45rem 0.7rem 0.45rem;
   border-bottom: 1px solid var(--pp-rule);
   background: color-mix(in srgb, var(--pp-ground, transparent) 82%, transparent);
-  font-size: clamp(0.56rem, 1.25cqw, 0.68rem);
-  letter-spacing: 0.05em;
+  font-size: clamp(0.68rem, 1.3cqw, 0.8rem);
+  letter-spacing: 0.04em;
   color: var(--pp-muted);
 }
 
@@ -688,12 +653,68 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* No control: hover previews the real project, and the frame itself is
+   focusable so the keyboard reaches exactly the same state. */
+.xp-portrait:focus-visible {
+  outline: 2px solid var(--pp-accent);
+  outline-offset: 2px;
+}
+
 .xpp-stage {
   position: relative;
   z-index: 2;
   min-width: 0;
   min-height: 0;
-  padding: clamp(0.6rem, 1.8cqw, 1.1rem);
+}
+
+/* the authored demonstration and the real project occupy the same
+   reserved frame; neither can change the sheet's geometry */
+.xpp-demo-layer {
+  position: absolute;
+  inset: clamp(0.6rem, 1.8cqw, 1.1rem);
+  display: grid;
+  transition: opacity 220ms var(--ease-out);
+}
+
+.xpp-real {
+  position: absolute;
+  inset: clamp(0.6rem, 1.8cqw, 1.1rem);
+  z-index: 3;
+  overflow: hidden;
+  background: var(--pp-ground);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms var(--ease-out);
+}
+
+.xp-portrait[data-view="real"] .xpp-real {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.xp-portrait[data-view="real"] .xpp-demo-layer {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.xp-portrait[data-view="real"] .xpp-hint {
+  opacity: 0;
+}
+
+.xpp-real-media {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.xpp-real-media[data-fit="cover"] {
+  object-fit: cover;
+  object-position: center top;
+}
+
+.xpp-real-media[data-fit="contain"] {
+  object-fit: contain;
+  object-position: center;
 }
 
 /* corner registration ticks — the frame's own marks */
@@ -712,14 +733,14 @@
 
 .xpp-caption {
   position: relative;
-  z-index: 2;
+  z-index: 4;
   margin: 0;
-  padding: 0.5rem 0.7rem 0.55rem;
+  padding: 0.55rem 0.7rem 0.6rem;
   border-top: 1px solid var(--pp-rule);
   background: color-mix(in srgb, var(--pp-ground, transparent) 82%, transparent);
-  font-size: clamp(0.58rem, 1.3cqw, 0.72rem);
-  letter-spacing: 0.02em;
-  line-height: 1.4;
+  font-size: clamp(0.72rem, 1.35cqw, 0.85rem);
+  letter-spacing: 0.01em;
+  line-height: 1.45;
   color: var(--pp-muted);
   text-wrap: pretty;
 }
@@ -740,8 +761,8 @@
   border: 1px solid color-mix(in srgb, var(--pp-accent) 55%, transparent);
   background: color-mix(in srgb, var(--pp-ground, transparent) 82%, transparent);
   color: var(--pp-accent);
-  font-size: clamp(0.52rem, 1.1cqw, 0.62rem);
-  letter-spacing: 0.05em;
+  font-size: clamp(0.68rem, 1.15cqw, 0.78rem);
+  letter-spacing: 0.04em;
   opacity: 0;
   transition: opacity 180ms linear;
   pointer-events: none;
@@ -2110,168 +2131,12 @@
   transform-origin: center;
 }
 
-/* ---------- the proof window ----------
-   The ASCII demo stays the preview language. On hover — or when the sheet
-   takes keyboard focus — the demo yields a little and one real fragment of
-   the project's own interface is uncovered over it, filed under its actual
-   filename with one line saying what it shows. Pointer passes don't flash
-   it: the reveal waits for intent. It carries no meaning that isn't also in
-   the demo, the caption and the copy beside it, so it never has to be
-   reachable by touch or by hover alone. */
-.xpp-reveal {
-  position: absolute;
-  right: clamp(0.5rem, 2cqw, 1rem);
-  bottom: clamp(0.5rem, 2cqw, 1rem);
-  z-index: 6;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  width: auto;
-  height: var(--reveal-h, min(88%, 16rem));
-  aspect-ratio: var(--reveal-ratio, 16 / 10);
-  max-width: calc(100% - 1rem);
-  border: 1px solid color-mix(in srgb, var(--pp-ink) 34%, transparent);
-  background: color-mix(in srgb, var(--pp-ground, #150f0c) 92%, transparent);
-  box-shadow: 0 0.7rem 1.8rem color-mix(in srgb, var(--pp-ground, #150f0c) 55%, transparent);
-  opacity: 0;
-  transform: translateY(0.5rem) scale(0.985);
-  transition:
-    opacity 240ms var(--ease-out) 0ms,
-    transform 320ms var(--ease-out) 0ms;
-  pointer-events: none;
-}
 
-/* The window opens from whichever corner the demo is not using, so the
-   demo's own readouts and controls stay legible around it. */
-.xpp-reveal[data-anchor="top-right"] {
-  top: clamp(0.5rem, 2cqw, 1rem);
-  bottom: auto;
-}
+/* ---------- one frame, two states ----------
+   The authored demonstration and the real project share one reserved
+   frame; the toggle in the instrument rack is the only affordance.
+   There is no floating window, no filename bar, no second frame. */
 
-.xpp-reveal[data-anchor="bottom-left"] {
-  left: clamp(0.5rem, 2cqw, 1rem);
-  right: auto;
-}
-
-.xpp-reveal-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.45rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--pp-ink) 22%, transparent);
-  color: var(--pp-muted);
-  font-size: clamp(0.5rem, 1.05cqw, 0.6rem);
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.xpp-reveal-pip {
-  width: 4px;
-  height: 4px;
-  flex: 0 0 auto;
-  background: var(--pp-accent);
-}
-
-.xpp-reveal-file {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.xpp-reveal-frame {
-  position: relative;
-  min-height: 0;
-  overflow: hidden;
-}
-
-.xpp-reveal-shot {
-  object-fit: cover;
-  object-position: center;
-  opacity: 0.94;
-}
-
-.xpp-reveal-note {
-  padding: 0.32rem 0.45rem 0.38rem;
-  border-top: 1px solid color-mix(in srgb, var(--pp-ink) 22%, transparent);
-  color: var(--pp-ink);
-  font-size: clamp(0.5rem, 1.05cqw, 0.6rem);
-  line-height: 1.35;
-  letter-spacing: 0.02em;
-}
-
-/* the demo yields so the fragment reads as the top layer for a moment */
-@media (hover: hover) {
-  .xp-portrait:hover .xpp-reveal {
-    opacity: 1;
-    transform: none;
-    transition-delay: 140ms;
-  }
-
-  .xp-portrait:hover .xpp-demo {
-    opacity: 0.42;
-  }
-
-  .xp-portrait:hover .xp-portrait-field {
-    opacity: 0.4;
-  }
-
-  .xp-portrait:hover .xpp-hint {
-    opacity: 0;
-  }
-}
-
-/* keyboard reaches the same fragment, by focusing the sheet it belongs to */
-.xp-piece:focus-within .xpp-reveal {
-  opacity: 1;
-  transform: none;
-}
-
-.xp-piece:focus-within .xpp-demo {
-  opacity: 0.42;
-}
-
-/* touch reaches it through a real control: toggling pins the fragment,
-   with the same yielding of the demo as hover and focus */
-.xp-portrait[data-pinned="true"] .xpp-reveal {
-  opacity: 1;
-  transform: none;
-}
-
-.xp-portrait[data-pinned="true"] .xpp-demo {
-  opacity: 0.42;
-}
-
-.xp-portrait[data-pinned="true"] .xp-portrait-field {
-  opacity: 0.4;
-}
-
-.xpp-view {
-  position: absolute;
-  right: 0.7rem;
-  bottom: 0.7rem;
-  z-index: 3;
-  display: none;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--pp-rule);
-  background: var(--pp-ground);
-  color: var(--pp-ink);
-  font-family: var(--mono);
-  font-size: clamp(0.5rem, 1.1cqw, 0.62rem);
-  letter-spacing: 0.04em;
-  cursor: pointer;
-}
-
-@media (pointer: coarse) {
-  .xpp-view {
-    display: inline-flex;
-  }
-}
-
-/* keyboard always reaches the control, on any pointer */
-.xpp-view:focus-visible {
-  display: inline-flex;
-  outline: 2px solid var(--pp-accent);
-  outline-offset: 2px;
-}
 
 .xpp-demo,
 .xp-portrait-field {
@@ -2427,34 +2292,6 @@
 .xp-piece[data-layout="absence"] .xp-piece-copy {
   align-self: end;
   padding-bottom: clamp(1.6rem, 4vh, 3rem);
-}
-
-/* wordmark: the plate runs full width above the copy — one site,
-   presented like the thing it is. The sheet is exactly the pinned
-   viewport: the stage row absorbs the leftover space (minmax(0,1fr))
-   so the copy always sits fully inside the pinned sheet — the plate
-   never overflows below the fold and the next sheet never arrives
-   before this one has finished. */
-.xp-piece[data-layout="wordmark"] {
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: clamp(1rem, 2.2vh, 1.8rem) clamp(1.5rem, 4vw, 5rem);
-  min-height: calc(100svh - var(--header-h) - 1rem);
-  padding-top: clamp(1.5rem, 4.5vh, 3rem);
-}
-
-.xp-piece[data-layout="wordmark"] .xp-piece-stage {
-  grid-column: 1 / -1;
-  grid-row: 1;
-  height: 100%;
-  min-height: 0;
-}
-
-.xp-piece[data-layout="wordmark"] .xp-piece-copy {
-  grid-row: 2;
-  align-self: start;
-  max-width: none;
-  padding-block: clamp(0.6rem, 1.6vh, 1.2rem);
 }
 
 .xp-piece[data-layout="number"] {
