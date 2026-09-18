@@ -51,9 +51,9 @@ export function SplashGate() {
     /* The splash is the hero's opening frames — it merges into the cover
        wordmark, which only exists on the folio. On any other route there
        is nothing to merge into, and a full-screen overlay over a page a
-       reviewer opened directly (Quick review especially) would read as a
-       blank screen until its timers ran. So off the folio it resolves
-       immediately, before any timer is scheduled. */
+       reader opened directly would read as a blank screen until its
+       timers ran. So off the folio it resolves immediately, before any
+       timer is scheduled. */
     if (pathname !== "/") {
       const id = window.requestAnimationFrame(() => setPhase("done"));
       return () => window.cancelAnimationFrame(id);

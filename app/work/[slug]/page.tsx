@@ -36,49 +36,49 @@ export function generateStaticParams() {
 }
 
 /**
- * One real project image per case, where one exists. These are captures of
- * the shipped site or the live artifact, so the shared preview shows the
- * actual work rather than the site's generic plate. Athena has no shipped
- * screens, so it keeps the neutral image rather than implying one.
+ * One real project image per case, where one exists — cropped to the
+ * 1200x630 social ratio from the project's own capture, top-biased so the
+ * interface's header and controls survive the crop. Nothing is stretched
+ * and nothing is invented; these are the same real screenshots.
  */
 const ogImages: Record<
   string,
   { url: string; width: number; height: number } | undefined
 > = {
   "fluxion-studios": {
-    url: "/projects/fluxion/site-home-desktop.png",
-    width: 1440,
-    height: 900,
+    url: "/projects/fluxion/og-1200x630.png",
+    width: 1200,
+    height: 630,
   },
   athena: {
-    url: "/projects/athena/home.png",
-    width: 1440,
-    height: 900,
+    url: "/projects/athena/og-1200x630.png",
+    width: 1200,
+    height: 630,
   },
   daynero: {
-    url: "/projects/daynero/site-home-desktop.png",
-    width: 1440,
-    height: 900,
+    url: "/projects/daynero/og-1200x630.png",
+    width: 1200,
+    height: 630,
   },
   "invisible-interfaces": {
-    url: "/projects/invisible-interfaces/return.png",
-    width: 1440,
-    height: 900,
+    url: "/projects/invisible-interfaces/og-1200x630.png",
+    width: 1200,
+    height: 630,
   },
   "design-or-disaster": {
-    url: "/projects/design-or-disaster/case-001-marked.png",
-    width: 1440,
-    height: 900,
+    url: "/projects/design-or-disaster/og-1200x630.png",
+    width: 1200,
+    height: 630,
   },
   pentimento: {
-    url: "/projects/pentimento/second-draft.png",
-    width: 1440,
-    height: 900,
+    url: "/projects/pentimento/og-1200x630.png",
+    width: 1200,
+    height: 630,
   },
   atlas: {
-    url: "/projects/atlas/trace-lineage.png",
-    width: 1440,
-    height: 1830,
+    url: "/projects/atlas/og-1200x630.png",
+    width: 1200,
+    height: 630,
   },
 };
 
@@ -364,14 +364,19 @@ export default async function ProjectPage({
               {project.ownership ? ` · ${project.ownership}` : ""}
             </dd>
           </div>
-          {project.decisions[0] ? (
-            <div>
-              <dt>Main design decision</dt>
-              <dd>
-                {project.decisions[0].title} — {project.decisions[0].choice}
-              </dd>
-            </div>
-          ) : null}
+          {(() => {
+            /* the project's own editorial choice, not simply the first
+               decision in the data array */
+            const main = project.mainDecision ?? project.decisions[0];
+            return main ? (
+              <div>
+                <dt>Main design decision</dt>
+                <dd>
+                  {main.title} — {main.choice}
+                </dd>
+              </div>
+            ) : null;
+          })()}
           {project.demonstrated[0] ? (
             <div>
               <dt>What exists</dt>

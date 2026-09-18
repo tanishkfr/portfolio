@@ -93,8 +93,7 @@ export function MoreWork() {
           More work
         </p>
         <p className="more-work-note">
-          Tools and experiments that keep their own cases rather than the
-          main five.
+          Tools, games and experiments beyond my selected projects.
         </p>
       </header>
 

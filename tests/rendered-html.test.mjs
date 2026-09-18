@@ -49,10 +49,10 @@ test("server-renders the folio at / — one projects reading", async () => {
      cue — and it is a real control into the field, not furniture */
   assert.match(folio, /Explore selected work/);
   assert.match(folio, /class="xp-cover-handoff" href="#work"/);
-  /* The second, quiet reading path: Quick review is a real destination,
-     but Explore stays the primary handoff. */
-  assert.match(folio, /Quick review/);
-  assert.ok(folio.includes('href="/quick-review"'), "Quick review is a real destination");
+  /* One clear action: Quick review is retired, and nothing on the folio
+     offers a second reading mode. */
+  assert.doesNotMatch(folio, /Quick review|quick-review/);
+  assert.match(folio, /Explore selected work/);
   assert.equal((folio.match(/data-explore-piece/g) ?? []).length, 5);
   /* The folio ends once: the last sheet hands over to one quiet closing
      note — the folio's argument and one small Contact link — and then the
@@ -157,15 +157,46 @@ test("server-renders the folio at / — one projects reading", async () => {
   }
   assert.doesNotMatch(folio, /data-portrait="pentimento"/);
   assert.doesNotMatch(folio, /data-portrait="atlas"/);
-  /* Athena's portrait states its own idea and reveals the real Explain
-     Back capture — not a generic book/brain illustration. */
+  /* Athena's portrait states its own idea and carries the real Explain Back
+     footage — not a generic book/brain illustration. */
   assert.match(folio, /xpp-ath/);
   assert.match(folio, /Reading something is not the same as knowing it\./);
   assert.ok(
-    folio.includes("athena%2Fdashboard-finished.png") ||
-      folio.includes("athena/dashboard-finished.png"),
-    "Athena's portrait reveals the real review capture",
+    folio.includes("athena%2Fpreview.mp4") || folio.includes("athena/preview.mp4"),
+    "Athena's portrait plays the real Explain Back footage",
   );
+  /* Every portrait carries real evidence: a recording with a real poster,
+     or a real static capture where a recording would say no more than the
+     still (Daynero's site does not change state on scroll; Invisible
+     Interfaces' receipt needs a genuinely hidden tab). */
+  for (const slug of [
+    "fluxion",
+    "athena",
+    "daynero",
+    "design-or-disaster",
+    "invisible-interfaces",
+  ]) {
+    assert.ok(
+      folio.includes(`${slug}%2Fpreview.mp4`) ||
+        folio.includes(`${slug}/preview.mp4`) ||
+        folio.includes(`${slug}%2Fbudget.jpg`) ||
+        folio.includes(`${slug}/budget.jpg`) ||
+        folio.includes(`${slug}%2Freturn.png`) ||
+        folio.includes(`${slug}/return.png`),
+      `${slug} carries real evidence`,
+    );
+  }
+  /* The three recordings that demonstrate an interaction keep a real
+     consequence-frame poster. */
+  for (const slug of ["fluxion", "athena", "design-or-disaster"]) {
+    assert.ok(
+      folio.includes(`${slug}%2Fposter.jpg`) || folio.includes(`${slug}/poster.jpg`),
+      `${slug} has a real poster frame`,
+    );
+  }
+  /* Daynero and Invisible Interfaces are honest static captures. */
+  assert.doesNotMatch(folio, /daynero(%2F|\/)preview\.mp4/);
+  assert.doesNotMatch(folio, /invisible-interfaces(%2F|\/)preview\.mp4/);
   assertCleanEncoding(folio);
 
   /* A stale review URL still resolves to the one reading, gracefully. */
@@ -200,78 +231,24 @@ test("defines a meaningful interface, logic, and consequence for every project",
   }
 });
 
-test("renders Quick review as a fast reading of the same five projects", async () => {
+test("retires Quick review by redirecting to the folio work anchor", async () => {
   const response = await render("/quick-review");
-  assert.equal(response.status, 200);
-  const html = await response.text();
-
-  for (const title of [
-    "Fluxion Studios",
-    "Athena",
-    "Daynero",
-    "Invisible Interfaces",
-    "Design or Disaster",
-  ]) {
-    assert.ok(html.includes(title), `Quick review names ${title}`);
-  }
-  for (const phrase of [
-    "Five projects, the short version.",
-    "What I did",
-    "What exists now",
-  ]) {
-    assert.ok(html.includes(phrase), phrase);
-  }
-  // Athena shows a real capture, not a placeholder note.
+  /* Next answers a server redirect; whether it is 307 or 308, the
+     destination must be the homepage's work anchor, and the removed
+     reading mode must no longer render anywhere. */
   assert.ok(
-    html.includes("athena%2Fdashboard-finished.png") ||
-      html.includes("athena/dashboard-finished.png"),
-    "Quick review shows Athena's real review capture",
+    [301, 302, 303, 307, 308].includes(response.status),
+    `expected a redirect, got ${response.status}`,
   );
-  // No sixth primary project is implied.
-  assert.doesNotMatch(html, /Pentimento<\/h2>|Atlas<\/h2>/);
-  // The same data surfaces the real links.
-  assert.ok(html.includes('href="https://fluxion-studios.vercel.app/"'));
-  assert.ok(html.includes('href="/work/athena?from=work"'));
-  assert.ok(html.includes('href="https://athena-learning-platform-seven.vercel.app/"'));
-  assert.match(html, /rel="canonical" href="https:\/\/portfolio\.test\/quick-review"/);
-  assertCleanEncoding(html);
-});
+  const location = response.headers.get("location") ?? "";
+  assert.match(location, /\/#work$/, `redirect lands on the work anchor (got ${location})`);
 
-test("renders Quick review visible in the first server render, not gated behind a reveal", async () => {
-  const response = await render("/quick-review");
-  assert.equal(response.status, 200);
-  const html = await response.text();
-
-  /* The original failure was a blank route. A blank page has no list, no
-     rows and no images, so assert the rendered page structure rather than
-     the existence of project data. */
-  const listStart = html.indexOf('class="qr-list"');
-  const listEnd = html.indexOf("</ol>", listStart);
-  assert.ok(listStart !== -1 && listEnd > listStart, "Quick review renders its list");
-  const list = html.slice(listStart, listEnd);
-
-  assert.equal((list.match(/class="qr-item"/g) ?? []).length, 5, "five rows render");
-  assert.equal((list.match(/<h2>/g) ?? []).length, 5, "five project titles render");
-  assert.equal((list.match(/class="qr-visual"/g) ?? []).length, 5, "five visuals render");
-  assert.equal((list.match(/<img /g) ?? []).length, 5, "five real images render");
-  assert.equal((list.match(/class="qr-num"/g) ?? []).length, 5, "five numbers render");
-
-  /* Nothing in the row markup may depend on the entrance/reveal system or
-     a hidden attribute: with JS disabled the page is still complete. */
-  assert.doesNotMatch(list, /data-reveal|is-revealed|(?:^|\s)hidden(?:=|\s|>)/);
-
-  /* Order and real destinations. */
-  assert.ok(list.includes('href="/work/fluxion-studios?from=work"'));
-  assert.ok(list.indexOf("Fluxion Studios") < list.indexOf("Athena"));
-  assert.ok(list.indexOf("Athena") < list.indexOf("Daynero"));
-  assert.ok(list.indexOf("Daynero") < list.indexOf("Invisible Interfaces"));
-  assert.ok(list.indexOf("Invisible Interfaces") < list.indexOf("Design or Disaster"));
-
-  /* The full-screen opening overlay is folio-only; it must not be part of
-     this route's render tree, or a direct visit could be covered. */
-  assert.doesNotMatch(html, /class="splash(?:\s|")/);
-
-  assertCleanEncoding(html);
+  const home = await render("/");
+  const folio = await home.text();
+  assert.doesNotMatch(folio, /quick-review|Quick review/);
+  const sitemapResponse = await render("/sitemap.xml");
+  const sitemap = await sitemapResponse.text();
+  assert.doesNotMatch(sitemap, /quick-review/);
 });
 
 test("renders an honest Daynero preview and names its case boundary", async () => {
@@ -479,7 +456,8 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   assert.match(aboutHtml, /v1\.6\.7 on GitHub/);
   assert.match(aboutHtml, /Fluxion Studios/);
   assert.match(aboutHtml, /preview until the full record can be published/);
-  assert.match(aboutHtml, /I use AI for exploration, critique, and implementation/);
+  assert.match(aboutHtml, /I use AI to explore, critique and build/);
+  assert.match(aboutHtml, /I remain responsible for the decisions and the work I contribute/);
   assert.match(aboutHtml, /Working with AI/);
   assert.match(aboutHtml, /an interface behaviour I kept thinking about/);
   assert.match(aboutHtml, /href="\/work\/pentimento\?from=work"/);
@@ -521,7 +499,7 @@ test("exposes crawl metadata for Daynero and the four published cases", async ()
   assert.match(sitemap, /https:\/\/portfolio\.test\/work\/daynero/);
   assert.match(sitemap, /https:\/\/portfolio\.test\/work\/atlas/);
   assert.match(sitemap, /https:\/\/portfolio\.test\/work\/fluxion-studios/);
-  assert.match(sitemap, /https:\/\/portfolio\.test\/quick-review/);
+  assert.doesNotMatch(sitemap, /quick-review/);
   assert.match(sitemap, /https:\/\/portfolio\.test\/work\/athena/);
   assert.doesNotMatch(sitemap, /command-center/);
   assert.equal(robotsResponse.status, 200);

@@ -121,6 +121,12 @@ export type Project = {
   interactionSteps: string[];
   systemLayers: SystemLayer[];
   decisions: DesignDecision[];
+  /**
+   * The decision that best explains the project, chosen per project rather
+   * than taken as the first item of `decisions`. Where it is absent the case
+   * falls back to `decisions[0]`.
+   */
+  mainDecision?: { title: string; choice: string };
   demonstrated: string[];
   limits: string[];
   nextTest: NextTest;
@@ -220,6 +226,11 @@ export const projects: Project[] = [
       "The public site covers how we think, what we build, how we work, and a form that starts a project.",
     interactionSteps: [],
     systemLayers: [],
+    mainDecision: {
+      title: "Say the constraints out loud",
+      choice:
+        "Publish the reply time, the typical project duration, and that pricing is on enquiry — so a visitor can check the fit before writing.",
+    },
     decisions: [
       {
         title: "Build it in-house",
@@ -301,12 +312,13 @@ export const projects: Project[] = [
     title: "Athena",
     form: "Learning product",
     plain:
-      "A connected learning workspace for one project's resources, notes and review. Its whole point is that what you consumed is not evidence you can use it. A four-person team project.",
+      "A learning workspace that helps people practise what they learn and check what they actually remember. Built with three teammates as a working prototype.",
     oneLine:
-      "A connected learning workspace built around one distinction: what you consumed is not evidence you can recall, explain or apply it. Team project, working prototype.",
+      "A learning workspace that helps people practise what they learn and check what they actually remember — a four-person team project, built as a working prototype.",
     /* A live demo build exists, so an external CTA is offered; the case is
-       explicit that the deployed build is disconnected and seeded. */
-    status: "Working P0 prototype · 18/18 acceptance checks · live demo",
+       explicit that the deployed build is disconnected and seeded. The
+       verification numbers belong in the case, not in this status line. */
+    status: "Working prototype · demo available",
     year: "2026",
     context: "Team project · four designers",
     ownership: "Team Folio · with Nishtha, Anushrutha and Trisha",
@@ -422,6 +434,11 @@ export const projects: Project[] = [
           "Attempt → hint → example → explanation → answer. The highest help level the learner needed is preserved as context for the evidence that follows.",
       },
     ],
+    mainDecision: {
+      title: "Report activity and mastery separately",
+      choice:
+        "Never turn completion, confidence or a self-rating into a mastery percentage; show the evidence state as Solid, Developing, Review or Not Tested.",
+    },
     decisions: [
       {
         title: "Make review part of the project, not a separate quiz",
@@ -673,6 +690,11 @@ export const projects: Project[] = [
         body: "The Design Eye record reflects selected lenses, preserves ties, and never claims diagnostic or population validity.",
       },
     ],
+    mainDecision: {
+      title: "Evidence before verdict",
+      choice:
+        "Require a lens, a located mark and an explanation before any verdict can be stated.",
+    },
     decisions: [
       {
         title: "One coordinate system",
@@ -836,6 +858,11 @@ export const projects: Project[] = [
         body: "The second draft, print output, and session record preserve the machine underpainting and the person's sovereign correction.",
       },
     ],
+    mainDecision: {
+      title: "Sovereign ink",
+      choice:
+        "Make the person's correction the leading text — not an annotation beside the system's sentence.",
+    },
     decisions: [
       {
         title: "Sovereign ink",
@@ -1001,6 +1028,11 @@ export const projects: Project[] = [
         body: "The interface returns the result, comparison, completed steps, limits, local attention record, and a reversible discard decision.",
       },
     ],
+    mainDecision: {
+      title: "Accountable return",
+      choice:
+        "When work leaves the screen, the return describes the changes, the untouched material, the transmission, the limits of inference, and how to discard it.",
+    },
     decisions: [
       {
         title: "Causal absence",
@@ -1165,6 +1197,11 @@ export const projects: Project[] = [
         body: "Hold, refine, and fracture remain distinct; changed wording requires a visible rewrite and earlier language never disappears.",
       },
     ],
+    mainDecision: {
+      title: "Preserved lineage",
+      choice:
+        "Require visible wording changes for refine and fracture, so the final rule carries every case that produced it.",
+    },
     decisions: [
       {
         title: "Preserved lineage",
@@ -1268,7 +1305,7 @@ export const projects: Project[] = [
 /**
  * SELECTED WORK — the five projects the portfolio leads with, in order.
  * This is the one place the primary sequence is defined. Case numbers,
- * the homepage folio and Quick Review all read from it, so a project
+ * the homepage folio and the project index all read from it, so a project
  * outside it (Pentimento, Atlas) keeps its route and its case without
  * being numbered as if it were in the main five.
  */
