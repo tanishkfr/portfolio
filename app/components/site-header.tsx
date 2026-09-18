@@ -442,16 +442,7 @@ export function SiteHeader() {
         onClick={(event) => onClickLink(event, 0)}
         aria-label="Tanishk, product and interaction designer"
       >
-        {/* the state rule carries the name — the favicon's T mark, the
-            wordmark's pixel T, held at carrying size */}
-        <svg
-          className="identity-mark"
-          viewBox="0 0 64 64"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path fill="var(--registrar, #3a1ff0)" d="M8 10h48v12H40v32H24V22H8z" />
-        </svg>
+        {/* the wordmark alone carries the identity */}
         <span className="identity-name" ref={nameRef}>
           Tanishk
         </span>

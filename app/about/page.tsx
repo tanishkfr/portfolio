@@ -86,10 +86,10 @@ export default function AboutPage() {
             which is where most of my time with AI goes.
           </p>
           <p>
-            I&apos;m studying for a B.Des in Human Centered Design at Srishti
-            Manipal (2024–2028), I&apos;m the product designer at Daynero, and I
-            co-run Fluxion Studios, a two-person practice that designs and ships
-            for small businesses.
+            I&apos;m studying B.Des in Human Centered Design at Srishti Manipal
+            (2024-2028), I&apos;m the product designer at Daynero, and I co-run
+            Fluxion Studios, a two-person practice that designs and ships for
+            small businesses.
           </p>
         </div>
         {/* The facts, kept whole but read as a simple editorial panel

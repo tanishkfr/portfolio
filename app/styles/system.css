@@ -530,17 +530,6 @@ img {
 /* The favicon's T mark, carried at header scale: the wordmark's own
    pixel T in the interface's accent. Crisp because it is the same
    geometry as the icon, not a raster thumbnail. */
-.identity-mark {
-  width: 1.05rem;
-  height: 1.05rem;
-  flex: none;
-}
-
-/* The compact state of the hero wordmark: the wordmark's own pixel
-    voice — the same face, the same caps, the same box the hero's TANISHK
-    lands on — held at carrying size. It leads the header; everything
-    beside it is annotation. Hover keeps the name's quiet tell, a state
-    not a loop. */
 .identity-name {
   color: var(--registrar);
   font-family: var(--pixel);
@@ -572,13 +561,11 @@ img {
   pointer-events: auto;
 }
 
-.site-header .identity-mark,
 .site-header .site-identity small {
   opacity: 1;
   transition: opacity 200ms linear 80ms;
 }
 
-.site-header[data-dock="hero"] .identity-mark,
 .site-header[data-dock="hero"] .site-identity small {
   opacity: 0;
   transition: none;
