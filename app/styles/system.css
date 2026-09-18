@@ -514,7 +514,7 @@ img {
 /* content sliding beneath the header casts a breath of shadow —
    depth appears only once there is something underneath. The ground
    also settles to the page's own paper, so nothing reads through it. */
-[data-scrolled="true"] .site-header {
+.site-header[data-scrolled="true"] {
   background: rgb(var(--atmos, 232 234 228));
   box-shadow: 0 10px 22px -14px rgba(0, 0, 0, 0.65);
 }
@@ -714,19 +714,6 @@ img {
 
 .site-header nav a[aria-current="page"]::before {
   opacity: 1;
-  /* the one signature behaviour: the terminal pixel breathes, slowly,
-     a live registration mark rather than a static dot */
-  animation: nav-pip-breathe 2.8s var(--ease-swing) 1.2s infinite;
-}
-
-@keyframes nav-pip-breathe {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.35);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -741,13 +728,13 @@ img {
   transform-origin: left;
 }
 
-/* ---------- the travelling registration mark ----------
+/* ---------- the registration mark ----------
    Once the header is live, the per-link pip and underline give way to a
-   single mark that carries the state — filled where you are (held,
-   breathing), hollow where you are pointing (offered, walking), seated
-   at the centre of its label. Two fading pixels of motion residue stay
-   where the mark has been. The per-link pip and rule above are the whole
-   system without JavaScript, so nothing is lost where scripts never run. */
+   single static mark that carries the state — filled where you are,
+   hollow where you are pointing — seated at the centre of its label. One
+   simple transition moves it between seats; there is no trail and no
+   continuous motion. The per-link pip and rule above are the whole system
+   without JavaScript, so nothing is lost where scripts never run. */
 .site-header nav {
   position: relative;
 }
@@ -789,7 +776,7 @@ img {
 }
 
 .nav-mark[data-hold="true"]::after {
-  animation: nav-pip-breathe 2.8s var(--ease-swing) 1.2s infinite;
+  background: var(--registrar);
 }
 
 .nav-mark[data-hollow="true"]::after {
@@ -797,40 +784,9 @@ img {
   box-shadow: inset 0 0 0 1px var(--registrar);
 }
 
-.nav-residue {
-  position: absolute;
-  top: calc(var(--nav-y, 100%) - 2px);
-  left: 0;
-  width: 2px;
-  height: 2px;
-  background: var(--registrar);
-  pointer-events: none;
-  transform: translateX(
-    calc(var(--nav-x, 0px) + var(--nav-w, 0px) / 2 - 1px)
-  );
-  animation: nav-residue 520ms var(--ease-out) both;
-}
-
-@keyframes nav-residue {
-  0% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .nav-mark {
     transition: none;
-  }
-
-  .nav-mark[data-hold="true"]::after {
-    animation: none;
-  }
-
-  .nav-residue {
-    display: none;
   }
 }
 
@@ -888,7 +844,7 @@ a[data-external]:focus-visible .xp-cta-arrow {
     border-color var(--move) var(--ease-out);
 }
 
-[data-scrolled="true"] .site-header[data-bare="true"] {
+.site-header[data-scrolled="true"][data-bare="true"] {
   border-bottom-color: var(--line);
   background: rgb(var(--atmos, 232 234 228));
   backdrop-filter: none;
@@ -1490,7 +1446,10 @@ html[data-cursor="custom"] * {
   box-shadow: 0 0 0 1px rgba(246, 247, 242, 0.6);
   transform: translate(-40px, -40px) rotate(45deg);
   pointer-events: none;
-  z-index: 70;
+  /* above every overlay on the page — the grain plate (90) and the skip
+     link (100): a hidden native cursor must never be paired with a mark
+     that something else paints over */
+  z-index: 130;
   opacity: 0;
   transition: opacity 160ms var(--ease-out);
 }

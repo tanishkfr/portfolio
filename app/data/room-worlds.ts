@@ -32,6 +32,12 @@ export const ROOM_WORLDS: Record<string, RoomWorld> = {
     ink: "#1a1010",
     accentInk: "#b01020",
   },
+  // Athena's own palette — warm cream, navy, restrained orange
+  athena: {
+    ground: [255, 250, 237],
+    ink: "#173461",
+    accentInk: "#b0431c",
+  },
   "design-or-disaster": {
     ground: [251, 236, 227],
     ink: "#1a1310",

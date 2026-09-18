@@ -26,21 +26,44 @@ export default function ContactPage() {
           every word of the letter sits in its quiet zone. */}
       <PageSignal variant="contact" />
       <header className="contact-intro" data-reveal>
-        <h1>You bring the problem. I&apos;ll design the experience.</h1>
+        <h1>Have something worth building?</h1>
         <p className="contact-body">
-          I&apos;m a product and interaction designer based in Bengaluru,
-          focused on creating thoughtful interfaces through product design,
-          prototyping, and hands-on exploration.
-        </p>
-        <p className="contact-body">
-          Good things to bring: a confusing state, software that decides on its
-          own, a flow nobody can explain, or a question worth building an answer
-          for.
-        </p>
-        <p className="contact-sign">
-          <a href="mailto:madebytanishk@gmail.com">madebytanishk@gmail.com</a>
+          I&apos;m a product and interaction designer in Bengaluru. I work
+          across product design, interaction design, prototypes, and design
+          that gets built.
         </p>
       </header>
+
+      <div className="contact-paths" data-reveal>
+        <section>
+          <h2>For roles and collaboration</h2>
+          <p>Product design · interaction design · prototypes · design + implementation</p>
+          <a className="contact-primary" href="mailto:madebytanishk@gmail.com">
+            madebytanishk@gmail.com
+          </a>
+        </section>
+        <section>
+          <h2>For client websites</h2>
+          <p>
+            Fluxion Studios is the two-person studio I co-founded for small
+            businesses in Bengaluru.
+          </p>
+          <a
+            className="contact-primary"
+            href="https://fluxion-studios.vercel.app/"
+            target="_blank"
+            rel="noreferrer"
+            data-external="true"
+          >
+            Fluxion Studios <span aria-hidden="true">↗</span>
+            <span className="sr-only"> (opens in a new tab)</span>
+          </a>
+        </section>
+      </div>
+
+      <p className="contact-availability">
+        Bengaluru, India · open to product, UI/UX, and interaction design roles.
+      </p>
 
       <p className="contact-links">
         <a

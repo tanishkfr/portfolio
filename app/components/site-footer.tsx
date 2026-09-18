@@ -69,46 +69,42 @@ export function SiteFooter({
         glyphs="·:+*#"
         cell={13}
         seed={77}
-        ambient={0.3}
-        flow={1.6}
-        wavefront={0.07}
-        drift={0.35}
+        ambient={0.22}
+        flow={0.6}
+        wavefront={0.03}
+        drift={0.15}
         pointerRadius={0}
         tune={[0.48, 1.9]}
         quiet={quiet}
         shape={(v, nx) => v * (0.55 + 0.7 * Math.abs(nx - 0.5) * 2)}
-        color={(t) => `rgba(27, 33, 38, ${0.06 + 0.17 * t})`}
+        color={(t) => `rgba(27, 33, 38, ${0.06 + 0.15 * t})`}
       />
       <SignalField
         className="footer-pixels"
         mode="pixel"
         cell={20}
         seed={83}
-        ambient={0.66}
-        flow={1.2}
-        wavefront={0.09}
-        drift={0.5}
+        ambient={0.42}
+        flow={0.35}
+        wavefront={0}
+        drift={0.15}
         pointerRadius={0}
         tune={[0.4, 2.1]}
         quiet={quiet}
-        shape={(v, nx, ny, t) => {
-          /* the closing counterpart of the hero's diagonal: one cluster
-             in the open top-centre gap, one at the mid-right, and the
-             matter dispersing outward along the open bottom edge. The
-             structured elements max-blend over the texture. */
+        /* The close settles rather than performs: the same clusters as the
+           hero, held still. Only the shared ambient breath moves, so the
+           motion arc ends quiet instead of running a second animation. */
+        shape={(v, nx, ny) => {
           const hash = Math.sin(nx * 619.7 + ny * 311.3) * 43758.5453;
           const grain = 0.7 + 0.55 * (hash - Math.floor(hash));
           const clusterTC = Math.exp(
-            -Math.pow((nx - 0.5 - 0.03 * Math.sin(t * 0.12)) * 4, 2) -
-              Math.pow((ny - 0.12) * 3.6, 2),
+            -Math.pow((nx - 0.5) * 4, 2) - Math.pow((ny - 0.12) * 3.6, 2),
           );
           const clusterBR = Math.exp(
-            -Math.pow((nx - 0.85 - 0.03 * Math.sin(t * 0.1 + 3)) * 4, 2) -
-              Math.pow((ny - 0.56) * 3.2, 2),
+            -Math.pow((nx - 0.85) * 4, 2) - Math.pow((ny - 0.56) * 3.2, 2),
           );
           const leave = Math.exp(
-            -Math.pow((ny - 0.94 - 0.015 * Math.sin(t * 0.09)) * 8, 2) -
-              Math.pow((nx - 0.78) * 3, 2),
+            -Math.pow((ny - 0.94) * 8, 2) - Math.pow((nx - 0.78) * 3, 2),
           );
           const texture = v * 0.8;
           return Math.max(
@@ -118,7 +114,7 @@ export function SiteFooter({
             leave * 0.7 * grain,
           );
         }}
-        color={(t) => `rgba(58, 31, 240, ${0.18 + 0.52 * t})`}
+        color={(t) => `rgba(58, 31, 240, ${0.16 + 0.46 * t})`}
       />
       <div className="footer-mast">
         <span className="footer-name" aria-hidden="true">
@@ -161,6 +157,7 @@ export function SiteFooter({
           GitHub <span aria-hidden="true">↗</span>
         </a>
         <Link href="/#work">Projects</Link>
+        <Link href="/quick-review">Quick review</Link>
         <Link href="/about">About</Link>
       </nav>
 

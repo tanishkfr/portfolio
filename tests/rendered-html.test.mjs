@@ -49,7 +49,11 @@ test("server-renders the folio at / — one projects reading", async () => {
      cue — and it is a real control into the field, not furniture */
   assert.match(folio, /Explore selected work/);
   assert.match(folio, /class="xp-cover-handoff" href="#work"/);
-  assert.equal((folio.match(/data-explore-piece/g) ?? []).length, 6);
+  /* The second, quiet reading path: Quick review is a real destination,
+     but Explore stays the primary handoff. */
+  assert.match(folio, /Quick review/);
+  assert.ok(folio.includes('href="/quick-review"'), "Quick review is a real destination");
+  assert.equal((folio.match(/data-explore-piece/g) ?? []).length, 5);
   /* The folio ends once: the last sheet hands over to one quiet closing
      note — the folio's argument and one small Contact link — and then the
      global footer, which keeps the page's only contact address. The old
@@ -75,6 +79,49 @@ test("server-renders the folio at / — one projects reading", async () => {
     "the footer follows the projects",
   );
   assert.match(folio, /id="work"/);
+  /* Selected Work is the five, in order, and the index numbering follows. */
+  {
+    const index = folio.slice(
+      folio.indexOf('class="xp-field-index"'),
+      folio.indexOf('class="xp-piece-stack"'),
+    );
+    const order = ["Fluxion Studios", "Athena", "Daynero", "Invisible Interfaces", "Design or Disaster"];
+    let cursor = -1;
+    for (const title of order) {
+      const at = index.indexOf(title);
+      assert.ok(at > cursor, `${title} appears in Selected Work order`);
+      cursor = at;
+    }
+  }
+  /* More work sits after the five sheets and before the closing note;
+     Ariadne leads with its real documented workflow, then the three
+     screenshot projects with verified links. */
+  assert.match(folio, /class="more-work"/);
+  assert.match(folio, /More work/);
+  assert.match(folio, /github\.com\/tanishkfr\/ariadne/);
+  assert.match(folio, /mw-feature/);
+  assert.match(folio, /Route \+ Discover/);
+  assert.match(folio, /Direction Lock/);
+  assert.ok(
+    (folio.match(/v1\.6\.7/g) ?? []).length === 1,
+    "the Ariadne release is stated once, not duplicated",
+  );
+  assert.doesNotMatch(folio, /more-work-visual--repo|more-work-repo/);
+  assert.match(folio, /8BIT Boxer/);
+  assert.match(folio, /https:\/\/bag-bop\.vercel\.app\//);
+  assert.ok(
+    folio.includes("8bit-boxer%2Fplaying-hit.png") ||
+      folio.includes("8bit-boxer/playing-hit.png"),
+    "8BIT Boxer shows its real gameplay capture",
+  );
+  assert.ok(
+    folio.indexOf('class="more-work"') > folio.lastIndexOf("data-explore-piece"),
+    "More work follows the five sheets",
+  );
+  assert.ok(
+    folio.indexOf("data-close-note") > folio.indexOf('class="more-work"'),
+    "the closing note follows More work",
+  );
   /* One Projects destination: the header carries plain navigation, with
      no second reading control anywhere. */
   assert.match(folio, />Projects</);
@@ -93,21 +140,32 @@ test("server-renders the folio at / — one projects reading", async () => {
     folio,
     /class="exhibit|claim-line|ex-zone|ex-arrival|deck-name|thinking-line|Ask five systems/i,
   );
-  /* all six portraits render in the folio — the only project preview */
+  /* every selected sheet now carries its own portrait, each with a real
+     capture revealed on hover/focus */
   assert.ok(
-    (folio.match(/class="xp-portrait/g) ?? []).length >= 6,
-    "all six sheets carry their portrait",
+    (folio.match(/class="xp-portrait/g) ?? []).length >= 5,
+    "all five selected sheets carry their portrait",
   );
   for (const artifact of [
     "design-or-disaster",
-    "pentimento",
     "invisible-interfaces",
-    "atlas",
     "fluxion-studios",
     "daynero",
+    "athena",
   ]) {
     assert.match(folio, new RegExp(`data-portrait="${artifact}"`), artifact);
   }
+  assert.doesNotMatch(folio, /data-portrait="pentimento"/);
+  assert.doesNotMatch(folio, /data-portrait="atlas"/);
+  /* Athena's portrait states its own idea and reveals the real Explain
+     Back capture — not a generic book/brain illustration. */
+  assert.match(folio, /xpp-ath/);
+  assert.match(folio, /Reading something is not the same as knowing it\./);
+  assert.ok(
+    folio.includes("athena%2Fdashboard-finished.png") ||
+      folio.includes("athena/dashboard-finished.png"),
+    "Athena's portrait reveals the real review capture",
+  );
   assertCleanEncoding(folio);
 
   /* A stale review URL still resolves to the one reading, gracefully. */
@@ -142,9 +200,82 @@ test("defines a meaningful interface, logic, and consequence for every project",
   }
 });
 
+test("renders Quick review as a fast reading of the same five projects", async () => {
+  const response = await render("/quick-review");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+
+  for (const title of [
+    "Fluxion Studios",
+    "Athena",
+    "Daynero",
+    "Invisible Interfaces",
+    "Design or Disaster",
+  ]) {
+    assert.ok(html.includes(title), `Quick review names ${title}`);
+  }
+  for (const phrase of [
+    "Five projects, the short version.",
+    "What I did",
+    "What exists now",
+  ]) {
+    assert.ok(html.includes(phrase), phrase);
+  }
+  // Athena shows a real capture, not a placeholder note.
+  assert.ok(
+    html.includes("athena%2Fdashboard-finished.png") ||
+      html.includes("athena/dashboard-finished.png"),
+    "Quick review shows Athena's real review capture",
+  );
+  // No sixth primary project is implied.
+  assert.doesNotMatch(html, /Pentimento<\/h2>|Atlas<\/h2>/);
+  // The same data surfaces the real links.
+  assert.ok(html.includes('href="https://fluxion-studios.vercel.app/"'));
+  assert.ok(html.includes('href="/work/athena?from=work"'));
+  assert.ok(html.includes('href="https://athena-learning-platform-seven.vercel.app/"'));
+  assert.match(html, /rel="canonical" href="https:\/\/portfolio\.test\/quick-review"/);
+  assertCleanEncoding(html);
+});
+
+test("renders Quick review visible in the first server render, not gated behind a reveal", async () => {
+  const response = await render("/quick-review");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+
+  /* The original failure was a blank route. A blank page has no list, no
+     rows and no images, so assert the rendered page structure rather than
+     the existence of project data. */
+  const listStart = html.indexOf('class="qr-list"');
+  const listEnd = html.indexOf("</ol>", listStart);
+  assert.ok(listStart !== -1 && listEnd > listStart, "Quick review renders its list");
+  const list = html.slice(listStart, listEnd);
+
+  assert.equal((list.match(/class="qr-item"/g) ?? []).length, 5, "five rows render");
+  assert.equal((list.match(/<h2>/g) ?? []).length, 5, "five project titles render");
+  assert.equal((list.match(/class="qr-visual"/g) ?? []).length, 5, "five visuals render");
+  assert.equal((list.match(/<img /g) ?? []).length, 5, "five real images render");
+  assert.equal((list.match(/class="qr-num"/g) ?? []).length, 5, "five numbers render");
+
+  /* Nothing in the row markup may depend on the entrance/reveal system or
+     a hidden attribute: with JS disabled the page is still complete. */
+  assert.doesNotMatch(list, /data-reveal|is-revealed|(?:^|\s)hidden(?:=|\s|>)/);
+
+  /* Order and real destinations. */
+  assert.ok(list.includes('href="/work/fluxion-studios?from=work"'));
+  assert.ok(list.indexOf("Fluxion Studios") < list.indexOf("Athena"));
+  assert.ok(list.indexOf("Athena") < list.indexOf("Daynero"));
+  assert.ok(list.indexOf("Daynero") < list.indexOf("Invisible Interfaces"));
+  assert.ok(list.indexOf("Invisible Interfaces") < list.indexOf("Design or Disaster"));
+
+  /* The full-screen opening overlay is folio-only; it must not be part of
+     this route's render tree, or a direct visit could be covered. */
+  assert.doesNotMatch(html, /class="splash(?:\s|")/);
+
+  assertCleanEncoding(html);
+});
+
 test("renders an honest Daynero preview and names its case boundary", async () => {
   const response = await render("/work/daynero");
-  assert.equal(response.status, 200);
   const html = await response.text();
 
   for (const phrase of [
@@ -171,6 +302,56 @@ test("renders an honest Daynero preview and names its case boundary", async () =
     html,
     /Try the core interaction|Built and verified|Read the case|daynero-soon-mark/,
   );
+  assertCleanEncoding(html);
+});
+
+test("renders Athena as a team case with verified evidence and an honest boundary", async () => {
+  const response = await render("/work/athena");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+
+  for (const phrase of [
+    "Athena",
+    "Working P0 prototype",
+    "18 of 18 P0 acceptance criteria verified",
+    "Explain Back, Cue Cards and Apply It",
+    "Activity and knowledge evidence are reported apart",
+    "focus group of six",
+    "Team project with Nishtha, Anushrutha and Trisha",
+    "What I did",
+    "Main design decision",
+    "What exists",
+    "Still unproven",
+    "Built and working",
+    "Not yet proven",
+    "Next test",
+    "No learning-outcome study has been run",
+    "illustrative scenario",
+  ]) {
+    assert.ok(html.includes(phrase), phrase);
+  }
+  // The brief is a skim layer: it does not re-state what the hero or the
+  // immediately following section already says.
+  assert.doesNotMatch(html, /<dt>What it is<\/dt>|<dt>Why it exists<\/dt>/);
+  // Team attribution is explicit and the work is not claimed as solo.
+  assert.ok(html.includes("four-person team"), "team attribution present");
+  assert.doesNotMatch(html, /I ran the student research|mine end to end/);
+  // Selected Work numbering: Athena is 02.
+  assert.match(html, /Case 02/);
+  // Real interface evidence from the working prototype, and the verified demo.
+  for (const asset of ["home.png", "learn.png", "explain-report.png", "dashboard-finished.png"]) {
+    assert.ok(
+      html.includes(`athena%2F${asset}`) || html.includes(`athena/${asset}`),
+      `Athena case shows ${asset}`,
+    );
+  }
+  assert.ok(html.includes('href="https://athena-learning-platform-seven.vercel.app/"'));
+  assert.ok(html.includes("Open the demo"));
+  // The disconnected demo is stated, not implied.
+  assert.ok(html.includes("disconnected"));
+  // No invented embedded instrument; the captures are the evidence.
+  assert.doesNotMatch(html, /Product preview|Try the interaction/);
+  assert.match(html, /rel="canonical" href="https:\/\/portfolio\.test\/work\/athena"/);
   assertCleanEncoding(html);
 });
 
@@ -259,7 +440,7 @@ test("server-renders four interactive, evidence-bounded published cases", async 
 });
 
 test("keeps all canonical project navigation payloads valid", async () => {
-  for (const slug of ["daynero", "fluxion-studios", "design-or-disaster", "pentimento", "invisible-interfaces", "atlas"]) {
+  for (const slug of ["daynero", "fluxion-studios", "athena", "design-or-disaster", "pentimento", "invisible-interfaces", "atlas"]) {
     const response = await render(`/work/${slug}.rsc?from=all&_rsc`, "text/x-component", { RSC: "1" });
     assert.equal(response.status, 200);
     assert.match(response.headers.get("content-type") ?? "", /^text\/x-component\b/i);
@@ -292,27 +473,29 @@ test("publishes accurate identity, commercial context, and contact", async () =>
   assert.match(aboutHtml, /Tanishk at a glance/);
   assert.match(aboutHtml, /Four things running right now\./);
   assert.match(aboutHtml, /Currently making/);
-  assert.match(aboutHtml, /~\/tanishk/);
   assert.match(aboutHtml, /five-person team/);
   assert.match(aboutHtml, /Taamboolam/);
   assert.match(aboutHtml, /Ariadne/);
+  assert.match(aboutHtml, /v1\.6\.7 on GitHub/);
   assert.match(aboutHtml, /Fluxion Studios/);
-  assert.match(aboutHtml, /its full case is still being documented/);
-  assert.match(aboutHtml, /four independent projects/);
-  assert.match(aboutHtml, /I use AI deliberately/);
+  assert.match(aboutHtml, /preview until the full record can be published/);
+  assert.match(aboutHtml, /I use AI for exploration, critique, and implementation/);
   assert.match(aboutHtml, /Working with AI/);
   assert.match(aboutHtml, /an interface behaviour I kept thinking about/);
   assert.match(aboutHtml, /href="\/work\/pentimento\?from=work"/);
+  assert.doesNotMatch(aboutHtml, /~\/tanishk/);
+  assert.doesNotMatch(aboutHtml, /12\.9716|77\.5946/);
   assert.match(aboutHtml, /rel="canonical" href="https:\/\/portfolio\.test\/about"/);
 
   assert.equal(contactResponse.status, 200);
   const contactHtml = await contactResponse.text();
-  /* the contact page says plainly what he does, what conversations are
-     welcome, and how to reach him — no slogans */
-  assert.match(contactHtml, /You bring the problem\./);
-  assert.match(contactHtml, /design the experience\./);
-  assert.match(contactHtml, /product and interaction designer based in Bengaluru/);
-  assert.match(contactHtml, /Good things to bring/);
+  /* the contact page states what he does, the two real paths (roles and
+     client work), and how to reach him — no slogans */
+  assert.match(contactHtml, /Have something worth building\?/);
+  assert.match(contactHtml, /product and interaction designer in Bengaluru/);
+  assert.match(contactHtml, /For roles and collaboration/);
+  assert.match(contactHtml, /For client websites/);
+  assert.match(contactHtml, /fluxion-studios\.vercel\.app/);
   assert.match(contactHtml, /madebytanishk@gmail\.com/);
   assert.match(contactHtml, /linkedin\.com\/in\/tanishksalagame/);
   assert.match(contactHtml, /github\.com\/tanishkfr/);
@@ -338,6 +521,8 @@ test("exposes crawl metadata for Daynero and the four published cases", async ()
   assert.match(sitemap, /https:\/\/portfolio\.test\/work\/daynero/);
   assert.match(sitemap, /https:\/\/portfolio\.test\/work\/atlas/);
   assert.match(sitemap, /https:\/\/portfolio\.test\/work\/fluxion-studios/);
+  assert.match(sitemap, /https:\/\/portfolio\.test\/quick-review/);
+  assert.match(sitemap, /https:\/\/portfolio\.test\/work\/athena/);
   assert.doesNotMatch(sitemap, /command-center/);
   assert.equal(robotsResponse.status, 200);
   assert.match(await robotsResponse.text(), /Sitemap: https:\/\/portfolio\.test\/sitemap\.xml/);
@@ -521,6 +706,21 @@ test("keeps motion, image, and single-deployment contracts explicit", async () =
   /* One reading: no mode state, no reading control, no stale edition
      contract anywhere. The header is plain navigation. */
   assert.doesNotMatch(siteHeader, /replaceState|setMode|useMode|nav-modes/);
+  /* The dock is a strict function of scroll: no idle timer, no settle to a
+     nearest endpoint, no step cap that lets the wordmark lag the page. */
+  assert.doesNotMatch(siteHeader, /settleTo|setTimeout|nav-residue/);
+  assert.match(siteHeader, /const LANDED/);
+  /* The rail is quiet: the trail and the breathing pip are gone from CSS. */
+  assert.doesNotMatch(css, /nav-residue|nav-pip-breathe/);
+  /* The homepage selected sequence comes from one place in the data. */
+  assert.match(explore, /selectedSlugs/);
+  assert.match(data, /export const selectedSlugs/);
+  assert.match(index, /MoreWork/);
+  assert.match(data, /slug: "athena"/);
+  /* Pentimento and Atlas keep their cases and routes despite leaving the
+     five-item sequence. */
+  assert.match(data, /slug: "pentimento"/);
+  assert.match(data, /slug: "atlas"/);
   assert.doesNotMatch(css, /data-mode=|data-edition=/);
   assert.match(css, /route-fade-in/);
   assert.match(projectPage, /TransitionLink/);

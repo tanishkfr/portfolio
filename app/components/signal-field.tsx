@@ -237,6 +237,11 @@ export function SignalField({
        effect run, same lifetime as the sprites */
     const inkCache: string[] = [];
     const pointerCell = { x: -9999, y: -9999 };
+    /* Raw client coords from pointermove. The event handler stores only
+       these — reading the canvas box per event forces layout hundreds of
+       times a second on high-polling mice — and the painted frame below
+       converts them once per repaint instead. */
+    const pointerClient = { x: -9999, y: -9999 };
     let inView = false;
     let raf = 0;
     const clockStart = SHARED_EPOCH || (SHARED_EPOCH = performance.now());
@@ -246,6 +251,16 @@ export function SignalField({
        jumping ahead by however long the reader was elsewhere. */
     let scriptMs = 0;
     let lastPaintMs = clockStart;
+    /* Ambient texture does not need display-rate repaints. Capping the
+       paint rate keeps the field alive while stopping full-screen fields
+       from consuming the main thread on high-refresh displays (a
+       requestAnimationFrame loop otherwise repaints at whatever rate the
+       compositor offers — 60, 120 or uncapped). The field is quantised to
+       eighths of a second, so the visible motion is unchanged. Very large
+       fields repaint slower still: cost scales with cell count, and a
+       full-screen texture reads identically at 15fps. */
+    let frameMs = 1000 / 24;
+    let nextPaintAt = 0;
     let pulseStart = -1;
     let lastPulseKey: number | string | null = null;
     let pulseOpen = false;
@@ -302,6 +317,11 @@ export function SignalField({
       canvas.style.height = `${height}px`;
       cols = Math.ceil(width / step) + 1;
       rows = Math.ceil(height / step) + 1;
+      /* large fields hold a texture, not a fast interaction: give them a
+         slower paint budget so a full-screen field cannot saturate the
+         main thread on a high-refresh display */
+      frameMs = cols * rows > 4000 ? 1000 / 15 : 1000 / 24;
+      nextPaintAt = 0;
       lastPaint = new Int32Array(cols * rows).fill(-1);
       buildSprites();
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -417,6 +437,12 @@ export function SignalField({
 
     function paint(now: number, force = false): void {
       if (!sprite) return;
+      /* one layout read per painted frame, not per pointer event */
+      if (pointerRadius > 0 && pointerClient.x > -9000) {
+        const box = canvas.getBoundingClientRect();
+        pointerCell.x = pointerClient.x - box.left;
+        pointerCell.y = pointerClient.y - box.top;
+      }
       /* a changed pulse key opens the material sweep; the effect also
          rebinds on the same change, so this only guards idle replays */
       if (pulseKey != null && pulseKey !== lastPulseKey) {
@@ -612,6 +638,12 @@ export function SignalField({
         lastPaintMs = now;
         return;
       }
+      /* rate cap: wait for the next allowed paint without repainting */
+      if (now < nextPaintAt) {
+        raf = window.requestAnimationFrame(tick);
+        return;
+      }
+      nextPaintAt = now + frameMs;
       paint(now);
       if (active()) raf = window.requestAnimationFrame(tick);
     };
@@ -655,12 +687,13 @@ export function SignalField({
 
     const onMove = (event: PointerEvent): void => {
       if (event.pointerType === "touch" || coarse.matches) return;
-      const box = canvas.getBoundingClientRect();
-      pointerCell.x = event.clientX - box.left;
-      pointerCell.y = event.clientY - box.top;
+      pointerClient.x = event.clientX;
+      pointerClient.y = event.clientY;
       schedule();
     };
     const onOut = (): void => {
+      pointerClient.x = -9999;
+      pointerClient.y = -9999;
       pointerCell.x = -9999;
       pointerCell.y = -9999;
       schedule();

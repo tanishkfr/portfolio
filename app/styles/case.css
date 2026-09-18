@@ -460,6 +460,41 @@
   max-width: 34ch;
 }
 
+/* The 60-second path. Typography-led, not a dashboard: short answers to
+   the seven questions a reviewer asks, set in the opening before the
+   deep read. The full reasoning stays below, unchanged. */
+.case-brief {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem clamp(1.5rem, 4vw, 3.5rem);
+  width: 100%;
+  margin: clamp(1.8rem, 4vh, 2.8rem) 0 0;
+  padding-top: clamp(1.4rem, 3vh, 2rem);
+  border-top: 1px solid var(--line-strong);
+}
+
+.case-brief > div {
+  display: grid;
+  gap: 0.3rem;
+  align-content: start;
+}
+
+.case-brief dt {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.case-brief dd {
+  margin: 0;
+  max-width: 54ch;
+  color: var(--ink);
+  font-size: var(--step--1);
+  line-height: 1.55;
+}
+
 /* Scale and tools move below the demonstration, out of the opening. */
 .case-tools {
   display: flex;
@@ -2569,6 +2604,10 @@
     padding-left: 0;
     padding-top: clamp(1rem, 3.5vw, 1.5rem);
     gap: 1.3rem;
+  }
+
+  .case-brief {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

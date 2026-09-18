@@ -74,8 +74,13 @@ export function MotionDirector() {
       frame = 0;
       const scrollable = document.documentElement.scrollHeight - view.innerHeight;
       const progress = scrollable > 0 ? Math.min(view.scrollY / scrollable, 1) : 0;
-      root.style.setProperty("--scroll-progress", progress.toFixed(4));
-      root.dataset.scrolled = view.scrollY > 20 ? "true" : "false";
+      /* Both states are consumed only by the header, so they are written
+         there rather than on the root: a root-level custom property
+         invalidates style for the whole document on every scroll frame. */
+      const host =
+        document.querySelector<HTMLElement>(".site-header") ?? root;
+      host.style.setProperty("--scroll-progress", progress.toFixed(4));
+      host.dataset.scrolled = view.scrollY > 20 ? "true" : "false";
       /* A sweep can never be allowed to withhold content: if measuring
          throws, the page fails open rather than staying blank. */
       try {

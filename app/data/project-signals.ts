@@ -22,6 +22,18 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
       consequence: "A prospective client can understand the fit and send an enquiry.",
     },
   },
+  athena: {
+    status: "Working P0 prototype · live demo",
+    focus: "Learning · evidence after the attempt",
+    proof:
+      "A working prototype verified against 18 of 18 P0 acceptance criteria, with three review modes and activity reported separately from knowledge evidence.",
+    interaction: "Explain, recall or apply — then see what was demonstrated and what is missing.",
+    exposure: {
+      surface: "A project holds its resources, notes and review in one workspace.",
+      rule: "Consumption, confidence and completion are not treated as evidence of knowledge.",
+      consequence: "Weak concepts return earlier, tied to the exact source that would fix them.",
+    },
+  },
   daynero: {
     status: "Commercial product · case study soon",
     focus: "Personal finance · daily spending",
@@ -81,9 +93,10 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
 
 export const flagshipOrder = [
   "fluxion-studios",
+  "athena",
+  "daynero",
+  "invisible-interfaces",
   "design-or-disaster",
   "pentimento",
-  "invisible-interfaces",
   "atlas",
-  "daynero",
 ] as const;

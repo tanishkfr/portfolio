@@ -49,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Tanishk — Product & Interaction Designer",
       title: "Tanishk — Product & Interaction Designer",
       description:
-        "Fluxion Studios, four independent interaction projects, and Daynero, by Tanishk.",
+        "Fluxion Studios, Athena, Daynero, and independent interaction projects, by Tanishk.",
       images: [{ url: "/og.png", alt: "Tanishk — Product & Interaction Designer" }],
     },
   };

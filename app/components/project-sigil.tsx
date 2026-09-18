@@ -246,8 +246,55 @@ function FluxionSigil() {
   );
 }
 
+/* Athena's mark is the loop itself: gathering, then practising, then the
+   return pass. Three held steps over one baseline. */
+function AthenaSigil() {
+  return (
+    <>
+      <rect
+        className="ph ph-s"
+        x="14"
+        y="24"
+        width="20"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
+      <rect
+        className="ph ph-r"
+        x="42"
+        y="17"
+        width="20"
+        height="29"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
+      <rect
+        className="ph ph-c acc"
+        x="70"
+        y="10"
+        width="20"
+        height="36"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
+      <path
+        className="base"
+        d="M14 54 H106"
+        stroke="currentColor"
+        strokeWidth="1"
+        opacity="0.55"
+      />
+    </>
+  );
+}
+
 const marks: Record<Project["artifact"], () => React.ReactNode> = {
   fluxion: FluxionSigil,
+  athena: AthenaSigil,
   daynero: DayneroSigil,
   invisible: InvisibleSigil,
   disaster: DisasterSigil,
@@ -257,6 +304,7 @@ const marks: Record<Project["artifact"], () => React.ReactNode> = {
 
 const accents: Record<Project["artifact"], string> = {
   fluxion: "#b01020",
+  athena: "#343191",
   daynero: "var(--accent-daynero-ink)",
   invisible: "var(--accent-invisible-ink)",
   disaster: "var(--accent-disaster)",

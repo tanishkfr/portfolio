@@ -48,51 +48,16 @@
   line-height: 1.55;
 }
 
-/* The facts as workspace state: a small desk panel with a path bar and a
-   status, so biography arrives as the surface a designer would actually
-   keep open rather than a résumé table. Same facts, in mono. */
-.about-console {
-  margin: 1.4rem 0 0;
-  max-width: 72rem;
-  border: 1px solid var(--line-strong);
-  background: color-mix(in srgb, var(--plate) 62%, transparent);
-}
-
-.about-console-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  margin: 0;
-  border-bottom: 1px solid var(--line);
-  padding: 0.5rem 0.8rem;
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: var(--meta-size);
-  letter-spacing: 0.03em;
-}
-
-.about-console-pip {
-  width: 5px;
-  height: 5px;
-  flex: 0 0 auto;
-  background: var(--registrar);
-}
-
-.about-console-path {
-  color: var(--ink);
-}
-
-.about-console-status {
-  margin-left: auto;
-  color: var(--registrar-deep);
-}
-
+/* The facts, as a simple editorial panel — labels in mono, values in the
+   reading face, no console chrome and no location telemetry. */
 .about-facts {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.5rem 2rem;
-  margin: 0;
-  padding: 1.1rem 0.8rem 1.25rem;
+  margin: 1.9rem 0 0;
+  max-width: 72rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--line);
 }
 
 .about-facts dt {
@@ -262,20 +227,31 @@
   line-height: 1.6;
 }
 
-.about-tools {
-  margin: 1.5rem 0 0;
-  padding-top: 1rem;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
+.about-ai-link {
+  margin: 1.3rem 0 0;
   font-family: var(--mono);
-  font-size: var(--meta-size);
-  letter-spacing: 0.03em;
-  line-height: 1.7;
-  max-width: 68ch;
+  font-size: var(--step--1);
 }
 
-.about-tools-key {
-  color: var(--registrar-deep);
+.about-ai-link a {
+  color: var(--registrar);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.about-ai-link a:hover,
+.about-ai-link a:focus-visible {
+  color: var(--ink);
+}
+
+.about-interests {
+  margin: 1.6rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: var(--step--1);
+  line-height: 1.6;
 }
 
 .about-contact > div {
@@ -633,6 +609,62 @@
   color: var(--ink-soft);
 }
 
+/* Two real paths: roles/collaboration, and client websites through the
+   studio. Utility over slogans. */
+.contact-paths {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.6rem, 4vw, 3.5rem);
+  margin-top: clamp(2rem, 5vh, 3rem);
+  max-width: 56rem;
+}
+
+.contact-paths section {
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--line-strong);
+}
+
+.contact-paths h2 {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.contact-paths p {
+  margin: 0.6rem 0 0;
+  max-width: 34ch;
+  color: var(--ink-soft);
+  font-size: var(--step--1);
+  line-height: 1.55;
+}
+
+.contact-primary {
+  display: inline-block;
+  margin-top: 0.9rem;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: var(--step-0);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 2px;
+}
+
+.contact-primary:hover,
+.contact-primary:focus-visible {
+  color: var(--registrar);
+  border-color: var(--registrar);
+}
+
+.contact-availability {
+  margin: 2.2rem 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+}
+
 .contact-links {
   display: flex;
   flex-wrap: wrap;
@@ -678,14 +710,8 @@
     grid-template-columns: 1fr;
   }
 
-  .about-console-bar {
-    flex-wrap: wrap;
-    gap: 0.35rem 0.55rem;
-  }
-
-  .about-console-status {
-    margin-left: 0;
-    flex-basis: 100%;
+  .contact-paths {
+    grid-template-columns: 1fr;
   }
 
   /* The poster headline's longest word must fit a 320px column. */
@@ -1093,5 +1119,237 @@
 @media (max-width: 28rem) {
   .footer-name {
     font-size: clamp(2.2rem, 11vw, 2.7rem);
+  }
+}
+
+/* ---------- quick review ----------
+   The fast reading: the same five selected projects, one row each, no
+   animation-heavy presentation. Plain links, real captures, short lines.
+   Fully usable without motion, and keyboard-first. */
+
+.qr-shell {
+  width: min(100%, 90rem);
+  margin-inline: auto;
+  padding: clamp(2.5rem, 7vh, 5rem) var(--page-gutter) 4rem;
+}
+
+.qr-head {
+  position: relative;
+  margin-bottom: clamp(2.5rem, 6vh, 4rem);
+}
+
+.qr-head h1 {
+  max-width: 18ch;
+  margin: 0.6rem 0 0;
+  font-family: var(--display);
+  font-size: clamp(2.2rem, 5.4vw, 4rem);
+  font-weight: 400;
+  line-height: 1.02;
+}
+
+.qr-lede {
+  max-width: 52ch;
+  margin: 1.1rem 0 0;
+  color: var(--ink-soft, var(--ink));
+  font-size: var(--step-0, 1rem);
+  line-height: 1.55;
+}
+
+.qr-back {
+  margin: 1.2rem 0 0;
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+}
+
+.qr-back a {
+  color: var(--registrar);
+  text-decoration: none;
+}
+
+.qr-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line-strong);
+}
+
+.qr-item {
+  display: grid;
+  grid-template-columns: 3.2rem minmax(14rem, 26rem) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(1.2rem, 3vw, 3rem);
+  padding: clamp(1.8rem, 4vh, 3rem) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.qr-num {
+  margin: 0;
+  padding-top: 0.3rem;
+  color: var(--accent, var(--registrar));
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+.qr-visual {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--plate);
+  aspect-ratio: 16 / 10;
+}
+
+.qr-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* Daynero's mobile capture is portrait; contain it rather than crop it. */
+.qr-item:nth-child(3) .qr-visual img {
+  object-fit: contain;
+  object-position: top center;
+}
+
+.qr-visual-note {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  margin: 0;
+  padding: 1.5rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  text-align: center;
+}
+
+.qr-form {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.04em;
+}
+
+.qr-body h2 {
+  margin: 0.4rem 0 0;
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.qr-body h2 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.qr-body h2 a:hover,
+.qr-body h2 a:focus-visible {
+  color: var(--registrar);
+}
+
+.qr-line {
+  max-width: 58ch;
+  margin: 0.7rem 0 0;
+  font-size: var(--step--1);
+  line-height: 1.55;
+}
+
+.qr-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem 2rem;
+  margin: 1.1rem 0 0;
+}
+
+.qr-facts div {
+  min-width: 0;
+}
+
+.qr-facts dt {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+  letter-spacing: 0.03em;
+}
+
+.qr-facts dd {
+  margin: 0.2rem 0 0;
+  font-size: var(--step--1);
+  line-height: 1.5;
+}
+
+.qr-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  margin: 1.2rem 0 0;
+  font-family: var(--mono);
+  font-size: var(--meta-size);
+}
+
+.qr-actions a {
+  color: var(--registrar);
+  text-decoration: none;
+}
+
+.qr-actions a:hover,
+.qr-actions a:focus-visible {
+  color: var(--ink);
+}
+
+.qr-foot {
+  max-width: 70ch;
+  margin-top: clamp(2.5rem, 6vh, 4rem);
+  color: var(--muted);
+  font-size: var(--step--1);
+  line-height: 1.6;
+}
+
+.qr-foot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  margin-top: 1rem;
+  font-family: var(--mono);
+}
+
+.qr-foot-links a {
+  color: var(--registrar);
+  text-decoration: none;
+}
+
+@media (max-width: 56rem) {
+  .qr-item {
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+  }
+
+  .qr-visual {
+    grid-column: 2;
+    max-width: 32rem;
+  }
+
+  .qr-body {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 34rem) {
+  .qr-item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .qr-num,
+  .qr-visual,
+  .qr-body {
+    grid-column: 1;
+  }
+
+  .qr-facts {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

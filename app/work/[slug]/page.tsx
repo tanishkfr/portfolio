@@ -20,6 +20,7 @@ import {
   getProject,
   isLensId,
   projects,
+  selectedNumber,
   type Project,
 } from "../../data/portfolio";
 import { projectSignals } from "../../data/project-signals";
@@ -34,6 +35,53 @@ export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
 
+/**
+ * One real project image per case, where one exists. These are captures of
+ * the shipped site or the live artifact, so the shared preview shows the
+ * actual work rather than the site's generic plate. Athena has no shipped
+ * screens, so it keeps the neutral image rather than implying one.
+ */
+const ogImages: Record<
+  string,
+  { url: string; width: number; height: number } | undefined
+> = {
+  "fluxion-studios": {
+    url: "/projects/fluxion/site-home-desktop.png",
+    width: 1440,
+    height: 900,
+  },
+  athena: {
+    url: "/projects/athena/home.png",
+    width: 1440,
+    height: 900,
+  },
+  daynero: {
+    url: "/projects/daynero/site-home-desktop.png",
+    width: 1440,
+    height: 900,
+  },
+  "invisible-interfaces": {
+    url: "/projects/invisible-interfaces/return.png",
+    width: 1440,
+    height: 900,
+  },
+  "design-or-disaster": {
+    url: "/projects/design-or-disaster/case-001-marked.png",
+    width: 1440,
+    height: 900,
+  },
+  pentimento: {
+    url: "/projects/pentimento/second-draft.png",
+    width: 1440,
+    height: 900,
+  },
+  atlas: {
+    url: "/projects/atlas/trace-lineage.png",
+    width: 1440,
+    height: 1830,
+  },
+};
+
 export async function generateMetadata({
   params,
 }: ProjectPageProps): Promise<Metadata> {
@@ -43,6 +91,7 @@ export async function generateMetadata({
 
   const canonicalPath = "/work/" + project.slug;
   const title = project.title + " — Tanishk";
+  const og = ogImages[project.slug];
 
   return {
     title: project.title,
@@ -55,7 +104,9 @@ export async function generateMetadata({
       siteName: "Tanishk — Interaction Designer",
       title,
       description: project.oneLine,
-      images: [{ url: "/og.png", alt: title }],
+      images: og
+        ? [{ url: og.url, width: og.width, height: og.height, alt: title }]
+        : [{ url: "/og.png", alt: title }],
     },
   };
 }
@@ -190,16 +241,18 @@ const relationReasons: Record<string, string> = {
 function ProjectActions({ project }: { project: Project }) {
   return (
     <div className="case-actions">
-      <a
-        href={project.liveUrl}
-        target="_blank"
-        rel="noreferrer"
-        aria-label={`${project.liveLabel} (opens in a new tab)`}
-        data-external="true"
-      >
-        {project.liveLabel} <span className="xp-cta-arrow" aria-hidden="true">↗</span>
-        <small>New tab</small>
-      </a>
+      {project.liveUrl ? (
+        <a
+          href={project.liveUrl}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`${project.liveLabel} (opens in a new tab)`}
+          data-external="true"
+        >
+          {project.liveLabel} <span className="xp-cta-arrow" aria-hidden="true">↗</span>
+          <small>New tab</small>
+        </a>
+      ) : null}
       {project.sourceUrl ? (
         <a href={project.sourceUrl} target="_blank" rel="noreferrer" data-external="true">
           Inspect the source <span className="xp-cta-arrow" aria-hidden="true">↗</span>
@@ -276,7 +329,9 @@ export default async function ProjectPage({
       <header className="case-hero">
         <div className="case-hero-meta record-line">
           <span>
-            Case {String(projects.indexOf(project) + 1).padStart(2, "0")} ·{" "}
+            {selectedNumber(project.slug)
+              ? `Case ${selectedNumber(project.slug)} · `
+              : ""}
             {project.form}
           </span>
           <span>
@@ -290,21 +345,46 @@ export default async function ProjectPage({
             <p className="case-summary">{project.oneLine}</p>
             <ProjectActions project={project} />
           </div>
-
-          <dl
-            className="case-facts"
-            aria-label={`${project.title} project facts`}
-          >
-            <div>
-              <dt>Contribution</dt>
-              <dd>{project.contribution}</dd>
-            </div>
-            <div>
-              <dt>Context</dt>
-              <dd>{project.context}</dd>
-            </div>
-          </dl>
         </div>
+
+        {/* The 60-second path. It deliberately does not repeat what the
+            hero or the section immediately below already says: "what it
+            is" lives in the hero summary, and "why it exists" is the
+            headline of The situation right underneath. What remains is
+            the set a reviewer cannot get from skimming alone. */}
+        <dl className="case-brief" aria-label={`${project.title} in brief`}>
+          <div>
+            <dt>What I did</dt>
+            <dd>{project.contribution}</dd>
+          </div>
+          <div>
+            <dt>Context</dt>
+            <dd>
+              {project.context}
+              {project.ownership ? ` · ${project.ownership}` : ""}
+            </dd>
+          </div>
+          {project.decisions[0] ? (
+            <div>
+              <dt>Main design decision</dt>
+              <dd>
+                {project.decisions[0].title} — {project.decisions[0].choice}
+              </dd>
+            </div>
+          ) : null}
+          {project.demonstrated[0] ? (
+            <div>
+              <dt>What exists</dt>
+              <dd>{project.demonstrated[0]}</dd>
+            </div>
+          ) : null}
+          {project.limits[0] ? (
+            <div>
+              <dt>Still unproven</dt>
+              <dd>{project.limits[0]}</dd>
+            </div>
+          ) : null}
+        </dl>
 
         <CaseArtifact project={project} />
 
@@ -341,6 +421,20 @@ export default async function ProjectPage({
           </EvidenceWrap>
         ) : null}
 
+
+        {project.slug === "athena" ? (
+          <EvidenceWrap>
+            <CaseFigure
+              src="/projects/athena/home.png"
+              alt="Athena's workspace home: one project holding its resources, notes, review and insights."
+              width={1440}
+              height={900}
+              label="The workspace, working"
+              caption="Athena's home in the working P0 prototype. One project holds its resources, notes, review and insights, so context is never rebuilt across tools."
+              priority
+            />
+          </EvidenceWrap>
+        ) : null}
 
         {project.artifact === "invisible" ? <AwayLedger /> : null}
 
@@ -401,6 +495,110 @@ export default async function ProjectPage({
         </header>
         <ReasoningSections project={project} />
       </section>
+
+      {/* Evidence sequences: the real correction / revision runs, captured
+          from the live artifacts. They sit beside the argument they prove —
+          after the reasoning, before the record and before any "Next" or
+          "Back to projects" — so no proof appears after the apparent end. */}
+      {project.slug === "pentimento" ? (
+        <CaseEvidenceSequence
+          label="The correction, live"
+          intro="One machine-written claim through its full reply."
+          steps={[
+            {
+              src: "/projects/pentimento/draft-overview.png",
+              alt: "Maya's first draft: three machine-written sentences remain as claims, each underlined for reply.",
+              width: 1440,
+              height: 900,
+              step: "The contested draft",
+              caption: "Maya's first draft, written from her public film diary — three sentences remain as claims the subject can answer.",
+            },
+            {
+              src: "/projects/pentimento/claim-evidence.png",
+              alt: "A claim opened: the evidence behind the machine's reading, with the reply options visible.",
+              width: 1440,
+              height: 900,
+              step: "Evidence shown",
+              caption: "Opening a claim shows what the software drew on. Maya is fictional, staged from authored material — no participant data exists.",
+            },
+            {
+              src: "/projects/pentimento/struck.png",
+              alt: "The machine's sentence struck through; the person's correction now leads the passage.",
+              width: 1440,
+              height: 900,
+              step: "Struck",
+              caption: "The machine's sentence struck: its account recedes and Maya's correction takes the reading.",
+            },
+            {
+              src: "/projects/pentimento/second-draft.png",
+              alt: "The settled second draft, with the person's version leading the document.",
+              width: 1440,
+              height: 900,
+              step: "The final page",
+              caption: "The settled second draft: the person's account leads, the machine's reading is visibly overruled.",
+            },
+          ]}
+        />
+      ) : null}
+
+      {project.slug === "atlas" ? (
+        <CaseEvidenceSequence
+          label="One real run"
+          intro="A rule carried through three unlike cases, in the live tool."
+          steps={[
+            {
+              src: "/projects/atlas/rule-test.png",
+              alt: "The Atlas rule test: the starting rule editable in place, with the lightbox case ready below.",
+              width: 1440,
+              height: 900,
+              step: "The starting rule",
+              caption: "The test opens with a suggested rule — editable before any pressure, so the assumption being carried is explicit.",
+            },
+            {
+              src: "/projects/atlas/trace-lineage.png",
+              alt: "The completed trace: the starting rule, a refinement after the lightbox, a rewrite after the financial transfer, and the final wording after switch access.",
+              width: 1440,
+              height: 1830,
+              step: "The lineage",
+              caption: "A completed run: hold, refine and fracture each demanded rewording, and the trace keeps which case caused every change.",
+            },
+          ]}
+        />
+      ) : null}
+
+      {project.slug === "athena" ? (
+        <CaseEvidenceSequence
+          label="The review loop, in the working prototype"
+          intro="Find and organise a resource, learn it with notes beside it, then review — where an attempt turns into evidence."
+          note="Captured from the working P0 prototype. The linked demo is intentionally disconnected and runs on seeded browser-local data; the local build runs the real Express, SQLite and model path."
+          steps={[
+            {
+              src: "/projects/athena/learn.png",
+              alt: "Athena's reader: a source open with contextual notes and source-grounded help beside it.",
+              width: 1425,
+              height: 1495,
+              step: "Learn & capture",
+              caption: "The resource, the learner's notes and the source-grounded help stay in one place, so nothing has to be reassembled later.",
+            },
+            {
+              src: "/projects/athena/explain-report.png",
+              alt: "Athena's Explain Back report: the learner's response, what it demonstrated, the gap, and the supporting passage.",
+              width: 1265,
+              height: 1613,
+              step: "Explain Back",
+              caption: "An attempt made without the source. The report records what was demonstrated, what is missing, and the exact passage that would fix it.",
+            },
+            {
+              src: "/projects/athena/dashboard-finished.png",
+              alt: "Athena's project dashboard: learning activity and knowledge evidence reported as separate records.",
+              width: 2538,
+              height: 1605,
+              step: "Insight report",
+              caption: "Activity and knowledge evidence are reported apart, and concepts that were not demonstrated come back earlier.",
+            },
+          ]}
+        />
+      ) : null}
 
       {/* The record: the decisions, the honest boundary, the next
           test. Scannable, not narrated — the proof, not the pitch. */}
@@ -545,74 +743,6 @@ export default async function ProjectPage({
         </section>
       ) : null}
 
-      {/* Evidence sequences: the real correction / revision runs, captured
-          from the live artifacts so the visitor can see the actual output
-          beside the argument it demonstrates. */}
-      {project.slug === "pentimento" ? (
-        <CaseEvidenceSequence
-          label="The correction, live"
-          intro="One machine-written claim through its full reply."
-          steps={[
-            {
-              src: "/projects/pentimento/draft-overview.png",
-              alt: "Maya's first draft: three machine-written sentences remain as claims, each underlined for reply.",
-              width: 1440,
-              height: 900,
-              step: "The contested draft",
-              caption: "Maya's first draft, written from her public film diary — three sentences remain as claims the subject can answer.",
-            },
-            {
-              src: "/projects/pentimento/claim-evidence.png",
-              alt: "A claim opened: the evidence behind the machine's reading, with the reply options visible.",
-              width: 1440,
-              height: 900,
-              step: "Evidence shown",
-              caption: "Opening a claim shows what the software drew on. Maya is fictional, staged from authored material — no participant data exists.",
-            },
-            {
-              src: "/projects/pentimento/struck.png",
-              alt: "The machine's sentence struck through; the person's correction now leads the passage.",
-              width: 1440,
-              height: 900,
-              step: "Struck",
-              caption: "The machine's sentence struck: its account recedes and Maya's correction takes the reading.",
-            },
-            {
-              src: "/projects/pentimento/second-draft.png",
-              alt: "The settled second draft, with the person's version leading the document.",
-              width: 1440,
-              height: 900,
-              step: "The final page",
-              caption: "The settled second draft: the person's account leads, the machine's reading is visibly overruled.",
-            },
-          ]}
-        />
-      ) : null}
-
-      {project.slug === "atlas" ? (
-        <CaseEvidenceSequence
-          label="One real run"
-          intro="A rule carried through three unlike cases, in the live tool."
-          steps={[
-            {
-              src: "/projects/atlas/rule-test.png",
-              alt: "The Atlas rule test: the starting rule editable in place, with the lightbox case ready below.",
-              width: 1440,
-              height: 900,
-              step: "The starting rule",
-              caption: "The test opens with a suggested rule — editable before any pressure, so the assumption being carried is explicit.",
-            },
-            {
-              src: "/projects/atlas/trace-lineage.png",
-              alt: "The completed trace: the starting rule, a refinement after the lightbox, a rewrite after the financial transfer, and the final wording after switch access.",
-              width: 1440,
-              height: 900,
-              step: "The lineage",
-              caption: "A completed run: hold, refine and fracture each demanded rewording, and the trace keeps which case caused every change.",
-            },
-          ]}
-        />
-      ) : null}
     </main>
   );
 }

@@ -20,19 +20,19 @@ import { TransitionLink } from "./transition-link";
  *
  * The rail carries one registration mark in two registers, the same
  * grammar the portraits use: filled means committed, hollow means
- * offered. Seated under the page you are on, the mark is filled and
- * breathes (held). Point at — or tab to — another destination and it
- * hollows and walks the rail, leaving two fading pixels of motion
- * residue behind it; leave and it walks back. On a click the mark keeps
- * its `view-transition-name`, so it rides the site's existing View
+ * offered. Seated under the page you are on, the mark is filled. Point
+ * at — or tab to — another destination and it hollows and moves to that
+ * seat; leave and it returns. On a click the mark keeps its
+ * `view-transition-name`, so it rides the site's existing View
  * Transition to the new destination instead of blinking out and
  * reappearing.
  *
- * Nothing depends on hover: `aria-current` and the filled mark both
- * state where you are, the keyboard focus ring is untouched, and the
- * per-link rule and pip authored in CSS remain the whole system if
- * JavaScript never arrives. Reduced motion removes the walk, the trail,
- * and the breathing, leaving instant state changes.
+ * The rail stays quiet: one simple transition, no trail, no breathing,
+ * no continuous motion. Nothing depends on hover: `aria-current` and the
+ * filled mark both state where you are, the keyboard focus ring is
+ * untouched, and the per-link rule and pip authored in CSS remain the
+ * whole system if JavaScript never arrives. Reduced motion removes the
+ * move, leaving instant state changes.
  */
 
 const navigation = [
@@ -44,8 +44,6 @@ const navigation = [
 
 /** Where a label sits on the rail, in the rail's own coordinates. */
 type Seat = { x: number; w: number; y: number };
-
-type Residue = { id: number; seat: Seat };
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -71,9 +69,6 @@ export function SiteHeader() {
   const markAt = useRef<Seat | null>(null);
   const activeRef = useRef(activeIndex);
   const offeredRef = useRef<number | null>(null);
-  const reducedRef = useRef(false);
-  const seq = useRef(0);
-  const timers = useRef<number[]>([]);
 
   const [live, setLive] = useState(false);
   /* The wordmark lives in the hero while the cover holds it: the dock
@@ -85,7 +80,6 @@ export function SiteHeader() {
   const [shelfY, setShelfY] = useState(0);
   const [mark, setMark] = useState<Seat>({ x: 0, w: 0, y: 0 });
   const [offered, setOffered] = useState<number | null>(null);
-  const [residue, setResidue] = useState<Residue[]>([]);
 
   /* Measure the rail: each label's horizontal seat (so centred phone
      labels are handled by the same numbers) and the shelf the rule sits
@@ -109,21 +103,13 @@ export function SiteHeader() {
     if (first) setShelfY(first.y);
   }, []);
 
-  const place = useCallback((index: number, trail: boolean) => {
+  const place = useCallback((index: number) => {
     const seat = seats.current[index];
     if (!seat) return;
     const previous = markAt.current;
     if (previous && previous.x === seat.x && previous.w === seat.w) return;
     markAt.current = seat;
     setMark(seat);
-    if (!trail || reducedRef.current || !previous) return;
-    const id = (seq.current += 1);
-    setResidue((rest) => [...rest.slice(-2), { id, seat: previous }]);
-    timers.current.push(
-      window.setTimeout(() => {
-        setResidue((rest) => rest.filter((item) => item.id !== id));
-      }, 520),
-    );
   }, []);
 
   useEffect(() => {
@@ -136,9 +122,6 @@ export function SiteHeader() {
   useEffect(() => {
     const nav = navRef.current;
     if (!nav) return;
-    reducedRef.current = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
     const sync = () => {
       measure();
       const seat =
@@ -155,12 +138,9 @@ export function SiteHeader() {
     observer.observe(nav);
     window.addEventListener("resize", sync);
     document.fonts?.ready.then(sync).catch(() => {});
-    const pending = timers.current;
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", sync);
-      pending.forEach((id) => window.clearTimeout(id));
-      timers.current = [];
     };
   }, [measure]);
 
@@ -177,14 +157,21 @@ export function SiteHeader() {
   /* The hero wordmark docks into the navbar.
      --------------------------------------------------------------
      On the cover the header carries no wordmark at all: the hero's TANISHK
-     is the identity, and a second one in the corner would say it twice. As
-     the cover releases, ONE object travels — the hero wordmark itself,
-     scaled and translated every frame against the scroll, its ink arriving
-     at the navbar's ultramarine. Nothing crossfades and nothing is swapped
-     mid-flight: the header name only takes over once the wordmark has
-     landed on exactly that box, so the change is invisible. If the reader
-     stops mid-flight the wordmark settles to the nearer end rather than
-     hanging in the air. */
+     is the identity, and a second one in the corner would say it twice.
+     Late in the cover, ONE object travels — the hero wordmark itself,
+     scaled and translated, its ink arriving at the navbar's ultramarine.
+
+     Two things decide how it feels. WHEN it starts: the handoff begins
+     only once the wordmark's own bottom has climbed to the navbar, so the
+     name scrolls with the cover the way any large type would, and docks
+     over the last stretch rather than twitching from the first pixel of
+     scroll. HOW it moves: the scroll-derived target is followed through a
+     short damped filter, so discrete wheel steps arrive as motion instead
+     of a jump. The filter converges within about a fifth of a second and
+     the loop then stops — no idle animation, no run-on.
+
+     The header name takes over on the exact frame the wordmark lands, one
+     threshold, so there is never a readable duplicate. */
   useEffect(() => {
     if (pathname !== "/") {
       return;
@@ -202,7 +189,10 @@ export function SiteHeader() {
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const FLIGHT = 150; /* the scroll distance the whole handoff takes */
+    /* The single switch point: below it the hero wordmark is on top and the
+       header name is hidden; at or above it the header name is the only one
+       drawn. One threshold means no frame shows both. */
+    const LANDED = 0.985;
 
     /* Text boxes, not element boxes: the wordmark is a centred block, and
        the box that must travel is the glyph run itself. Layout boxes come
@@ -248,20 +238,26 @@ export function SiteHeader() {
       return () => cancelAnimationFrame(settleIn);
     }
 
-    const headerH = headerRef.current?.getBoundingClientRect().height ?? 74;
     const firstBottom = heroBox.top + originY + textH;
-    /* A deep link that lands mid-folio arrives already docked; a cover at
-       rest pins the wordmark, and that pinned bottom is the p = 0 edge. */
-    let rest = firstBottom >= headerH + FLIGHT ? firstBottom : 0;
-    let progress = rest ? 0 : 1;
-    let docked = progress >= 1;
+    /* Travel distance: the wordmark docks over this much scroll. A longer
+       span is a slower, smoother handoff; a short one reads as a snap. */
+    const TRAVEL = 380;
+    let docked = false;
     let frame = 0;
-    let settle = 0;
-    let idle = 0;
+    /* The damped value actually painted, and the scroll-derived target it
+       is chasing. The smoothing is what makes discrete wheel steps glide
+       instead of stepping; it converges and stops within ~0.2s. */
+    let shown = -1;
+    let target = 0;
+    let last = 0;
 
     const ease = (t: number) =>
       t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
+    /* The dock begins when the wordmark's own bottom reaches this line —
+       a little above the navbar — not when the page first moves. Until
+       then the name simply scrolls with the cover, where it belongs. */
+    let startBottom = firstBottom;
     const sync = () => {
       heroText = textBox(heroEl);
       heroBox = layoutBox(heroEl);
@@ -270,11 +266,22 @@ export function SiteHeader() {
       textW = heroText.width;
       textH = heroText.height;
       nav = textBox(nameEl);
+      startBottom = nav.top + nav.height + TRAVEL;
       heroEl.style.transformOrigin = `${(originX + textW / 2).toFixed(2)}px ${(originY + textH / 2).toFixed(2)}px`;
     };
 
-    const paint = (value: number) => {
-      const box = layoutBox(heroEl);
+    const paint = (value: number, box: { left: number; top: number }) => {
+      /* Past the switch point the hero wordmark is not drawn, so it needs
+         no further transform or colour work — only the header state. */
+      if (value >= LANDED) {
+        heroEl.style.pointerEvents = "none";
+        if (!docked) {
+          docked = true;
+          setDocked(true);
+        }
+        heroEl.style.opacity = "0";
+        return;
+      }
       const scale = 1 + (nav.width / textW - 1) * value;
       const lx = box.left + originX + textW / 2;
       const ly = box.top + originY + textH / 2;
@@ -283,78 +290,62 @@ export function SiteHeader() {
       const mix = (a: number, b: number) => Math.round(a + (b - a) * value);
       heroEl.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) scale(${scale.toFixed(4)})`;
       heroEl.style.color = `rgb(${mix(ink[0], registrar[0])}, ${mix(ink[1], registrar[1])}, ${mix(ink[2], registrar[2])})`;
-      /* The header name takes over a hair before the wordmark stops being
-         drawn: at that point the two boxes differ by a couple of pixels and
-         the ink has already arrived at the navbar's colour, so the handover
-         is a measurement rather than an event — and there is never a frame
-         with no wordmark in it, nor two that can be told apart. */
-      const landed = value >= 0.97;
-      if (docked !== landed) {
-        docked = landed;
-        setDocked(landed);
+      /* Below the switch point the hero wordmark is the only one drawn. */
+      if (docked) {
+        docked = false;
+        setDocked(false);
       }
-      heroEl.style.opacity = value >= 0.995 ? "0" : "1";
+      heroEl.style.opacity = "1";
       heroEl.style.pointerEvents = value > 0 ? "none" : "";
     };
 
-    const update = () => {
+    const tick = (now: number) => {
       frame = 0;
-      if (!rest) {
-        /* the pinned bottom is captured while the cover still holds it */
-        const bottom = layoutBox(heroEl).top + originY + textH;
-        if (bottom >= headerH + FLIGHT) rest = bottom;
+      const dt = last ? Math.min((now - last) / 1000, 0.05) : 0.016;
+      last = now;
+      /* One layout read per frame, shared by the measurement and the
+         paint. The wordmark moves with the page, so its current box is
+         what the transform must be measured against. */
+      const box = layoutBox(heroEl);
+      const bottom = box.top + originY + textH;
+      const raw = Math.min(1, Math.max(0, (startBottom - bottom) / TRAVEL));
+      target = reduced ? (raw > 0.5 ? 1 : 0) : ease(raw);
+      if (shown < 0) shown = target; /* no fly-in on load or deep link */
+      /* reduced motion is a clean two-state change; everyone else gets a
+         short damped follow, so wheel steps arrive as motion rather than
+         as a jump. It converges and stops — no idle animation. */
+      if (reduced) {
+        shown = target;
+        paint(shown, box);
+        return;
       }
-      const bottom = layoutBox(heroEl).top + originY + textH;
-      const raw = rest ? Math.min(1, Math.max(0, (rest - bottom) / FLIGHT)) : 1;
-      const target = reduced ? (raw > 0.5 ? 1 : 0) : ease(raw);
-      /* A flicked scroll can cross the whole flight in one frame. Capping
-         the step keeps the object continuous — it catches up over a few
-         frames instead of teleporting — while never lagging a normal
-         scroll, whose steps are far smaller than the cap. */
-      const step = reduced ? 1 : 0.22;
-      progress =
-        Math.abs(target - progress) > step
-          ? progress + Math.sign(target - progress) * step
-          : target;
-      paint(progress);
-      if (progress !== target && !frame) {
-        frame = requestAnimationFrame(update);
+      shown += (target - shown) * (1 - Math.exp(-dt * 16));
+      if (Math.abs(target - shown) < 0.0015) {
+        shown = target;
+        paint(shown, box);
+        return;
       }
-    };
-
-    const settleTo = (end: number) => {
-      const from = progress;
-      const start = performance.now();
-      const run = (now: number) => {
-        const t = Math.min(1, (now - start) / 180);
-        progress = from + (end - from) * ease(t);
-        paint(progress);
-        if (t < 1) settle = requestAnimationFrame(run);
-      };
-      settle = requestAnimationFrame(run);
+      paint(shown, box);
+      frame = requestAnimationFrame(tick);
     };
 
     const onScroll = () => {
-      if (settle) {
-        cancelAnimationFrame(settle);
-        settle = 0;
+      if (!frame) {
+        last = 0;
+        frame = requestAnimationFrame(tick);
       }
-      if (!frame) frame = requestAnimationFrame(update);
-      window.clearTimeout(idle);
-      idle = window.setTimeout(() => {
-        if (progress > 0.02 && progress < 0.98) {
-          settleTo(progress < 0.5 ? 0 : 1);
-        }
-      }, 150);
     };
 
     const onResize = () => {
       sync();
-      update();
+      if (!frame) {
+        last = 0;
+        frame = requestAnimationFrame(tick);
+      }
     };
 
     sync();
-    update();
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     document.fonts?.ready.then(onResize).catch(() => {});
@@ -362,9 +353,7 @@ export function SiteHeader() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
-      window.clearTimeout(idle);
       if (frame) cancelAnimationFrame(frame);
-      if (settle) cancelAnimationFrame(settle);
       heroEl.style.transform = "";
       heroEl.style.opacity = "";
       heroEl.style.color = "";
@@ -377,14 +366,14 @@ export function SiteHeader() {
     if (offeredRef.current === index) return;
     offeredRef.current = index;
     setOffered(index);
-    place(index, true);
+    place(index);
   }
 
   function release() {
     if (offeredRef.current === null) return;
     offeredRef.current = null;
     setOffered(null);
-    place(activeRef.current, true);
+    place(activeRef.current);
   }
 
   /* A click commits the destination before the route lands: the mark is
@@ -491,21 +480,6 @@ export function SiteHeader() {
           >
             {item.label}
           </TransitionLink>
-        ))}
-
-        {residue.map((item) => (
-          <span
-            key={item.id}
-            className="nav-residue"
-            aria-hidden="true"
-            style={
-              {
-                "--nav-x": `${item.seat.x}px`,
-                "--nav-w": `${item.seat.w}px`,
-                "--nav-y": `${item.seat.y}px`,
-              } as CSSProperties
-            }
-          />
         ))}
 
         <span
