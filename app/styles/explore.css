@@ -778,6 +778,53 @@
   }
 }
 
+/* the preview affordance — a little tag under the caption naming the
+   portrait's second state. It holds its line whether or not it is
+   awake, so appearing costs no layout, and it is awake only for the
+   sheet being read while the real project is still closed. Coarse
+   pointers get the tap wording instead of the hover wording. */
+.xpp-invite {
+  display: flex;
+  width: fit-content;
+  margin-top: 0.4rem;
+  padding: 0.08rem 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--pp-accent) 45%, transparent);
+  color: var(--pp-accent);
+  font-size: clamp(0.66rem, 1.1cqw, 0.76rem);
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 180ms linear, visibility 0s linear 180ms;
+  pointer-events: none;
+}
+
+.xpp-invite[data-on="true"] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 180ms linear;
+}
+
+.xpp-invite-touch {
+  display: none;
+}
+
+@media (hover: none) {
+  .xpp-invite-fine {
+    display: none;
+  }
+
+  .xpp-invite-touch {
+    display: inline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xpp-invite {
+    transition: none;
+  }
+}
+
 /* ---------- 01 · design or disaster — mark the evidence ---------- */
 .xpp-dod {
   position: relative;

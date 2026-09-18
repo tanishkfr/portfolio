@@ -52,8 +52,8 @@ const shelf: ShelfItem[] = [
     image: {
       src: "/projects/8bit-boxer/play.jpg",
       alt: "A round in progress in 8BIT Boxer's demo mode: the heavy bag, the gloves and the round HUD, captured in the game itself.",
-      width: 1600,
-      height: 1000,
+      width: 800,
+      height: 500,
     },
   },
   {
@@ -66,8 +66,8 @@ const shelf: ShelfItem[] = [
     image: {
       src: "/projects/pentimento/correction.jpg",
       alt: "The correction in progress: the machine's sentence struck through, with the person's own account leading the passage.",
-      width: 1600,
-      height: 1000,
+      width: 800,
+      height: 500,
     },
   },
   {
@@ -80,8 +80,8 @@ const shelf: ShelfItem[] = [
     image: {
       src: "/projects/atlas/lineage.jpg",
       alt: "The start of an Atlas trace: the written rule and the first recorded rewording, with the case that caused it.",
-      width: 1440,
-      height: 900,
+      width: 800,
+      height: 500,
     },
   },
 ];

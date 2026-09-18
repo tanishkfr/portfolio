@@ -542,15 +542,23 @@ function PortraitShell({
             {children}
           </div>
 
-          {/* STATE B — the real project, filling the same frame */}
+          {/* STATE B — the real project, filling the same frame.
+              Real media is requested only once this sheet is the one being
+              read: the poster frame for recordings, and the still capture
+              itself. Off-screen sheets keep their authored demonstration
+              and download nothing until the reader arrives. The evidence
+              paths stay in the markup as data attributes either way, so
+              every portrait still names its real capture. */}
           <div className="xpp-real" aria-hidden={visible ? undefined : "true"}>
             {isVideo ? (
               <video
                 ref={videoRef}
                 className="xpp-real-media"
                 data-fit={meta.real.fit ?? "cover"}
-                poster={meta.real.poster}
-                src={meta.real.src}
+                data-src={meta.real.src}
+                data-poster={meta.real.poster}
+                poster={live ? meta.real.poster : undefined}
+                src={live ? meta.real.src : undefined}
                 preload="none"
                 muted
                 playsInline
@@ -563,7 +571,10 @@ function PortraitShell({
               <img
                 className="xpp-real-media"
                 data-fit={meta.real.fit ?? "cover"}
-                src={meta.real.src}
+                data-src={meta.real.src}
+                src={live ? meta.real.src : undefined}
+                loading="lazy"
+                decoding="async"
                 alt={visible ? meta.real.alt : ""}
                 style={mediaStyle}
               />
@@ -572,7 +583,21 @@ function PortraitShell({
         </div>
 
         <figcaption className="xpp-caption">
-          {visible ? meta.real.label : meta.caption}
+          <span className="xpp-caption-text">
+            {visible ? meta.real.label : meta.caption}
+          </span>
+          {/* The preview affordance: a small tag under the caption, so the
+              portrait's second state is discoverable before anyone hovers
+              it. It keeps its line in every state, so waking it cannot
+              reflow the sheet, and it is awake only for the sheet being
+              read — and only while the real project is still closed. */}
+          <span
+            className="xpp-invite"
+            data-on={live && !visible ? "true" : undefined}
+          >
+            <span className="xpp-invite-fine">hover for preview</span>
+            <span className="xpp-invite-touch">tap for preview</span>
+          </span>
         </figcaption>
       </figure>
     </div>
