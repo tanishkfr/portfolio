@@ -216,7 +216,7 @@ function DisasterArtifact() {
 
           <p className="disaster-disclosure">
             The image, regions, and five readings are authored or reconstructed
-            critique material — not participant data.
+            critique material, not participant data.
           </p>
         </div>
 
@@ -598,7 +598,7 @@ function FluxionArtifact() {
         </div>
         <p className="fluxion-demo-role">
           Co-founder: structure, visual design, copy, motion, frontend, and the
-          enquiry form, built together with my co-founder.
+          enquiry form.
         </p>
         <dl className="fluxion-demo-facts">
           <div>

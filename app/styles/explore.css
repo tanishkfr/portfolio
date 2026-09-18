@@ -194,7 +194,7 @@
   gap: 1.1rem;
   padding-block: clamp(1.1rem, 2.6vh, 1.7rem) clamp(1.2rem, 3vh, 2rem);
   border-top: 1px solid var(--line);
-  color: var(--muted);
+  color: var(--ink);
   text-decoration: none;
 }
 
@@ -213,7 +213,7 @@
 
 .xp-cover-handoff:hover p,
 .xp-cover-handoff:focus-visible p {
-  color: var(--ink);
+  color: var(--registrar);
 }
 
 .xp-cover-handoff:hover span {
@@ -2936,23 +2936,6 @@
   gap: 0.9rem;
   padding: 0.26rem 0;
   border-bottom: 1px solid var(--line);
-}
-
-/* the one stage whose role includes an independent Reviewer: the
-   verification step the workflow is built around */
-.mw-stages li[data-verify="true"] {
-  border-bottom-color: color-mix(in srgb, var(--registrar) 45%, var(--line));
-  background: color-mix(in srgb, var(--registrar) 6%, transparent);
-  box-shadow: inset 2px 0 0 var(--registrar);
-}
-
-.mw-stages li[data-verify="true"] .mw-stage-name,
-.mw-stages li[data-verify="true"] .mw-stage-id {
-  color: var(--registrar-deep, var(--registrar));
-}
-
-.mw-stages li[data-verify="true"] .mw-stage-role {
-  color: var(--ink);
 }
 
 .mw-stage-id {
