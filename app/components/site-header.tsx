@@ -240,8 +240,11 @@ export function SiteHeader() {
 
     const firstBottom = heroBox.top + originY + textH;
     /* Travel distance: the wordmark docks over this much scroll. A longer
-       span is a slower, smoother handoff; a short one reads as a snap. */
-    const TRAVEL = 380;
+       span is a slower, smoother handoff; a short one reads as a snap.
+       It is a ceiling, not a constant — see sync() below. */
+    const TRAVEL_MAX = 380;
+    const TRAVEL_MIN = 150;
+    let travel = TRAVEL_MAX;
     let docked = false;
     let frame = 0;
     /* The damped value actually painted, and the scroll-derived target it
@@ -256,17 +259,40 @@ export function SiteHeader() {
 
     /* The dock begins when the wordmark's own bottom reaches this line —
        a little above the navbar — not when the page first moves. Until
-       then the name simply scrolls with the cover, where it belongs. */
+       then the name simply scrolls with the cover, where it belongs.
+
+       The span is the real gap between where the wordmark rests and the
+       line it has to land on, bounded at both ends. A fixed span could
+       not know that a phone's cover is only ~540px tall: the name's
+       resting bottom sat inside a 380px span, so the handoff was already
+       ~27% done at scroll zero and the monumental wordmark never appeared
+       on a phone at all. Deriving the span from the gap means value 0 is
+       the untouched hero on every screen. */
     let startBottom = firstBottom;
     const sync = () => {
+      /* Measure with the dock's own transform lifted. A Range rect
+         includes transforms, so measuring mid-flight would corrupt the
+         origin the scale is computed against. */
+      const heldTransform = heroEl.style.transform;
+      const heldOpacity = heroEl.style.opacity;
+      heroEl.style.transform = "";
+      heroEl.style.opacity = "";
       heroText = textBox(heroEl);
       heroBox = layoutBox(heroEl);
+      heroEl.style.transform = heldTransform;
+      heroEl.style.opacity = heldOpacity;
       originX = heroText.left - heroBox.left;
       originY = heroText.top - heroBox.top;
       textW = heroText.width;
       textH = heroText.height;
       nav = textBox(nameEl);
-      startBottom = nav.top + nav.height + TRAVEL;
+      const landing = nav.top + nav.height;
+      const restBottom = heroBox.top + originY + textH;
+      travel = Math.max(
+        TRAVEL_MIN,
+        Math.min(TRAVEL_MAX, restBottom - landing),
+      );
+      startBottom = landing + travel;
       heroEl.style.transformOrigin = `${(originX + textW / 2).toFixed(2)}px ${(originY + textH / 2).toFixed(2)}px`;
     };
 
@@ -308,7 +334,7 @@ export function SiteHeader() {
          what the transform must be measured against. */
       const box = layoutBox(heroEl);
       const bottom = box.top + originY + textH;
-      const raw = Math.min(1, Math.max(0, (startBottom - bottom) / TRAVEL));
+      const raw = Math.min(1, Math.max(0, (startBottom - bottom) / travel));
       target = reduced ? (raw > 0.5 ? 1 : 0) : ease(raw);
       if (shown < 0) shown = target; /* no fly-in on load or deep link */
       /* reduced motion is a clean two-state change; everyone else gets a

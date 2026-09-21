@@ -64,13 +64,15 @@
   z-index: 1;
 }
 
+/* The sheet's own record line: one register, one tracking, wherever a
+   sheet states what a project is and where it stands. */
 .xp-cover-head,
 .xp-piece-meta,
 .xp-piece-status,
 .xp-field-kicker {
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-record);
 }
 
 .xp-cover-head {
@@ -201,7 +203,7 @@
 .xp-cover-handoff p {
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.05em;
+  letter-spacing: var(--track-record);
   transition: color var(--beat) var(--ease-out);
 }
 
@@ -248,7 +250,12 @@
    portrait lives entirely inside the stage, and the sheet's copy stays
    inside the pinned viewport. */
 
-/* ---------- orientation ---------- */
+/* ---------- orientation ----------
+   The field head is the wall's own label, not a second title: it is
+   set a step below the project names that follow it, so the work is
+   the loudest thing after the identity. The band above the wall was
+   once a hundred pixels of nothing; it is now one title's worth of
+   margin, which is all a label needs. */
 
 .xp-field {
   position: relative;
@@ -259,7 +266,7 @@
 }
 
 .xp-field-head {
-  padding: clamp(3.5rem, 8vw, 6rem) var(--page-gutter) clamp(1.2rem, 3vw, 2rem);
+  padding: clamp(2.6rem, 5.5vw, 4.4rem) var(--page-gutter) var(--gap-close);
 }
 
 .xp-field-head > * {
@@ -268,11 +275,18 @@
 
 .xp-field-kicker {
   color: var(--ink);
+  font-family: var(--display);
+  font-size: var(--step-2);
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
+  line-height: 1.15;
+  text-wrap: balance;
 }
 
 .xp-field-index {
   padding-inline: var(--page-gutter);
-  padding-bottom: clamp(4rem, 8vw, 7rem);
+  padding-bottom: clamp(2.4rem, 4vw, 3.4rem);
 }
 
 .xp-field-index ol {
@@ -284,23 +298,23 @@
 
 .xp-field-index li {
   border-bottom: 1px solid var(--line);
+  transition: border-color var(--beat) var(--ease-out);
+}
+
+.xp-field-index li:hover,
+.xp-field-index li:focus-within {
+  border-bottom-color: color-mix(in srgb, var(--accent, var(--ink)) 55%, var(--line));
 }
 
 .xp-field-index a {
   display: grid;
-  grid-template-columns: 3rem minmax(10rem, 1fr) minmax(5rem, 0.3fr);
-  gap: 1rem;
+  grid-template-columns: 3.4rem minmax(10rem, 1fr) minmax(11rem, 0.34fr);
+  gap: var(--gap-tight) var(--gap-close);
   align-items: baseline;
-  min-height: 4.1rem;
-  padding: 1.05rem 0;
+  min-height: 5.4rem;
+  padding: 1.35rem 0 1.4rem;
   color: var(--ink);
   text-decoration: none;
-}
-
-.xp-field-index a::after {
-  content: "";
-  display: none;
-  justify-self: end;
 }
 
 .xp-field-index span,
@@ -311,10 +325,17 @@
   font-weight: 400;
 }
 
+/* The project's name at display scale. The row is a work, not a menu
+   item — at the old size the index whispered the five names that are
+   the whole point of the page. */
 .xp-field-index strong {
   font-family: var(--display);
-  font-size: var(--step-1);
-  font-weight: 460;
+  font-size: clamp(1.5rem, 2.7vw, 2.6rem);
+  font-weight: var(--role-title-weight);
+  font-stretch: var(--role-title-stretch);
+  letter-spacing: var(--role-title-track);
+  line-height: 1.05;
+  text-wrap: balance;
   transition:
     color var(--beat) var(--ease-out),
     font-stretch 240ms var(--ease-out);
@@ -329,13 +350,62 @@
 /* the row you point at opens its width a step — affordance without motion */
 .xp-field-index a:hover strong,
 .xp-field-index a:focus-visible strong {
-  font-stretch: 106%;
+  font-stretch: 108%;
 }
 
 /* the sheet you are reading is a position, not a preference: its number
    joins the name in the signal colour */
 .xp-field-index li[data-current="true"] span {
   color: var(--registrar);
+}
+
+/* what it is, when, and how far along — the scan line under the name */
+.xp-index-record {
+  display: grid;
+  gap: 0.3rem;
+  justify-items: end;
+  text-align: right;
+  color: var(--ink-soft);
+}
+
+.xp-index-record > span {
+  color: var(--ink);
+}
+
+.xp-index-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--ink-soft);
+  font-size: var(--step--1);
+}
+
+/* the folio's registration grammar: a filled mark means committed,
+   so the state of each project is legible before it is read */
+.xp-index-status i {
+  width: 0.4rem;
+  height: 0.4rem;
+  background: var(--accent, var(--ink-soft));
+}
+
+@media (max-width: 52rem) {
+  .xp-field-index a {
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    gap: var(--gap-hair) var(--gap-tight);
+    min-height: 0;
+    padding: 1.1rem 0 1.15rem;
+  }
+
+  .xp-field-index strong {
+    font-size: var(--step-2);
+  }
+
+  /* the record files under the name rather than beside it */
+  .xp-index-record {
+    grid-column: 2;
+    justify-items: start;
+    text-align: left;
+  }
 }
 
 /* ---------- stacked project sheets ---------- */
@@ -367,14 +437,31 @@
   /* One grid, five arrangements: the anchor is copy-left, visual-right;
      revision and lineage flip it; absence narrows the copy and drops it
      to the bottom; wordmark stacks the plate over the copy; number
-     widens the stage. Varied by design, coherent by tokens. */
-  grid-template-columns: minmax(13rem, 0.62fr) minmax(28rem, 1.38fr);
+     widens the stage. Varied by design, coherent by tokens.
+
+     The default split leans further to the plate than it used to. The
+     artifacts are 1.44–1.60 wide, so a stage that is wider than it is
+     tall wastes almost nothing when a capture is fitted into it — the
+     earlier split spent the plate's width on the copy column and then
+     paid for it again in letterbox. */
+  grid-template-columns: minmax(13rem, 0.55fr) minmax(28rem, 1.45fr);
   grid-template-rows: minmax(0, 1fr) auto;
-  gap: clamp(1.5rem, 4vw, 5rem);
+  /* The sheet's own rhythm, named once, because the stage's height is
+     computed from it (see --piece-stage-fit) and the two must not be
+     able to drift apart. */
+  --piece-pad-top: clamp(2.2rem, 4.6vw, 4.4rem);
+  --piece-pad-bottom: clamp(1.1rem, 1.8vw, 1.7rem);
+  --piece-gap: clamp(1.5rem, 4vw, 5rem);
+  /* the status line's own height plus a hair, reserved up front */
+  --piece-status-band: 1.75rem;
+  gap: var(--piece-gap);
   min-height: calc(100svh - var(--header-h) - 1rem);
   /* the room's own threshold: the boundary, the accent rule, and this
-     margin must read as an entrance before the metadata begins */
-  padding: clamp(3rem, 7.5vw, 7.5rem) var(--page-gutter) clamp(1.25rem, 2.5vw, 2.5rem)
+     margin must read as an entrance before the metadata begins. It is
+     measured in the sheet's own hierarchy now rather than in a fixed
+     poster margin, so the plate keeps the height the entrance does not
+     need. */
+  padding: var(--piece-pad-top) var(--page-gutter) var(--piece-pad-bottom)
     calc(var(--page-gutter) + 3.5rem);
   overflow: clip;
   border-top: 1px solid color-mix(in srgb, var(--room-ink) 28%, transparent);
@@ -443,7 +530,7 @@
   color: var(--accent-ink);
   font-family: var(--mono);
   font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--track-instrument);
   writing-mode: vertical-rl;
   transform: rotate(180deg);
 }
@@ -483,9 +570,13 @@
   margin-top: clamp(2.6rem, 6vh, 0.95em);
 }
 
+/* The record register on a sheet's own ground. 62% of the room's ink
+   reads as an annotation on most rooms and as a smudge on the deepest
+   one; the state of the work is not an annotation, so both lines clear
+   4.5:1 on every room's paper at 14px. */
 .xp-piece-meta,
 .xp-piece-status {
-  color: color-mix(in srgb, currentColor 62%, transparent);
+  color: color-mix(in srgb, currentColor 72%, transparent);
 }
 
 /* The one intro block: what the project is, in plain sentences. It
@@ -505,15 +596,23 @@
 .xp-piece-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem 1.35rem;
-  margin-top: clamp(3.4rem, 9vh, 5.6rem);
+  gap: 1.05rem 1.5rem;
+  /* the action is separated from the description, but by a step, not by
+     most of a column: 9vh of viewport put the links a long way from the
+     sentence that explains them */
+  margin-top: clamp(2.2rem, 5.5vh, 3.4rem);
 }
 
+/* The action register. A reader who wants to find out how to get further
+   has to be able to tell the action from the annotation beside it: the
+   sheet's metadata is a mono record line, so its actions cannot be one
+   too. They are mono still — this is the folio's utility voice — but a
+   step larger, in reading ink, with the underline as the affordance. */
 .xp-piece-actions a {
   position: relative;
-  color: inherit;
+  color: var(--room-ink, inherit);
   font-family: var(--mono);
-  font-size: var(--meta-size);
+  font-size: var(--step-0);
   text-decoration: none;
 }
 
@@ -614,6 +713,14 @@
   border: 1px solid color-mix(in srgb, var(--accent-ink, currentColor) 42%, transparent);
   color: var(--pp-ink, currentColor);
   font-family: var(--mono);
+  /* The project's colour at label size. `--pp-accent` is tuned to be
+     vivid against the room's paper; the portrait's own ground is a
+     different surface (five of the seven are dark), and the raw accent
+     drops to 2.9–3.6:1 on some of them. Pulling it toward the frame's
+     own reading ink fixes the contrast in both directions without
+     inventing a second palette: on a light frame it deepens, on a dark
+     frame it lifts. */
+  --pp-accent-label: color-mix(in srgb, var(--pp-accent) 60%, var(--pp-ink));
 }
 
 .xp-portrait-field {
@@ -643,13 +750,13 @@
   padding: 0.45rem 0.7rem 0.45rem;
   border-bottom: 1px solid var(--pp-rule);
   background: color-mix(in srgb, var(--pp-ground, transparent) 82%, transparent);
-  font-size: clamp(0.68rem, 1.3cqw, 0.8rem);
+  font-size: clamp(0.75rem, 1.3cqw, 0.85rem);
   letter-spacing: 0.04em;
   color: var(--pp-muted);
 }
 
 .xpp-read {
-  color: var(--pp-accent);
+  color: var(--pp-accent-label);
   font-variant-numeric: tabular-nums;
 }
 
@@ -676,20 +783,85 @@
   transition: opacity 220ms var(--ease-out);
 }
 
+/* THE PLATE.
+   ----------------------------------------------------------------
+   One frame, two states, and the second state is the point of the
+   exercise: the authored demonstration is a specimen shown *inside*
+   a frame — inset, ticked, racked, captioned — and the real project
+   is the work itself, shown edge to edge.
+
+   So on reveal the plate releases: it expands from the specimen's
+   inset to the whole portrait box, and the frame's own ground
+   becomes the artifact's ground. On a light room whose project is a
+   dark application, the room visibly goes dark behind the work; the
+   artifact stops being a picture pasted onto the portfolio's paper
+   and becomes the surface the reader is standing in front of.
+
+   The artifacts are fitted, never cropped. Every one of them is a
+   UI capture whose meaning lives in its own edges; cropping 10–20%
+   of an axis to fill a box is how evidence quietly stops being
+   evidence. The plate is therefore always taller or wider than the
+   capture at some viewport, and that leftover is painted in the
+   capture's own ground, so it reads as the artifact's margin
+   instead of as an empty frame. */
 .xpp-real {
   position: absolute;
   inset: clamp(0.6rem, 1.8cqw, 1.1rem);
   z-index: 3;
   overflow: hidden;
-  background: var(--pp-ground);
+  background: var(--pp-plate, var(--pp-ground));
   opacity: 0;
   pointer-events: none;
-  transition: opacity 260ms var(--ease-out);
+  transition:
+    opacity 260ms var(--ease-out),
+    inset 320ms var(--ease-out);
 }
 
 .xp-portrait[data-view="real"] .xpp-real {
+  inset: 0;
   opacity: 1;
   pointer-events: auto;
+}
+
+/* The release is a change of surface, not a movement to be watched. A
+   reader who has asked for less motion gets the crossfade and the plate
+   already at its full size. */
+@media (prefers-reduced-motion: reduce) {
+  .xpp-real {
+    transition: opacity 120ms linear;
+  }
+}
+
+/* the frame's own border goes with its ground */
+.xp-portrait[data-view="real"] {
+  border-color: color-mix(in srgb, var(--pp-plate, var(--pp-ground)) 60%, transparent);
+}
+
+/* The labels move onto the artifact's surface.
+   The rack and the caption do not disappear when the real project
+   arrives, and they should not: the rack says which state the frame is
+   in, and the caption says what the evidence is and where its boundary
+   lies. What changes is the surface they sit on. They take the plate's
+   ground and the plate's ink, so the frame becomes one continuous
+   surface — the work and its label — instead of the work sitting in a
+   window cut into the portfolio's paper. On Fluxion, Daynero, Invisible
+   Interfaces and Design or Disaster that is a light room going dark
+   behind the work: the single most visible event in the folio.
+
+   The readout's accent gives way here too. `--pp-accent` is a vivid
+   project colour chosen to be legible on the room's paper; on a piece of
+   the project's own near-black it fails contrast outright (Fluxion's red
+   reads 2.9:1 on its own ground). State is not decoration. */
+.xp-portrait[data-view="real"] .xpp-rack,
+.xp-portrait[data-view="real"] .xpp-caption {
+  border-color: color-mix(in srgb, var(--pp-plate-ink, currentColor) 22%, transparent);
+  background: color-mix(in srgb, var(--pp-plate, var(--pp-ground)) 88%, transparent);
+  color: color-mix(in srgb, var(--pp-plate-ink, currentColor) 82%, transparent);
+}
+
+.xp-portrait[data-view="real"] .xpp-read,
+.xp-portrait[data-view="real"] .xpp-caption strong {
+  color: var(--pp-plate-ink, currentColor);
 }
 
 .xp-portrait[data-view="real"] .xpp-demo-layer {
@@ -738,7 +910,9 @@
   padding: 0.55rem 0.7rem 0.6rem;
   border-top: 1px solid var(--pp-rule);
   background: color-mix(in srgb, var(--pp-ground, transparent) 82%, transparent);
-  font-size: clamp(0.72rem, 1.35cqw, 0.85rem);
+  /* the caption carries the evidence boundary, so its floor is a
+     reading size, not the smallest thing that still fits the frame */
+  font-size: clamp(0.8rem, 1.35cqw, 0.9rem);
   letter-spacing: 0.01em;
   line-height: 1.45;
   color: var(--pp-muted);
@@ -758,10 +932,10 @@
   right: 0.55rem;
   z-index: 3;
   padding: 0.1rem 0.35rem;
-  border: 1px solid color-mix(in srgb, var(--pp-accent) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pp-accent-label) 55%, transparent);
   background: color-mix(in srgb, var(--pp-ground, transparent) 82%, transparent);
-  color: var(--pp-accent);
-  font-size: clamp(0.68rem, 1.15cqw, 0.78rem);
+  color: var(--pp-accent-label);
+  font-size: clamp(0.75rem, 1.15cqw, 0.82rem);
   letter-spacing: 0.04em;
   opacity: 0;
   transition: opacity 180ms linear;
@@ -788,9 +962,9 @@
   width: fit-content;
   margin-top: 0.4rem;
   padding: 0.08rem 0.35rem;
-  border: 1px solid color-mix(in srgb, var(--pp-accent) 45%, transparent);
-  color: var(--pp-accent);
-  font-size: clamp(0.66rem, 1.1cqw, 0.76rem);
+  border: 1px solid color-mix(in srgb, var(--pp-accent-label) 45%, transparent);
+  color: var(--pp-accent-label);
+  font-size: clamp(0.7rem, 1.1cqw, 0.8rem);
   letter-spacing: 0.04em;
   line-height: 1.4;
   opacity: 0;
@@ -1411,7 +1585,7 @@
   padding: 0.16rem 0.5rem;
   border: 1px solid var(--pp-rule);
   color: var(--pp-muted);
-  font-size: clamp(0.46rem, 1.1cqw, 0.6rem);
+  font-size: clamp(0.56rem, 1.1cqw, 0.68rem);
   letter-spacing: 0.02em;
   border-radius: 999px;
   transition:
@@ -1421,9 +1595,12 @@
     opacity 380ms var(--ease-out);
 }
 
+/* the selected mode is the demo's own subject — "Explain Back", the
+   interaction this case is about — so it is set in the label-weight
+   accent rather than the vivid one, which read 3.65:1 on the cream */
 .xpp-ath-modes li[data-on] {
-  border-color: var(--pp-accent);
-  color: var(--pp-accent);
+  border-color: var(--pp-accent-label);
+  color: var(--pp-accent-label);
 }
 
 .xpp-ath-modes li[data-dim] {
@@ -1609,8 +1786,8 @@
 }
 
 .xpp-ath-review-v {
-  color: var(--pp-accent);
-  font-size: clamp(0.5rem, 1.15cqw, 0.64rem);
+  color: var(--pp-accent-label);
+  font-size: clamp(0.6rem, 1.15cqw, 0.72rem);
 }
 
 .xpp-ath-note {
@@ -2191,6 +2368,7 @@
 }
 
 /* ---------- portrait motion ---------- */
+
 @keyframes xpp-ping {
   0% { opacity: 0; transform: scale(1.9); }
   40% { opacity: 1; transform: scale(1); }
@@ -2272,7 +2450,20 @@
   position: relative;
   z-index: 1;
   align-self: stretch;
-  height: min(67vh, 42rem);
+  /* The plate's window: every pixel a pinned sheet can spare once the
+     entrance, the status line and its own gaps are paid for. Derived
+     from the same tokens the sheet is built from, so the plate can never
+     push the copy or the status below the fold while the sheet is
+     pinned — and the plate, not a viewport guess, gets whatever is left.
+     Nothing here crops a capture: the media is fitted, so the window may
+     be any shape. */
+  height: calc(
+    100svh - var(--header-h) - 1rem - var(--piece-pad-top) -
+      var(--piece-pad-bottom) - var(--piece-gap) - var(--piece-status-band)
+  );
+  /* on a very tall screen the plate stops growing: a sheet is not a
+     billboard, and the copy needs to stay in the same frame as it */
+  max-height: min(74vh, 46rem);
   min-height: 0;
   overflow: hidden;
   transform-origin: center;
@@ -2333,7 +2524,7 @@
 
 /* absence: copy narrow and bottom-settled against a wider plate */
 .xp-piece[data-layout="absence"] {
-  grid-template-columns: minmax(12rem, 0.52fr) minmax(30rem, 1.48fr);
+  grid-template-columns: minmax(12rem, 0.47fr) minmax(30rem, 1.53fr);
 }
 
 .xp-piece[data-layout="absence"] .xp-piece-copy {
@@ -2342,7 +2533,7 @@
 }
 
 .xp-piece[data-layout="number"] {
-  grid-template-columns: minmax(13rem, 0.55fr) minmax(30rem, 1.45fr);
+  grid-template-columns: minmax(13rem, 0.5fr) minmax(30rem, 1.5fr);
 }
 
 .xp-piece[data-layout="number"] .xp-piece-copy {
@@ -2362,6 +2553,9 @@
   padding: 0.55rem 0.7rem;
   font-family: var(--mono);
   font-size: var(--step--1);
+  /* the affordance over the demonstration states what to do with it, so
+     it is set in the frame's own ink rather than inheriting by accident */
+  color: var(--pp-ink, #fff6e8);
 }
 
 .xp-dod-mark {
@@ -2468,22 +2662,18 @@
 
 /* ---------- responsive ---------- */
 
-/* Short laptop viewports: a pinned sheet's on-screen box is fixed, so
-   the stage and the top margin give way before any copy or status
-   does — no sheet's text ever sits below the fold while pinned. */
+/* Short laptop viewports: the sheet's entrance gives way first, and the
+   stage's own calculation hands the room it frees straight to the plate.
+   No sheet's text ever sits below the fold while pinned. */
 @media (min-width: 52.01rem) and (max-height: 48.5rem) {
   .xp-piece {
-    padding-top: clamp(1.6rem, 4vh, 2.6rem);
-  }
-
-  .xp-piece-stage {
-    height: min(56vh, 36rem);
+    --piece-pad-top: clamp(1.3rem, 3vh, 2rem);
   }
 }
 
 @media (max-width: 64rem) {
   .xp-piece {
-    grid-template-columns: minmax(12rem, 0.72fr) minmax(23rem, 1.28fr);
+    grid-template-columns: minmax(12rem, 0.68fr) minmax(23rem, 1.32fr);
   }
 
   .xp-piece[data-layout="revision"] {
@@ -2495,11 +2685,11 @@
   }
 
   .xp-piece[data-layout="absence"] {
-    grid-template-columns: minmax(11rem, 0.5fr) minmax(24rem, 1.5fr);
+    grid-template-columns: minmax(11rem, 0.47fr) minmax(24rem, 1.53fr);
   }
 
   .xp-piece[data-layout="number"] {
-    grid-template-columns: minmax(11rem, 0.55fr) minmax(24rem, 1.45fr);
+    grid-template-columns: minmax(11rem, 0.5fr) minmax(24rem, 1.5fr);
   }
 
   .xp-piece-title {
@@ -2523,8 +2713,10 @@
     top: auto;
     grid-template-rows: auto auto auto auto;
     min-height: auto;
-    padding-top: 2rem;
-    padding-bottom: 4rem;
+    padding-top: 1.4rem;
+    /* the cover's tail and the wall's head are one margin, not two:
+       between them they used to open ~170px of nothing on a phone */
+    padding-bottom: 2.6rem;
   }
 
   .xp-cover-head p:last-child {
@@ -2541,7 +2733,7 @@
   }
 
   .xp-field-head {
-    padding-top: 5rem;
+    padding-top: 2.4rem;
   }
 
   /* Six ordinary vertical rows, not a sideways strip. */
@@ -2780,8 +2972,9 @@
   margin: 0;
   font-family: var(--display);
   font-size: clamp(1.25rem, 2.2vw, 1.6rem);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: var(--role-statement-weight);
+  font-stretch: var(--role-statement-stretch);
+  letter-spacing: var(--role-statement-track);
   line-height: 1.25;
   color: var(--ink);
   text-wrap: balance;
@@ -2931,7 +3124,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .mw-feature-link {
@@ -2966,7 +3159,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-record);
 }
 
 .mw-stages {
@@ -3091,7 +3284,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: 0.78rem;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .more-work-name {
@@ -3124,7 +3317,7 @@
   color: var(--registrar);
   font-family: var(--mono);
   font-size: 0.8rem;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .more-work-link:hover .more-work-name,

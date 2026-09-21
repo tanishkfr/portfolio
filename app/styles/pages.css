@@ -13,51 +13,99 @@
   padding-bottom: 4rem;
 }
 
+/* The opening frame.
+   -----------------------------------------------------------------
+   One composed frame, not several blocks floating in a container: a
+   full-width kicker row, then a primary column (the title and the two
+   paragraphs that introduce the person) beside a supporting column
+   (the record — where he is, what he is doing) that runs the height
+   of the frame and closes on a rule.
+
+   The columns are 7:5 rather than even because the title and the
+   reading measure need the width and the record does not. The title
+   no longer abandons half the page, and the record stops being a
+   four-across table of caption-sized values. */
 .about-intro {
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1.6rem;
-  padding-block: clamp(3rem, 8vh, 5.5rem) clamp(2.4rem, 6vh, 4rem);
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  column-gap: clamp(2.5rem, 5vw, 5.5rem);
+  row-gap: var(--gap-group);
+  align-items: start;
+  padding-block: clamp(2.6rem, 7vh, 4.8rem) clamp(2.6rem, 6vh, 4rem);
+}
+
+/* the kicker files across the whole frame */
+.about-intro > .eyebrow {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+  padding-bottom: var(--gap-close);
+  border-bottom: 1px solid var(--line);
 }
 
 .about-intro h1 {
+  grid-column: 1;
   margin: 0;
   max-width: 13em;
   font-family: var(--display);
   font-size: clamp(2.4rem, 4.6vw, 4.4rem);
-  font-weight: var(--poster-weight);
-  font-stretch: 112%;
-  letter-spacing: 0;
+  font-weight: var(--role-title-weight);
+  font-stretch: var(--role-title-stretch);
+  letter-spacing: var(--role-title-track);
   line-height: 1.02;
   text-wrap: balance;
 }
 
+/* Two registers, not two equal columns: the statement is the lead, the
+   circumstances are the note under it. Both sit on one reading measure,
+   which is what makes them read as a single introduction rather than
+   two blocks that happen to be adjacent. */
 .about-lede {
+  grid-column: 1;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2rem clamp(2rem, 5vw, 5rem);
-  max-width: 72rem;
+  gap: var(--gap-close);
+  max-width: var(--measure-lede);
 }
 
 .about-lede p {
   margin: 0;
   color: var(--ink-soft);
-  font-size: var(--step-1);
-  line-height: 1.55;
 }
 
-/* The facts, as a simple editorial panel — labels in mono, values in the
-   reading face, no console chrome and no location telemetry. */
+.about-lede p:first-child {
+  color: var(--ink);
+  font-size: var(--step-1);
+  line-height: 1.5;
+}
+
+.about-lede p:last-child {
+  font-size: var(--step-0);
+  line-height: 1.62;
+}
+
+/* The record: ruled rows in the supporting column. The rows divide the
+   column the title and the introduction occupy, so the frame closes on
+   one line and the record's rules land level with the last line of the
+   copy — the composition is resolved at the bottom, not left hanging.
+   Values are set in the reading face at reading size: something you
+   have to lean in for is a caption, not a fact. */
 .about-facts {
+  grid-column: 2;
+  grid-row: 2 / span 2;
+  align-self: stretch;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.5rem 2rem;
-  margin: 1.9rem 0 0;
-  max-width: 72rem;
-  padding-top: 1.3rem;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  margin: 0;
   border-top: 1px solid var(--line);
+}
+
+.about-facts > div {
+  display: grid;
+  align-content: start;
+  gap: var(--gap-hair);
+  padding-block: var(--gap-close);
+  border-bottom: 1px solid var(--line);
 }
 
 .about-facts dt {
@@ -65,14 +113,49 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .about-facts dd {
-  margin: 0.45rem 0 0;
+  margin: 0;
   color: var(--ink-soft);
-  font-size: var(--meta-size);
-  line-height: 1.55;
+  font-size: var(--step-0);
+  line-height: 1.5;
+}
+
+@media (max-width: 56rem) {
+  /* One reading order: the record follows the introduction instead of
+     interrupting it, and never outgrows it. */
+  .about-intro {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--gap-close);
+  }
+
+  .about-intro > .eyebrow,
+  .about-intro h1,
+  .about-intro .about-lede,
+  .about-intro .about-facts {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .about-facts {
+    grid-template-rows: none;
+    margin-top: var(--gap-hair);
+  }
+}
+
+@media (max-width: 36rem) {
+  .about-intro {
+    padding-block: clamp(1.9rem, 5vh, 2.8rem) clamp(2rem, 5vh, 3rem);
+  }
+
+  /* the kicker is orientation, not content: it must not push the name
+     further down a small screen */
+  .about-intro > .eyebrow {
+    padding-bottom: var(--gap-tight);
+    font-size: var(--step--1);
+  }
 }
 
 .about-practice,
@@ -87,12 +170,13 @@
 .about-current h2,
 .about-authorship h2,
 .about-contact h2 {
-  margin: 0 0 1.8rem;
+  margin: 0 0 var(--gap-group);
   max-width: 18em;
   font-family: var(--display);
   font-size: var(--step-3);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
   line-height: 1.1;
   text-wrap: balance;
 }
@@ -120,8 +204,9 @@
   margin: 0;
   font-family: var(--display);
   font-size: var(--step-2);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: var(--role-sub-weight);
+  font-stretch: var(--role-sub-stretch);
+  letter-spacing: var(--role-sub-track);
   line-height: 1.15;
 }
 
@@ -186,8 +271,9 @@
   margin: 0;
   font-family: var(--display);
   font-size: var(--step-1);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: var(--role-sub-weight);
+  font-stretch: var(--role-sub-stretch);
+  letter-spacing: var(--role-sub-track);
   line-height: 1.25;
 }
 
@@ -208,7 +294,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-record);
 }
 
 .current-status::before {
@@ -325,6 +411,15 @@
   pointer-events: none;
 }
 
+/* About's frame is full: the record occupies the supporting column, so
+   the signal becomes the counterweight to the kicker instead of a
+   filler for an empty corner — one short band along the top edge. */
+.about-intro > .page-signal {
+  width: 24%;
+  height: clamp(5.5rem, 12vh, 8rem);
+  opacity: 0.85;
+}
+
 @media (max-width: 56rem) {
   .about-intro > .page-signal,
   .resume-intro > .page-signal {
@@ -370,9 +465,9 @@
   max-width: 14em;
   font-family: var(--display);
   font-size: clamp(2.4rem, 4.6vw, 4.4rem);
-  font-weight: var(--poster-weight);
-  font-stretch: 112%;
-  letter-spacing: 0;
+  font-weight: var(--role-title-weight);
+  font-stretch: var(--role-title-stretch);
+  letter-spacing: var(--role-title-track);
   line-height: 1.02;
   text-wrap: balance;
 }
@@ -395,12 +490,13 @@
 }
 
 .contact-brief h2 {
-  margin: 0 0 1.6rem;
+  margin: 0 0 var(--gap-group);
   max-width: 20em;
   font-family: var(--display);
   font-size: var(--step-3);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
   line-height: 1.1;
   text-wrap: balance;
 }
@@ -472,7 +568,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .contact-options strong {
@@ -488,7 +584,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.05em;
+  letter-spacing: var(--track-record);
   transition: color var(--beat) var(--ease-out);
 }
 
@@ -577,9 +673,9 @@
     gap: 0.5rem;
   }
 
-  .about-facts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  /* the record is a rows grid now (see .about-facts): the old
+     four-across column rules would have laid three facts out as a
+     two-column masonry with a ragged bottom edge at tablet widths */
 
   .contact-options {
     grid-template-columns: 1fr;
@@ -629,7 +725,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-record);
   color: var(--muted);
 }
 
@@ -706,10 +802,6 @@
 }
 
 @media (max-width: 36rem) {
-  .about-facts {
-    grid-template-columns: 1fr;
-  }
-
   .contact-paths {
     grid-template-columns: 1fr;
   }
@@ -754,10 +846,13 @@
 .resume-intro h1 {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(2.6rem, 6.6vw, 4.6rem);
-  font-weight: var(--poster-weight);
-  font-stretch: 104%;
-  letter-spacing: -0.01em;
+  font-size: clamp(2.5rem, 6vw, 4.4rem);
+  font-weight: var(--role-title-weight);
+  /* deliberate exception to the title role: a full name set in caps
+     needs a narrower width axis than a sentence-case title, or the
+     line outruns its own measure */
+  font-stretch: var(--role-title-stretch-caps);
+  letter-spacing: var(--role-title-track);
   line-height: 0.98;
   text-wrap: balance;
   text-transform: uppercase;
@@ -768,7 +863,7 @@
   color: var(--ink);
   font-family: var(--mono);
   font-size: var(--step-0);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-record);
 }
 
 .resume-lede {
@@ -831,12 +926,12 @@
 }
 
 .resume-section-title {
-  margin: 0 0 1.6rem;
+  margin: 0 0 var(--gap-group);
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--step--1);
   font-weight: 500;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -867,9 +962,9 @@
   margin: 0;
   font-family: var(--display);
   font-size: var(--step-2);
-  font-weight: 640;
-  font-stretch: 106%;
-  letter-spacing: -0.005em;
+  font-weight: var(--role-sub-weight);
+  font-stretch: var(--role-sub-stretch);
+  letter-spacing: var(--role-sub-track);
   line-height: 1.1;
 }
 
@@ -890,7 +985,8 @@
 
 .resume-entry-title--small {
   font-size: var(--step-1);
-  font-weight: 560;
+  font-weight: 500;
+  font-stretch: 100%;
 }
 
 .resume-entry-meta {
@@ -898,7 +994,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--step--1);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .resume-entry-lines {

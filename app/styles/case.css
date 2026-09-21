@@ -50,6 +50,16 @@
   --accent-ink: var(--accent-daynero-ink, #566f18);
 }
 
+/* Athena arrived last and its world was never declared here, so it fell
+   back to `.case`'s default — `--accent-ink: var(--project-accent)`. That
+   made the raw brand orange serve as the *text* weight for the case's
+   decision titles, which reads 3.58:1 on the world's own cream: the only
+   case whose headings failed contrast, and the only one without a wash. */
+.case--athena {
+  --world-wash: rgba(217, 95, 50, 0.14);
+  --accent-ink: var(--accent-athena-ink, #b0431c);
+}
+
 /* ---------- return strip ---------- */
 
 .case-return {
@@ -185,9 +195,9 @@
   margin: 0;
   font-family: var(--display);
   font-size: clamp(2.7rem, 4.6vw, 5.4rem);
-  font-weight: var(--poster-weight);
-  font-stretch: var(--poster-stretch);
-  letter-spacing: 0;
+  font-weight: var(--role-title-weight);
+  font-stretch: var(--role-title-stretch);
+  letter-spacing: var(--role-title-track);
   line-height: 0.98;
   text-wrap: balance;
 }
@@ -231,13 +241,18 @@
   view-transition-name: project-daynero;
 }
 
+/* The turn. One of the folio's two statement moments — the other is the
+   sign-off on the way out of the cover — and both are set as the same
+   role, so the moment a case argues and the moment the folio speaks are
+   the same voice. */
 .case-thesis {
   margin: 1.4rem 0 0;
   max-width: 24em;
   font-family: var(--display);
   font-size: var(--step-2);
-  font-weight: 500;
-  letter-spacing: -0.005em;
+  font-weight: var(--role-statement-weight);
+  font-stretch: var(--role-statement-stretch);
+  letter-spacing: var(--role-statement-track);
   line-height: 1.25;
   color: var(--ink-soft);
   text-wrap: balance;
@@ -343,7 +358,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .case-hero-brief {
@@ -414,8 +429,11 @@
   border-color: var(--accent-ink);
 }
 
+/* The hint inside the dark button. It was set in dark ink at 62%, on the
+   button's own near-black ground: 1:1, literally invisible. A qualifier
+   inside a button is the button's own ink, a shade quieter. */
 .case-actions a:first-child small {
-  color: rgba(27, 33, 38, 0.62);
+  color: color-mix(in srgb, currentColor 88%, transparent);
   font-size: var(--meta-size);
 }
 
@@ -448,7 +466,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .case-facts dd {
@@ -484,7 +502,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .case-brief dd {
@@ -520,8 +538,9 @@
   margin: 0;
   font-family: var(--display);
   font-size: var(--step-3);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
   line-height: 1.1;
 }
 
@@ -579,7 +598,7 @@
   padding: 0.8rem 1.3rem;
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .artifact-bar span:first-child {
@@ -607,7 +626,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .case-choice-group {
@@ -624,7 +643,7 @@
   color: var(--ink-soft);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
   cursor: pointer;
   transition:
     background-color var(--world-beat, var(--beat)) var(--ease-out),
@@ -704,7 +723,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .fluxion-demo-facts dd {
@@ -744,7 +763,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .juror-reading p {
@@ -775,7 +794,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--track-record);
   padding: 0.28rem 0.6rem;
   transition:
     top var(--move) var(--ease-swing),
@@ -805,7 +824,7 @@
   background: rgba(0, 0, 0, 0.55);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.06em;
+  letter-spacing: var(--track-instrument);
 }
 
 /* --- pentimento demo: the page changes hands --- */
@@ -838,7 +857,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.07em;
+  letter-spacing: var(--track-instrument);
 }
 
 .pentimento-demo-evidence dd {
@@ -859,7 +878,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .draft-owner--human {
@@ -932,7 +951,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 /* --- invisible demo: before, away, return --- */
@@ -976,7 +995,7 @@
   color: #f2efe5;
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.06em;
+  letter-spacing: var(--track-instrument);
 }
 
 .invisible-away-state {
@@ -987,7 +1006,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.07em;
+  letter-spacing: var(--track-instrument);
   max-width: 7.5rem;
 }
 
@@ -1057,7 +1076,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .atlas-rule p {
@@ -1087,7 +1106,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.07em;
+  letter-spacing: var(--track-instrument);
 }
 
 .atlas-pressure-rail i {
@@ -1456,7 +1475,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
   text-decoration: none;
   transition: color var(--beat) var(--ease-out), background-color var(--beat) var(--ease-out);
 }
@@ -1567,12 +1586,13 @@
 }
 
 .case-chapter > h2 {
-  margin: 0 0 1.2rem;
+  margin: 0 0 var(--gap-close);
   max-width: 15em;
   font-family: var(--display);
   font-size: var(--step-4);
-  font-weight: 500;
-  letter-spacing: -0.012em;
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
   line-height: 1.06;
   text-wrap: balance;
 }
@@ -1627,7 +1647,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .case-question-card p {
@@ -1684,7 +1704,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .pivot-sequence .pivot-realization span {
@@ -1729,7 +1749,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .rejected-heading p {
@@ -1846,7 +1866,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .system-model h3 {
@@ -1886,7 +1906,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .decision-ledger article + article {
@@ -1897,7 +1917,9 @@
   margin: 0;
   font-family: var(--display);
   font-size: var(--step-1);
-  font-weight: 600;
+  font-weight: var(--role-sub-weight);
+  font-stretch: var(--role-sub-stretch);
+  letter-spacing: var(--role-sub-track);
 }
 
 .decision-ledger p {
@@ -1938,7 +1960,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .evidence-state--built {
@@ -2007,7 +2029,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .next-test div p {
@@ -2040,10 +2062,12 @@
 }
 
 .case-relations h2 {
-  margin: 0 0 0.6rem;
+  margin: 0 0 var(--gap-hair);
   font-family: var(--display);
   font-size: var(--step-2);
-  letter-spacing: -0.015em;
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
   line-height: 1.1;
 }
 
@@ -2061,7 +2085,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .relation-primary strong {
@@ -2087,7 +2111,7 @@
   color: var(--accent-ink, var(--accent));
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
   transition: transform var(--beat) var(--ease-out);
 }
 
@@ -2316,7 +2340,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .daynero-facts dd {
@@ -2419,7 +2443,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .daynero-boundary-grid article:first-child > span {
@@ -2716,7 +2740,9 @@
   margin: 0.5rem 0 0;
   font-family: var(--display);
   font-size: var(--step-2);
-  letter-spacing: -0.015em;
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
   line-height: 1.1;
   color: var(--ink);
   max-width: 20em;
@@ -2737,13 +2763,18 @@
   border-bottom: 1px solid var(--line);
 }
 
+/* A decision has a name, not a label: it reads as the first thing in
+   its row, at reading size, in the world's own ink rather than its
+   vivid accent — the accent is for marks, not for 14px type. */
 .record-decisions h3 {
   grid-column: 1 / -1;
-  margin: 0 0 0.3rem;
-  font-family: var(--mono);
-  font-size: var(--meta-size);
-  letter-spacing: 0.03em;
-  color: var(--accent);
+  margin: 0 0 var(--gap-hair);
+  font-family: var(--display);
+  font-size: var(--step-0);
+  font-weight: var(--role-sub-weight);
+  font-stretch: var(--role-sub-stretch);
+  letter-spacing: var(--role-sub-track);
+  color: var(--accent-ink);
 }
 
 .record-choice,
@@ -2800,7 +2831,7 @@
   border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
   color: var(--accent);
   text-decoration: none;
   transition: border-color var(--beat) var(--ease-out);
@@ -2906,10 +2937,10 @@
 .boundary-state {
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 .boundary-state--built {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .boundary-state--open {
   color: var(--muted);
@@ -2942,18 +2973,24 @@
   display: block;
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
-  color: var(--accent);
+  letter-spacing: var(--track-record);
+  /* the "what would count" label belongs to the record's prose, so it
+     takes the record's legible accent rather than the vivid one */
+  color: var(--accent-ink);
   margin-bottom: 0.3rem;
 }
 
+/* A disclosure line is an authorship statement, not a footnote in the
+   small print: it says who made the work and what a machine did. At 34%
+   of the reading ink it measured 2.1:1 — the least legible text on the
+   site was the text about responsibility. */
 .record-disclosure {
   margin: 0;
   font-family: var(--mono);
   font-size: var(--meta-size);
   line-height: 1.5;
-  letter-spacing: 0.01em;
-  color: rgba(27, 33, 38, 0.34);
+  letter-spacing: var(--track-record);
+  color: color-mix(in srgb, var(--ink) 72%, transparent);
   max-width: 40rem;
 }
 
@@ -3181,7 +3218,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .reason-decision li p {
@@ -3216,7 +3253,7 @@
   color: var(--accent-ink, var(--accent));
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-record);
 }
 
 .reason-method li p {
@@ -3247,7 +3284,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .reason-system li strong {
@@ -3359,7 +3396,7 @@
   color: var(--ink-soft);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-record);
   font-weight: 600;
 }
 
@@ -3382,7 +3419,7 @@
   color: #f3f4ee;
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.06em;
+  letter-spacing: var(--track-instrument);
   background: rgba(27, 33, 38, 0.78);
   padding: 0.2rem 0.45rem;
 }
