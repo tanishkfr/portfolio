@@ -263,7 +263,8 @@ test("renders an honest Daynero preview and names its case boundary", async () =
     "Full case in preparation",
     "Early product preview · public site live",
     "What you can spend today, and why.",
-    "first-paycheck",
+    "earning their first salary",
+    "main UI/UX designer",
     "Visit daynero.com",
     // the one real public surface: the live marketing site, as shipped
     "The public product site, as shipped.",

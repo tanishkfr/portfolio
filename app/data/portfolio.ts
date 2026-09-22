@@ -269,6 +269,10 @@ export const projects: Project[] = [
             "A small hospitality business needed a site that could explain the offer and take enquiries.",
         },
         {
+          term: "Timeline",
+          value: "About three weeks from the first brief to the live site.",
+        },
+        {
           term: "Constraint",
           value:
             "Requirements, scope, and price were agreed with the client first, then the build had to hold up against real implementation limits.",
@@ -276,7 +280,7 @@ export const projects: Project[] = [
         {
           term: "My role",
           value:
-            "Designed and shipped the site: interface design, the enquiry flow, production QA, and deployment.",
+            "Designed and shipped by the two of us. My side: interface design, the enquiry flow, production QA, and deployment.",
         },
         {
           term: "Collaboration",
@@ -290,11 +294,13 @@ export const projects: Project[] = [
         },
         {
           term: "Shipped",
-          value: "Live at taamboolam.com, with its enquiry flow deployed.",
+          value:
+            "Live at taamboolam.com on the client's own domain, with its enquiry flow deployed.",
         },
         {
-          term: "Consequence",
-          value: "The client has a working site that can receive enquiries.",
+          term: "Client response",
+          value:
+            "Positive informal feedback after launch. The client later offered a separate Google Business Profile and advertising assignment.",
         },
       ],
       href: "https://taamboolam.com",
@@ -479,7 +485,7 @@ export const projects: Project[] = [
     nextTest: {
       title: "Test delayed recall, not the demo.",
       body:
-        "Run the prototype with learners over several weeks and measure whether reviewed weak concepts are still retrievable later, and whether learners act on the gaps the report names.",
+        "A first step needs no study budget: watch a few learners use the review experience once and note where the Explain Back workflow or its wording confuses them. Then run the prototype with learners over several weeks and measure whether reviewed weak concepts are still retrievable later, and whether learners act on the gaps the report names.",
       success:
         "Good news would be delayed recall improving on concepts that came back through review. The opposite result is also worth reporting: if learners ignore the weak concepts, or review feels like a burden, the loop needs changing.",
     },
@@ -513,7 +519,7 @@ export const projects: Project[] = [
     plain:
       "A personal finance app for people earning their first salary. It brings income and expenses together to answer one question: How much can I safely spend today? Currently in development.",
     oneLine:
-      "A personal finance app designed to make managing your first salary feel simple. It turns monthly income and expenses into one clear, safe-to-spend amount for each day, making the daily spending limit the primary focus of the experience.",
+      "A personal-finance product for people earning their first salary, with Tanishk as its main UI/UX designer. The public website is live; the app's design system is three iterations in and the app remains pre-MVP.",
     status: "Early product preview",
     availability: "coming-soon",
     year: "2026",
