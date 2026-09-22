@@ -286,6 +286,17 @@
   gap: 0.35rem 0.9rem;
 }
 
+/* Same floor as the resume entry: a heading that is a flex item cannot
+   shrink past its longest word, and at doubled text on 320px that word is
+   wider than the column. */
+.current-head > * {
+  min-width: 0;
+}
+
+.current-head h3 {
+  overflow-wrap: break-word;
+}
+
 .current-list .current-status {
   display: inline-flex;
   align-items: center;
@@ -433,9 +444,27 @@
        begins at a fixed 68rem boundary — genuinely empty page. The
        width must stay explicit: a canvas with auto width sizes itself
        by its own bitmap ratio, which the engine rewrites every
-       measure — runaway feedback. */
-    left: max(70%, 68rem);
-    width: calc(100% - max(70%, 68rem));
+       measure — runaway feedback.
+       The boundary is capped at the shell's own width: 68rem is a
+       reading-measure constant, and at 200% text it is wider than the
+       page, which put a 1px canvas past the right edge and gave the
+       whole document a horizontal scroll. Capped, the canvas has no
+       room left and steps out on its own. The width is a clamp rather
+       than a subtraction so that it lands on exactly zero when the
+       boundary reaches the edge — `calc(100% - min(…, 100%))` resolved
+       to 1px there, which was still 1px of scroll.
+       The max-width is what actually holds this down. The engine writes
+       the canvas's measured size inline, and an inline width beats a
+       stylesheet width — so a reader who enlarges text *after* the field
+       has measured would keep the old inline width while `left` moved to
+       the boundary, and the page would scroll sideways by that width
+       (measured: 352px at 1440px). max-width is a different property, so
+       a stale inline width is constrained by it rather than overriding
+       it. In the frame this rule applies to it resolves to the same
+       number as the width at every normal text size, so nothing moves. */
+    left: min(max(70%, 68rem), 100%);
+    width: clamp(0px, calc(100% - max(70%, 68rem)), 100%);
+    max-width: calc(100% - min(max(70%, 68rem), 100%));
   }
 }
 
@@ -972,8 +1001,19 @@
   gap: 0.2rem 2rem;
 }
 
+/* The entry title is a flex item, so its automatic minimum is its
+   min-content width — the longest word, not the longest line. At 320px
+   with 200% text "Certificate" alone was 24px wider than the whole row
+   and the entry pushed the document into a horizontal scroll. Removing
+   the floor lets the row keep its width; `break-word` is the safety
+   valve and only fires on a word that cannot fit a line by itself. */
+.resume-entry-head > * {
+  min-width: 0;
+}
+
 .resume-entry-title {
   margin: 0;
+  overflow-wrap: break-word;
   font-family: var(--display);
   font-size: var(--step-2);
   font-weight: var(--role-sub-weight);

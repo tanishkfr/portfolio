@@ -2641,6 +2641,10 @@
   }
 }
 
+/* ---------- labelled rows stack when the floor can't hold
+   Declared at the end of this file, after the evidence plates, so it can
+   also correct the paired plate. */
+
 /* ============================================================
    EDITIONS — the case recut
    ============================================================ */
@@ -3039,6 +3043,99 @@
 .story-beat,
 .atlas-trace {
   grid-template-columns: minmax(0, 1fr);
+}
+
+/* The same floor, one level deeper. The rule above caught the *sections*;
+   these are the stacks inside them — a beat's prose column, the two
+   definition lists, the reasoning blocks, a relation card, a decision
+   list, an editor. Each is a grid that never declared a column, so each
+   carried the same min-content floor, and at 320px with doubled text the
+   floor was a whole word taller than the space it had: paragraphs from
+   Design or Disaster and Pentimento, every `dd` in Fluxion's and Athena's
+   brief, Atlas's editor labels and the index's record column all ran past
+   the column and were cut by the sheet's clip. Naming the single column
+   removes the floor and leaves the words to wrap, which is what they were
+   always meant to do. Every one of these is a stacked list, so the named
+   column is the same track the implicit one resolved to at normal size. */
+.story-prose,
+.reason-block,
+.reason-decision,
+.reason-rejected,
+.reason-rejected li,
+.relation-primary,
+.disaster-evidence,
+.case-brief > div,
+.case-facts,
+.case-facts > div,
+.fluxion-demo,
+.atlas-editor,
+.record-boundary ul,
+.record-sources ul,
+.record-sources li {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Rows that hold two short labels and refuse to wrap. `space-between`
+   with no `flex-wrap` lets neither child shrink, so at doubled text the
+   pair simply left the box: the artefact label bar on all seven cases,
+   Daynero's return strip, and Pentimento's evidence rows. Wrapping is the
+   behaviour they already have visually at every normal size — the row is
+   wide enough that the second label stays on the same line there — so
+   this only takes effect in the condition that was broken. */
+.artifact-bar,
+.daynero-return,
+.pentimento-demo-evidence dl > div {
+  flex-wrap: wrap;
+  row-gap: 0.25rem;
+}
+
+/* Once the row wraps, each label is on its own line but still cannot go
+   below its own longest word. That is the last width no rule can remove,
+   so the label is allowed to take the row's width and break there: a
+   hyphen-less break in a mono label reads as a wrapped label, where the
+   alternative was the end of the word sitting outside the frame. */
+.artifact-bar > *,
+.daynero-return > *,
+.pentimento-demo-evidence dt,
+.pentimento-demo-evidence dd,
+.case-choice-group > *,
+.atlas-editor-actions > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* A call to action is a flex row of its own label, its arrow and its
+   `New tab` hint, and it is a flex item of the actions row. Both levels
+   are nowrap by default, so both had a min-content floor equal to the sum
+   of their parts: measured 344px inside a 240px column at 320px with
+   200% text, which put 64px of the primary button past the sheet's clip.
+   Allowing the button to shrink and letting its own parts wrap keeps the
+   whole control on the page and whole. Only these two are flex containers
+   of their own, so only these two can wrap their parts. */
+.case-actions a,
+.daynero-actions a {
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+  row-gap: 0.15rem;
+  justify-content: flex-start;
+}
+
+/* The same floor, from position rather than from wrap behaviour: these two
+   are anchored into a flex row or a grid stack, so each takes an automatic
+   minimum from being an item. Neither is a flex container itself, so only
+   the sizing pair applies — the wrap properties above would be inert here. */
+.daynero-return a,
+.fluxion-demo a {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* `fit-content` cannot resolve below min-content either, so a heading
+   that happened to be the longest word in its column kept that width. */
+.draft-machine,
+.atlas-reset {
+  max-width: 100%;
 }
 
 /* Case studies inherit their project's motion grammar, but at editorial
@@ -3488,5 +3585,50 @@
 @media (max-width: 56rem) {
   .case-evidence-sequence {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- labelled rows and paired plates stack when the floor can't hold
+   The rows below are two-column grids whose first track is a rem label
+   column and whose second track carries the value: the fact tables inside
+   the Fluxion and Invisible Interfaces artefacts, and Atlas's trace rows —
+   those last carry three tracks, 7rem + 4rem of label before the note.
+   Those floors are desktop measures. In a 240px column at 320px they
+   cannot be kept once text is doubled, so the value track collapsed to 0px
+   and its copy was cut by the artefact's frame ("Outside tap may dismiss a
+   reversible overlay." measured 0px wide, 205px past the clip). Stacking is
+   what these rows already do at a narrower width in spirit; naming it here
+   makes it true.
+
+   Pentimento's evidence rows are the same problem with a different cause:
+   they are a flex row, so they are handled by the wrap rule above, not
+   here — a `grid-template-columns` declaration on them would be inert.
+
+   `rem` in a media query resolves against the reader's *default* font size,
+   not the root element's computed size, so a reader who has raised theirs
+   pulls this stack up with it. A reader who enlarges text without changing
+   the default is handled by the track floors removed earlier, which let
+   the value track keep its width instead of collapsing. At the sizes the
+   site was designed for, nothing here matches. */
+@media (max-width: 34rem) {
+  .fluxion-demo-facts > div,
+  .invisible-receipt dl > div,
+  .atlas-trace li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem 1rem;
+  }
+
+  /* A paired plate is a wide capture beside a phone capture. In a 240px
+     column the wide one gets about 75px, which is a thumbnail of a desktop
+     screenshot — the interface inside it is past reading at any text size,
+     and at 320px with doubled text the pair's second track escaped the
+     hero by 46px. Stacked, both keep a usable width and the phone capture
+     stays phone-shaped. */
+  .case-media--pair .case-media-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-media--pair .case-media-frame--tall {
+    max-width: min(13rem, 62%);
   }
 }

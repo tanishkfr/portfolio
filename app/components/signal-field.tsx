@@ -307,8 +307,29 @@ export function SignalField({
       canvas.style.width = "";
       canvas.style.height = "";
       const box = canvas.getBoundingClientRect();
-      width = Math.max(1, Math.round(box.width));
-      height = Math.max(1, Math.round(box.height));
+      /* A field the stylesheet has given no room must stay at zero. The
+         old floor of one pixel resurrected a canvas whose own width rule
+         had resolved to 0 — the contact page's signal once the
+         reading-measure boundary is wider than the page — and a 1px
+         canvas parked at the boundary's x gave the whole document a
+         horizontal scroll.
+         Nothing is written back inline here: an inline size would pin the
+         element's observed box, so the resize observer could never see
+         the stylesheet give the field room again and it would stay blank
+         until an unrelated resize. The bitmap is zeroed, which paints
+         nothing, and the stylesheet's own size stays authoritative — a
+         `max-width` on the field is what keeps a stale inline size from
+         overflowing in the first place. */
+      width = Math.max(0, Math.round(box.width));
+      height = Math.max(0, Math.round(box.height));
+      if (width < 1 || height < 1) {
+        canvas.width = 0;
+        canvas.height = 0;
+        cols = 0;
+        rows = 0;
+        lastPaint = new Int32Array(0);
+        return;
+      }
       dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       step = width < 760 && !dense ? Math.max(cell, 16) : cell;
       canvas.width = Math.round(width * dpr);

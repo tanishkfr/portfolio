@@ -375,6 +375,10 @@
 /* what it is, when, and how far along — the scan line under the name */
 .xp-index-record {
   display: grid;
+  /* the implicit `auto` track carries a min-content floor, so at 320px with
+     doubled text the right-aligned record column ("Learning product", the
+     year, the status) ran 47px past the index row and out of the sheet */
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.3rem;
   justify-items: end;
   text-align: right;
@@ -383,6 +387,14 @@
 
 .xp-index-record > span {
   color: var(--ink);
+}
+
+/* A right-aligned grid item is sized to its own content, and `break-word`
+   does not lower that size, so at doubled text one long label ("Learning
+   product") held the record open 47px past the index row. Capping the item
+   at its track hands the word to the body's break rule instead. */
+.xp-index-record > * {
+  max-width: 100%;
 }
 
 .xp-index-status {
@@ -475,11 +487,18 @@
      At 200% text 13rem + 28rem is 1056px of floor before any gutter or
      gap, which pushes the status line and the plate past the sheet's own
      right edge: measured at 1520px inside a 1440px sheet. Capping each
-     floor against the viewport leaves the authored split untouched at
-     normal text sizes (13rem < 22vw and 28rem < 52vw down to 1024px) and
-     lets the columns share what is actually there when they cannot. */
-  --piece-copy-floor: min(13rem, 22vw);
-  --piece-stage-floor: min(28rem, 52vw);
+     floor against the space the tracks actually share leaves the authored
+     split untouched at normal text sizes (13rem < 26% and 28rem < 60% at
+     every width this rule applies to) and lets the columns share what is
+     actually there when they cannot.
+
+     The cap is a percentage of the grid's content box, not a viewport
+     width: the sheet's own left padding is `--page-gutter + 3.5rem`, and
+     both terms grow with text, so at 1024px with 200% text 84vw of floors
+     no longer fit inside the 81vw the columns are given. A share of the
+     content box fits by definition, at every text size and every padding. */
+  --piece-copy-floor: min(13rem, 26%);
+  --piece-stage-floor: min(28rem, 60%);
   gap: var(--piece-gap);
   min-height: calc(100svh - var(--header-h) - 1rem);
   /* the room's own threshold: the boundary, the accent rule, and this
@@ -2706,12 +2725,13 @@
 }
 
 @media (max-width: 64rem) {
-  /* The narrower split keeps its own proportions; only the viewpoint-
-     relative caps change, so the floors stay reachable in a tighter
-     frame. */
+  /* The narrower split keeps its own proportions; only the caps change,
+     so the floors stay reachable in a tighter frame. Measured at 1024px
+     with 200% text: 26vw + 58vw is 84vw of floor inside a content box of
+     81vw, and the status line ended 37px past the sheet's own clip. */
   .xp-piece {
-    --piece-copy-floor: min(12rem, 26vw);
-    --piece-stage-floor: min(23rem, 58vw);
+    --piece-copy-floor: min(12rem, 28%);
+    --piece-stage-floor: min(23rem, 60%);
     grid-template-columns:
       minmax(var(--piece-copy-floor), 0.68fr)
       minmax(var(--piece-stage-floor), 1.32fr);
