@@ -92,9 +92,11 @@ export default function AboutPage() {
             small businesses.
           </p>
         </div>
-        {/* The facts, kept whole but read as a simple editorial panel
-            rather than a console: four things a reader would otherwise
-            have to hunt for. No coordinates, no system status. */}
+        {/* The record, kept whole but read as three ruled rows rather than
+            a four-across console: what a reader would otherwise have to
+            hunt for. "Open to" is not repeated here — the header kicker
+            and the closing section both state it, and a third telling
+            makes the introduction feel like a form. */}
         <dl className="about-facts" aria-label="Tanishk at a glance">
           <div>
             <dt>Based</dt>
@@ -110,10 +112,6 @@ export default function AboutPage() {
               product design at Daynero · Fluxion Studios (co-founder) ·
               independent interaction research
             </dd>
-          </div>
-          <div>
-            <dt>Open to</dt>
-            <dd>product, UI/UX, and interaction design roles</dd>
           </div>
         </dl>
       </header>

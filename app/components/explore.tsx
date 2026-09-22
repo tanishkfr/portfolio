@@ -395,17 +395,26 @@ export function Explore() {
 
       <section className="xp-field" id="work" aria-labelledby="field-title">
         <header className="xp-field-head">
-          <p className="xp-field-kicker" id="field-title">
+          {/* The wall's own label, and the section heading the five
+              project titles are subsections of — an h2, so the document
+              reads TANISHK → Selected projects → each work. */}
+          <h2 className="xp-field-kicker" id="field-title">
             Selected projects
-          </p>
+          </h2>
         </header>
 
+        {/* The index is the folio's wall label as much as a menu: each row
+            states the name at display scale, then the three things a reader
+            evaluating work quickly needs before committing to a sheet —
+            what it is, when, and how far along it actually is. Nothing
+            longer than that goes in a row; the case speaks for itself. */}
         <nav className="xp-field-index" aria-label="Explore projects">
           <ol>
             {ordered.map((project, index) => (
               <li
                 key={project.slug}
                 data-current={(active === index && active >= 0) || undefined}
+                style={{ "--accent": project.accent } as CSSProperties}
               >
                 <a
                   href={`#piece-${project.slug}`}
@@ -415,7 +424,15 @@ export function Explore() {
                 >
                   <span>{String(index + 1).padStart(2, "0")}</span>
                   <strong>{project.title}</strong>
-                  <small>{project.form}</small>
+                  <span className="xp-index-record">
+                    <span>
+                      {project.form} · {project.year}
+                    </span>
+                    <span className="xp-index-status">
+                      <i aria-hidden="true" />
+                      {project.status}
+                    </span>
+                  </span>
                 </a>
               </li>
             ))}

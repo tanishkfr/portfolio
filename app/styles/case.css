@@ -50,6 +50,16 @@
   --accent-ink: var(--accent-daynero-ink, #566f18);
 }
 
+/* Athena arrived last and its world was never declared here, so it fell
+   back to `.case`'s default — `--accent-ink: var(--project-accent)`. That
+   made the raw brand orange serve as the *text* weight for the case's
+   decision titles, which reads 3.58:1 on the world's own cream: the only
+   case whose headings failed contrast, and the only one without a wash. */
+.case--athena {
+  --world-wash: rgba(217, 95, 50, 0.14);
+  --accent-ink: var(--accent-athena-ink, #b0431c);
+}
+
 /* ---------- return strip ---------- */
 
 .case-return {
@@ -185,11 +195,17 @@
   margin: 0;
   font-family: var(--display);
   font-size: clamp(2.7rem, 4.6vw, 5.4rem);
-  font-weight: var(--poster-weight);
-  font-stretch: var(--poster-stretch);
-  letter-spacing: 0;
+  font-weight: var(--role-title-weight);
+  font-stretch: var(--role-title-stretch);
+  letter-spacing: var(--role-title-track);
   line-height: 0.98;
   text-wrap: balance;
+  /* "Pentimento" is one word, and the case grid's column is sized to its
+     items' own content, so at the smallest supported width the word ran
+     28px past the column and the sheet clip took its last letter. Nothing
+     is gained by hiding it: the same title is allowed to break rather than
+     leave the column. Unchanged wherever the word already fits. */
+  overflow-wrap: anywhere;
 }
 
 /* Title and summary hold the reading columns; the two facts sit beside
@@ -231,13 +247,18 @@
   view-transition-name: project-daynero;
 }
 
+/* The turn. One of the folio's two statement moments — the other is the
+   sign-off on the way out of the cover — and both are set as the same
+   role, so the moment a case argues and the moment the folio speaks are
+   the same voice. */
 .case-thesis {
   margin: 1.4rem 0 0;
   max-width: 24em;
   font-family: var(--display);
   font-size: var(--step-2);
-  font-weight: 500;
-  letter-spacing: -0.005em;
+  font-weight: var(--role-statement-weight);
+  font-stretch: var(--role-statement-stretch);
+  letter-spacing: var(--role-statement-track);
   line-height: 1.25;
   color: var(--ink-soft);
   text-wrap: balance;
@@ -343,7 +364,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .case-hero-brief {
@@ -414,8 +435,11 @@
   border-color: var(--accent-ink);
 }
 
+/* The hint inside the dark button. It was set in dark ink at 62%, on the
+   button's own near-black ground: 1:1, literally invisible. A qualifier
+   inside a button is the button's own ink, a shade quieter. */
 .case-actions a:first-child small {
-  color: rgba(27, 33, 38, 0.62);
+  color: color-mix(in srgb, currentColor 88%, transparent);
   font-size: var(--meta-size);
 }
 
@@ -448,7 +472,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .case-facts dd {
@@ -484,7 +508,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .case-brief dd {
@@ -520,8 +544,9 @@
   margin: 0;
   font-family: var(--display);
   font-size: var(--step-3);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
   line-height: 1.1;
 }
 
@@ -579,7 +604,7 @@
   padding: 0.8rem 1.3rem;
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .artifact-bar span:first-child {
@@ -607,7 +632,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .case-choice-group {
@@ -624,7 +649,7 @@
   color: var(--ink-soft);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
   cursor: pointer;
   transition:
     background-color var(--world-beat, var(--beat)) var(--ease-out),
@@ -704,7 +729,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .fluxion-demo-facts dd {
@@ -744,7 +769,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .juror-reading p {
@@ -775,7 +800,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--track-record);
   padding: 0.28rem 0.6rem;
   transition:
     top var(--move) var(--ease-swing),
@@ -805,7 +830,7 @@
   background: rgba(0, 0, 0, 0.55);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.06em;
+  letter-spacing: var(--track-instrument);
 }
 
 /* --- pentimento demo: the page changes hands --- */
@@ -838,7 +863,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.07em;
+  letter-spacing: var(--track-instrument);
 }
 
 .pentimento-demo-evidence dd {
@@ -859,7 +884,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .draft-owner--human {
@@ -932,7 +957,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 /* --- invisible demo: before, away, return --- */
@@ -976,7 +1001,7 @@
   color: #f2efe5;
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.06em;
+  letter-spacing: var(--track-instrument);
 }
 
 .invisible-away-state {
@@ -987,7 +1012,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.07em;
+  letter-spacing: var(--track-instrument);
   max-width: 7.5rem;
 }
 
@@ -1057,7 +1082,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .atlas-rule p {
@@ -1087,7 +1112,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.07em;
+  letter-spacing: var(--track-instrument);
 }
 
 .atlas-pressure-rail i {
@@ -1456,7 +1481,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
   text-decoration: none;
   transition: color var(--beat) var(--ease-out), background-color var(--beat) var(--ease-out);
 }
@@ -1567,12 +1592,13 @@
 }
 
 .case-chapter > h2 {
-  margin: 0 0 1.2rem;
+  margin: 0 0 var(--gap-close);
   max-width: 15em;
   font-family: var(--display);
   font-size: var(--step-4);
-  font-weight: 500;
-  letter-spacing: -0.012em;
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
   line-height: 1.06;
   text-wrap: balance;
 }
@@ -1627,7 +1653,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .case-question-card p {
@@ -1684,7 +1710,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .pivot-sequence .pivot-realization span {
@@ -1729,7 +1755,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .rejected-heading p {
@@ -1846,7 +1872,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .system-model h3 {
@@ -1886,7 +1912,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 500;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .decision-ledger article + article {
@@ -1897,7 +1923,9 @@
   margin: 0;
   font-family: var(--display);
   font-size: var(--step-1);
-  font-weight: 600;
+  font-weight: var(--role-sub-weight);
+  font-stretch: var(--role-sub-stretch);
+  letter-spacing: var(--role-sub-track);
 }
 
 .decision-ledger p {
@@ -1938,7 +1966,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .evidence-state--built {
@@ -2007,7 +2035,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .next-test div p {
@@ -2040,10 +2068,12 @@
 }
 
 .case-relations h2 {
-  margin: 0 0 0.6rem;
+  margin: 0 0 var(--gap-hair);
   font-family: var(--display);
   font-size: var(--step-2);
-  letter-spacing: -0.015em;
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
   line-height: 1.1;
 }
 
@@ -2061,7 +2091,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .relation-primary strong {
@@ -2087,7 +2117,7 @@
   color: var(--accent-ink, var(--accent));
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
   transition: transform var(--beat) var(--ease-out);
 }
 
@@ -2316,7 +2346,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .daynero-facts dd {
@@ -2419,7 +2449,7 @@
   font-family: var(--mono);
   font-size: var(--meta-size);
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .daynero-boundary-grid article:first-child > span {
@@ -2490,7 +2520,7 @@
   }
 
   .case-hero-brief {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .chapter-rail-note {
@@ -2504,7 +2534,7 @@
   .pivot-sequence,
   .system-model,
   .daynero-capabilities {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .pivot-sequence {
@@ -2522,7 +2552,7 @@
   }
 
   .rejected-paths {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.2rem;
   }
 
@@ -2531,34 +2561,34 @@
   }
 
   .decision-ledger article {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.5rem;
   }
 
   .evidence-ledger,
   .daynero-boundary-grid,
   .relation-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .case-hero-brief,
   .case-contribution {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .case-contribution ul {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .disaster-demo,
   .pentimento-demo,
   .invisible-demo,
   .atlas-demo {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .daynero-soon .daynero-hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .daynero-soon-mark {
@@ -2610,6 +2640,10 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* ---------- labelled rows stack when the floor can't hold
+   Declared at the end of this file, after the evidence plates, so it can
+   also correct the paired plate. */
 
 /* ============================================================
    EDITIONS — the case recut
@@ -2716,7 +2750,9 @@
   margin: 0.5rem 0 0;
   font-family: var(--display);
   font-size: var(--step-2);
-  letter-spacing: -0.015em;
+  font-weight: var(--role-section-weight);
+  font-stretch: var(--role-section-stretch);
+  letter-spacing: var(--role-section-track);
   line-height: 1.1;
   color: var(--ink);
   max-width: 20em;
@@ -2737,13 +2773,18 @@
   border-bottom: 1px solid var(--line);
 }
 
+/* A decision has a name, not a label: it reads as the first thing in
+   its row, at reading size, in the world's own ink rather than its
+   vivid accent — the accent is for marks, not for 14px type. */
 .record-decisions h3 {
   grid-column: 1 / -1;
-  margin: 0 0 0.3rem;
-  font-family: var(--mono);
-  font-size: var(--meta-size);
-  letter-spacing: 0.03em;
-  color: var(--accent);
+  margin: 0 0 var(--gap-hair);
+  font-family: var(--display);
+  font-size: var(--step-0);
+  font-weight: var(--role-sub-weight);
+  font-stretch: var(--role-sub-stretch);
+  letter-spacing: var(--role-sub-track);
+  color: var(--accent-ink);
 }
 
 .record-choice,
@@ -2800,7 +2841,7 @@
   border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
   color: var(--accent);
   text-decoration: none;
   transition: border-color var(--beat) var(--ease-out);
@@ -2872,6 +2913,18 @@
   gap: 0.6rem;
 }
 
+/* The honesty pair is `auto-fit` at a 15rem floor, which is 480px once
+   text is doubled — one column wider than a phone's whole measure, and
+   the pair sits inside a section that is itself only 310px wide. Below
+   48rem `auto-fit` is already producing a single column at every normal
+   text size, so naming that column explicitly changes nothing there and
+   removes the floor that could not be kept. */
+@media (max-width: 48rem) {
+  .record-boundary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .record-boundary li {
   font-family: var(--sans);
   font-size: var(--step-0);
@@ -2906,10 +2959,10 @@
 .boundary-state {
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 .boundary-state--built {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .boundary-state--open {
   color: var(--muted);
@@ -2942,29 +2995,159 @@
   display: block;
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
-  color: var(--accent);
+  letter-spacing: var(--track-record);
+  /* the "what would count" label belongs to the record's prose, so it
+     takes the record's legible accent rather than the vivid one */
+  color: var(--accent-ink);
   margin-bottom: 0.3rem;
 }
 
+/* A disclosure line is an authorship statement, not a footnote in the
+   small print: it says who made the work and what a machine did. At 34%
+   of the reading ink it measured 2.1:1 — the least legible text on the
+   site was the text about responsibility. */
 .record-disclosure {
   margin: 0;
   font-family: var(--mono);
   font-size: var(--meta-size);
   line-height: 1.5;
-  letter-spacing: 0.01em;
-  color: rgba(27, 33, 38, 0.34);
+  letter-spacing: var(--track-record);
+  color: color-mix(in srgb, var(--ink) 72%, transparent);
   max-width: 40rem;
 }
 
 @media (max-width: 40rem) {
   .record-decisions article {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
+/* ---------- prose grids have no floor they cannot keep ----------
+   These sections are single-column grids that never declared a column,
+   so the implicit track is `auto`. An `auto` track is stretched to the
+   container's width like any other, but it also carries a min-content
+   floor: when text is enlarged, one inner rem-floored grid or one
+   unbreakable run inside a paragraph lifts that floor above the
+   section's own width, and then *every* paragraph in the section is
+   laid out wider than the page — measured at 390px with 200% text, the
+   record grew to 480px inside a 310px column. `minmax(0, 1fr)` is the
+   same track with the floor removed, so the section keeps the width it
+   has and the text inside it wraps. Identical at every normal text
+   size, where the floor was never reached. */
+.case-hero,
+.case-hero-main,
+.case-story,
+.case-record,
+.case-reasoning,
+.case-relations,
+.story-beat,
+.atlas-trace {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* The same floor, one level deeper. The rule above caught the *sections*;
+   these are the stacks inside them — a beat's prose column, the two
+   definition lists, the reasoning blocks, a relation card, a decision
+   list, an editor. Each is a grid that never declared a column, so each
+   carried the same min-content floor, and at 320px with doubled text the
+   floor was a whole word taller than the space it had: paragraphs from
+   Design or Disaster and Pentimento, every `dd` in Fluxion's and Athena's
+   brief, Atlas's editor labels and the index's record column all ran past
+   the column and were cut by the sheet's clip. Naming the single column
+   removes the floor and leaves the words to wrap, which is what they were
+   always meant to do. Every one of these is a stacked list, so the named
+   column is the same track the implicit one resolved to at normal size. */
+.story-prose,
+.reason-block,
+.reason-decision,
+.reason-rejected,
+.reason-rejected li,
+.relation-primary,
+.disaster-evidence,
+.case-brief > div,
+.case-facts,
+.case-facts > div,
+.fluxion-demo,
+.atlas-editor,
+.record-boundary ul,
+.record-sources ul,
+.record-sources li {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Rows that hold two short labels and refuse to wrap. `space-between`
+   with no `flex-wrap` lets neither child shrink, so at doubled text the
+   pair simply left the box: the artefact label bar on all seven cases,
+   Daynero's return strip, and Pentimento's evidence rows. Wrapping is the
+   behaviour they already have visually at every normal size — the row is
+   wide enough that the second label stays on the same line there — so
+   this only takes effect in the condition that was broken. */
+.artifact-bar,
+.daynero-return,
+.pentimento-demo-evidence dl > div {
+  flex-wrap: wrap;
+  row-gap: 0.25rem;
+}
+
+/* Once the row wraps, each label is on its own line but still cannot go
+   below its own longest word. That is the last width no rule can remove,
+   so the label is allowed to take the row's width and break there: a
+   hyphen-less break in a mono label reads as a wrapped label, where the
+   alternative was the end of the word sitting outside the frame. */
+.artifact-bar > *,
+.daynero-return > *,
+.pentimento-demo-evidence dt,
+.pentimento-demo-evidence dd,
+.case-choice-group > *,
+.atlas-editor-actions > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* A call to action is a flex row of its own label, its arrow and its
+   `New tab` hint, and it is a flex item of the actions row. Both levels
+   are nowrap by default, so both had a min-content floor equal to the sum
+   of their parts: measured 344px inside a 240px column at 320px with
+   200% text, which put 64px of the primary button past the sheet's clip.
+   Allowing the button to shrink and letting its own parts wrap keeps the
+   whole control on the page and whole. Only these two are flex containers
+   of their own, so only these two can wrap their parts. */
+.case-actions a,
+.daynero-actions a {
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+  row-gap: 0.15rem;
+  justify-content: flex-start;
+}
+
+/* The same floor, from position rather than from wrap behaviour: these two
+   are anchored into a flex row or a grid stack, so each takes an automatic
+   minimum from being an item. Neither is a flex container itself, so only
+   the sizing pair applies — the wrap properties above would be inert here. */
+.daynero-return a,
+.fluxion-demo a {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* `fit-content` cannot resolve below min-content either, so a heading
+   that happened to be the longest word in its column kept that width. */
+.draft-machine,
+.atlas-reset {
+  max-width: 100%;
+}
+
 /* Case studies inherit their project's motion grammar, but at editorial
-   volume: one short artefact cue, then the writing is allowed to lead. */
+   volume: one short artefact cue, then the writing is allowed to lead.
+   The cue is an arrival, not a mask. It used to wipe each hero artefact in
+   with a directional clip-path — and every one of those artefacts carries
+   its own label bar and its evidence caption, so for the first ~460ms the
+   real text inside them was sliced: the first letters of a caption on
+   Design or Disaster, the top line on Pentimento, the tail on Atlas. A
+   caption caught mid-wipe reads as a broken sentence, never as motion.
+   Each animation keeps its direction and its distance as a translate with
+   the ink following it in; only the mask is gone. */
 .case-actions a > span:not(.sr-only) {
   display: inline-block;
   transition: translate var(--beat) var(--ease-out);
@@ -3011,12 +3194,10 @@
 @keyframes case-commercial-arrive {
   from {
     opacity: 0.76;
-    clip-path: inset(0 10% 0 0);
     transform: translateX(-0.7rem);
   }
   to {
     opacity: 1;
-    clip-path: inset(0);
     transform: none;
   }
 }
@@ -3024,12 +3205,10 @@
 @keyframes case-verdict-arrive {
   from {
     opacity: 0.78;
-    clip-path: inset(0 0 0 12%);
     transform: translateX(0.7rem);
   }
   to {
     opacity: 1;
-    clip-path: inset(0);
     transform: none;
   }
 }
@@ -3037,12 +3216,10 @@
 @keyframes case-revision-arrive {
   from {
     opacity: 0.74;
-    clip-path: inset(10% 0 0);
     transform: translateY(0.55rem);
   }
   to {
     opacity: 1;
-    clip-path: inset(0);
     transform: none;
   }
 }
@@ -3061,12 +3238,10 @@
 @keyframes case-system-arrive {
   from {
     opacity: 0.72;
-    clip-path: inset(0 0 12%);
     transform: translateY(0.55rem);
   }
   to {
     opacity: 1;
-    clip-path: inset(0);
     transform: none;
   }
 }
@@ -3181,7 +3356,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .reason-decision li p {
@@ -3216,7 +3391,7 @@
   color: var(--accent-ink, var(--accent));
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-record);
 }
 
 .reason-method li p {
@@ -3247,7 +3422,7 @@
   color: var(--muted);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.03em;
+  letter-spacing: var(--track-record);
 }
 
 .reason-system li strong {
@@ -3293,7 +3468,7 @@
 
 @media (max-width: 40rem) {
   .reason-system li {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.3rem;
   }
   .reason-method li {
@@ -3359,7 +3534,7 @@
   color: var(--ink-soft);
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--track-record);
   font-weight: 600;
 }
 
@@ -3382,7 +3557,7 @@
   color: #f3f4ee;
   font-family: var(--mono);
   font-size: var(--meta-size);
-  letter-spacing: 0.06em;
+  letter-spacing: var(--track-instrument);
   background: rgba(27, 33, 38, 0.78);
   padding: 0.2rem 0.45rem;
 }
@@ -3410,5 +3585,50 @@
 @media (max-width: 56rem) {
   .case-evidence-sequence {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- labelled rows and paired plates stack when the floor can't hold
+   The rows below are two-column grids whose first track is a rem label
+   column and whose second track carries the value: the fact tables inside
+   the Fluxion and Invisible Interfaces artefacts, and Atlas's trace rows —
+   those last carry three tracks, 7rem + 4rem of label before the note.
+   Those floors are desktop measures. In a 240px column at 320px they
+   cannot be kept once text is doubled, so the value track collapsed to 0px
+   and its copy was cut by the artefact's frame ("Outside tap may dismiss a
+   reversible overlay." measured 0px wide, 205px past the clip). Stacking is
+   what these rows already do at a narrower width in spirit; naming it here
+   makes it true.
+
+   Pentimento's evidence rows are the same problem with a different cause:
+   they are a flex row, so they are handled by the wrap rule above, not
+   here — a `grid-template-columns` declaration on them would be inert.
+
+   `rem` in a media query resolves against the reader's *default* font size,
+   not the root element's computed size, so a reader who has raised theirs
+   pulls this stack up with it. A reader who enlarges text without changing
+   the default is handled by the track floors removed earlier, which let
+   the value track keep its width instead of collapsing. At the sizes the
+   site was designed for, nothing here matches. */
+@media (max-width: 34rem) {
+  .fluxion-demo-facts > div,
+  .invisible-receipt dl > div,
+  .atlas-trace li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem 1rem;
+  }
+
+  /* A paired plate is a wide capture beside a phone capture. In a 240px
+     column the wide one gets about 75px, which is a thumbnail of a desktop
+     screenshot — the interface inside it is past reading at any text size,
+     and at 320px with doubled text the pair's second track escaped the
+     hero by 46px. Stacked, both keep a usable width and the phone capture
+     stays phone-shaped. */
+  .case-media--pair .case-media-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-media--pair .case-media-frame--tall {
+    max-width: min(13rem, 62%);
   }
 }

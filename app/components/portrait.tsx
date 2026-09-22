@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type FocusEvent,
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
 } from "react";
@@ -332,7 +333,14 @@ type PortraitMeta = {
     poster: string;
     /** the text alternative for the real evidence */
     alt: string;
-    /** per-project framing: how the capture meets the stage */
+    /**
+     * How the capture meets the plate. Every artifact in this folio is a
+     * UI capture, so the answer is the same everywhere: fit it, never
+     * crop it. `cover` remains available for a future asset that is
+     * genuinely a crop — a poster, a texture — but nothing here is one,
+     * and cropping 10–20% of an axis to fill a box is how evidence
+     * quietly stops being evidence.
+     */
     fit?: "cover" | "contain";
     position?: string;
   };
@@ -346,7 +354,30 @@ type PortraitMeta = {
   tune?: [number, number];
   ground: string;
   ink: string;
+  /**
+   * Caption and rack ink. A caption states an evidence boundary, so it is
+   * a reading colour, not a whisper: these sit at an alpha that clears
+   * 4.5:1 against their own ground at caption size.
+   */
   muted: string;
+  /**
+   * The ground the real artifact stands on, sampled from the artifact
+   * itself. The frame keeps the room's paper while it shows the authored
+   * demonstration; when the real project takes the frame, the frame's own
+   * ground goes with it, so a letterboxed capture sits on its own margin
+   * rather than on the portfolio's.
+   */
+  plate: string;
+  /**
+   * Reading ink for the plate. The rack and the caption keep their places
+   * when the real project arrives — the rack still states which state the
+   * frame is in, the caption still states what the evidence is and where
+   * its boundary lies — but they now sit *on the artifact's own surface*
+   * rather than on the room's, so they need ink that is legible there.
+   * On a light room carrying a dark application, the whole frame goes
+   * dark behind the work; that change of surface is the moment.
+   */
+  plateInk: string;
   accent: string;
   color: (t: number) => string | null;
   shape: (
@@ -436,8 +467,23 @@ function PortraitShell({
     setHovering(false);
   };
 
-  /* keyboard reaches the same preview the pointer does */
-  const onFocus = () => setFocused(true);
+  /* Keyboard reaches the same preview the pointer does — and only the
+     keyboard. A tap or a click also focuses a focusable frame, so an
+     ungated focus route made the tap's second half impossible: the closing
+     tap cleared `showing` and the focus it had just created re-opened the
+     real project in the same commit, leaving a toggle that could only turn
+     on. `:focus-visible` is the browser's own answer to which focus the
+     reader asked for, and the header already uses it for the same reason.
+     Engines without support keep the previous behaviour. */
+  const onFocus = (event: FocusEvent<HTMLElement>) => {
+    let visible = true;
+    try {
+      visible = event.currentTarget.matches(":focus-visible");
+    } catch {
+      /* no :focus-visible: focus is the cue */
+    }
+    if (visible) setFocused(true);
+  };
   const onBlur = () => setFocused(false);
 
   /* the recording plays only while its preview is visible, its sheet is the
@@ -485,6 +531,14 @@ function PortraitShell({
         data-live={live ? "true" : "false"}
         data-view={visible ? "real" : "demo"}
         tabIndex={0}
+        /* A focusable frame whose state is its interaction needs a name.
+           `role="figure"` takes none from its caption in Chromium, so the
+           tree exposed this as an unnamed focusable group: a reader landed
+           on it with nothing to go on. The name is the frame's own tag —
+           the line the rack already shows, which is aria-hidden, so this
+           restores information rather than repeating it. */
+        role="group"
+        aria-label={meta.tag}
         onFocus={onFocus}
         onBlur={onBlur}
         onPointerEnter={onEnter}
@@ -498,6 +552,8 @@ function PortraitShell({
             "--pp-muted": meta.muted,
             "--pp-accent": meta.accent,
             "--pp-ground": meta.ground,
+            "--pp-plate": meta.plate,
+            "--pp-plate-ink": meta.plateInk,
             "--pp-rule": `color-mix(in srgb, ${meta.ink} 20%, transparent)`,
           } as CSSProperties
         }
@@ -1472,7 +1528,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
       poster: "/projects/design-or-disaster/poster.jpg",
       alt: "The live Design or Disaster tool: a lens is chosen, a mark is placed on the interface, evidence is written, a verdict is committed, and the five juror readings appear beside it.",
       label: "Design or Disaster · live tool: mark, evidence, then the panel's ruling (authored jurors)",
-      fit: "cover",
+      fit: "contain",
     },
     a11y:
       "Diagram: a mark is placed on an interface and three juror readings light up beside it.",
@@ -1485,8 +1541,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tune: [0.5, 1.8],
     ground: "#150f0c",
     ink: "#fff6e8",
-    muted: "rgba(255, 246, 232, 0.62)",
+    muted: "rgba(255, 246, 232, 0.78)",
     accent: "#ef4a35",
+    /* the artifact's own ground, sampled from the capture it shows */
+    plate: "#1f1811",
+    /* reading ink for that plate: the frame's labels move onto the
+       artifact's own surface when the real project takes the frame */
+    plateInk: "#fff6e8",
     color: (t) =>
       t >= 0.9
         ? "rgba(239, 74, 53, 0.8)"
@@ -1503,7 +1564,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
       poster: "/projects/pentimento/second-draft.png",
       alt: "Pentimento's settled second draft, with the person's version leading.",
       label: "Pentimento · settled second draft",
-      fit: "cover",
+      fit: "contain",
     },
     a11y:
       "Diagram: a machine-written sentence is struck through and a person's rewrite rises into its place.",
@@ -1515,8 +1576,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tune: [0.48, 1.9],
     ground: "#3b1830",
     ink: "#fdf3f9",
-    muted: "rgba(253, 243, 249, 0.6)",
+    muted: "rgba(253, 243, 249, 0.78)",
     accent: "#e08ab8",
+    /* the artifact's own ground, sampled from the capture it shows */
+    plate: "#15100c",
+    /* reading ink for that plate: the frame's labels move onto the
+       artifact's own surface when the real project takes the frame */
+    plateInk: "#fdf3f9",
     color: (t) =>
       t >= 0.9
         ? "rgba(224, 138, 184, 0.85)"
@@ -1533,7 +1599,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
       poster: "/projects/invisible-interfaces/return.png",
       alt: "The Invisible Interfaces return receipt: what changed during absence, what was left untouched, and how to discard the work.",
       label: "Invisible Interfaces · return receipt (staged artifact — absence not reproducible in capture)",
-      fit: "cover",
+      fit: "contain",
     },
     a11y:
       "Diagram: a restoration panel dims while work continues, then returns with a receipt of what changed.",
@@ -1545,8 +1611,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tune: [0.5, 1.9],
     ground: "#0f0e0a",
     ink: "#fdf3dd",
-    muted: "rgba(253, 243, 221, 0.62)",
+    muted: "rgba(253, 243, 221, 0.78)",
     accent: "#e6ab3f",
+    /* the artifact's own ground, sampled from the capture it shows */
+    plate: "#000000",
+    /* reading ink for that plate: the frame's labels move onto the
+       artifact's own surface when the real project takes the frame */
+    plateInk: "#fdf3dd",
     color: (t) =>
       t >= 0.9
         ? "rgba(230, 171, 63, 0.7)"
@@ -1575,8 +1646,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tune: [0.46, 2.0],
     ground: "#0a2422",
     ink: "#eaf6f3",
-    muted: "rgba(234, 246, 243, 0.6)",
+    muted: "rgba(234, 246, 243, 0.78)",
     accent: "#5fd0c4",
+    /* the artifact's own ground, sampled from the capture it shows */
+    plate: "#faf8f4",
+    /* reading ink for that plate: the frame's labels move onto the
+       artifact's own surface when the real project takes the frame */
+    plateInk: "#0d1817",
     color: (t) =>
       t >= 0.9
         ? "rgba(95, 208, 196, 0.8)"
@@ -1593,7 +1669,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
       poster: "/projects/fluxion/poster.jpg",
       alt: "The shipped Fluxion Studios site: the homepage, then the studio's own call to action to the enquiry form, where a project type is chosen and an illustrative brief is written.",
       label: "Fluxion Studios · live site: homepage → enquiry form, with a project type and brief",
-      fit: "cover",
+      fit: "contain",
       position: "center top",
     },
     a11y:
@@ -1606,8 +1682,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tune: [0.5, 1.8],
     ground: "#f1c9cd",
     ink: "#2a0d12",
-    muted: "rgba(42, 13, 18, 0.6)",
+    muted: "rgba(42, 13, 18, 0.78)",
     accent: "#b01020",
+    /* the artifact's own ground, sampled from the capture it shows */
+    plate: "#0a0505",
+    /* reading ink for that plate: the frame's labels move onto the
+       artifact's own surface when the real project takes the frame */
+    plateInk: "#fff6ee",
     color: (t) =>
       t >= 0.92
         ? "rgba(140, 10, 24, 0.8)"
@@ -1624,7 +1705,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
       poster: "/projects/athena/poster.jpg",
       alt: "The Athena prototype: an Explain Back attempt is written from memory, then feedback names what was demonstrated, what was not yet demonstrated, and the source passage to check.",
       label: "Athena · Explain Back on the local prototype (feedback is the app's scripted sample)",
-      fit: "cover",
+      fit: "contain",
     },
     a11y:
       "Diagram: a learner answers a review question from memory, then feedback names what was demonstrated, what is missing and the source passage that would fix it. Activity and knowledge evidence are shown as separate records.",
@@ -1637,8 +1718,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tune: [0.5, 1.9],
     ground: "#fffaf0",
     ink: "#173461",
-    muted: "rgba(23, 52, 97, 0.6)",
+    muted: "rgba(23, 52, 97, 0.78)",
     accent: "#d95f32",
+    /* the artifact's own ground, sampled from the capture it shows */
+    plate: "#fff9ed",
+    /* reading ink for that plate: the frame's labels move onto the
+       artifact's own surface when the real project takes the frame */
+    plateInk: "#173461",
     color: (t) =>
       t >= 0.9
         ? "rgba(217, 95, 50, 0.7)"
@@ -1655,7 +1741,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
       poster: "/projects/daynero/budget.jpg",
       alt: "The Daynero public website: the daily-budget proposition, stating that the budget adapts in real time to spending patterns.",
       label: "Daynero · public website: the daily-budget proposition (the app is pre-MVP)",
-      fit: "cover",
+      fit: "contain",
       position: "center top",
     },
     a11y:
@@ -1669,8 +1755,13 @@ const PORTRAITS: Record<string, PortraitMeta> = {
     tune: [0.48, 1.9],
     ground: "#161c0d",
     ink: "#f2f8dd",
-    muted: "rgba(242, 248, 221, 0.58)",
+    muted: "rgba(242, 248, 221, 0.78)",
     accent: "#c9f24e",
+    /* the artifact's own ground, sampled from the capture it shows */
+    plate: "#090909",
+    /* reading ink for that plate: the frame's labels move onto the
+       artifact's own surface when the real project takes the frame */
+    plateInk: "#f2f8dd",
     color: (t) =>
       t >= 0.9
         ? "rgba(201, 242, 78, 0.85)"
