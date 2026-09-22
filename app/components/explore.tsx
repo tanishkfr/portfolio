@@ -404,10 +404,17 @@ export function Explore() {
         </header>
 
         {/* The index is the folio's wall label as much as a menu: each row
-            states the name at display scale, then the three things a reader
+            states the name at display scale, then the two things a reader
             evaluating work quickly needs before committing to a sheet —
-            what it is, when, and how far along it actually is. Nothing
-            longer than that goes in a row; the case speaks for itself. */}
+            what it is, and when. Nothing longer than that goes in a row;
+            the case speaks for itself.
+
+            The publication state used to sit here as a third, tagged line
+            ("Live site", "Working prototype", …) with its own status mark.
+            It made every row three ideas tall and put a badge where a
+            reader is trying to read a name. The state still exists — it is
+            stated once per sheet, in the row's own evidence boundary, where
+            it belongs next to the artefact rather than in a menu. */}
         <nav className="xp-field-index" aria-label="Explore projects">
           <ol>
             {ordered.map((project, index) => (
@@ -427,10 +434,6 @@ export function Explore() {
                   <span className="xp-index-record">
                     <span>
                       {project.form} · {project.year}
-                    </span>
-                    <span className="xp-index-status">
-                      <i aria-hidden="true" />
-                      {project.status}
                     </span>
                   </span>
                 </a>

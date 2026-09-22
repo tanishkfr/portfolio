@@ -709,9 +709,24 @@ img {
 .site-identity small {
   color: var(--muted);
   font-family: var(--mono);
-  /* the discipline belonged at the type scale's own smallest step rather
-     than at 10px, which no other role in the folio uses */
-  font-size: var(--step--2);
+  /* The scale's own smallest step. This read `--step--2` for several
+     passes, and the scale has no such step: an undefined custom property
+     makes the declaration invalid at computed-value time, so the size
+     fell through to inherited — 17.28px at 1440, the same as the body and
+     a shade under the wordmark's own 17.92px. That is why a caption was
+     reading as a second title. `--step--1` is what the comment always
+     meant: 12.8px at 1440, the smallest step the folio uses anywhere.
+
+     The viewport term is a pressure valve, not a second size. The label is
+     `nowrap`, and the rail it shares with the nav is a single row down to
+     40rem, so once text is enlarged the pair can outgrow the screen: at
+     768px with 200% text the identity pushed 36px of the nav past the edge
+     and eleven controls were clipped. `--step--1` is always the smaller of
+     the two at every width the label is shown at normal text (2.1vw is
+     21.5px at 1024 against the step's 12.8px), so nothing about the label
+     changes until the text has grown enough to need it — and then it gives
+     way instead of taking the navigation with it. */
+  font-size: min(var(--step--1), 2.1vw);
   font-weight: 400;
   letter-spacing: var(--track-label);
   text-transform: uppercase;
@@ -951,16 +966,14 @@ a[data-external]:focus-visible .xp-cta-arrow {
 }
 
 /* Tablet: the links close up but stay on one line beside the identity.
-   The descriptor steps down with them — at its reading size the identity
-   ran 14px past a 768px viewport. */
+   The descriptor used to step down here (0.68rem) because at its then
+   reading size the identity ran 14px past a 768px viewport — but that
+   reading size was the undefined `--step--2` falling through to the body
+   size. With the caption back on the scale's smallest step, and a
+   viewport pressure valve on that step, it fits at one size everywhere. */
 @media (max-width: 56rem) and (min-width: 40.01rem) {
   .site-header {
     gap: 0.9rem;
-  }
-
-  .site-identity small {
-    font-size: 0.68rem;
-    letter-spacing: 0.06em;
   }
 
   .site-header nav {
@@ -1514,6 +1527,108 @@ a[data-external]:focus-visible .xp-cta-arrow {
 
 .splash[data-phase="resolve"] .splash-note {
   opacity: 1;
+}
+
+/* ---------- the route plate ----------
+   The second loading state, and the quieter one. The splash opens the
+   session; this covers a page change that is actually taking a moment.
+   Same material as the splash so the two read as one system — paper, the
+   pixel wordmark, a mono note, and the opening hairline rule — but at
+   annotation scale rather than poster scale, because a reader who is
+   waiting wants to be told the wait is accounted for, not to be shown a
+   title card again.
+
+   Below the splash (60) so the session's opening state always wins the
+   top spot, and below the paper material (90) so the grain lays over it
+   exactly as it lays over every other surface. It never takes a click:
+   the page underneath is still the page the reader came from, and
+   trapping input during a wait is worse than ignoring it. */
+.route-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.95rem;
+  background: rgb(var(--atmos, 232 234 228));
+  pointer-events: none;
+}
+
+/* The plate arrives without a fade: a loading state that eases in is a
+   loading state that lies about when it started. It leaves with one. */
+.route-loader[data-phase="leaving"] {
+  opacity: 0;
+  transition: opacity 220ms var(--ease-out);
+}
+
+.route-loader-mark {
+  color: var(--ink);
+  font-family: var(--pixel);
+  font-size: clamp(1.05rem, 2.4vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.route-loader-rule {
+  position: relative;
+  width: min(52vw, 20rem);
+  height: 3px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
+}
+
+.route-loader-rule i {
+  position: absolute;
+  inset: 0;
+  background: var(--registrar);
+  transform: scaleX(0.72);
+  transform-origin: left;
+}
+
+/* One pass, in stepped eighths — the field's own quantisation, the same
+   grammar as the ring on the portraits. It eases to most of the rule and
+   holds there rather than looping, which is what an indeterminate wait
+   actually is: accounted for, not pretending to know when it ends. The
+   duration is set against the plate's own life, which is short: a route
+   that is slow enough to draw the plate usually lands inside half a
+   second, so the fill has to read as progress within that window. */
+@media (prefers-reduced-motion: no-preference) {
+  .route-loader-rule i {
+    transform: scaleX(0);
+    animation: route-plate-fill 520ms steps(7, end) 30ms forwards;
+  }
+
+  .route-loader[data-phase="leaving"] .route-loader-rule i {
+    animation: none;
+    transform: scaleX(1);
+    transition: transform 180ms var(--ease-out);
+  }
+}
+
+@keyframes route-plate-fill {
+  to {
+    transform: scaleX(0.72);
+  }
+}
+
+.route-loader-note {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+
+/* Reduced motion keeps the state and drops the sweep: the rule is simply
+   present at its held width and the plate does not animate out. */
+@media (prefers-reduced-motion: reduce) {
+  .route-loader[data-phase="leaving"] {
+    transition: none;
+  }
 }
 
 /* ---------- reading progress ----------

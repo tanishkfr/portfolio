@@ -372,12 +372,12 @@
   color: var(--registrar);
 }
 
-/* what it is, when, and how far along — the scan line under the name */
+/* what it is and when — the scan line under the name */
 .xp-index-record {
   display: grid;
   /* the implicit `auto` track carries a min-content floor, so at 320px with
      doubled text the right-aligned record column ("Learning product", the
-     year, the status) ran 47px past the index row and out of the sheet */
+     year) ran 47px past the index row and out of the sheet */
   grid-template-columns: minmax(0, 1fr);
   gap: 0.3rem;
   justify-items: end;
@@ -397,21 +397,11 @@
   max-width: 100%;
 }
 
-.xp-index-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  color: var(--ink-soft);
-  font-size: var(--step--1);
-}
-
-/* the folio's registration grammar: a filled mark means committed,
-   so the state of each project is legible before it is read */
-.xp-index-status i {
-  width: 0.4rem;
-  height: 0.4rem;
-  background: var(--accent, var(--ink-soft));
-}
+/* The record is one line now. The publication state it used to carry as a
+   tagged third line ("Live site", "Working prototype", …) with its own
+   status mark lives on the sheet's own evidence boundary instead, beside
+   the artefact it describes rather than in a menu. The list styling for
+   that tag was removed with it. */
 
 @media (max-width: 52rem) {
   .xp-field-index a {

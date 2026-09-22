@@ -13,6 +13,30 @@
   padding-bottom: 4rem;
 }
 
+/* The About page's heading register.
+   -----------------------------------------------------------------
+   The page ran on the site's default roles, where the section headings
+   are set at 560 and the sub-headings at 620. That is an inversion: on
+   About the thing under a heading was heavier than the heading, and the
+   section titles sat too close to the 500-weight mono labels to read as
+   the loudest text in their own block. Measured on the running page:
+
+     heading 780 (h1) · 560 (h2) · 620 (h3)
+     everything else 500 (labels) · 400 (body)
+
+   Both roles are redefined here rather than in the role layer, because
+   this is a judgement about this page's reading order, not about the
+   folio's: a case sheet and the index keep the register they were
+   designed with. The values give one descending ladder — 780, 740, 700,
+   and nothing above 500 below it — so every heading is unmistakably bold
+   and nothing that is not a heading competes with one. Size still does
+   the work of separating h2 from h3 (40px against 28.8px and 21.6px);
+   weight only has to stop inverting it. */
+.about-shell {
+  --role-section-weight: 740;
+  --role-sub-weight: 700;
+}
+
 /* The opening frame.
    -----------------------------------------------------------------
    One composed frame, not several blocks floating in a container: a
