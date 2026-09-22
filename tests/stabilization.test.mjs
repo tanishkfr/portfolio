@@ -301,6 +301,83 @@ test("the nested reading stacks can shrink below their content", async () => {
   assert.match(cta[1], /flex-wrap:\s*wrap/, "a call to action may wrap its own label, arrow and hint");
 });
 
+test("the route plate cannot flash, stick, or take a click", async () => {
+  /* The page-change plate. It is the one overlay that can appear over any
+     route, so the things worth protecting are the ones that would make it
+     a defect rather than a state: it must not draw for a navigation that
+     is already over, it must not survive the route it was waiting for, and
+     it must never intercept a click meant for the page. */
+  const src = await read("app/components/route-loader.tsx");
+  const css = await read("app/styles/system.css");
+
+  /* idle renders nothing, so an ordinary page has no overlay in the DOM */
+  assert.match(src, /if \(phase === "idle"\) return null;/, "the plate is absent unless it is loading");
+
+  /* a threshold, so a fast navigation cannot produce a one-frame flash.
+     Warm navigations here measure 18–102ms, so the threshold sits inside
+     that band: it catches the changes a reader feels and leaves alone the
+     ones they do not. It must stay well above a frame. */
+  const showAfter = src.match(/const SHOW_AFTER = (\d+);/);
+  assert.ok(showAfter, "the plate has a show threshold");
+  assert.ok(
+    Number(showAfter[1]) >= 80 && Number(showAfter[1]) <= 200,
+    `the threshold sits between a frame and a pause (${showAfter[1]}ms)`,
+  );
+  const minVisible = src.match(/const MIN_VISIBLE = (\d+);/);
+  assert.ok(minVisible, "the plate has a minimum visible time");
+  assert.ok(
+    Number(minVisible[1]) >= 200 && Number(minVisible[1]) <= 400,
+    `it cannot strobe once drawn, and does not outstay the wait (${minVisible[1]}ms)`,
+  );
+
+  /* it stands down while a shared-element transition is animating */
+  assert.match(src, /viewTransitionRunning\(\)/, "the plate defers to a running view transition");
+  assert.match(src, /::view-transition/, "and asks the document what is animating");
+
+  /* the route landing is what ends it — the same effect clears the timer
+     that would have drawn it */
+  assert.match(src, /useEffect\(\(\) => \{\s*pending\.current = false;/, "the landing route clears the pending navigation");
+
+  /* announced, and never in front of the pointer */
+  assert.match(src, /role="status"/, "the wait is announced politely");
+  assert.match(src, /aria-hidden="true"/, "the decorative parts stay out of the accessibility tree");
+  assert.match(css, /\.route-loader \{[\s\S]*?pointer-events: none;/, "the plate never takes a click");
+
+  /* reduced motion keeps the state and drops the movement */
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]{0,240}?\.route-loader\[data-phase="leaving"\]/, "reduced motion removes the exit transition");
+});
+
+test("the header keeps its navigation when the text is enlarged", async () => {
+  /* Reproduced twice. First the caption was set in `--step--2`, a step the
+     scale does not define: an undefined custom property makes the
+     declaration invalid at computed-value time, so the size fell through to
+     inherited and the caption rendered at the body size — 17.28px, a shade
+     under the wordmark's own 17.92px, which is why a caption read as a
+     second title. Then, with that fixed, 200% text at 768px still overran:
+     the caption is `nowrap` and shares one rail with the nav down to 40rem,
+     so the identity pushed 36px of the navigation past the edge and eleven
+     controls were clipped. */
+  const system = await read("app/styles/system.css");
+
+  /* every scale step a stylesheet names must exist in the scale */
+  const used = new Set([...system.matchAll(/var\((--step-[-0-9]+)\)/g)].map(([, name]) => name));
+  for (const name of used) {
+    assert.ok(
+      system.includes(`${name}:`),
+      `${name} is referenced but never defined — the declaration would fall through to inherited`,
+    );
+  }
+
+  /* and the caption yields under pressure rather than taking the nav with it */
+  const label = system.match(/\.site-identity small \{([^}]*font-size:[^}]*)\}/);
+  assert.ok(label, "the identity caption declares its size");
+  assert.match(
+    label[1],
+    /font-size:\s*min\(var\(--step--1\),\s*[\d.]+vw\)/,
+    "the caption's size is capped against the viewport so it can never push the rail out",
+  );
+});
+
 test("the signal field never resurrects a zero-width canvas", async () => {
   /* The contact page's signal field is sized by script from its own box.
      A floor of one pixel there rebuilt a canvas whose width rule had
