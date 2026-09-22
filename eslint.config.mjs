@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     // Local visual-QA scratch: one-off Playwright/measurement scripts and
     // captured screenshots, not application source.
     ".vqa/**",
+    ".review-overnight/**",
   ]),
 ]);
 

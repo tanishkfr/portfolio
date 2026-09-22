@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type FocusEvent,
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
 } from "react";
@@ -466,8 +467,23 @@ function PortraitShell({
     setHovering(false);
   };
 
-  /* keyboard reaches the same preview the pointer does */
-  const onFocus = () => setFocused(true);
+  /* Keyboard reaches the same preview the pointer does — and only the
+     keyboard. A tap or a click also focuses a focusable frame, so an
+     ungated focus route made the tap's second half impossible: the closing
+     tap cleared `showing` and the focus it had just created re-opened the
+     real project in the same commit, leaving a toggle that could only turn
+     on. `:focus-visible` is the browser's own answer to which focus the
+     reader asked for, and the header already uses it for the same reason.
+     Engines without support keep the previous behaviour. */
+  const onFocus = (event: FocusEvent<HTMLElement>) => {
+    let visible = true;
+    try {
+      visible = event.currentTarget.matches(":focus-visible");
+    } catch {
+      /* no :focus-visible: focus is the cue */
+    }
+    if (visible) setFocused(true);
+  };
   const onBlur = () => setFocused(false);
 
   /* the recording plays only while its preview is visible, its sheet is the
@@ -515,6 +531,14 @@ function PortraitShell({
         data-live={live ? "true" : "false"}
         data-view={visible ? "real" : "demo"}
         tabIndex={0}
+        /* A focusable frame whose state is its interaction needs a name.
+           `role="figure"` takes none from its caption in Chromium, so the
+           tree exposed this as an unnamed focusable group: a reader landed
+           on it with nothing to go on. The name is the frame's own tag —
+           the line the rack already shows, which is aria-hidden, so this
+           restores information rather than repeating it. */
+        role="group"
+        aria-label={meta.tag}
         onFocus={onFocus}
         onBlur={onBlur}
         onPointerEnter={onEnter}

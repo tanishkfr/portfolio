@@ -111,7 +111,20 @@
      width and only the pointer lift stays live. */
   color: var(--ink);
   font-family: var(--pixel);
-  font-size: clamp(2.9rem, 11vw, 11.5rem);
+  /* The monumental name is the one piece of type on the site that cannot
+     wrap, hyphenate or break, so its floor is the one floor a small
+     viewport can fail to honour: at 150% text `2.9rem` is 70px, and
+     "TANISHK" measures a flat 5.75em in Silkscreen — 400px inside a 330px
+     measure, so the last letters of the wordmark fell outside the body
+     clip. Measured across 320–1800px at normal text, the ink is 5.75em
+     every time, so one clamp expressed in the wordmark's own ratio fits it
+     exactly: the mast's measure is the viewport less its two gutters, and
+     5.9 leaves about 3% of slack for rounding. The cap is inert at every
+     normal text size — the authored clamp is always the smaller of the
+     two — so the corrected mobile wordmark keeps the size the last pass
+     gave it. */
+  --wordmark-fit: calc((100vw - 2 * var(--page-gutter)) / 5.9);
+  font-size: min(clamp(2.9rem, 11vw, 11.5rem), var(--wordmark-fit));
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0;
@@ -444,7 +457,9 @@
      tall wastes almost nothing when a capture is fitted into it — the
      earlier split spent the plate's width on the copy column and then
      paid for it again in letterbox. */
-  grid-template-columns: minmax(13rem, 0.55fr) minmax(28rem, 1.45fr);
+  grid-template-columns:
+    minmax(var(--piece-copy-floor), 0.55fr)
+    minmax(var(--piece-stage-floor), 1.45fr);
   grid-template-rows: minmax(0, 1fr) auto;
   /* The sheet's own rhythm, named once, because the stage's height is
      computed from it (see --piece-stage-fit) and the two must not be
@@ -454,6 +469,17 @@
   --piece-gap: clamp(1.5rem, 4vw, 5rem);
   /* the status line's own height plus a hair, reserved up front */
   --piece-status-band: 1.75rem;
+  /* Track floors. They are the width a column needs at 16px to keep its
+     measure, so they are written in rem — but a rem floor is also a
+     promise the viewport may not be able to keep once text is enlarged.
+     At 200% text 13rem + 28rem is 1056px of floor before any gutter or
+     gap, which pushes the status line and the plate past the sheet's own
+     right edge: measured at 1520px inside a 1440px sheet. Capping each
+     floor against the viewport leaves the authored split untouched at
+     normal text sizes (13rem < 22vw and 28rem < 52vw down to 1024px) and
+     lets the columns share what is actually there when they cannot. */
+  --piece-copy-floor: min(13rem, 22vw);
+  --piece-stage-floor: min(28rem, 52vw);
   gap: var(--piece-gap);
   min-height: calc(100svh - var(--header-h) - 1rem);
   /* the room's own threshold: the boundary, the accent rule, and this
@@ -2484,7 +2510,9 @@
    or entry masks — the six projects already move differently by behaving
    differently, not by arriving differently. */
 .xp-piece[data-layout="revision"] {
-  grid-template-columns: minmax(28rem, 1.25fr) minmax(15rem, 0.75fr);
+  grid-template-columns:
+    minmax(var(--piece-stage-floor), 1.25fr)
+    minmax(var(--piece-copy-floor), 0.75fr);
 }
 
 .xp-piece[data-layout="revision"] .xp-piece-copy {
@@ -2505,7 +2533,9 @@
 
 /* lineage: stage left, copy right, copy column narrow and bottom-settled */
 .xp-piece[data-layout="lineage"] {
-  grid-template-columns: minmax(26rem, 1.2fr) minmax(13rem, 0.8fr);
+  grid-template-columns:
+    minmax(var(--piece-stage-floor), 1.2fr)
+    minmax(var(--piece-copy-floor), 0.8fr);
 }
 
 .xp-piece[data-layout="lineage"] .xp-piece-copy {
@@ -2524,7 +2554,9 @@
 
 /* absence: copy narrow and bottom-settled against a wider plate */
 .xp-piece[data-layout="absence"] {
-  grid-template-columns: minmax(12rem, 0.47fr) minmax(30rem, 1.53fr);
+  grid-template-columns:
+    minmax(var(--piece-copy-floor), 0.47fr)
+    minmax(var(--piece-stage-floor), 1.53fr);
 }
 
 .xp-piece[data-layout="absence"] .xp-piece-copy {
@@ -2533,7 +2565,9 @@
 }
 
 .xp-piece[data-layout="number"] {
-  grid-template-columns: minmax(13rem, 0.5fr) minmax(30rem, 1.5fr);
+  grid-template-columns:
+    minmax(var(--piece-copy-floor), 0.5fr)
+    minmax(var(--piece-stage-floor), 1.5fr);
 }
 
 .xp-piece[data-layout="number"] .xp-piece-copy {
@@ -2672,24 +2706,39 @@
 }
 
 @media (max-width: 64rem) {
+  /* The narrower split keeps its own proportions; only the viewpoint-
+     relative caps change, so the floors stay reachable in a tighter
+     frame. */
   .xp-piece {
-    grid-template-columns: minmax(12rem, 0.68fr) minmax(23rem, 1.32fr);
+    --piece-copy-floor: min(12rem, 26vw);
+    --piece-stage-floor: min(23rem, 58vw);
+    grid-template-columns:
+      minmax(var(--piece-copy-floor), 0.68fr)
+      minmax(var(--piece-stage-floor), 1.32fr);
   }
 
   .xp-piece[data-layout="revision"] {
-    grid-template-columns: minmax(23rem, 1.15fr) minmax(13rem, 0.85fr);
+    grid-template-columns:
+      minmax(var(--piece-stage-floor), 1.15fr)
+      minmax(var(--piece-copy-floor), 0.85fr);
   }
 
   .xp-piece[data-layout="lineage"] {
-    grid-template-columns: minmax(21rem, 1.15fr) minmax(12rem, 0.85fr);
+    grid-template-columns:
+      minmax(var(--piece-stage-floor), 1.15fr)
+      minmax(var(--piece-copy-floor), 0.85fr);
   }
 
   .xp-piece[data-layout="absence"] {
-    grid-template-columns: minmax(11rem, 0.47fr) minmax(24rem, 1.53fr);
+    grid-template-columns:
+      minmax(var(--piece-copy-floor), 0.47fr)
+      minmax(var(--piece-stage-floor), 1.53fr);
   }
 
   .xp-piece[data-layout="number"] {
-    grid-template-columns: minmax(11rem, 0.5fr) minmax(24rem, 1.5fr);
+    grid-template-columns:
+      minmax(var(--piece-copy-floor), 0.5fr)
+      minmax(var(--piece-stage-floor), 1.5fr);
   }
 
   .xp-piece-title {
@@ -2724,7 +2773,7 @@
   }
 
   .xp-cover-name {
-    font-size: clamp(3.2rem, 14vw, 5.4rem);
+    font-size: min(clamp(3.2rem, 14vw, 5.4rem), var(--wordmark-fit));
   }
 
   .xp-cover-claim {
@@ -2776,7 +2825,7 @@
     position: relative;
     top: auto;
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto auto;
     gap: 2.4rem;
     min-height: auto;
@@ -2853,7 +2902,7 @@
 
 @media (max-width: 23rem) {
   .xp-cover-name {
-    font-size: clamp(2.5rem, 12.5vw, 3.2rem);
+    font-size: min(clamp(2.5rem, 12.5vw, 3.2rem), var(--wordmark-fit));
   }
 
   .xp-cover-claim {
@@ -3109,6 +3158,9 @@
   font-stretch: var(--poster-stretch, 118%);
   letter-spacing: -0.008em;
   line-height: 0.94;
+  /* one word, in a flex column that shrink-wraps: allowed to break rather
+     than run past the column and be clipped at enlarged text */
+  overflow-wrap: anywhere;
 }
 
 .mw-feature-line {

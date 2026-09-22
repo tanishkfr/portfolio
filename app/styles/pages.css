@@ -665,7 +665,7 @@
   .about-authorship > div,
   .practice-list article,
   .current-list article {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .practice-list article,
@@ -678,7 +678,7 @@
      two-column masonry with a ragged bottom edge at tablet widths */
 
   .contact-options {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -737,8 +737,22 @@
   line-height: 1.55;
 }
 
+/* A flex item's automatic minimum is its own min-content, so an address
+   that cannot fit one line refuses to shrink and leaves the page rather
+   than wrapping — the same failure the contact page's own address had,
+   arriving through the flex container instead of an inline-block. A
+   zero minimum lets the body's `overflow-wrap` break the address. */
+.about-contact a,
+.resume-contact a {
+  min-width: 0;
+}
+
 .contact-primary {
   display: inline-block;
+  /* A shrink-wrapped inline-block will leave its column rather than break
+     the address it holds, and the body clip would then cut the end off a
+     contact route. Capping it at the column lets the address wrap. */
+  max-width: 100%;
   margin-top: 0.9rem;
   color: var(--ink);
   font-family: var(--mono);
@@ -803,7 +817,7 @@
 
 @media (max-width: 36rem) {
   .contact-paths {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   /* The poster headline's longest word must fit a 320px column. */
@@ -1154,7 +1168,14 @@
 
 .footer-name {
   font-family: var(--pixel);
-  font-size: clamp(2.4rem, 5.2vw, 4.6rem);
+  /* The closing plate's wordmark is the cover's wordmark, so it takes the
+     cover's own fitting term: "TANISHK" measures a flat 5.75em in
+     Silkscreen, and the plate's measure is the viewport less its two
+     gutters. Inert at every normal text size. */
+  font-size: min(
+    clamp(2.4rem, 5.2vw, 4.6rem),
+    calc((100vw - 2 * var(--page-gutter)) / 5.9)
+  );
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0;
@@ -1214,6 +1235,9 @@
 
 @media (max-width: 28rem) {
   .footer-name {
-    font-size: clamp(2.2rem, 11vw, 2.7rem);
+    font-size: min(
+      clamp(2.2rem, 11vw, 2.7rem),
+      calc((100vw - 2 * var(--page-gutter)) / 5.9)
+    );
   }
 }
