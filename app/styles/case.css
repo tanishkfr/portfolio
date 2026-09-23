@@ -593,6 +593,15 @@
   border-radius: var(--r-panel);
   overflow: hidden;
   background: var(--paper-high);
+  /* The caption below is a two-column grid whose first track is sized to
+     the label's own content. Once text is enlarged the label track can
+     take the whole content box, leaving the caption's `minmax(0, 1fr)`
+     track at exactly 0px — the sentence then renders one character per
+     line down a 4000px column. `container-type` makes the figure itself
+     the measure for the query below, in the figure's own `em`, so the
+     switch to a single column tracks the text size instead of the
+     viewport (a media query in px cannot see it). */
+  container-type: inline-size;
 }
 
 .artifact-bar {
@@ -633,6 +642,21 @@
   font-size: var(--meta-size);
   font-weight: 600;
   letter-spacing: var(--track-record);
+}
+
+/* When the figure is narrower than 17em of its own text, the label and
+   the caption can no longer share a line without the caption's track
+   collapsing: the label alone ("Built in-house") is wider than half the
+   content box. Stacked, both keep the full width — the caption at a
+   readable measure instead of one character per line. 17em of the
+   figure's own font is 272px at normal text and 544px at 200%, so this
+   is inert at every design width and only takes effect where the grid
+   was already failing. */
+@container (max-width: 17em) {
+  .case-instrument figcaption {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.3rem;
+  }
 }
 
 .case-choice-group {

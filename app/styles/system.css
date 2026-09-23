@@ -909,7 +909,12 @@ a[data-external]:focus-visible .xp-cta-arrow {
 
 /* Touch targets: the small editorial links grow an invisible hit area
    — padding in, margin out — so the tappable surface clears ~40px
-   while every visual stays exactly as authored. */
+   while every visual stays exactly as authored. The index rows are not
+   in this list: a work's row is already 60–90px tall at every width, so
+   the growth bought nothing and the negative margin reached 13px into
+   the row above at 1440 and 28.8px at 200% text — two neighbouring
+   rows' hit areas overlapped, and a press in the band opened the lower
+   work. */
 .site-identity,
 .case-end-flow a,
 .relation-secondary,
@@ -920,13 +925,24 @@ a[data-external]:focus-visible .xp-cta-arrow {
 .record-sources a,
 .contact-label + * a,
 .xp-piece-actions a,
-.xp-field-index a,
 .case-return .case-crumb a,
 .mw-feature-link,
 .xp-close-link,
 .site-header nav a {
   padding-block: 0.45rem;
   margin-block: -0.45rem;
+}
+
+/* Phone: the identity sits directly above the rail, so its grown hit
+   area (and the rail's own) met in the 0.3rem gap and overlapped the
+   first navigation link by 10px — a press just above "About" opened the
+   wordmark's own link instead. The smaller growth keeps the target at
+   26px at normal text and clears the gap. */
+@media (max-width: 40rem) {
+  .site-identity {
+    padding-block: 0.25rem;
+    margin-block: -0.25rem;
+  }
 }
 
 @media (max-width: 44rem) {
@@ -1001,7 +1017,19 @@ a[data-external]:focus-visible .xp-cta-arrow {
 
   .site-header nav {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* Four equal tracks are the design, but a track can be narrower than
+       its own label's longest word once text is enlarged: at 200% text
+       "Projects" needs ~128px in a 67px track, and every destination
+       broke into two or three fragments ("Pro / jec / ts"). The floor is
+       in `em` so it scales with the rail's own label size: 5.1em is
+       65.3px at normal text against a 67px track — the four equal tracks
+       the folio ships — and 130.6px at 200%, just wider than the longest
+       label's own min-content (128.2px, measured at 5.008em). Where four
+       tracks no longer fit, the rail folds to two, and to one, instead
+       of breaking a word to keep the row. Intrinsic sizes cannot be
+       used: Chrome resolves `min-content` in an auto-repeated track as
+       a single repetition. */
+    grid-template-columns: repeat(auto-fit, minmax(5.1em, 1fr));
     width: 100%;
     gap: 0.25rem;
     font-size: 0.8rem;

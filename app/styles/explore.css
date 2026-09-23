@@ -2812,7 +2812,14 @@
   }
 
   .xp-field-index a {
-    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+    /* The number's track is furniture: it holds "01". Fixed in `rem` it
+       doubles with the reader's text (80px at 200%) and takes the name's
+       own column down to 115px, where "Interfaces" needs four lines at
+       display size. Capped as a share of the row it gives the name 174px
+       back at the same text size. The cap never binds at normal text —
+       2.5rem is 40px, and 18% of the narrowest row the folio ships is
+       wider than that. */
+    grid-template-columns: min(2.5rem, 18%) minmax(0, 1fr) auto;
     padding: 1.15rem 0;
   }
 
