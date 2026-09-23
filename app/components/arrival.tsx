@@ -25,7 +25,7 @@ export function Arrival() {
       aria-label="Tanishk, interaction designer"
     >
       <div className="xp-arrive-pin">
-        <p className="xp-arrive-kicker">Bengaluru — available for work</p>
+        <p className="xp-arrive-kicker">Bengaluru · available for work</p>
 
         {/* Both sentences begin "I design", so only the tail is ever in doubt.
             Wiping the whole block would collide two different line-breaks and

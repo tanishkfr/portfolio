@@ -90,7 +90,7 @@ export async function generateMetadata({
   if (!project) return {};
 
   const canonicalPath = "/work/" + project.slug;
-  const title = project.title + " — Tanishk";
+  const title = project.title + " | Tanishk";
   const og = ogImages[project.slug];
 
   return {
@@ -101,7 +101,7 @@ export async function generateMetadata({
       type: "article",
       locale: "en_IN",
       url: canonicalPath,
-      siteName: "Tanishk — Interaction Designer",
+      siteName: "Tanishk, Interaction Designer",
       title,
       description: project.oneLine,
       images: og
@@ -376,7 +376,7 @@ export default async function ProjectPage({
               <div>
                 <dt>Main design decision</dt>
                 <dd>
-                  {main.title} — {main.choice}
+                  {main.title}: {main.choice}
                 </dd>
               </div>
             ) : null;
@@ -411,7 +411,7 @@ export default async function ProjectPage({
                 alt: "The same homepage on a phone: the sections stack with the enquiry entry remaining reachable.",
               }}
               label="The shipped site"
-              caption="Fluxion's public site, live at fluxion-studios.vercel.app — designed, written and implemented in-house. Desktop and mobile from the same build."
+              caption="Fluxion's public site, live at fluxion-studios.vercel.app, designed, written and implemented in-house. Desktop and mobile from the same build."
               priority
             />
           </EvidenceWrap>
@@ -425,7 +425,7 @@ export default async function ProjectPage({
               width={1440}
               height={900}
               label="A marked screen, live"
-              caption="Case 001 on the working archive — the Hierarchy lens chosen, four markers placed, each one carrying an evidence sentence. Only after the evidence exists can a verdict be submitted."
+              caption="Case 001 on the working archive: the Hierarchy lens chosen, four markers placed, each one carrying an evidence sentence. Only after the evidence exists can a verdict be submitted."
             />
           </EvidenceWrap>
         ) : null}
@@ -459,7 +459,7 @@ export default async function ProjectPage({
       {project.slug === "athena" ? (
         <CaseEvidenceSequence
           label="The review loop, in the working prototype"
-          intro="Find and organise a resource, learn it with notes beside it, then review — where an attempt turns into evidence."
+          intro="Find and organise a resource, learn it with notes beside it, then review. There, an attempt turns into evidence."
           note="Captured from the working prototype. The linked demo is intentionally disconnected and runs on seeded browser-local data. The local build runs the real Express, SQLite and model path."
           steps={[
             {
@@ -557,7 +557,7 @@ export default async function ProjectPage({
               width: 1440,
               height: 900,
               step: "The contested draft",
-              caption: "Maya's first draft, written from her public film diary — three sentences remain as claims the subject can answer.",
+              caption: "Maya's first draft, written from her public film diary. Three sentences remain as claims the subject can answer.",
             },
             {
               src: "/projects/pentimento/claim-evidence.png",
@@ -565,7 +565,7 @@ export default async function ProjectPage({
               width: 1440,
               height: 900,
               step: "Evidence shown",
-              caption: "Opening a claim shows what the software drew on. Maya is fictional, staged from authored material — no participant data exists.",
+              caption: "Opening a claim shows what the software drew on. Maya is fictional, staged from authored material; no participant data exists.",
             },
             {
               src: "/projects/pentimento/struck.png",
@@ -598,7 +598,7 @@ export default async function ProjectPage({
               width: 1440,
               height: 900,
               step: "The starting rule",
-              caption: "The test opens with a suggested rule — editable before any pressure, so the assumption being carried is explicit.",
+              caption: "The test opens with a suggested rule, editable before any pressure, so the assumption being carried is explicit.",
             },
             {
               src: "/projects/atlas/trace-lineage.png",
@@ -642,7 +642,7 @@ export default async function ProjectPage({
               width={1440}
               height={900}
               label="Shipped client build"
-              caption="The public site as delivered — interface design, enquiry flow, production QA and deployment."
+              caption="The public site as delivered: interface design, enquiry flow, production QA and deployment."
             />
             <dl className="case-facts">
               {project.clientWork.rows.map((row) => (

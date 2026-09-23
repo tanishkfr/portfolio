@@ -29,7 +29,8 @@
    folio's: a case sheet and the index keep the register they were
    designed with. The values give one descending ladder — 780, 740, 700,
    and nothing above 500 below it — so every heading is unmistakably bold
-   and nothing that is not a heading competes with one. Size still does
+   and nothing that is not a heading competes with one. The practice and
+   current-work titles receive a heavier local override below. Size still does
    the work of separating h2 from h3 (40px against 28.8px and 21.6px);
    weight only has to stop inverting it. */
 .about-shell {
@@ -203,6 +204,12 @@
   letter-spacing: var(--role-section-track);
   line-height: 1.1;
   text-wrap: balance;
+}
+
+.about-practice h2,
+.about-current h2 {
+  margin-bottom: clamp(2.6rem, 4vw, 3.8rem);
+  font-weight: 850;
 }
 
 /* Three practices, each answered by a project. Unboxed rows: no cards,

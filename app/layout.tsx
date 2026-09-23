@@ -34,8 +34,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase,
     title: {
-      default: "Tanishk — Product & Interaction Designer",
-      template: "%s — Tanishk",
+      default: "Tanishk, Product & Interaction Designer",
+      template: "%s | Tanishk",
     },
     description:
       "Work by Tanishk, a product and interaction designer in Bengaluru who also builds.",
@@ -47,11 +47,11 @@ export async function generateMetadata(): Promise<Metadata> {
       type: "website",
       locale: "en_IN",
       url: "/",
-      siteName: "Tanishk — Product & Interaction Designer",
-      title: "Tanishk — Product & Interaction Designer",
+      siteName: "Tanishk, Product & Interaction Designer",
+      title: "Tanishk, Product & Interaction Designer",
       description:
         "Fluxion Studios, Athena, Daynero, and independent interaction projects, by Tanishk.",
-      images: [{ url: "/og.png", alt: "Tanishk — Product & Interaction Designer" }],
+      images: [{ url: "/og.png", alt: "Tanishk, Product & Interaction Designer" }],
     },
   };
 }

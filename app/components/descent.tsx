@@ -112,7 +112,7 @@ export function Descent() {
       ref={ref}
       data-stage
       data-era="0"
-      aria-label="Every year, software asks less of us — and shows me less."
+      aria-label="Every year, software asks less of us and shows me less."
     >
       <div className="xp-shed-stage">
         <p className="xp-shed-lead">Every year, software asks less of us.</p>

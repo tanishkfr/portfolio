@@ -79,7 +79,7 @@ export function DayneroPreview({
           width={1440}
           height={900}
           label="The public website"
-          caption="Daynero's public site, live at daynero.com — designed and built by Tanishk. It presents the product proposition and collects waitlist sign-ups; the app itself remains pre-MVP, and no private product surface is shown here."
+          caption="Daynero's public site, live at daynero.com, designed and built by Tanishk. It presents the product proposition and collects waitlist sign-ups; the app itself remains pre-MVP, and no private product surface is shown here."
         />
       </section>
 
@@ -98,9 +98,9 @@ export function DayneroPreview({
             <p>
               How do you make a finance app feel approachable to someone
               earning their first salary, without making it look simplistic
-              or financially unreliable? That balance — clarity,
+              or financially unreliable? That balance of clarity,
               approachability, and a credible financial-product identity at
-              the same time — is what the app&apos;s design has been working
+              the same time is what the app&apos;s design has been working
               against from the start.
             </p>
           </div>
@@ -115,7 +115,7 @@ export function DayneroPreview({
               are presented. The most recent version moves the app to a
               lighter, more editorial home screen, with clearer category
               colour and the day summarised in one line. The iterations are
-              evidence of a design process in progress, not user validation —
+              evidence of a design process in progress, not user validation;
               the artifacts stay internal while the product is pre-MVP.
             </p>
           </div>

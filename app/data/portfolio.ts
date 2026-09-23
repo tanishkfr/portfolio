@@ -261,7 +261,7 @@ export const projects: Project[] = [
     },
     clientWork: {
       label: "Client work",
-      title: "Taamboolam — hospitality website",
+      title: "Taamboolam: hospitality website",
       rows: [
         {
           term: "Client need",
@@ -320,7 +320,7 @@ export const projects: Project[] = [
     plain:
       "A learning workspace where people practise by explaining what they've learned and see what needs another look. Built as a working prototype with three teammates.",
     oneLine:
-      "Close the source, explain the idea in your own words — the prototype's Explain Back reports what the explanation demonstrated and what it missed. A four-person team project, built as a working prototype.",
+      "Close the source, explain the idea in your own words. The prototype's Explain Back reports what the explanation demonstrated and what it missed. A four-person team project, built as a working prototype.",
     /* A live demo build exists, so an external CTA is offered; the case is
        explicit that the deployed build is disconnected and seeded. The
        verification numbers belong in the case, not in this status line. */
@@ -355,7 +355,7 @@ export const projects: Project[] = [
     artifact: "athena",
     lensRelations: {
       "evidence-judgment":
-        "Counts an explanation, a recall or an application as the evidence that learning happened — never time spent, completion or confidence.",
+        "Counts an explanation, a recall or an application as the evidence that learning happened, never time spent, completion or confidence.",
       "agency-authority":
         "Keeps the learner in control: no streaks, no ranks, no punitive reminders, and review only where a gap was shown.",
       "memory-lineage":
@@ -367,9 +367,9 @@ export const projects: Project[] = [
     chapterTitles: {
       context: "Learners could find material easily and still not be able to use it later.",
       pivot: "Progress stopped meaning watched, saved or completed.",
-      interaction: "Explain Back, Cue Cards, Apply It — attempts produce the evidence.",
+      interaction: "Explain Back, Cue Cards, Apply It: attempts produce the evidence.",
       system: "Activity is reported separately from knowledge evidence.",
-      proof: "A working P0 prototype verified against its own acceptance criteria — no outcome study yet.",
+      proof: "A working P0 prototype verified against its own acceptance criteria; no outcome study yet.",
     },
     problem: {
       title:
@@ -416,7 +416,7 @@ export const projects: Project[] = [
     interactionSteps: [
       "Find and organise: search or upload a resource and save it to a project.",
       "Learn and capture: read or watch it with notes and source-grounded help beside it.",
-      "Review: choose a mode — Explain Back, Cue Cards or Apply It — and respond without the source.",
+      "Review: choose a mode (Explain Back, Cue Cards or Apply It) and respond without the source.",
       "Feedback: Athena names what was demonstrated, what is missing, and the exact source passage that would fix the gap.",
       "Weak concepts return earlier; strong independent evidence returns later.",
     ],
@@ -425,7 +425,7 @@ export const projects: Project[] = [
         label: "Evidence",
         title: "Activity and knowledge stay separate",
         body:
-          "Activity is what the learner did — resources explored, notes captured, attempts made. Knowledge evidence is what they demonstrated: recall, explanation, application. Weak concepts come back earlier; concepts with strong independent evidence come back later.",
+          "Activity is what the learner did: resources explored, notes captured, attempts made. Knowledge evidence is what they demonstrated: recall, explanation, application. Weak concepts come back earlier; concepts with strong independent evidence come back later.",
       },
       {
         label: "Grounding",
@@ -458,7 +458,7 @@ export const projects: Project[] = [
         choice:
           "Never convert completion, confidence or a self-rating into a mastery percentage; show the evidence state as Solid, Developing, Review or Not Tested.",
         consequence:
-          "The workspace can say what is actually known — including 'not tested yet' — instead of implying progress from use.",
+          "The workspace can say what is actually known, including 'not tested yet', instead of implying progress from use.",
       },
       {
         title: "Ground the assistant by default",
@@ -471,7 +471,7 @@ export const projects: Project[] = [
     demonstrated: [
       "A working prototype: React 19 front end, Express 5 and SQLite server, local Ollama models, Zod-validated source and citation checks.",
       "All 18 acceptance criteria verified, with 11 core tests and 10 API integration checks passing.",
-      "Three review modes implemented — Explain Back, Cue Cards and Apply It — with concept-level spaced review.",
+      "Three review modes implemented (Explain Back, Cue Cards and Apply It) with concept-level spaced review.",
       "Ingestion for text, article, PDF, DOCX and video sources; grounded answers with exact source navigation; context-linked notes.",
       "Activity-versus-knowledge reporting, Focus Mode, keyboard accessibility, and recovery from model outages and malformed output.",
       "A disconnected public demo build for inspection.",
@@ -491,7 +491,7 @@ export const projects: Project[] = [
     },
     story: {
       intro: [
-        "Athena started from a plain observation: learners have more access to explanations than ever, and still lose what they learn. The team kept meeting the same contradiction — understanding something in the moment is not the same as being able to use it later.",
+        "Athena started from a plain observation: learners have more access to explanations than ever, and still lose what they learn. The team kept meeting the same contradiction: understanding something in the moment is not the same as being able to use it later.",
         "The project narrowed from 'digital learning friction' to one gap between consuming and usable knowledge.",
       ],
       contribution: [
@@ -580,7 +580,7 @@ export const projects: Project[] = [
     decisions: [],
     demonstrated: [
       "A live public website describing the current product position, designed and built by Tanishk.",
-      "The app's product experience designed by Tanishk — interaction and visual system across the daily-budget surface.",
+      "The app's product experience designed by Tanishk, including the interaction and visual system across the daily-budget surface.",
     ],
     limits: [
       "The full team, timeline, constraints, process, and outcomes are not yet published.",
@@ -640,7 +640,7 @@ export const projects: Project[] = [
       pivot: "I removed the answer key.",
       interaction: "Mark first. Argue second.",
       system: "One screen, six accountable readings.",
-      proof: "A working archive—not a study result.",
+      proof: "A working archive, not a study result.",
     },
     problem: {
       title: "Design criticism often begins with a verdict and works backward.",
@@ -676,10 +676,10 @@ export const projects: Project[] = [
       "Every case uses the same sequence. The five-minute path teaches it; the full archive shows how your attention repeats across ten cases.",
     interactionSteps: [
       "Choose what kind of evidence you are looking for: hierarchy, access, task, trust, or feeling.",
-      "Place a mark on the exact coordinate—or choose a named region when precision input is unavailable.",
+      "Place a mark on the exact coordinate, or choose a named region when precision input is unavailable.",
       "Describe what that place makes visible and write the sentence the evidence supports.",
       "File a ruling and state your own confidence. The interface does not infer confidence from behavior.",
-      "Open the juror maps. Five authored interpretations — written for the archive, not research participants — appear beside your mark on the same screen.",
+      "Open the juror maps. Five authored interpretations, written for the archive rather than research participants, appear beside your mark on the same screen.",
       "Reach the sealed case, where every other interpretation is withheld and your evidence is the only record.",
     ],
     systemLayers: [
@@ -795,7 +795,7 @@ export const projects: Project[] = [
       "evidence-judgment":
         "Places an interpretation beside its evidence and lets the subject decide what stands, changes, or is struck.",
       "agency-authority":
-        "Gives the person represented—not the interpreting system—the sovereign final word.",
+        "Gives the person represented, rather than the interpreting system, the sovereign final word.",
       "memory-lineage":
         "Treats correction as a visible layer of history instead of a clean overwrite.",
       "visibility-accountability":
@@ -1179,7 +1179,7 @@ export const projects: Project[] = [
       },
     ],
     interactionIntro:
-      "One familiar question—when should tapping outside a dialog close it?—moves through three cases chosen for increasing distance, not difficulty.",
+      "One familiar question, 'When should tapping outside a dialog close it?', moves through three cases chosen for increasing distance, not difficulty.",
     interactionSteps: [
       "Edit a suggested starting rule until it states what you currently believe.",
       "Apply it to a low-consequence lightbox and choose whether the rule holds (it works as written), needs refinement (same idea, sharper wording), or fractures (the case breaks it and the rule must be rewritten).",

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageSignal } from "../components/page-signal";
 
 const description =
-  "About Tanishk — a product and interaction designer in Bengaluru who designs and builds.";
+  "About Tanishk, a product and interaction designer in Bengaluru who designs and builds.";
 
 export const metadata: Metadata = {
   title: "About",
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
     type: "profile",
     locale: "en_IN",
     url: "/about",
-    siteName: "Tanishk — Product & Interaction Designer",
-    title: "About — Tanishk",
+    siteName: "Tanishk, Product & Interaction Designer",
+    title: "About | Tanishk",
     description,
     images: [{ url: "/og.png", alt: "About Tanishk" }],
   },
@@ -35,7 +35,7 @@ const practices = [
   },
   {
     principle: "Make decisions inspectable",
-    body: "A judgment should name the evidence it used — that is Design or Disaster — and a rule should show every case that changed it, which is Atlas.",
+    body: "A judgment should name the evidence it used; that is Design or Disaster. A rule should show every case that changed it, which is Atlas.",
     href: "/work/design-or-disaster?from=work",
     label: "Design or Disaster",
   },
@@ -49,14 +49,14 @@ const practices = [
 
 const currentWork = [
   {
-    lead: "Daynero — product design in a real team.",
+    lead: "Daynero: product design in a real team.",
     status: "shipping",
     body: "I'm the product designer at Daynero, a five-person team building a personal-finance product for first-paycheck earners in India. I own design across the app and the public website, working directly with product and engineering; the case study here is a preview until the full record can be published.",
   },
   {
-    lead: "Fluxion Studios — the studio I co-founded.",
+    lead: "Fluxion Studios: the studio I co-founded.",
     status: "building",
-    body: "I co-run a two-person studio for small businesses in Bengaluru. I scope and price the work, design it, and build it — our own site and Taamboolam's live hospitality site both went from first conversation to deployed without a handoff.",
+    body: "I co-run a two-person studio for small businesses in Bengaluru. I scope and price the work, design it, and build it. Our own site and Taamboolam's live hospitality site both went from first conversation to deployed without a handoff.",
   },
   {
     lead: "Independent interaction research.",
@@ -64,9 +64,9 @@ const currentWork = [
     body: "Design or Disaster, Pentimento, Invisible Interfaces, and Atlas are mine from question through code. Each one began with an interface behaviour I kept thinking about, and each ends as a working artifact rather than a write-up.",
   },
   {
-    lead: "Ariadne — the system under my AI workflow.",
+    lead: "Ariadne: the system under my AI workflow.",
     status: "maintaining",
-    body: "Ariadne is the tool I built and still maintain for software work done with AI. It splits a job into roles, checks each step with tests and evidence before accepting it, retries what fails, and keeps a record so a release can be validated or rolled back. It is released through v1.6.7 and public on GitHub — a working system, not a demo.",
+    body: "Ariadne is the tool I built and still maintain for software work done with AI. It splits a job into roles, checks each step with tests and evidence before accepting it, retries what fails, and keeps a record so a release can be validated or rolled back. It is released through v1.6.7 and public on GitHub: a working system, not a demo.",
   },
 ];
 
@@ -79,7 +79,7 @@ export default function AboutPage() {
         <h1>From Pixels to Products.</h1>
         <div className="about-lede">
           <p>
-            I&apos;m Tanishk — a product and interaction designer in Bengaluru. I
+            I&apos;m Tanishk, a product and interaction designer in Bengaluru. I
             move between research, interface behaviour, prototypes and working
             code; the part I care about is what an interface does once someone
             is actually using it. I also build the tools my own work runs on,
@@ -104,7 +104,7 @@ export default function AboutPage() {
           </div>
           <div>
             <dt>Studying</dt>
-            <dd>B.Des, Human Centered Design — Srishti Manipal (2024–2028)</dd>
+            <dd>B.Des, Human Centered Design, Srishti Manipal (2024–2028)</dd>
           </div>
           <div>
             <dt>Working</dt>

@@ -4,7 +4,7 @@ import { PrintResume } from "../components/print-resume";
 import { PageSignal } from "../components/page-signal";
 
 const description =
-  "Résumé — Tanishk, product and interaction designer in Bengaluru. Experience, selected work, leadership, education and tools.";
+  "Résumé | Tanishk, product and interaction designer in Bengaluru. Experience, selected work, leadership, education and tools.";
 
 export const metadata: Metadata = {
   title: "Résumé",
@@ -38,7 +38,7 @@ const experience: Entry[] = [
     dates: "2026 – Present",
     lines: [
       "Designing a personal finance product for first-paycheck earners in India, currently pre-MVP with a waitlist of roughly 200–300 people.",
-      "Shaped the core experience around one question: \u201CHow much can I safely spend today?\u201D — turning account and spending data into a daily budget and contextual guidance.",
+      "Shaped the core experience around one question: \u201CHow much can I safely spend today?\u201D This turns account and spending data into a daily budget and contextual guidance.",
       "Own product design across the five-person team, working directly with product and engineering from product logic through interface behaviour.",
       "Designed the product around transaction understanding, manual spending, financial context and AI guidance rather than treating AI as a standalone chat feature.",
     ],
@@ -52,7 +52,7 @@ const experience: Entry[] = [
     lines: [
       "Co-founded a two-person design studio working directly with small businesses on paid digital projects.",
       "Turn client conversations into scoped products: defining requirements, pricing work, writing proposals and deciding what can realistically be designed and built.",
-      "Stay involved beyond design — working through implementation constraints, client revisions and deployment rather than handing off at Figma.",
+      "Stay involved beyond design, working through implementation constraints, client revisions and deployment rather than handing off at Figma.",
       "Designed and shipped Taamboolam's live hospitality website, taking it from client requirements through interface design, enquiry flows, production QA and deployment.",
     ],
     links: [{ label: "Taamboolam ↗", href: "https://taamboolam.com" }],
@@ -76,7 +76,7 @@ const selectedWork: Entry[] = [
     role: "Product & UX Design",
     lines: [
       "Understanding something isn’t the same as being able to retrieve it.",
-      "Qualitative research with students — including a focus group and 1:1 interviews — kept surfacing the same contradiction: digital tools made information easier to understand, but that did not mean learners could recall or apply it later.",
+      "Qualitative research with students, including a focus group and 1:1 interviews, kept surfacing the same contradiction: digital tools made information easier to understand, but that did not mean learners could recall or apply it later.",
       "Designed and prototyped Athena around a learn → explain/apply → review loop, separating content consumption from evidence that the learner could actually use what they had learned.",
     ],
   },
@@ -94,7 +94,7 @@ const selectedWork: Entry[] = [
 
 const leadership: Entry[] = [
   {
-    title: "Teens for Cancer Patients — South Bangalore",
+    title: "Teens for Cancer Patients, South Bangalore",
     role: "Co-President",
     dates: "2022 – 2025",
     lines: [
@@ -106,7 +106,7 @@ const leadership: Entry[] = [
 const education: Entry[] = [
   {
     title: "Srishti Manipal Institute of Art, Design and Technology",
-    role: "B.Des — Human Centered Design",
+    role: "B.Des, Human Centered Design",
     dates: "2024 – 2028",
     lines: [],
   },
@@ -183,7 +183,7 @@ function Section({
       aria-labelledby={`resume-${num}`}
     >
       <h2 className="resume-section-title" id={`resume-${num}`}>
-        <span aria-hidden="true">{num}</span> — {title}
+        <span aria-hidden="true">{num}</span> · {title}
       </h2>
       {entries.map((entry) => (
         <EntryBlock key={entry.title} entry={entry} />
@@ -209,7 +209,7 @@ export default function ResumePage() {
         <p className="resume-role">Product Designer / Interaction Designer</p>
         <p className="resume-lede">
           Designing behaviour, not just screens. I move between research,
-          interface behaviour, prototypes and working code — as the product
+          interface behaviour, prototypes and working code in my roles as the product
           designer at Daynero, co-founder of Fluxion Studios, and the author of
           four independent interaction projects.
         </p>
@@ -253,7 +253,7 @@ export default function ResumePage() {
 
       <section className="resume-section" aria-labelledby="resume-05">
         <h2 className="resume-section-title" id="resume-05">
-          <span aria-hidden="true">05</span> — Tools & build
+          <span aria-hidden="true">05</span> · Tools & build
         </h2>
         <article className="resume-entry">
           <h3 className="resume-entry-title resume-entry-title--small">
