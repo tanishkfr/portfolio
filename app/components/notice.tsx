@@ -104,7 +104,7 @@ export function Notice() {
           The difference is small. It&apos;s the whole job.
         </h2>
         <p className="xp-notice-sub" data-reveal="quiet">
-          The same control, twice — careless, then considered. Try both.
+          The same control, twice: careless, then considered. Try both.
         </p>
       </header>
 

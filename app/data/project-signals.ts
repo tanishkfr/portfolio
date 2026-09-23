@@ -27,7 +27,7 @@ export const projectSignals: Record<Project["artifact"], ProjectSignal> = {
     focus: "Learning · evidence after the attempt",
     proof:
       "A working prototype verified against 18 of 18 P0 acceptance criteria, with three review modes and activity reported separately from knowledge evidence.",
-    interaction: "Explain, recall or apply — then see what was demonstrated and what is missing.",
+    interaction: "Explain, recall or apply, then see what was demonstrated and what is missing.",
     exposure: {
       surface: "A project holds its resources, notes and review in one workspace.",
       rule: "Consumption, confidence and completion are not treated as evidence of knowledge.",

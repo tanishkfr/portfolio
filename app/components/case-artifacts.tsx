@@ -407,7 +407,7 @@ function InvisibleArtifact() {
         {phase === "away" ? (
           <p className="invisible-phase-copy">
             The task advances only while the page is hidden. There is no progress
-            to watch, by design — watching would be the wrong interaction.
+            to watch, by design; watching would be the wrong interaction.
           </p>
         ) : null}
 
@@ -534,7 +534,7 @@ function AtlasArtifact() {
             <>
               <p className="atlas-editor-hint">
                 {changed
-                  ? "Wording changed — refine or fracture will commit it."
+                  ? "Wording changed; refine or fracture will commit it."
                   : "Hold keeps this wording. To refine or fracture, edit the rule first."}
               </p>
               <div className="atlas-editor-actions">

@@ -1077,7 +1077,7 @@ const ATL_REVISED = [
   {
     note: "refined · case 02",
     parts: [
-      { text: "Tap outside to close it — " },
+      { text: "Tap outside to close it: " },
       { text: "unless an unsaved action would be lost.", hl: true },
     ],
   },
@@ -1598,7 +1598,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
       src: "/projects/invisible-interfaces/return.png",
       poster: "/projects/invisible-interfaces/return.png",
       alt: "The Invisible Interfaces return receipt: what changed during absence, what was left untouched, and how to discard the work.",
-      label: "Invisible Interfaces · return receipt (staged artifact — absence not reproducible in capture)",
+      label: "Invisible Interfaces · return receipt (staged artifact; absence not reproducible in capture)",
       fit: "contain",
     },
     a11y:
@@ -1661,7 +1661,7 @@ const PORTRAITS: Record<string, PortraitMeta> = {
   },
   "fluxion-studios": {
     tag: "01 · studio build",
-    caption: "Loose pieces, one system — the studio site ships from it.",
+    caption: "Loose pieces, one system; the studio site ships from it.",
     hint: "build it",
     real: {
       kind: "video",

@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Tanishk — Interaction Designer",
+    name: "Tanishk, Interaction Designer",
     short_name: "Tanishk",
     description:
       "Interaction-design work by Tanishk, including studio, product, and independent projects.",
