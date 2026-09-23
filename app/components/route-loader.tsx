@@ -35,6 +35,8 @@ type Phase = "idle" | "loading" | "leaving";
 const SHOW_AFTER = 95;
 /** once drawn, how long it stays even if the route lands immediately after */
 const MIN_VISIBLE = 220;
+/** a failed navigation must not leave a full-screen plate over the page */
+const MAX_WAIT = 5000;
 /** must match the exit transition in the stylesheet */
 const EXIT_MS = 240;
 
@@ -77,8 +79,10 @@ export function RouteLoader() {
 
   const phaseRef = useRef<Phase>("idle");
   const pending = useRef(false);
+  const routePath = useRef(pathname);
   const shownAt = useRef(0);
   const showTimer = useRef(0);
+  const maxTimer = useRef(0);
   const leaveTimer = useRef(0);
   const hideTimer = useRef(0);
 
@@ -96,6 +100,16 @@ export function RouteLoader() {
       pending.current = true;
       setLabel(name);
       window.clearTimeout(showTimer.current);
+      window.clearTimeout(leaveTimer.current);
+      window.clearTimeout(hideTimer.current);
+      maxTimer.current = window.setTimeout(() => {
+        pending.current = false;
+        window.clearTimeout(showTimer.current);
+        if (phaseRef.current === "loading") {
+          enter("leaving");
+          hideTimer.current = window.setTimeout(() => enter("idle"), EXIT_MS);
+        }
+      }, MAX_WAIT);
       const attempt = () => {
         if (!pending.current) return;
         if (viewTransitionRunning()) {
@@ -125,8 +139,10 @@ export function RouteLoader() {
       arm(labelOf(link));
     };
 
-    /* Back and forward load a route the reader has not asked for by name. */
-    const onPop = () => arm("");
+    /* A hash jump may also emit popstate. Only a changed page needs a plate. */
+    const onPop = () => {
+      if (window.location.pathname !== routePath.current) arm("");
+    };
 
     document.addEventListener("click", onClick, true);
     window.addEventListener("popstate", onPop);
@@ -134,6 +150,7 @@ export function RouteLoader() {
       document.removeEventListener("click", onClick, true);
       window.removeEventListener("popstate", onPop);
       window.clearTimeout(showTimer.current);
+      window.clearTimeout(maxTimer.current);
       window.clearTimeout(leaveTimer.current);
       window.clearTimeout(hideTimer.current);
     };
@@ -144,7 +161,9 @@ export function RouteLoader() {
      state, not an unmount, so the plate can finish its own fade. */
   useEffect(() => {
     pending.current = false;
+    routePath.current = pathname;
     window.clearTimeout(showTimer.current);
+    window.clearTimeout(maxTimer.current);
     if (phaseRef.current === "idle") return;
     const held = performance.now() - shownAt.current;
     const wait =
